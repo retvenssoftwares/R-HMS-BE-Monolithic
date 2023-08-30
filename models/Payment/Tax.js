@@ -19,9 +19,9 @@ const tax = new mongoose.Schema({
 
   addedBy : {type: String, default :""},
 
-  modifiedBy : {type: String, default :""},
+  modifiedBy : {modifiedBy:{type: String, default :""}},
 
-  modifiedDate : {type: String, default :""},
+  modifiedDate : {modifiedDate:{type: String, default :""}},
 
   addedDate : {type: String, default :""},
 

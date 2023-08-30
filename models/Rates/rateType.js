@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const randomestring = require("randomstring");
 
 const rateTypeSchema = new mongoose.Schema({
-  roomTypeId: {type: String, default:randomestring.generate(10)},
+  roomTypeId: {type: String, default: "", required: false },
 
   rateTypeId: {type: String, default:randomestring.generate(10)},
 
@@ -22,11 +22,29 @@ const rateTypeSchema = new mongoose.Schema({
 
   rateThreshold: {type: String, default: "", required: false },
 
+  validFrom: {type: String, default: "", required: false },
+
+  till : {type: String, default: "", required: false },
+
+  minNight: {type: String, default: "", required: false },
+
+  maxNight: {type: String, default: "", required: false },
+
+  postingRule: {type: String, default: "", required: false },
+
+  chargeRule : {type: String, default: "", required: false },
+
+  addedBy: {type: String, default: "", required: false },
+
+  modifiedBy: {type: String, default: "", required: false },
+
+  modifiedDate: {type: String, default: "", required: false },
+
   rateTypeAmenities:{
 
     amenityId: {type: String, default: "", required: false },
 
-    displayStatus: {type: String, default: "1"},
+    displayStatus: {type: String, default: ""},
 
   },
 

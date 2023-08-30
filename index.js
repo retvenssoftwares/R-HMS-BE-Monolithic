@@ -1,5 +1,6 @@
 require('dotenv').config()
 const express = require('express');
+const navigator = require('navigator')
 //const path = require('path')
 const app = express();
 const bodyParser = require('body-parser');
@@ -14,7 +15,17 @@ app.get('/', (req, res) => {
     res.sendStatus(200)
   })
 
+  // const getLocation = () =>  {
+  //     if('geolocation' in navigator){
+  //       navigator.geolocation.getCurrentPosition(success, error)
+  //     }
+  // }
+
+  // function success(position){
+  //   console.log(position)
+  // }
   
+  // getLocation();
 const PORT = process.env.PORT || 3000;
 app.listen(PORT,() =>{
     console.log(`connnection is setup at ${PORT}`);

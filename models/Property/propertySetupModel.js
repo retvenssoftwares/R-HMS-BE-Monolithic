@@ -18,13 +18,24 @@ const propertySetupSchema = new mongoose.Schema({
     taxName: {type:String, required: false, default: ''},
     propertyTaxPercentage: {type: String, required: false, default: ''},
     numberOfRooms: {type:String, required: false, default: ''},
+    phoneNo: {type:String, required: false, default: ''},
+    email: {type:String, required: false, default: ''},
     propertyLogo: {type: String, required: false, default: ''},
+    propertyImages: {
+        propertyImage: {type: String, default: ''}
+    },
     propertyRegistrationNo: {type: String, required: true, unique: true, default: ''},
     timeStamp: {type: String},
     propertyAmenities: {
         amenityId:{type:String,default:''},
         displayStatus: {type: String, default: "1"}
     },
+    addedBy: {type: String, default: '' },
+    modifiedBy: { modifiedBy: {type: String, default: ''}},
+    modifiedDate: {modifiedDate:{type: String, default: ''}},
+    socialMedia1: {type: String, default: '' },
+    socialMedia2: {type: String, default: ''},
+    socialMedia3: {type: String, default: ''}
 })
 
 const propertySetupModel = mongoose.model('property', propertySetupSchema);

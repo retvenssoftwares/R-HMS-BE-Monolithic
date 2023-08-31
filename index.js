@@ -6,8 +6,13 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
- require("./db/conn");
+require("./db/conn");
 
+// hotel and employee router
+const hotelEmployeeRouter = require('../R-HMS-BE-Monolithic/routers/Users/hotelOwerRegisterRouter')
+
+// hotel and employee router
+app.use(hotelEmployeeRouter)
 
 app.get('/', (req, res) => {
     res.send('Welcome to Chatverse backend');

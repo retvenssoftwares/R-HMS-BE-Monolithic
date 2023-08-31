@@ -18,6 +18,12 @@ const amenitySchema = new mongoose.Schema({
 
   amenitySortCode : { type: String, default: "", required: false },
 
+  createdBy : { type: String, default: "", required: false },
+
+  modifiedBy : { type: String, default: "", required: false },
+
+  modifiedDate : { type: String, default: "", required: false }
+
 
 });
 

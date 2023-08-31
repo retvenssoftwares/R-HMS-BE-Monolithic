@@ -4,13 +4,14 @@ const randomestring = require(randomstring);
 const reservationSchema = new mongoose.Schema({
   guestId: { type: String, default: "", required: false },
 
-  groupId: { type: String, default: "", required: false },
+  reservationId :{type : String , default : randomestring.generate(15)},
+  //groupId: { type: String, default: "", required: false },
 
   reservationStatus: { type: String, default: "", required: false },
 
   folioId: { type: String, default: "", required: false },
 
-  //   ADR: { type: String, default: "", required: false },
+  ADR: { type: String, default: "", required: false },
 
   balance: { type: String, default: "", required: false },
 
@@ -34,7 +35,7 @@ const reservationSchema = new mongoose.Schema({
 
   tax: { type: String, default: "", required: false },
 
-  voucherNo: { type: String, default: "", required: false },
+  voucherNo: { type: String, default: "", default : randomestring.generate(20) },
 
   adult: { type: String, default: "", required: false },
 
@@ -101,6 +102,8 @@ const reservationSchema = new mongoose.Schema({
 
   reservationNo: { type: String, default: "", required: false },
 
+  voucherNo : { type: String, default: "", required: false },
+
   roomTypeId: { type: String, default: "", required: false },
 
   roomId: { type: String, default: "", required: false },
@@ -123,7 +126,15 @@ const reservationSchema = new mongoose.Schema({
 
   travelAgentId: { type: String, default: "", required: false },
 
-  createdAt: { type: String, default: "", required: false }
+  createdAt: { type: String, default: "", required: false },
+
+  addedBy : {type: String, default :""},
+
+  modifiedBy : {type: String, default :""},
+
+  modifiedDate : {type: String, default :""},
+
+  addedDate : {type: String, default :""},
 
   //   webinventoryunkid: { type: String, default: "", required: false },
 

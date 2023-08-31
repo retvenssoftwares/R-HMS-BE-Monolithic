@@ -15,13 +15,17 @@ const registerSchema = new mongoose.Schema({
 
   role: { type: String, default: "", required: false },
 
-  password: {
+  hotelOwnerPic: { type: String, default: "", required: false },
+
+  password: [{
     password: { type: String, required: true },
-  },
+  }],
+    
+  
 
   propertyType: { type: String, default: "", required: false },
 
-  mobile: { type: Number, default: "", required: false },
+  mobile: { type: String, default: "", required: false },
 
   deviceType: {
     ipAddress: { type: String, default: "", required: false },

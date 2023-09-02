@@ -7,6 +7,8 @@ const roomTypeSchema = new mongoose.Schema({
     roomTypeId: {type: String, default:randomstring.generate(10)},
     roomTypeSortKey: {type: String, default: ''},
     roomTypeName: {type: String, required: true, default: ''},
+    baseAdult: {type:Number, required: false, default: ''},
+    baseChild: {type:Number, required: false, default: ''},
     maxChild: {type: Number, required: false, default: ''},
     maxAdult: {type: Number, required: false, default: ''},
     extraAdultRate: {type: String, default: ''},

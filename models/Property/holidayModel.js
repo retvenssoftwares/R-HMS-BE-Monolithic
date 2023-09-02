@@ -5,6 +5,7 @@ const randomstring = require("randomstring");
 const holidaySchema = new mongoose.Schema({
 
     holidayId: { type: String, default: randomstring.generate(10) },
+    propertyId: { type: String, required: true},
     holidaySortCode: {type: String, default: ''},
     name: {
         type: String,

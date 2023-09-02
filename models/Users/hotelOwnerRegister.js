@@ -15,13 +15,13 @@ const registerSchema = new mongoose.Schema({
 
   role: { type: String, default: "", required: false },
 
-  password: {
+  password: [{
     password: { type: String, required: true },
-  },
+  }],
 
   propertyType: { type: String, default: "", required: false },
 
-  mobile: { type: Number, default: "", required: false },
+  mobile: { type: String, default: "", required: false },
 
   deviceType: {
     ipAddress: { type: String, default: "", required: false },
@@ -40,6 +40,13 @@ const registerSchema = new mongoose.Schema({
   hotelCount: { type: Number, default: "", required: false },
 
   timeStamp: { type: String, default: "", required: false },
+
+  registrationId: { type: String, default: ''},
+
+  blockedUntil: {type: Number, default: 0},
+  
+
+  loginAttempts: {type: Number, default: 0}
 });
 
 

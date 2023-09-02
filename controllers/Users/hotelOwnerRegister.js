@@ -1,16 +1,14 @@
 require("dotenv").config();
-const randomstring = require("randomstring")
+const moment = require("moment");
 const hotelAndEmployee = require("../../models/Users/hotelOwnerRegister");
-//const apiname = require("../model/apiHitting");
+const apiname = require('../../models/Users/apiHittingArray')
 const crypto = require("crypto");
 
+const iv = process.env.iv;
 
-const iv = process.env.iv
-//const iv = "16digitivexample"
-module.exports = async (req, res) => {
+exports.register = async (req, res) => {
   try {
-    // const { username, name, password, dob } = req.body;
-
+    const formattedTimestamp = moment().format("YYYY-MM-DD HH:mm:ss");
     const {
       fullName,
       userName,
@@ -28,10 +26,13 @@ module.exports = async (req, res) => {
       osType,
       hotelName,
       hotelCount,
-      timeStamp,
     } = req.body;
 
-    //await hotelEmployeeData.save()
+    const username = await hotelAndEmployee.findOne({userName:userName})
+
+    if(username){
+        return res.status(500).json({ message: "User name already exist" });
+    }
 
     const genVariable = req.body.genVariable;
 
@@ -44,29 +45,19 @@ module.exports = async (req, res) => {
     // this is the key which will be used for encryption and decryption the password
     const key = process.env.key;
 
-    // function encrypt(text) {
-    //   if (typeof text !== "string") {
-    //     // If the text is not a string, convert it to a JSON string
-    //     text = JSON.stringify(text);
-    //   }
-    //   const iv = crypto.randomBytes(IV_LENGTH);
-    //   const cipher = crypto.createCipheriv("aes-256-cbc", Buffer.from(key), iv);
-    //   let encrypted = cipher.update(text, "utf-8", "hex");
-    //   encrypted += cipher.final("hex");
-    //   return iv.toString("hex") + ":" + encrypted;
-    // }
-
     function encrypt(text) {
-        const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key, 'hex'), Buffer.from(iv));
-        let encrypted = cipher.update(text, 'utf8', 'hex');
-        encrypted += cipher.final('hex');
-        return encrypted;
-      }
-
-      
+      const cipher = crypto.createCipheriv(
+        "aes-256-cbc",
+        Buffer.from(key, "hex"),
+        Buffer.from(iv)
+      );
+      let encrypted = cipher.update(text, "utf8", "hex");
+      encrypted += cipher.final("hex");
+      return encrypted;
+    }
 
     if (genVariable === generatedVariable) {
-        const encryptedPassword = encrypt(password);    
+      const encryptedPassword = encrypt(password);
 
       const newpass = new hotelAndEmployee({
         fullName,
@@ -81,35 +72,146 @@ module.exports = async (req, res) => {
         deviceType,
         hotelName,
         hotelCount,
-        timeStamp,
+        timeStamp: formattedTimestamp,
       });
 
       await newpass.save();
-     
 
-      // Save the new Todo document
+      const api = new apiname({
+        userId: newpass.userId,
+        apiArray: [
+          {
+            timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+            role : newpass.role,
+            apiname: `Registration api`,
+          
+          },
+        ],
+      });
 
-      //   const data = await Todo.findOne({ username });
+      await api.save();
 
-      //   const api = new apiname({
-      //     userId: data.userId,
-      //     apiArray: [
-      //       {
-      //         timestamp: data.createdAt,
-      //         apiname: "User_Registration",
-      //       },
-      //     ],
-      //   });
-
-      //   await api.save();
-
-      res.status(201).json({ message: "User  Register Successfully" });
-    }else{
-        res.status(500).json({message : "enter valid details"})
+      return res.status(200).json({ message: "User Register Successfully" });
+    } else {
+      res.status(500).json({ message: "enter valid details" });
     }
-    // Extract the first 4 letters of the name and the last 4 letters of the dob
   } catch (error) {
     console.log(error);
-    res.status(400).json({ error: "Bad Request" });
+    return res.status(400).json({ error: "Bad Request" });
+  }
+};
+
+
+
+// session out api
+exports.sessionOut = async (req, res) => {
+  const hotelAndEmployee = require("../../models/Users/hotelOwnerRegister");
+  const apiname = require('../../models/Users/apiHittingArray')
+  const crypto = require("crypto");
+
+  try {
+    const { userId } = req.params;
+    const data = await hotelAndEmployee.findOne({ userId });
+
+    const registrationId = "";
+    await hotelAndEmployee.updateOne(
+      { _id: data._id },
+      { $set: { registrationId: registrationId } }
+    );
+
+
+    // api hitting details
+
+    await apiname.updateOne(
+      { userId: data.userId },
+      {
+        $push: {
+          apiArray: {
+            $each: [
+              {
+                apiname: "SessionOut",
+                role : newpass.role,
+                timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+
+              }
+            ],
+            $position: 0
+          }
+        }
+      }
+    );
+
+    return res.status(200).json({ message: "your session Time out" });
+
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+
+//session In
+exports.sessionIn = async (req, res) => {
+  const hotelAndEmployee = require("../../models/Users/hotelOwnerRegister");
+  const apiname = require('../../models/Users/apiHittingArray')
+  const crypto = require("crypto");
+
+  try {
+    const password = req.body.password;
+
+    const { userId } = req.params;
+    const data = await hotelAndEmployee.findOne({ userId });
+    const key = process.env.key;
+
+    const iv = process.env.iv;
+
+    function decrypt(encryptedText) {
+      const decipher = crypto.createDecipheriv(
+        "aes-256-cbc",
+        Buffer.from(key, "hex"),
+        Buffer.from(iv)
+      );
+      let decrypted = decipher.update(encryptedText, "hex", "utf8");
+      decrypted += decipher.final("utf8");
+      return decrypted;
+    }
+
+    const original = decrypt(data.password[0].password);
+
+
+    if (original === password) {
+
+    // api hitting details
+    await apiname.updateOne(
+      { userId: data.userId },
+      {
+        $push: {
+          apiArray: {
+            $each: [
+              {
+                apiname: "SessionIn",
+                role : newpass.role,
+                timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+              }
+            ],
+            $position: 0
+          }
+        }
+      }
+    );
+
+      const registrationId = crypto.randomBytes(64).toString("hex");
+      await hotelAndEmployee.updateOne({ _id: data._id }, { $set: { registrationId: registrationId } });
+
+      return res.status(200).json({ message: "you log in again" });
+    } else {
+      return res.status(401).json({ message: "enter valid credential" });
+    }
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };

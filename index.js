@@ -10,9 +10,11 @@ require("./db/conn");
 
 // hotel and employee router
 const hotelEmployeeRouter = require('../R-HMS-BE-Monolithic/routers/Users/hotelOwerRegisterRouter')
+const resetPassword = require('../R-HMS-BE-Monolithic/routers/Users/resetPasswordRouter')
 
 // hotel and employee router
 app.use(hotelEmployeeRouter)
+app.use(resetPassword)
 
 app.get('/', (req, res) => {
     res.send('Welcome to Chatverse backend');
@@ -21,6 +23,8 @@ app.get('/', (req, res) => {
 
   
 const PORT = process.env.PORT || 3000;
-app.listen(PORT,() =>{
+const server = app.listen(PORT,() =>{
     console.log(`connnection is setup at ${PORT}`);
  });
+
+ module.exports = server

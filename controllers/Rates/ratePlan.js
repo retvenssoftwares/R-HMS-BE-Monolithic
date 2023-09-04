@@ -2,7 +2,8 @@ require("dotenv").config();
 const moment = require("moment");
 const roomTypeModel = require("../../models/Rooms/roomTypeModel");
 const rateplan = require('../../models/Rates/ratePlan')
-const s3 = require('../../url/url');
+const ratetype = require('../../models/Rates/rateType')
+const s3 = require('../../utils/url');
 const property = require("../../models/Property/propertySetupModel")
 const amenitiesId = require("../../models/Property/amenities")
 const apiname = require('../../models/Users/apiHittingArray')
@@ -14,8 +15,10 @@ const iv = process.env.iv;
 module.exports = async (req, res) => {
   try {
     //const formattedTimestamp = moment().format("YYYY-MM-DD HH:mm:ss");
-    const roomTypedata  = roomTypeModel.findOne({roomTypeId : req.params.roomTypeId})
-    const {roomType, roomTypeId} = roomTypedata
+    const roomTypedata  =await  roomTypeModel.findOne({roomTypeId : req.params.roomTypeId})
+    const ratetypedata =await  ratetype.findOne({roomTypeId : req.params.roomTypeId})
+    const {rateType} = ratetypedata
+    const {roomTypeName, roomTypeId} = roomTypedata
 
  
     let mediaUrl;
@@ -44,8 +47,8 @@ module.exports = async (req, res) => {
 
     const data = new rateplan({        
         roomTypeId : roomTypeId,
-        roomType : roomType,
-        rateType : req.body.rateType,
+        roomType : roomTypeName,
+        rateType : rateType,
         webDescription : req.body.webDescription,
         baseAdult : req.body.baseAdult,
         baseChild : req.body.baseChild,

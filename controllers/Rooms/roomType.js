@@ -2,7 +2,7 @@ require("dotenv").config();
 const moment = require("moment");
 const roomTypeModel = require("../../models/Rooms/roomTypeModel");
 const property = require("../../models/Property/propertySetupModel")
-const s3 = require('../../url/url');
+const s3 = require('../../utils/url');
 const amenitiesId = require("../../models/Property/amenities")
 const apiname = require('../../models/Users/apiHittingArray')
 const crypto = require("crypto");
@@ -59,10 +59,9 @@ module.exports = async (req, res) => {
 
     await data.save()
 
-    const updateroomid = propertyid.roomType.push({ roomTypeId }); //propertyid.roomType.roomTypeId[0].push(data.roomTypeId)
 
-    await updateroomid.save()
-
+    propertyid.roomType.push({ roomTypeId: data.roomTypeId });
+    await propertyid.save();
 
 
     return res.status(200).json({ message: "Room added Successfully" });

@@ -14,9 +14,15 @@ exports.userLogin = async (req, res) => {
         return res.status(404).json({ message: "User not found" });
     }
 
-    const { userName, password, genVariable } = req.body;
+    const { userName, password, genVariable, deviceType, ipAddress, propertyAuthCode } = req.body;
     const userProfile = await userModel.findOne({ userName: userName });
-    if (!userProfile) {
+    
+
+  //   if (req.body.propertyAuthCode === undefined) {
+  //     return res.status(400).json({ message: 'Please enter property auth code' })
+  // }
+
+    if ((!userProfile) || (propertyAuthCode !== userProfile.propertyAuthCode)) {
         return res.status(404).json({ message: "Invalid credentials" });
     }
 
@@ -107,8 +113,9 @@ exports.userLogin = async (req, res) => {
                         {
                           apiname: "Login",
                           role : userProfileId.role,
-                          timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
-          
+                          timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+                          ipAddress: ipAddress,
+                          deviceType: deviceType
                         }
                       ],
                       $position: 0
@@ -127,6 +134,7 @@ exports.userLogin = async (req, res) => {
 exports.userLogout = async (req, res) => {
     const userId = req.params.userId;
     const userProfile = await userModel.findOne({ userId: userId });
+    const {deviceType, ipAddress} = req.body
 
     //ask to login again if registrationid is empty
     if (userProfile.registrationId === null || userProfile.registrationId === '') {
@@ -143,8 +151,9 @@ exports.userLogout = async (req, res) => {
                 {
                   apiname: "LogOut",
                   role : userProfile.role,
-                  timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
-  
+                  timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+                  deviceType: deviceType ,
+                  ipAddress: ipAddress 
                 }
               ],
               $position: 0

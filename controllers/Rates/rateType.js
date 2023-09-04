@@ -1,6 +1,7 @@
 require("dotenv").config();
 const moment = require("moment");
 const roomTypeModel = require("../../models/Rooms/roomTypeModel");
+const ratetype = require("../../models/Rates/rateType");
 const property = require("../../models/Property/propertySetupModel")
 const amenitiesId = require("../../models/Property/amenities")
 const apiname = require('../../models/Users/apiHittingArray')
@@ -11,10 +12,11 @@ const iv = process.env.iv;
 module.exports = async (req, res) => {
   try {
     //const formattedTimestamp = moment().format("YYYY-MM-DD HH:mm:ss");
-    const roomTypeId  = roomTypeModel.findOne({roomTypeId : req.params.roomTypeId})
+    const roomTypeid  = await roomTypeModel.findOne({roomTypeId : req.params.roomTypeId})
+    const {roomTypeId} = roomTypeid
 
 
-    const data = new roomTypeModel({
+    const data = new ratetype({
         roomTypeId : roomTypeId,
         rateType : req.body.rateType,
         rateSortKey : req.body.rateSortKey,
@@ -39,6 +41,8 @@ module.exports = async (req, res) => {
 
 
     await data.save()
+
+    console.log(data)
 
     await apiname.updateOne(
       { userId: data.userId },

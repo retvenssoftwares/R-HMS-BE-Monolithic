@@ -113,6 +113,8 @@ exports.resetPassword = async (req, res) => {
                   {
                     apiname: "ResetPassword",
                     role : linkData.role,
+                    deviceType : req.body.deviceType,
+                    ipaddress : req.body.ipaddress,
                     timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
     
                   }

@@ -3,10 +3,10 @@ var randomstring = require("randomstring");
 
 const roomTypeSchema = new mongoose.Schema({
 //   userId: { type: String, required: true, unique: true },
-  propertyId: { type: String, default: "", unique: true },
+  propertyId: { type: String, default: ""},
   roomTypeId: { type: String, default: randomstring.generate(10) },
   roomTypeSortKey: { type: String, default: "" },
-  roomTypeName: { type: String, required: true, default: "" },
+  roomTypeName: { type: String, required: false, default: "" },
   baseAdult: { type: Number, required: false, default: 0 },
   baseChild: { type: Number, required: false, default: 0 },
   maxChild: { type: Number, required: false, default: 0 },
@@ -47,7 +47,7 @@ const roomTypeSchema = new mongoose.Schema({
   addedBy: { type: String, default: "" },
   modifiedBy: [{ modifiedBy: { type: String, default: "" } }],
   modifiedDate: [{ modifiedDate: { type: String, default: "" } }],
-  timeStamp: { type: String },
+  timeStamp: { type: String, default: "" },
 });
 
 const roomTypeModel = mongoose.model("roomType", roomTypeSchema);

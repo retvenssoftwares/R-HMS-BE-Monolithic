@@ -20,6 +20,17 @@ const userLoginRouter = require('./routers/Users/userLoginRouter')
 //property routers
 const propertyAdd = require('./routers/Property/addPropertyRouter')
 
+//roomType
+const roomType = require('../R-HMS-BE-Monolithic/routers/Rooms/roomTypeRouter')
+
+// rateType
+
+const rateType = require('../R-HMS-BE-Monolithic/routers/Rates/rateTypeRouter')
+
+//rate plan
+
+const ratePlan = require('../R-HMS-BE-Monolithic/routers/Rates/ratePlanRouter')
+
 
 // hotel and employee router middleware
 app.use(hotelEmployeeRouter)
@@ -30,6 +41,15 @@ app.use(userLoginRouter)
 
 //property routers middleware
 app.use(propertyAdd)
+
+//middelware of room
+app.use(roomType)
+
+//middelware of rate type
+app.use(rateType)
+
+//middelware of rate plan
+app.use(ratePlan)
 
 // Middleware to set custom headers
 app.use((req, res, next) => {

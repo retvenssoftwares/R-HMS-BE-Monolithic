@@ -23,6 +23,8 @@ const registerSchema = new mongoose.Schema({
 
   propertyType: { type: String, default: "", required: false },
 
+  propertyAuthCode :{type: String, default: "", required: true },
+
   mobile: { type: String, default: "", required: false },
 
   deviceType: {

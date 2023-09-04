@@ -36,22 +36,22 @@ const rateTypeSchema = new mongoose.Schema({
 
   addedBy: {type: String, default: "", required: false },
 
-  modifiedBy: {modifiedBy:{type: String, default: "", required: false }},
+  modifiedBy: [{modifiedBy:{type: String, default: "", required: false }}],
 
-  modifiedDate: {modifiedDate:{type: String, default: "", required: false }},
+  modifiedDate: [{modifiedDate:{type: String, default: "", required: false }}],
 
-  rateTypeAmenities:{
+  rateTypeAmenities:[{
 
     amenityId: {type: String, default: "", required: false },
 
     displayStatus: {type: String, default: ""},
 
-  },
+  }],
 
   timeStamp : { type: String, default: "", required: false }
 
 });
 
 
-const rateplan = mongoose.model("rateType", rateTypeSchema)
-module.exports = rateplan
+const ratetype = mongoose.model("rateType", rateTypeSchema)
+module.exports = ratetype

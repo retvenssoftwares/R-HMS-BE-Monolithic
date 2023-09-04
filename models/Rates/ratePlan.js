@@ -38,9 +38,18 @@ const ratePlanSchema = new mongoose.Schema({
     photo : {type: String, default: "", required: false},
 
     showThisRateTypeToAllSources : {type: String, default: "", required: false},
+
+    addedBy : {type: String, default: "", required: false},
+
+    modifiedBy : [{type: String, default: "", required: false}],
+
+    modifiedDate : [{type : String , default : "" , require : false}],
+
+    timeStamp : {type : String , default :"" , require:false}
+
     
 
-})
+});
 
-const ratePlan = new mongoose.model("ratePlan",ratePlanSchema)
-module.export = ratePlan
+const ratePlan = mongoose.model("ratePlan", ratePlanSchema)
+module.exports = ratePlan 

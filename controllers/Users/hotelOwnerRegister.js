@@ -8,7 +8,7 @@ const iv = process.env.iv;
 
 exports.register = async (req, res) => {
   try {
-    const formattedTimestamp = moment().format("YYYY-MM-DD HH:mm:ss");
+    //const formattedTimestamp = moment().format("YYYY-MM-DD HH:mm:ss");
     const {
       fullName,
       userName,
@@ -24,6 +24,7 @@ exports.register = async (req, res) => {
       osVersion,
       osType,
       hotelName,
+      propertyAuthCode,
       hotelCount,
       deviceType
     } = req.body;
@@ -70,9 +71,10 @@ exports.register = async (req, res) => {
         propertyType,
         mobile,
         deviceType,
+        propertyAuthCode,
         hotelName,
         hotelCount,
-        timeStamp: formattedTimestamp,
+        timeStamp:  new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
       });
 
       await newpass.save();

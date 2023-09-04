@@ -102,10 +102,10 @@ exports.userLogin = async (req, res) => {
             // Reset blockedUntil when login is successful
             await userModel.updateOne({ _id: userProfile._id }, { $set: { blockedUntil: 0, loginAttempts: 0 } });
             const registrationId = crypto.randomBytes(64).toString('hex');
-            
+            const propertyId = req.body.propertyId
             //api hitting details
             await apiname.updateOne(
-                { userId: userProfileId.userId },
+                { propertyId: propertyId },
                 {
                   $push: {
                     apiArray: {
@@ -114,6 +114,7 @@ exports.userLogin = async (req, res) => {
                           apiname: "Login",
                           role : userProfileId.role,
                           timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+                          userId: userId,
                           ipAddress: ipAddress,
                           deviceType: deviceType
                         }
@@ -141,9 +142,10 @@ exports.userLogout = async (req, res) => {
         return res.status(400).json({ message: "Please login again" })
     }
     await userModel.updateOne({ userId: userId }, { $set: { registrationId: '' } });
+    const propertyId = req.body.propertyId
 
     await apiname.updateOne(
-        { userId: userProfile.userId },
+        { propertyId: propertyId },
         {
           $push: {
             apiArray: {
@@ -152,6 +154,7 @@ exports.userLogout = async (req, res) => {
                   apiname: "LogOut",
                   role : userProfile.role,
                   timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+                  userId: userId,
                   deviceType: deviceType ,
                   ipAddress: ipAddress 
                 }

@@ -3,7 +3,7 @@ var randomstring = require("randomstring");
 
 
 const propertySetupSchema = new mongoose.Schema({
-    userId: { type: String, required: false, unique: true },
+    userId: { type: String, required: false },
     propertyId: { type: String, default: randomstring.generate(10) },
     propertySortKey: { type: String, default: '' },
     propertyName: { type: String, required: false, default: '' },

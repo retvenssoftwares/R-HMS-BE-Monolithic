@@ -3,7 +3,7 @@ const AWS = require('aws-sdk');
 const s3 = require('../../utils/url');
 const propertyModel = require('../../models/Property/propertySetupModel')
 const userModel = require('../../models/Users/hotelOwnerRegister');
-const apiLogs = require('../../models/Users/apiHittingArray');
+const apiname = require('../../models/Users/apiHittingArray')
 const amenitiesModel = require('../../models/Property/amenities');
 var randomstring = require("randomstring");
 const multer = require('multer');
@@ -12,177 +12,7 @@ const upload = multer();
 
 const dateObject = new Date();
 
-// console.log(formattedDateTime);
 
-//export module
-// module.exports = async (req, res) => {
-//     try {
-//         //add fields
-//         const userId = req.params.userId
-//         const {
-//             propertyPinCode,
-//             registrationId,
-//             numberOfRooms,
-//             propertySortKey,
-//             propertyName,
-//             propertyWebsiteLink,
-//             propertyAddress,
-//             propertyLocation,
-//             propertyBasicCurrency,
-//             propertyStarCategory,
-//             propertyRatings,
-//             taxName,
-//             roomType,
-//             propertyTaxPercentage,
-//             phoneNo,
-//             email,
-//             propertyDescription,
-//             propertyRegistrationNo,
-//             propertyAmenities,
-//             addedBy,
-//             modifiedBy,
-//             modifiedDate,
-//             socialMedia1,
-//             socialMedia2,
-//             socialMedia3,
-//             propertyState,
-//             propertyCity,
-//             deviceIp,
-//             deviceType,
-//             propertyType,
-//             numberOfProperties, //for hotel chain
-//             propertyChainType, //for hotel chain
-//             propertyChainStarCategory,
-//             hotelBasicCurrency,
-//             propertyLogo,
-//             propertyImages
-//         } = req.body
-
-//         let logoUrl
-
-//         // Upload the file to DigitalOcean Spaces if a file has been selected
-//         if (req.file) {
-//           const params = {
-//             Bucket: 'rown-space-bucket/propertyLogo',
-//             Key: req.file.originalname,
-//             Body: req.file.buffer,
-//             ContentType: req.file.mimetype,
-//             ACL: 'public-read'
-//           };
-//           await s3.upload(params).promise();
-//           logoUrl = `https://rown-space-bucket.nyc3.digitaloceanspaces.com/propertyLogo/${req.file.originalname}`;
-//         }
-
-//         const propertyData = await Promise.all(req.files.map(async (file) => {
-//             const params = {
-//               Bucket: 'rown-space-bucket/propertyImages',
-//               Key: file.originalname,
-//               Body: file.buffer,
-//               ContentType: file.mimetype,
-//               ACL: 'public-read'
-//             };
-//             await s3.upload(params).promise();
-//             return { propertyImage: `https://rown-space-bucket.nyc3.digitaloceanspaces.com/propertyImages/${file.originalname}` };
-//           }));
-
-//           // Add current date to each media object
-//           const imageWithStatus = propertyData.map((mediaObj) => {
-//             return { ...mediaObj, propertyImageId: randomstring.generate(10) , displayStatus: '1', };
-//           });    
-
-//         //find user
-//         const getUser = await userModel.findOne({ userId: userId })
-//         let userRegId = getUser.registrationId
-//         // console.log(userRegId)
-//         if (userRegId !== registrationId || req.body.registrationId === undefined) {
-//             return res.status(400).json({ message: 'Invalid request' })
-//         }
-
-//         const options = {
-//             year: 'numeric',
-//             month: '2-digit',
-//             day: '2-digit',
-//             hour: '2-digit',
-//             minute: '2-digit',
-//             second: '2-digit',
-//             timeZone: "Asia/Kolkata"
-//         };
-
-//         const formattedDateTime = dateObject.toLocaleString('en-IN', options);
-
-//         //create record
-//         const addProperty = new propertyModel({
-//             userId,
-//             propertyPinCode: propertyPinCode,
-//             propertySortKey: propertySortKey,
-//             propertyName: propertyName,
-//             propertyWebsiteLink: propertyWebsiteLink,
-//             propertyAddress: propertyAddress,
-//             propertyLocation: propertyLocation,
-//             propertyBasicCurrency: propertyBasicCurrency,
-//             propertyStarCategory: propertyStarCategory,
-//             numberOfRooms: numberOfRooms,
-//             timeStamp: formattedDateTime,
-//             propertyRatings: propertyRatings,
-//             taxName: taxName,
-//             roomType: roomType,
-//             propertyTaxPercentage: propertyTaxPercentage,
-//             phoneNo: phoneNo,
-//             email: email,
-//             propertyDescription: propertyDescription,
-//             propertyRegistrationNo: propertyRegistrationNo,
-//             propertyAmenities: propertyAmenities,
-//             addedBy: addedBy,
-//             propertyState: propertyState,
-//             propertyCity: propertyCity,
-//             modifiedBy: modifiedBy,
-//             modifiedDate: modifiedDate,
-//             socialMedia1: socialMedia1,
-//             socialMedia2: socialMedia2,
-//             socialMedia3: socialMedia3,
-//             propertyType: propertyType,
-//             propertyImages: imageWithStatus,
-//             propertyLogo: logoUrl,
-//             numberOfProperties: numberOfProperties, //for hotel chain
-//             propertyChainType: propertyChainType, //for hotel chain
-//             propertyChainStarCategory: propertyChainStarCategory,
-//             hotelBasicCurrency: hotelBasicCurrency
-//         });
-
-//         //save record
-//         const addedProperty = await addProperty.save();
-//         if (addedProperty) {
-//             await apiLogs.updateOne(
-//                 { userId: getUser.userId },
-//                 {
-//                     $push: {
-//                         apiArray: {
-//                             $each: [
-//                                 {
-//                                     apiname: "Add property",
-//                                     role: getUser.role,
-//                                     timestamp: formattedDateTime,
-//                                     deviceIp: deviceIp,
-//                                     deviceType: deviceType
-//                                 }
-//                             ],
-//                             $position: 0
-//                         }
-//                     }
-//                 }
-//             );
-
-//             return res.status(200).json({ message: "Property added successfully" })
-//         } else {
-//             res.status(400).json({ message: "Failed to add property" })
-//         }
-
-//         //catch error
-//     } catch (err) {
-//         console.log(err)
-//         res.status(500).json({ message: 'Internal server error' })
-//     }
-// }
 
 const uploadPropertyImages = async (req, res, next) => {
     upload.fields([
@@ -233,6 +63,7 @@ const uploadPropertyImages = async (req, res, next) => {
 
             // Add other fields
             const userId = req.params.userId;
+            const registrationId = req.body.registrationId
             const {
                 propertyPinCode,
                 numberOfRooms,
@@ -269,8 +100,6 @@ const uploadPropertyImages = async (req, res, next) => {
                 hotelBasicCurrency
             } = req.body;
 
-            const registrationId = req.body.registrationId
-
 
 
             // Create a formatted timestamp
@@ -282,20 +111,20 @@ const uploadPropertyImages = async (req, res, next) => {
                 minute: '2-digit',
                 second: '2-digit',
                 timeZone: "Asia/Kolkata"
-            };            
+            };
 
             const formattedDateTime = new Date().toLocaleString('en-IN', options);
 
             //find user
             const getUser = await userModel.findOne({ userId: userId })
-            if(!getUser) {
-                return res.status(404).json({message: 'User not found'})
+            if (!getUser) {
+                return res.status(404).json({ message: 'User not found' })
             }
             let userRegId = getUser.registrationId
-            console.log(userRegId)
-     
+            // console.log(userRegId)
+
             if (userRegId !== registrationId) {
-                console.log(registrationId)
+                // console.log(registrationId)
                 return res.status(400).json({ message: 'Invalid request' })
             }
 
@@ -338,32 +167,28 @@ const uploadPropertyImages = async (req, res, next) => {
                 hotelBasicCurrency
             });
 
-          
+
 
             // Save the record
             const addedProperty = await addProperty.save();
+            
             if (addedProperty) {
-                await apiLogs.updateOne(
-                    { userId: getUser.userId },
-                    {
-                        $push: {
-                            apiArray: {
-                                $each: [
-                                    {
-                                        apiname: "Add property",
-                                        role: getUser.role,
-                                        timestamp: formattedDateTime,
-                                        ipAddress: ipAddress,
-                                        deviceType: deviceType
-                                    }
-                                ],
-                                $position: 0
-                            }
-                        }
-                    }
-                );
-
-                res.status(200).json({ message: 'Property successfully added' });
+                const api = new apiname({
+                    propertyId: addedProperty.propertyId,
+                    apiArray: [
+                      {
+                        timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+                        role: getUser.role,
+                        apiname: `Add Property`,
+                        ipAddress: ipAddress,
+                        userId: userId,
+                        deviceType: deviceType
+                      },
+                    ],
+                  });
+            
+                  await api.save();
+                  return res.status(200).json({message: "Property added successfully"});
             }
         } catch (error) {
             console.error(error);

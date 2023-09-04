@@ -25,7 +25,6 @@ exports.register = async (req, res) => {
       osType,
       hotelName,
       hotelCount,
-      deviceIp,
       deviceType
     } = req.body;
 
@@ -78,20 +77,26 @@ exports.register = async (req, res) => {
 
       await newpass.save();
 
-      const api = new apiname({
-        userId: newpass.userId,
-        apiArray: [
-          {
-            timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
-            role: newpass.role,
-            apiname: `Registration api`,
-            deviceIp: deviceIp,
-            deviceType: deviceType
-          },
-        ],
-      });
+      // await apiname.updateOne(
+      //   { userId: userProfileId.userId },
+      //   {
+      //     $push: {
+      //       apiArray: {
+      //         $each: [
+      //           {
+      //             apiname: "Login",
+      //             role : userProfileId.role,
+      //             timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+      //             ipAddress: ipAddress,
+      //             deviceType: deviceType
+      //           }
+      //         ],
+      //         $position: 0
+      //       }
+      //     }
+      //   }
+      // );
 
-      await api.save();
 
       return res.status(200).json({ message: "User Register Successfully" });
     } else {
@@ -113,7 +118,8 @@ exports.sessionOut = async (req, res) => {
 
   try {
     const { userId } = req.params;
-    const { deviceIp,
+    const propertyId = req.body.propertyId;
+    const { ipAddress,
       deviceType } = req.body;
     const data = await hotelAndEmployee.findOne({ userId });
 
@@ -127,16 +133,17 @@ exports.sessionOut = async (req, res) => {
     // api hitting details
 
     await apiname.updateOne(
-      { userId: data.userId },
+      { propertyId: propertyId },
       {
         $push: {
           apiArray: {
             $each: [
               {
                 apiname: "SessionOut",
-                role: newpass.role,
+                role: data.role,
                 timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
-                deviceIp: deviceIp,
+                ipAddress: ipAddress,
+                userId: userId,
                 deviceType: deviceType
               }
             ],
@@ -146,7 +153,7 @@ exports.sessionOut = async (req, res) => {
       }
     );
 
-    return res.status(200).json({ message: "your session Time out" });
+    return res.status(200).json({ message: "Your session timed out" });
 
 
   } catch (error) {
@@ -160,6 +167,7 @@ exports.sessionOut = async (req, res) => {
 //session In
 exports.sessionIn = async (req, res) => {
   const hotelAndEmployee = require("../../models/Users/hotelOwnerRegister");
+  const propertyModel = require('../../models/Property/propertySetupModel')
   const apiname = require('../../models/Users/apiHittingArray')
   const crypto = require("crypto");
 
@@ -167,7 +175,9 @@ exports.sessionIn = async (req, res) => {
     const password = req.body.password;
 
     const { userId } = req.params;
-    const { deviceIp,
+    // const userProperty = await propertyModel.findOne({userId})
+    const propertyId = req.body.propertyId
+    const { ipAddress,
       deviceType } = req.body;
     const data = await hotelAndEmployee.findOne({ userId });
     const key = process.env.key;
@@ -192,16 +202,17 @@ exports.sessionIn = async (req, res) => {
 
       // api hitting details
       await apiname.updateOne(
-        { userId: data.userId },
+        { propertyId: propertyId },
         {
           $push: {
             apiArray: {
               $each: [
                 {
                   apiname: "SessionIn",
-                  role: newpass.role,
+                  role: data.role,
                   timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
-                  deviceIp: deviceIp,
+                  ipAddress: ipAddress,
+                  userId: userId,
                   deviceType: deviceType
                 }
               ],
@@ -216,7 +227,7 @@ exports.sessionIn = async (req, res) => {
 
       return res.status(200).json({ message: "Please log in again" });
     } else {
-      return res.status(401).json({ message: "enter valid credentials" });
+      return res.status(401).json({ message: "Enter valid credentials" });
     }
 
   } catch (error) {

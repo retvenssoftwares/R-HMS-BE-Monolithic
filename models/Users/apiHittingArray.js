@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
 const apihitting = new mongoose.Schema({
-    userId: { type: String},
+    propertyId: { type: String},
     apiArray : [{
         apiname : {type : String , default : ""},
         timestamp : {type : String , default : ""},
+        userId: {type: String, default: ''},
         role : {type :String , default : ""},
         deviceType: { type: String, default: ''},
         ipAddress: {type: String, default: ''},

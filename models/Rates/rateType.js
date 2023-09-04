@@ -36,9 +36,9 @@ const rateTypeSchema = new mongoose.Schema({
 
   addedBy: {type: String, default: "", required: false },
 
-  modifiedBy: {type: String, default: "", required: false },
+  modifiedBy: {modifiedBy:{type: String, default: "", required: false }},
 
-  modifiedDate: {type: String, default: "", required: false },
+  modifiedDate: {modifiedDate:{type: String, default: "", required: false }},
 
   rateTypeAmenities:{
 

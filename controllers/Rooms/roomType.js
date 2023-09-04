@@ -1,6 +1,6 @@
 require("dotenv").config();
 const moment = require("moment");
-const hotelAndEmployee = require("../../models/Users/hotelOwnerRegister");
+const roomTypeModel = require("../../models/Rooms/roomTypeModel");
 const apiname = require('../../models/Users/apiHittingArray')
 const crypto = require("crypto");
 
@@ -9,24 +9,8 @@ const iv = process.env.iv;
 exports.register = async (req, res) => {
   try {
     const formattedTimestamp = moment().format("YYYY-MM-DD HH:mm:ss");
-    const {
-      fullName,
-      userName,
-      designation,
-      email,
-      role,
-      password,
-      propertyType,
-      mobile,
-      ipAddress,
-      deviceTypename,
-      location,
-      deviceType,
-      osVersion,
-      osType,
-      hotelName,
-      hotelCount,
-    } = req.body;
+    const data = new roomTypeModel(req.body);
+    await data.save()
 
     const username = await hotelAndEmployee.findOne({userName:userName})
 

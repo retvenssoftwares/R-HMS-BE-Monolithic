@@ -17,20 +17,13 @@ const registerSchema = new mongoose.Schema({
 
   role: { type: String, default: "", required: true },
 
-  hotelOwnerPic: { type: String, default: "", required: false },
-
   password: [{
     password: { type: String, required: true },
   }],
-    
-  // apiArray :[{
-  //   apiName : { type: String, default: "", required: false },
-  //   timeStamp :{ type: String, default: "", required: false },
-  // }],
 
   propertyType: { type: String, default: "", required: false },
 
-  mobile: { type: String, default: "", required: true },
+  mobile: { type: String, default: "", required: false },
 
   deviceType: {
     ipAddress: { type: String, default: "", required: false },
@@ -46,13 +39,16 @@ const registerSchema = new mongoose.Schema({
 
   hotelName: { type: String, default: "", required: false },
 
-  hotelCount: { type: Number, default: "", required: false },
+  hotelCount: { type: Number, default: 0, required: false },
 
   timeStamp: { type: String, default: "", required: false },
 
-  registrationId :{ type: String, default: "", required: false },
+  registrationId: { type: String, default: ''},
 
-  link : { type: String, default: "", required: false }
+  blockedUntil: {type: Number, default: 0},
+  
+
+  loginAttempts: {type: Number, default: 0}
 });
 
 

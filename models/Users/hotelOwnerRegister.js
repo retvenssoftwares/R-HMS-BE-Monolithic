@@ -5,15 +5,17 @@ const randomestring = require("randomstring");
 const registerSchema = new mongoose.Schema({
   userId: { type: String, default: randomestring.generate(10) },
 
-  fullName: { type: String, default: "", required: false },
+  fullName: { type: String, default: "", required: true },
+
+  DOB :{ type: String, default: "", required: false },
 
   userName: { type: String, required: true, unique: true },
 
   designation: { type: String, default: "", required: false },
 
-  email: { type: String, default: "", required: false },
+  email: { type: String, default: "", required: true },
 
-  role: { type: String, default: "", required: false },
+  role: { type: String, default: "", required: true },
 
   password: [{
     password: { type: String, required: true },
@@ -37,7 +39,7 @@ const registerSchema = new mongoose.Schema({
 
   hotelName: { type: String, default: "", required: false },
 
-  hotelCount: { type: Number, default: "", required: false },
+  hotelCount: { type: Number, default: 0, required: false },
 
   timeStamp: { type: String, default: "", required: false },
 

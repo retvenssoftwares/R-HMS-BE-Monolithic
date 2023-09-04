@@ -4,6 +4,11 @@ const randomestring = require("randomstring");
 
 const amenitySchema = new mongoose.Schema({
 
+  propertyId :{
+    type :String,
+    default :""
+  },
+
   amenityId: { type: String, default: randomestring.generate(10) },
 
   amenityName: { type: String, default: "", required: false },
@@ -17,6 +22,12 @@ const amenitySchema = new mongoose.Schema({
   amenityIcon: { type: String, default: "", required: false },
 
   amenitySortCode : { type: String, default: "", required: false },
+
+  createdBy : { type: String, default: "", required: false },
+
+  modifiedBy : { type: String, default: "", required: false },
+
+  modifiedDate : { type: String, default: "", required: false }
 
 
 });

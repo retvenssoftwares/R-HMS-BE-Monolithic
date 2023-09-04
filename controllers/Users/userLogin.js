@@ -1,6 +1,7 @@
 require('dotenv').config()
 const crypto = require('crypto')
 const userModel = require('../../models/Users/hotelOwnerRegister')
+const apiname = require('../../models/Users/apiHittingArray')
 const key = process.env.key
 const IV_LENGTH = process.env.iv
 
@@ -51,22 +52,22 @@ exports.userLogin = async (req, res) => {
     }
 
     const decryptedPassword = decryptPassword(userPassword)
-    console.log(decryptedPassword)
+    //console.log(decryptedPassword)
 
     const dateObject = new Date();
     const hours = dateObject.getHours();
-    console.log("hours:", hours);
+    ////console.log("hours:", hours);
 
     // Add three hours to the current time
     let blockHours = (hours + 3) % 24;
-    console.log(blockHours);
+    //console.log(blockHours);
 
     // Assuming userProfile.blockedUntil is the field that stores the time until which the user is blocked
     const blockedUntil = userProfile.blockedUntil;
-    console.log("blocked until:", blockedUntil)
-    console.log("blockhours:", blockHours)
+    //console.log("blocked until:", blockedUntil)
+    //console.log("blockhours:", blockHours)
     const count = userProfile.loginAttempts;
-    console.log("count", count)
+    //console.log("count", count)
 
     // Get the current time in hours
     const currentHours = new Date().getHours();
@@ -95,6 +96,27 @@ exports.userLogin = async (req, res) => {
             // Reset blockedUntil when login is successful
             await userModel.updateOne({ _id: userProfile._id }, { $set: { blockedUntil: 0, loginAttempts: 0 } });
             const registrationId = crypto.randomBytes(64).toString('hex');
+            
+            //api hitting details
+            await apiname.updateOne(
+                { userId: userProfileId.userId },
+                {
+                  $push: {
+                    apiArray: {
+                      $each: [
+                        {
+                          apiname: "Login",
+                          role : userProfileId.role,
+                          timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+          
+                        }
+                      ],
+                      $position: 0
+                    }
+                  }
+                }
+              );
+
             await userModel.updateOne({ userId: userId }, { $set: { registrationId: registrationId } });
             res.status(200).json({ message: 'Login successful', registrationId: registrationId });
         }
@@ -111,5 +133,25 @@ exports.userLogout = async (req, res) => {
         return res.status(400).json({ message: "Please login again" })
     }
     await userModel.updateOne({ userId: userId }, { $set: { registrationId: '' } });
+
+    await apiname.updateOne(
+        { userId: userProfile.userId },
+        {
+          $push: {
+            apiArray: {
+              $each: [
+                {
+                  apiname: "LogOut",
+                  role : userProfile.role,
+                  timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+  
+                }
+              ],
+              $position: 0
+            }
+          }
+        }
+      );
+
     res.status(200).json({ message: 'Logged out successfully' })
 }

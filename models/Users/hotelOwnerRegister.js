@@ -47,6 +47,7 @@ const registerSchema = new mongoose.Schema({
 
   blockedUntil: {type: Number, default: 0},
   
+  propertyAuthCode: {type: String, required: true, default: ''},
 
   loginAttempts: {type: Number, default: 0}
 });

@@ -1,5 +1,8 @@
 //import express for post route
 const express = require('express');
+const multer = require('multer');
+const { Router } = require('express');
+const upload = multer();
 //import property add controller
 const propertyAddController = require('../../controllers/Property/addProperty');
 

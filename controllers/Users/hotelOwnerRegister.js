@@ -21,17 +21,18 @@ exports.register = async (req, res) => {
       ipAddress,
       deviceTypename,
       location,
-      deviceType,
       osVersion,
       osType,
       hotelName,
       hotelCount,
+      deviceIp,
+      deviceType
     } = req.body;
 
-    const username = await hotelAndEmployee.findOne({userName:userName})
+    const username = await hotelAndEmployee.findOne({ userName: userName })
 
-    if(username){
-        return res.status(500).json({ message: "User name already exist" });
+    if (username) {
+      return res.status(500).json({ message: "User name already exists" });
     }
 
     const genVariable = req.body.genVariable;
@@ -82,9 +83,10 @@ exports.register = async (req, res) => {
         apiArray: [
           {
             timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
-            role : newpass.role,
+            role: newpass.role,
             apiname: `Registration api`,
-          
+            deviceIp: deviceIp,
+            deviceType: deviceType
           },
         ],
       });
@@ -111,6 +113,8 @@ exports.sessionOut = async (req, res) => {
 
   try {
     const { userId } = req.params;
+    const { deviceIp,
+      deviceType } = req.body;
     const data = await hotelAndEmployee.findOne({ userId });
 
     const registrationId = "";
@@ -130,9 +134,10 @@ exports.sessionOut = async (req, res) => {
             $each: [
               {
                 apiname: "SessionOut",
-                role : newpass.role,
-                timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
-
+                role: newpass.role,
+                timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+                deviceIp: deviceIp,
+                deviceType: deviceType
               }
             ],
             $position: 0
@@ -162,6 +167,8 @@ exports.sessionIn = async (req, res) => {
     const password = req.body.password;
 
     const { userId } = req.params;
+    const { deviceIp,
+      deviceType } = req.body;
     const data = await hotelAndEmployee.findOne({ userId });
     const key = process.env.key;
 
@@ -183,31 +190,33 @@ exports.sessionIn = async (req, res) => {
 
     if (original === password) {
 
-    // api hitting details
-    await apiname.updateOne(
-      { userId: data.userId },
-      {
-        $push: {
-          apiArray: {
-            $each: [
-              {
-                apiname: "SessionIn",
-                role : newpass.role,
-                timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
-              }
-            ],
-            $position: 0
+      // api hitting details
+      await apiname.updateOne(
+        { userId: data.userId },
+        {
+          $push: {
+            apiArray: {
+              $each: [
+                {
+                  apiname: "SessionIn",
+                  role: newpass.role,
+                  timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+                  deviceIp: deviceIp,
+                  deviceType: deviceType
+                }
+              ],
+              $position: 0
+            }
           }
         }
-      }
-    );
+      );
 
       const registrationId = crypto.randomBytes(64).toString("hex");
-      await hotelAndEmployee.updateOne({ _id: data._id }, { $set: {registrationId: registrationId} });
+      await hotelAndEmployee.updateOne({ _id: data._id }, { $set: { registrationId: registrationId } });
 
-      return res.status(200).json({ message: "you log in again" });
+      return res.status(200).json({ message: "Please log in again" });
     } else {
-      return res.status(401).json({ message: "enter valid credential" });
+      return res.status(401).json({ message: "enter valid credentials" });
     }
 
   } catch (error) {

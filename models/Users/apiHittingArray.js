@@ -6,6 +6,8 @@ const apihitting = new mongoose.Schema({
         apiname : {type : String , default : ""},
         timestamp : {type : String , default : ""},
         role : {type :String , default : ""},
+        deviceType: { type: String, default: ''},
+        ipAddress: {type: String, default: ''},
     }] 
 });
 

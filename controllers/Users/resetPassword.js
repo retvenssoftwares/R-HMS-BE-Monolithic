@@ -33,7 +33,7 @@ async function sendResetLinkToMail(fullName, email, link) {
       if (err) {
         console.log(err);
       } else {
-        console.log("mail has been send");
+        console.log("mail has been sent");
       }
     });
   } catch (err) {
@@ -62,11 +62,11 @@ exports.forgetpassword = async (req, res) => {
         msg: "pls check your email to reset the password",
       });
     } else {
-      res.status(400).send("email not found");
+      res.status(400).json({message: "email not found"});
     }
   } catch (err) {
     console.log(err);
-    res.status(400).send("somting incorrect");
+    res.status(400).json({message: "something incorrect"});
   }
 };
 
@@ -131,10 +131,10 @@ exports.resetPassword = async (req, res) => {
         return res.status(400).send("Invalid password data");
       }
     }else{
-      return res.status(400).send("your new and conform password did not matches")
+      return res.status(400).send("Passwords do not match")
     }
     
   } else {
-    return res.status(400).send("link is expire");
+    return res.status(400).send("link is expired");
   }
 };

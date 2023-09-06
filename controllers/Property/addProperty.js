@@ -64,6 +64,7 @@ const uploadPropertyImages = async (req, res, next) => {
             // Add other fields
             const userId = req.params.userId;
             const registrationId = req.body.registrationId
+            const reqType = req.body.reqType
             const {
                 propertyPinCode,
                 numberOfRooms,
@@ -124,11 +125,8 @@ const uploadPropertyImages = async (req, res, next) => {
             let userRegId = getUser.registrationId
             // console.log(userRegId)
 
-            if (userRegId !== registrationId) {
-                // console.log(registrationId)
-                return res.status(400).json({ message: 'Invalid request' })
-            }
-
+            if( reqType === 'Request for a demo' || userRegId === registrationId){
+                
             // Create and save the property record
             const addProperty = new propertyModel({
                 userId,
@@ -166,7 +164,7 @@ const uploadPropertyImages = async (req, res, next) => {
                 numberOfProperties,
                 propertyChainType,
                 propertyAuthCode: randomstring.generate({
-                    charset: ['numeric'],
+                    charset: 'numeric',
                     length: 5
                 }),
                 propertyChainStarCategory,
@@ -193,10 +191,15 @@ const uploadPropertyImages = async (req, res, next) => {
             //         ],
             //     });
 
-            //     await api.save();
-                
-            //}
+            // //     await api.save();                
+            // }
             return res.status(200).json({ message: "Property added successfully" });
+            }
+            else if (userRegId !== registrationId) {
+                // console.log(registrationId)
+                return res.status(400).json({ message: 'Invalid request' })
+            }
+
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Server error' });

@@ -15,7 +15,7 @@ const registerSchema = new mongoose.Schema({
 
   email: { type: String, default: "", required: true },
 
-  role: { type: String, default: "", required: true },
+  role: { type: String, default: "", required: false },
 
   userSortKey: { type: String, default: '' },
 

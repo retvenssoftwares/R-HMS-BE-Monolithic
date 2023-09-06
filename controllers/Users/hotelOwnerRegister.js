@@ -31,6 +31,7 @@ exports.register = async (req, res) => {
       hotelCount,
       deviceType
     } = req.body;
+    
 
     const username = await hotelAndEmployee.findOne({ userName: userName })
 
@@ -63,7 +64,8 @@ exports.register = async (req, res) => {
 
     // const findRole = await roleModel.findOne({roleId: req.body.roleId})
     // const {roleName} = findRole;
-    if (genVariable === generatedVariable && role === 'Admin') {
+   
+    if (genVariable === generatedVariable && (role === 'Admin' || role === 'admin')) {
       const encryptedPassword = encrypt(password);
       const adminPermissions = await permissionsModel.find({});
 
@@ -73,7 +75,7 @@ exports.register = async (req, res) => {
         userName,
         designation,
         email,
-        role,
+        role: 'Admin',
         password: { password: encryptedPassword },
         deviceType: { ipAddress, deviceTypename, location, osVersion, osType },
         propertyType,

@@ -67,7 +67,7 @@ const registerSchema = new mongoose.Schema({
 
   loginAttempts: { type: Number, default: 0 },
 
-  propertyId: { type: String, default: randomstring.generate(10) },
+  propertyId: { type: String, default: '' },
 
 
 });

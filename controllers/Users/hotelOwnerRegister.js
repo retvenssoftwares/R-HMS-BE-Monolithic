@@ -5,6 +5,7 @@ const apiname = require('../../models/Users/apiHittingArray')
 const roleModel = require('../../models/Role/role')
 const permissionsModel = require('../../models/Permissions/permissions');
 const crypto = require("crypto");
+const randomstring = require("randomstring");
 
 const iv = process.env.iv;
 
@@ -22,6 +23,7 @@ exports.register = async (req, res) => {
       mobile,
       ipAddress,
       deviceTypename,
+      propertyId,
       location,
       permissions,
       osVersion,
@@ -83,6 +85,7 @@ exports.register = async (req, res) => {
         deviceType,
         propertyAuthCode,
         hotelName,
+        propertyId: randomstring.generate(10),
         hotelCount,
         permissions: adminPermissions,
         timeStamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),

@@ -21,8 +21,11 @@ exports.userLogin = async (req, res) => {
   //   if (req.body.propertyAuthCode === undefined) {
   //     return res.status(400).json({ message: 'Please enter property auth code' })
   // }
-
-    if ((!userProfile) || (propertyAuthCode !== userProfile.propertyAuthCode)) {
+  const matchingPermission = userProfile.hotelViewPermissions.find(permission => permission.propertyAuthCode === propertyAuthCode);
+  if(!matchingPermission){
+    return res.status(404).json({ message: "Invalid credentials" });
+  }  
+  if (!userProfile) {
         return res.status(404).json({ message: "Invalid credentials" });
     }
 

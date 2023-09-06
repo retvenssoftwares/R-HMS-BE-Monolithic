@@ -38,7 +38,7 @@ const propertySetupSchema = new mongoose.Schema({
         propertyImage: { type: String, default: '' },
         displayStatus: { type: String, default: '1' }
     }],
-    propertyRegistrationNo: { type: String, required: false, unique: true, default: '' },
+    propertyRegistrationNo: { type: String, required: false, unique: false, default: '' },
     propertyType: { type: String, default: '' },
     numberOfProperties: { type: Number, default: 0 }, //for hotel chain
     propertyChainType: { type: String, default: '' }, //for hotel chain

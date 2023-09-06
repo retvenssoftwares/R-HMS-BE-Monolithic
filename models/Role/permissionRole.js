@@ -3,7 +3,9 @@ const randomstring = require("randomstring")
 
 const roleSchmea = new mongoose.Schema({
     roleName : {type : String , default :""},
-    permissions :[{
+    permissionTypeName : {type : String , default :""},
+    permissionShortKey : {type : String , default :""},
+    permissionsName :[{
         subPermissionId : {type : String, default : ""},
         subPermission : {type : String , default : ""},
     }]

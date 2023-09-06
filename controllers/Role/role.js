@@ -21,23 +21,32 @@ exports.addRoleName = async (req,res) =>{
 }
 
 
-
 exports.addpermissionToRole = async (req, res) => {
   try {
-    const { roleId, selectedSubPermissionsId } = req.body;
+    const {roleId, selectedSubPermissionsId} = req.body;
 
     // Find the permissions data for the selected subPermissions
     const permissionsData = await permissionsSchema.find({
       'permissionName.subPermissionId': { $in: selectedSubPermissionsId }
     });
 
+
+    const permissionTypeName = permissionsData[0].permissionTypeName;
+    const permissionShortKey = permissionsData[0].permissionShortKey;
+
+
     const rolename = await role.findOne({roleId:roleId})
+    if(!rolename){
+      return res.status(200).json({ message: "Role added successfully" });
+    }
     const {roleName} = rolename
 
     // Create a new role object with roleName and selected permissions array
     const roledata = new permissionRoleSchema({
       roleName:roleName,
-      permissions: selectedSubPermissionsId.map((subPermissionId) => {
+      permissionTypeName : permissionTypeName,
+      permissionShortKey : permissionShortKey,
+      permissionsName: selectedSubPermissionsId.map((subPermissionId) => {
         const permission = permissionsData.find((permission) => permission.permissionName.some((sub) => sub.subPermissionId === subPermissionId));
         return {
           subPermissionId,
@@ -45,9 +54,6 @@ exports.addpermissionToRole = async (req, res) => {
         };
       }),
     });
-
-    console.log(roledata)
-
 
     await roledata.save();
 

@@ -2,6 +2,7 @@ require("dotenv").config();
 const moment = require("moment");
 const hotelAndEmployee = require("../../models/Users/hotelOwnerRegister");
 const apiname = require('../../models/Users/apiHittingArray')
+const roleModel = require('../../models/Role/role')
 const permissionsModel = require('../../models/Permissions/permissions');
 const crypto = require("crypto");
 
@@ -60,7 +61,8 @@ exports.register = async (req, res) => {
     }
 
 
-
+    // const findRole = await roleModel.findOne({roleId: req.body.roleId})
+    // const {roleName} = findRole;
     if (genVariable === generatedVariable && role === 'Admin') {
       const encryptedPassword = encrypt(password);
       const adminPermissions = await permissionsModel.find({});

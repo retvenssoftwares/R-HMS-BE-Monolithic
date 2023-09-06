@@ -1,6 +1,7 @@
 require("dotenv").config();
 const moment = require("moment");
 const roomTypeModel = require("../../models/Rooms/roomTypeModel");
+const user = require('../../models/Users/hotelOwnerRegister')
 const ratetype = require("../../models/Rates/rateType");
 const property = require("../../models/Property/propertySetupModel")
 const amenitiesId = require("../../models/Property/amenities")
@@ -13,7 +14,8 @@ module.exports = async (req, res) => {
   try {
     //const formattedTimestamp = moment().format("YYYY-MM-DD HH:mm:ss");
     const roomTypeid  = await roomTypeModel.findOne({roomTypeId : req.params.roomTypeId})
-    const {roomTypeId} = roomTypeid
+    const userType = await user.findOne({userId:req.body.userId})
+    const {roomTypeId , propertyId} = roomTypeid
 
 
     const data = new ratetype({
@@ -40,19 +42,20 @@ module.exports = async (req, res) => {
     });
 
 
-    await data.save()
+    await data.save()    
+  
 
-    console.log(data)
 
     await apiname.updateOne(
-      { userId: data.userId },
+      { propertyId: propertyId},
       {
         $push: {
           apiArray: {
             $each: [
               {
+                userId : userType.userId,
                 apiname: "rateType added",
-                role : data.role,
+                role : userType.role,
                 deviceType : req.body.deviceType,
                 ipaddress : req.body.ipaddress,
                 timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })

@@ -3,7 +3,7 @@ const randomstring = require("randomstring");
 
 const permissions = new mongoose.Schema({
   
-    permissionsId : {type : String , default:""},
+    permissionsId : {type : String , default:randomstring.generate(10)},
     permissionTypeName : {type : String , default :""},
     permissionShortKey : {type : String , default :""},
 

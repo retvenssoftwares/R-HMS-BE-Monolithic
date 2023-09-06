@@ -31,6 +31,14 @@ const rateType = require('../R-HMS-BE-Monolithic/routers/Rates/rateTypeRouter')
 
 const ratePlan = require('../R-HMS-BE-Monolithic/routers/Rates/ratePlanRouter')
 
+// userRole
+
+const userRole = require('../R-HMS-BE-Monolithic/routers/Role/roleRouter')
+
+// user Permissions
+
+const permission = require('../R-HMS-BE-Monolithic/routers/Permissions/permission')
+
 
 // hotel and employee router middleware
 app.use(hotelEmployeeRouter)
@@ -50,6 +58,12 @@ app.use(rateType)
 
 //middelware of rate plan
 app.use(ratePlan)
+
+// userRole middelware
+app.use(userRole)
+
+// permissons middleware
+app.use(permission)
 
 // Middleware to set custom headers
 app.use((req, res, next) => {

@@ -93,6 +93,7 @@ const uploadPropertyImages = async (req, res, next) => {
                 propertyCity,
                 ipAddress,
                 deviceType,
+                propertyId,
                 propertyType,
                 numberOfProperties,
                 propertyChainType,
@@ -138,6 +139,7 @@ const uploadPropertyImages = async (req, res, next) => {
                 propertyAddress,
                 propertyLocation,
                 propertyBasicCurrency,
+                propertyId,
                 propertyStarCategory,
                 numberOfRooms,
                 timeStamp: formattedDateTime,
@@ -163,6 +165,10 @@ const uploadPropertyImages = async (req, res, next) => {
                 propertyLogo,
                 numberOfProperties,
                 propertyChainType,
+                propertyAuthCode: randomstring.generate({
+                    charset: ['numeric'],
+                    length: 5
+                }),
                 propertyChainStarCategory,
                 hotelBasicCurrency
             });
@@ -171,24 +177,24 @@ const uploadPropertyImages = async (req, res, next) => {
 
             // Save the record
             const addedProperty = await addProperty.save();
-            
+
             if (addedProperty) {
                 const api = new apiname({
                     propertyId: addedProperty.propertyId,
                     apiArray: [
-                      {
-                        timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
-                        role: getUser.role,
-                        apiname: `Add Property`,
-                        ipAddress: ipAddress,
-                        userId: userId,
-                        deviceType: deviceType
-                      },
+                        {
+                            timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+                            role: getUser.role,
+                            apiname: `Add Property`,
+                            ipAddress: ipAddress,
+                            userId: userId,
+                            deviceType: deviceType
+                        },
                     ],
-                  });
-            
-                  await api.save();
-                  return res.status(200).json({message: "Property added successfully"});
+                });
+
+                await api.save();
+                return res.status(200).json({ message: "Property added successfully" });
             }
         } catch (error) {
             console.error(error);

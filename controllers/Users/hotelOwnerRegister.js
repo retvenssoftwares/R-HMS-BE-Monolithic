@@ -2,6 +2,8 @@ require("dotenv").config();
 const moment = require("moment");
 const hotelAndEmployee = require("../../models/Users/hotelOwnerRegister");
 const apiname = require('../../models/Users/apiHittingArray')
+const roleModel = require('../../models/Role/role')
+const permissionsModel = require('../../models/Permissions/permissions');
 const crypto = require("crypto");
 
 const iv = process.env.iv;
@@ -21,6 +23,7 @@ exports.register = async (req, res) => {
       ipAddress,
       deviceTypename,
       location,
+      permissions,
       osVersion,
       osType,
       hotelName,
@@ -57,8 +60,13 @@ exports.register = async (req, res) => {
       return encrypted;
     }
 
-    if (genVariable === generatedVariable) {
+
+    // const findRole = await roleModel.findOne({roleId: req.body.roleId})
+    // const {roleName} = findRole;
+    if (genVariable === generatedVariable && role === 'Admin') {
       const encryptedPassword = encrypt(password);
+      const adminPermissions = await permissionsModel.find({});
+
 
       const newpass = new hotelAndEmployee({
         fullName,
@@ -74,9 +82,11 @@ exports.register = async (req, res) => {
         propertyAuthCode,
         hotelName,
         hotelCount,
-        timeStamp:  new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+        permissions: adminPermissions,
+        timeStamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
       });
 
+      // newpass.permissions.push(adminPermissions)
       await newpass.save();
 
       // await apiname.updateOne(
@@ -100,8 +110,32 @@ exports.register = async (req, res) => {
       // );
 
 
-      return res.status(200).json({ message: "User Register Successfully" });
-    } else {
+      return res.status(200).json({ message: "User Registered Successfully" });
+    } else if (genVariable === generatedVariable) {
+      const encryptedPassword = encrypt(password);
+
+      const newpass = new hotelAndEmployee({
+        fullName,
+        userName,
+        designation,
+        email,
+        role,
+        password: { password: encryptedPassword },
+        deviceType: { ipAddress, deviceTypename, location, osVersion, osType },
+        propertyType,
+        mobile,
+        deviceType,
+        propertyAuthCode,
+        hotelName,
+        hotelCount,
+        permissions,
+        timeStamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+      });
+
+      await newpass.save();
+      return res.status(200).json({ message: "User Registered Successfully" });
+    }
+    else {
       res.status(500).json({ message: "enter valid details" });
     }
   } catch (error) {

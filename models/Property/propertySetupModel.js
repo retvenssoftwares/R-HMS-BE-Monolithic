@@ -4,10 +4,11 @@ var randomstring = require("randomstring");
 
 const propertySetupSchema = new mongoose.Schema({
     userId: { type: String, required: false },
-    propertyId: { type: String, default: randomstring.generate(10) },
+    propertyId: { type: String, default: '' },
     propertySortKey: { type: String, default: '' },
     propertyName: { type: String, required: false, default: '' },
     propertyWebsiteLink: { type: String, required: false, default: '' },
+    propertyAuthCode :{type: String, default: "", required: true, unique: true },
     propertyAddress: { type: String, required: false, default: '' },
     propertyLocation: { type: String, default: '' },
     propertyRatings: [{

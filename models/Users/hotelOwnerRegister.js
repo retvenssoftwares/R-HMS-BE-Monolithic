@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 
-const randomestring = require("randomstring");
+const randomstring = require("randomstring");
 
 const registerSchema = new mongoose.Schema({
-  userId: { type: String, default: randomestring.generate(10) },
+  userId: { type: String, default: randomstring.generate(10) },
 
   fullName: { type: String, default: "", required: true },
 
-  DOB :{ type: String, default: "", required: false },
+  DOB: { type: String, default: "", required: false },
 
   userName: { type: String, required: true, unique: true },
 
@@ -17,13 +17,29 @@ const registerSchema = new mongoose.Schema({
 
   role: { type: String, default: "", required: true },
 
+  userSortKey: { type: String, default: '' },
+
   password: [{
     password: { type: String, required: true },
   }],
 
   propertyType: { type: String, default: "", required: false },
 
-  propertyAuthCode :{type: String, default: "", required: true },
+  permissions: [{
+    permissionsId: { type: String, default: '' },
+    permissionTypeName: {type: String, default: ''},
+    permissionShortKey: {type: String, default: ''},
+    permissionName: [{
+      subPermissionId: {type: String, default: ''},
+      subPermission: {type: String, default: ''}
+    }]
+  }],
+
+  hotelViewPermissions: [{
+    propertyId: { type: String, default: '' },
+    propertyAuthCode: { type: String, default: "", required: true },
+  }],
+
 
   mobile: { type: String, default: "", required: false },
 
@@ -45,15 +61,17 @@ const registerSchema = new mongoose.Schema({
 
   timeStamp: { type: String, default: "", required: false },
 
-  registrationId: { type: String, default: ''},
+  registrationId: { type: String, default: '' },
 
-  blockedUntil: {type: Number, default: 0},
-  
-  propertyAuthCode: {type: String, required: true, default: ''},
+  blockedUntil: { type: Number, default: 0 },
 
-  loginAttempts: {type: Number, default: 0}
+  loginAttempts: { type: Number, default: 0 },
+
+  propertyId: { type: String, default: randomstring.generate(10) },
+
+
 });
 
 
-const hotelOwnerRegistration = mongoose.model("hotelOwnerRegister",registerSchema);
+const hotelOwnerRegistration = mongoose.model("hotelOwnerRegister", registerSchema);
 module.exports = hotelOwnerRegistration;

@@ -8,15 +8,16 @@ const property = require("../../models/Property/propertySetupModel")
 const amenitiesId = require("../../models/Property/amenities")
 const apiname = require('../../models/Users/apiHittingArray')
 
-
-
 const iv = process.env.iv;
 
 module.exports = async (req, res) => {
   try {
     //const formattedTimestamp = moment().format("YYYY-MM-DD HH:mm:ss");
-    const roomTypedata  =await  roomTypeModel.findOne({roomTypeId : req.params.roomTypeId})
-    const ratetypedata =await  ratetype.findOne({roomTypeId : req.params.roomTypeId})
+    const roomTypedata  = await  roomTypeModel.findOne({roomTypeId : req.params.roomTypeId})
+    const ratetypedata = await  ratetype.findOne({roomTypeId : req.params.roomTypeId})
+    if(!roomTypedata || !ratetypedata){
+      return res.status(500).json({ message: "Data not found" });
+    }
     const {rateType} = ratetypedata
     const {roomTypeName, roomTypeId} = roomTypedata
 
@@ -72,26 +73,26 @@ module.exports = async (req, res) => {
 
     await data.save()
 
-    await apiname.updateOne(
-      { userId: data.userId },
-      {
-        $push: {
-          apiArray: {
-            $each: [
-              {
-                apiname: "ratePlan added",
-                role : data.role,
-                deviceType : req.body.deviceType,
-                ipaddress : req.body.ipaddress,
-                timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+    // await apiname.updateOne(
+    //   { userId: data.userId },
+    //   {
+    //     $push: {
+    //       apiArray: {
+    //         $each: [
+    //           {
+    //             apiname: "ratePlan added",
+    //             role : data.role,
+    //             deviceType : req.body.deviceType,
+    //             ipaddress : req.body.ipaddress,
+    //             timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
 
-              }
-            ],
-            $position: 0
-          }
-        }
-      }
-    );
+    //           }
+    //         ],
+    //         $position: 0
+    //       }
+    //     }
+    //   }
+    // );
 
     return res.status(200).json({ message: "rate Type added successfully" });
 

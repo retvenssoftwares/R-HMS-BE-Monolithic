@@ -1,5 +1,6 @@
 const permissions_data = require("../../models/Permissions/permissions");
 const randomstring = require("randomstring");
+const user = require("../../models/Users/hotelOwnerRegister")
 
 module.exports = async (req, res) => {
   try {
@@ -10,8 +11,12 @@ module.exports = async (req, res) => {
       };
     });
 
+    const userRole = await user.findOne({userId:req.params.userId})
+
     const permissiondata = new permissions_data({
       permissionsId : randomstring.generate(10),
+      addedBy : userRole.role,
+      timestamp : new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
       permissionTypeName: req.body.permissionTypeName,
       permissionName: permissionName,
     });

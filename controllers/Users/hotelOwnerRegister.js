@@ -156,9 +156,8 @@ exports.sessionOut = async (req, res) => {
 
   try {
     const { userId } = req.params;
-    const propertyId = req.body.propertyId;
-    const { ipAddress,
-      deviceType } = req.body;
+    //const propertyId = req.body.propertyId;
+    //const { ipAddress, deviceType } = req.body;
     const data = await hotelAndEmployee.findOne({ userId });
 
     const registrationId = "";
@@ -170,26 +169,26 @@ exports.sessionOut = async (req, res) => {
 
     // api hitting details
 
-    await apiname.updateOne(
-      { propertyId: propertyId },
-      {
-        $push: {
-          apiArray: {
-            $each: [
-              {
-                apiname: "SessionOut",
-                role: data.role,
-                timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
-                ipAddress: ipAddress,
-                userId: userId,
-                deviceType: deviceType
-              }
-            ],
-            $position: 0
-          }
-        }
-      }
-    );
+    // await apiname.updateOne(
+    //   { propertyId: propertyId },
+    //   {
+    //     $push: {
+    //       apiArray: {
+    //         $each: [
+    //           {
+    //             apiname: "SessionOut",
+    //             role: data.role,
+    //             timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+    //             ipAddress: ipAddress,
+    //             userId: userId,
+    //             deviceType: deviceType
+    //           }
+    //         ],
+    //         $position: 0
+    //       }
+    //     }
+    //   }
+    // );
 
     return res.status(200).json({ message: "Your session timed out" });
 
@@ -214,9 +213,9 @@ exports.sessionIn = async (req, res) => {
 
     const { userId } = req.params;
     // const userProperty = await propertyModel.findOne({userId})
-    const propertyId = req.body.propertyId
-    const { ipAddress,
-      deviceType } = req.body;
+    // const propertyId = req.body.propertyId
+    // const { ipAddress,
+    //   deviceType } = req.body;
     const data = await hotelAndEmployee.findOne({ userId });
     const key = process.env.key;
 
@@ -239,26 +238,26 @@ exports.sessionIn = async (req, res) => {
     if (original === password) {
 
       // api hitting details
-      await apiname.updateOne(
-        { propertyId: propertyId },
-        {
-          $push: {
-            apiArray: {
-              $each: [
-                {
-                  apiname: "SessionIn",
-                  role: data.role,
-                  timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
-                  ipAddress: ipAddress,
-                  userId: userId,
-                  deviceType: deviceType
-                }
-              ],
-              $position: 0
-            }
-          }
-        }
-      );
+      // await apiname.updateOne(
+      //   { propertyId: propertyId },
+      //   {
+      //     $push: {
+      //       apiArray: {
+      //         $each: [
+      //           {
+      //             apiname: "SessionIn",
+      //             role: data.role,
+      //             timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+      //             ipAddress: ipAddress,
+      //             userId: userId,
+      //             deviceType: deviceType
+      //           }
+      //         ],
+      //         $position: 0
+      //       }
+      //     }
+      //   }
+      // );
 
       const registrationId = crypto.randomBytes(64).toString("hex");
       await hotelAndEmployee.updateOne({ _id: data._id }, { $set: { registrationId: registrationId } });

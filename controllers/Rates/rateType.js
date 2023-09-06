@@ -46,27 +46,27 @@ module.exports = async (req, res) => {
   
 
 
-    await apiname.updateOne(
-      { propertyId: propertyId},
-      {
-        $push: {
-          apiArray: {
-            $each: [
-              {
-                userId : userType.userId,
-                apiname: "rateType added",
-                role : userType.role,
-                deviceType : req.body.deviceType,
-                ipaddress : req.body.ipaddress,
-                timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+    // await apiname.updateOne(
+    //   { propertyId: propertyId},
+    //   {
+    //     $push: {
+    //       apiArray: {
+    //         $each: [
+    //           {
+    //             userId : userType.userId,
+    //             apiname: "rateType added",
+    //             role : userType.role,
+    //             deviceType : req.body.deviceType,
+    //             ipaddress : req.body.ipaddress,
+    //             timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
 
-              }
-            ],
-            $position: 0
-          }
-        }
-      }
-    );
+    //           }
+    //         ],
+    //         $position: 0
+    //       }
+    //     }
+    //   }
+    // );
 
 
     return res.status(200).json({ message: "rate added successfully" });

@@ -14,6 +14,10 @@ module.exports = async (req, res) => {
     //const formattedTimestamp = moment().format("YYYY-MM-DD HH:mm:ss");
     const propertyid  = await  property.findOne({propertyId: req.params.propertyId})
 
+    if(!propertyid){
+      return res.status(400).json({ message: "Data not found" });
+    }
+
     const {propertyId} = propertyid
 
     const mediaData = await Promise.all(req.files.map(async (file) => {

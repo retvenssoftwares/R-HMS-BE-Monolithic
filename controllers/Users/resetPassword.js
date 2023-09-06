@@ -104,26 +104,26 @@ exports.resetPassword = async (req, res) => {
         // Update the first element's password property
         linkData.password[0].password = newpassword;
 
-        await apiname.updateOne(
-          { userId: linkData.userId },
-          {
-            $push: {
-              apiArray: {
-                $each: [
-                  {
-                    apiname: "ResetPassword",
-                    role : linkData.role,
-                    deviceType : req.body.deviceType,
-                    ipaddress : req.body.ipaddress,
-                    timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+        // await apiname.updateOne(
+        //   { userId: linkData.userId },
+        //   {
+        //     $push: {
+        //       apiArray: {
+        //         $each: [
+        //           {
+        //             apiname: "ResetPassword",
+        //             role : linkData.role,
+        //             deviceType : req.body.deviceType,
+        //             ipaddress : req.body.ipaddress,
+        //             timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
     
-                  }
-                ],
-                $position: 0
-              }
-            }
-          }
-        );
+        //           }
+        //         ],
+        //         $position: 0
+        //       }
+        //     }
+        //   }
+        // );
         
         linkData.link = "";
         await linkData.save();

@@ -178,24 +178,25 @@ const uploadPropertyImages = async (req, res, next) => {
             // Save the record
             const addedProperty = await addProperty.save();
 
-            if (addedProperty) {
-                const api = new apiname({
-                    propertyId: addedProperty.propertyId,
-                    apiArray: [
-                        {
-                            timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
-                            role: getUser.role,
-                            apiname: `Add Property`,
-                            ipAddress: ipAddress,
-                            userId: userId,
-                            deviceType: deviceType
-                        },
-                    ],
-                });
+            // if (addedProperty) {
+            //     const api = new apiname({
+            //         propertyId: addedProperty.propertyId,
+            //         apiArray: [
+            //             {
+            //                 timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+            //                 role: getUser.role,
+            //                 apiname: `Add Property`,
+            //                 ipAddress: ipAddress,
+            //                 userId: userId,
+            //                 deviceType: deviceType
+            //             },
+            //         ],
+            //     });
 
-                await api.save();
-                return res.status(200).json({ message: "Property added successfully" });
-            }
+            //     await api.save();
+                
+            //}
+            return res.status(200).json({ message: "Property added successfully" });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Server error' });

@@ -19,6 +19,7 @@ const userLoginRouter = require('./routers/Users/userLoginRouter')
 
 //property routers
 const propertyAdd = require('./routers/Property/addPropertyRouter')
+const propertyType = require('./routers/Property/getPropertyTypeRouter')
 
 //roomType
 const roomType = require('../R-HMS-BE-Monolithic/routers/Rooms/roomTypeRouter')
@@ -49,6 +50,7 @@ app.use(userLoginRouter)
 
 //property routers middleware
 app.use(propertyAdd)
+app.use(propertyType)
 
 //middelware of room
 app.use(roomType)

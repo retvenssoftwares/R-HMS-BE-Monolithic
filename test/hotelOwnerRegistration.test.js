@@ -15,7 +15,7 @@ describe('Register', () => {
     it('it will register the hotel owner and employee', (done) => {
         let user = {
             // enter unique name otherwise it will give 500 error code
-            userName: "preet8mm90",
+            userName: "preet8mm9hjk",
             password: "preet@@",
             fullName:"preet patil",
             mobile : "9594896789",
@@ -30,7 +30,7 @@ describe('Register', () => {
             .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
-                res.body.should.have.property('message').eql('User Register Successfully');
+                res.body.should.have.property('message').eql('User Registered Successfully');
 
                 done();
             });

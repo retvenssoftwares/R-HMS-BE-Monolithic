@@ -85,7 +85,7 @@ exports.register = async (req, res) => {
         deviceType,
         propertyAuthCode,
         hotelName,
-        propertyId: randomstring.generate(10),
+        propertyId: [{propertyId: randomstring.generate(10)}],
         hotelCount,
         permissions: adminPermissions,
         timeStamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),

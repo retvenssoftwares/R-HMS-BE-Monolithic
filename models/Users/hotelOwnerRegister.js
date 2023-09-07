@@ -27,16 +27,17 @@ const registerSchema = new mongoose.Schema({
 
   permissions: [{
     permissionsId: { type: String, default: '' },
-    permissionTypeName: {type: String, default: ''},
-    permissionShortKey: {type: String, default: ''},
+    permissionTypeName: { type: String, default: '' },
+    permissionShortKey: { type: String, default: '' },
     permissionName: [{
-      subPermissionId: {type: String, default: ''},
-      subPermission: {type: String, default: ''}
+      subPermissionId: { type: String, default: '' },
+      subPermission: { type: String, default: '' }
     }]
   }],
 
-  hotelViewPermissions: [{
+  propertyViewPermissions: [{
     propertyId: { type: String, default: '' },
+    propertyType: { type: String, default: '' },
     propertyAuthCode: { type: String, default: "", required: true },
   }],
 
@@ -55,9 +56,9 @@ const registerSchema = new mongoose.Schema({
     osType: { type: String, default: "", required: false },
   },
 
-  hotelName: { type: String, default: "", required: false },
+  // hotelName: { type: String, default: "", required: false },
 
-  hotelCount: { type: Number, default: 0, required: false },
+  // hotelCount: { type: Number, default: 0, required: false },
 
   timeStamp: { type: String, default: "", required: false },
 
@@ -67,11 +68,13 @@ const registerSchema = new mongoose.Schema({
 
   loginAttempts: { type: Number, default: 0 },
 
-  propertyId: { type: String, default: '' },
+  propertyId: [{
+    propertyId: { type: String, default: '' }
+  }],
 
 
 });
 
 
-const hotelOwnerRegistration = mongoose.model("hotelOwnerRegister", registerSchema);
+const hotelOwnerRegistration = mongoose.model("softwareUsers", registerSchema);
 module.exports = hotelOwnerRegistration;

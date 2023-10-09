@@ -1,14 +1,6 @@
-require('dotenv').config()
-
-const mongoose = require("mongoose");
-
-const url = process.env.mongourl
-mongoose.connect(url,{
-    //useCreateIndex: true,
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log("connection is successful");
-}).catch((e) => {
-    console.log("No connection");
-})
+import * as dotenv from 'dotenv';
+dotenv.config();
+import { connect } from "mongoose";
+connect(process.env.mongourl, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(res => console.log(`Connection Succesful`))
+    .catch(err => console.log(`Error in DB connection`));

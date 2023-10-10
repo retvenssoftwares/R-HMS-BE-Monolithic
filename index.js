@@ -1,18 +1,12 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
+
 import express from 'express';
+import "./db/conn.js"
+import  userRouter from "./routers/userRouter.js"
 const app = express();
-import bodyParser from 'body-parser';
-import "./db/conn.js";
-import routes from './routers'
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use('/users', userRouter);
 
-// app.use('/', routes);
-const PORT = process.env.PORT || 3000;
-const server = app.listen(PORT, function () {
-  console.log("App is listening on: ", PORT);
+app.listen(3000, () => {
+  console.log('Server started on port 3000');
 });
-
-export default server;

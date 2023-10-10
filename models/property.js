@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const randomstring = require("randomstring");
 
 const propertySchema = new mongoose.Schema({
     userId: {
@@ -9,7 +8,6 @@ const propertySchema = new mongoose.Schema({
     propertyId: {
         default: "",
         type: String
-
     },
     date: {
         type: String
@@ -59,6 +57,9 @@ const propertySchema = new mongoose.Schema({
             type: String,
             default: ""
         }
+    }],
+    state: [{
+        state: { type: String, default: '' }
     }],
     location: [{
 
@@ -152,15 +153,15 @@ const propertySchema = new mongoose.Schema({
     }],
 
 
-    coverPhoto:[{
-        coverPhotoId:{
-            default:"",
-            type:String,
+    coverPhoto: [{
+        coverPhotoId: {
+            default: "",
+            type: String,
 
         },
-        coverPhoto:{
-            default:"",
-            type:String,
+        coverPhoto: {
+            default: "",
+            type: String,
         },
         modifiedDate: {
             type: String,
@@ -169,14 +170,14 @@ const propertySchema = new mongoose.Schema({
 
     }],
 
-    hotelLogo:[{
-        hotelLogoId:{
-            default:"",
-            type:String,
+    hotelLogo: [{
+        hotelLogoId: {
+            default: "",
+            type: String,
         },
-        hotelLogo:{
-            default:"",
-            type:String,
+        hotelLogo: {
+            default: "",
+            type: String,
         },
         modifiedDate: {
             type: String,
@@ -192,11 +193,69 @@ const propertySchema = new mongoose.Schema({
         }
     }],
 
+    propertyEmail: [{
+        propertyEmail: {
+            type: String,
+            default: ''
+        }
+    }],
     hotelRCode: {
         type: String,
         default: ''
     },
-    
+    propertyChainName: {
+        type: String,
+        default: ""
+    },
+    propertyType: {
+        type: String,
+        default: ""
+    },
+    websiteUrl: {
+        type: String,
+        default: ""
+    },
+    baseCurrency: {
+        type: String,
+        default: ''
+    },
+    propertyChainName: {
+        type: String,
+        default: ""
+    },
+    propertyTypeName: {
+        type: String,
+        default: ""
+    },
+    starCategory: {
+        type: String,
+        default: ''
+    },
+    phoneNumber: {
+        type: String,
+        default: ""
+    },
+    reservationNumber: {
+        type: String,
+        default: ''
+    },
+    registrationNumber: {
+        type: String,
+        default: ''
+    },
+    ratePercent: {
+        type: String,
+        default: ''
+    },
+    propertyRating: {
+        type: String,
+        default: ''
+    },
+    propertyDescription: {
+        type: String,
+        default: ''
+    }
+
 
 })
 

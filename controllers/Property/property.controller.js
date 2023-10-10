@@ -1,7 +1,8 @@
 import Randomstring from 'randomstring';
 import propertyModel from '../../models/property.js'
 import getCurrentUTCTimestamp from '../../helpers/timestampHelper.js'
- const postProperty = async (req, res) => {
+import s3 from "../../utils/url.js"
+const postProperty = async (req, res) => {
   try {
     const { userId,
       country,
@@ -22,12 +23,7 @@ import getCurrentUTCTimestamp from '../../helpers/timestampHelper.js'
     // Upload the file to Amazon s3 Spaces if a file has been selected
     if (req.file) {
       const params = {
-        // Bucket: 'rown-space-bucket/hotel_images',
-        // Key: hotel_image.originalname,
-        // Body: hotel_image.buffer,
-        // ContentType: hotel_image.mimetype,
-        // ACL: 'public-read'
-        Bucket: 'rown-space-bucket/hotel_images', 
+        Bucket: 'rown-space-bucket',
         Key: `hotel_images/${req.file.originalname}`,
         Body: req.file.buffer,
         ContentType: req.file.mimetype,
@@ -56,7 +52,7 @@ import getCurrentUTCTimestamp from '../../helpers/timestampHelper.js'
       }]
     })
     await newProperty.save();
-
+    return res.status(200).json({ message: "New property added successfully" })
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: "Internal Server Error" })

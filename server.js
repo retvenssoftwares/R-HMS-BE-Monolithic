@@ -1,6 +1,6 @@
 import express from 'express';
 import "./db/conn.js"
-import  allRoutes from "./routers/index.js"
+import  allRoutes from "./routers/userRouter.js"
 const app = express();
 
 app.use(express.json());

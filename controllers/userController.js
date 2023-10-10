@@ -1,4 +1,3 @@
-import { getAllUsers, getUserById } from '../services/userService.js';
 import userService from '../services/userService.js'
 
 export default class user {
@@ -10,6 +9,7 @@ export default class user {
       res.status(500).json({ error: error });
     }
   }
+  
 }
 
 

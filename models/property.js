@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const propertySchema = new mongoose.Schema({
+const propertySchema = new Schema({
     userId: {
         default: "",
         type: String
@@ -9,7 +9,10 @@ const propertySchema = new mongoose.Schema({
         default: "",
         type: String
     },
-    date: {
+    dateUTC: {
+        type: String
+    },
+    dateLocal: {
         type: String
     },
     country: {
@@ -59,7 +62,8 @@ const propertySchema = new mongoose.Schema({
         }
     }],
     state: [{
-        state: { type: String, default: '' }
+        state: { type: String, default: '' },
+        modifiedDate: {type: String, default:''}
     }],
     location: [{
 
@@ -259,5 +263,5 @@ const propertySchema = new mongoose.Schema({
 
 })
 
-const property = mongoose.model('property', propertySchema);
-module.exports = property;
+const property = model('property', propertySchema);
+export default property;

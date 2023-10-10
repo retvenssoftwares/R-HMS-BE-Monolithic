@@ -1,7 +1,7 @@
 // models/user.js
 import mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema({
+const propertySchema = new mongoose.Schema({
   name: {
     type: String,
     required: false

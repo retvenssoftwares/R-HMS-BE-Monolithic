@@ -1,5 +1,4 @@
-import { getAllUsers, getUserById } from '../services/userService.js';
-import {userService} from '../services/userService.js'
+import userService from '../services/userService.js'
 
 export default class user {
   static async apiCreateUser(req, res, next) {
@@ -10,7 +9,6 @@ export default class user {
       res.status(500).json({ error: error });
     }
   }
-
   
 }
 

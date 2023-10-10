@@ -4,7 +4,6 @@ dotenv.config();
 import propertyModel from '../../models/property.js'
 import getCurrentUTCTimestamp from '../../helpers/timestampHelper.js'
 import uploadImageToS3 from '../../helpers/singleImageUploadHelper.js'
-import s3 from "../../utils/url.js"
 
 //upload property controller
 const postProperty = async (req, res) => {
@@ -23,24 +22,12 @@ const postProperty = async (req, res) => {
     } = req.body
 
     var hotelLogoId = Randomstring.generate(8)
-    
-    var bucket = process.env.bucket;
-    // Upload the file to s3 Spaces if a file has been selected
-    // if (req.file) {
-    //   const params = {
-    //     Bucket: bucket,
-    //     Key: `hotel_images/${req.file.originalname}`,
-    //     Body: req.file.buffer,
-    //     ContentType: req.file.mimetype,
-    //     ACL: 'public-read'
-    //   };
-    //   await s3.upload(params).promise();
-    //   imageUrl = `https://rown-space-bucket.nyc3.digitaloceanspaces.com/hotel_images/${req.file.originalname}`;
-    // }
-    let image = '';
+  
     // Upload the image and get the imageUrl
     const imageUrl = await uploadImageToS3(req.file);
-    console.log(imageUrl);
+    // console.log(imageUrl);
+
+    //create record
     const newProperty = new propertyModel({
       userId,
       country,

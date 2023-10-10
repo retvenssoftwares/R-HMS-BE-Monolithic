@@ -3,11 +3,11 @@
   "name": "r-hms-be-monolithic",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   
   "scripts": {
-    "start": "node -r esm index.js",
-    "dev": "nodemon index.js",
+    "start": "node -r esm server.js",
+    "dev": "nodemon server.js",
     "test": "mocha --timeout 10000"
   },
   "repository": {

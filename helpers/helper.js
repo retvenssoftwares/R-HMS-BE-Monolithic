@@ -1,38 +1,34 @@
 import s3 from "../utils/url.js"
 
-async function uploadImageToS3(file) {
-    const bucket = process.env.bucket;
+//function to upload single image ot s3 spaces
+const bucket = process.env.bucket
+export async function uploadImageToS3(file) {
+    const params = {
+        Bucket: bucket, // Replace with your S3 bucket name
+        Key: `hotel_images/${file.originalname}`,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+        ACL: 'public-read',
+    };
 
-    try {
-        if (!file) {
-            throw new Error('No file provided for upload.');
-        }
+    const uploadResponse = await s3.upload(params).promise();
+    const imageUrl = uploadResponse.Location;
 
-        const params = {
-            Bucket: bucket,
-            Key: `hotel_images/${file.originalname}`,
-            Body: file.buffer,
-            ContentType: file.mimetype,
-            ACL: 'public-read',
-        };
-
-        const uploadResponse = await s3.upload(params).promise();
-        const imageUrl = uploadResponse.Location;
-
-        return imageUrl;
-    } catch (error) {
-        console.error('Error uploading image to S3:', error);
-        throw error; // Re-throw the error for handling at a higher level
-    }
+    return imageUrl;
 }
 
 
 
-
+//function to get utc time
 function getCurrentUTCTimestamp() {
     const now = new Date();
     const utcTimestamp = now.toISOString(); // Convert to ISO string
     return utcTimestamp;
+}
+
+function getCurrentLocalTimestamp(){
+    const localTimestamp = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+    return localTimestamp;
 }
 
 // Verify the token\
@@ -56,4 +52,4 @@ async function jwtTokenVerify() {
 
 }
 
-export { getCurrentUTCTimestamp, uploadImageToS3, jwtTokenVerify };
+export { getCurrentUTCTimestamp, jwtTokenVerify, getCurrentLocalTimestamp };

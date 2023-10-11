@@ -1,15 +1,14 @@
 import Randomstring from 'randomstring';
 import * as dotenv from 'dotenv';
 dotenv.config();
-import propertyModel from '../../models/property.js'
-import { getCurrentUTCTimestamp, uploadImageToS3 } from '../../helpers/helper.js'
+import propertyChainModel from '../../models/propertyChain.js'
+import { getCurrentUTCTimestamp, uploadImageToS3, getCurrentLocalTimestamp } from '../../helpers/helper.js'
 
 //upload property controller
-const postProperty = async (req, res) => {
+const postPropertyChain = async (req, res) => {
   try {
     const { userId,
       country,
-      propertyAddress,
       propertyName,
       postCode,
       state,
@@ -18,6 +17,8 @@ const postProperty = async (req, res) => {
       websiteUrl,
       propertyChainName,
       propertyType,
+      numberOfProperties,
+      propertyTypeName
     } = req.body
 
     var hotelLogoId = Randomstring.generate(8)
@@ -28,10 +29,10 @@ const postProperty = async (req, res) => {
     }
 
     //create record
-    const newProperty = new propertyModel({
+    const newPropertyChain = new propertyChainModel({
       userId,
+      propertyChainId: Randomstring.generate(8),
       country,
-      propertyId: Randomstring.generate(8),
       propertyAddress: [{
         propertyAddress,
         modifiedDate: getCurrentUTCTimestamp()
@@ -61,11 +62,14 @@ const postProperty = async (req, res) => {
         : [],
       baseCurrency,
       websiteUrl,
+      propertyChainName,
       propertyType,
+      dateUTC: getCurrentUTCTimestamp(),
+      dateLocal: getCurrentLocalTimestamp()
     })
 
 
-    await newProperty.save();
+    await newPropertyChain.save();
 
     return res.status(200).json({ message: "New property added successfully" });
   }
@@ -75,4 +79,4 @@ const postProperty = async (req, res) => {
   }
 }
 
-export default postProperty;
+export default postPropertyChain;

@@ -27,10 +27,6 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String
   },
-  numberOfProperties: [{
-    type: Number,
-    default: 0
-  }],
   password: [{
     type: String,
   }],

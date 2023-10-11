@@ -2,7 +2,7 @@ import Randomstring from 'randomstring';
 import * as dotenv from 'dotenv';
 dotenv.config();
 import propertyModel from '../../models/property.js'
-import {getCurrentUTCTimestamp, uploadImageToS3} from '../../helpers/helper.js'
+import { getCurrentUTCTimestamp, uploadImageToS3 } from '../../helpers/helper.js'
 // import uploadImageToS3 from '../../helpers/singleImageUploadHelper.js'
 
 //upload property controller
@@ -22,7 +22,7 @@ const postProperty = async (req, res) => {
     } = req.body
 
     var hotelLogoId = Randomstring.generate(8)
-  
+
     // Upload the image and get the imageUrl
     const imageUrl = await uploadImageToS3(req.file);
     // console.log(imageUrl);
@@ -51,22 +51,28 @@ const postProperty = async (req, res) => {
         city,
         modifiedDate: getCurrentUTCTimestamp()
       }],
+      hotelLogo: [
+        {
+          hotelLogoId,
+          hotelLogo: imageUrl,
+          modifiedDate: getCurrentUTCTimestamp(),
+        },
+      ],
       baseCurrency,
       websiteUrl,
       propertyChainName,
       propertyType,
-      hotelLogo: [{
-        hotelLogoId,
-        hotelLogo: imageUrl,
-        modifiedDate: getCurrentUTCTimestamp()
-      }]
-    })
+    }) 
+
+    
     await newProperty.save();
-    return res.status(200).json({ message: "New property added successfully" })
-  } catch (err) {
-    console.log(err)
-    res.status(500).json({ message: "Internal Server Error" })
+
+    return res.status(200).json({ message: "New property added successfully" });
   }
-};
+ catch (err) {
+  console.log(err);
+  res.status(500).json({ message: "Internal Server Error" });
+}
+}
 
 export default postProperty;

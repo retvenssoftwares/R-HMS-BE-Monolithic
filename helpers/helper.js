@@ -1,4 +1,5 @@
 import s3 from "../utils/url.js"
+import  jwt  from "jsonwebtoken";
 
 async function uploadImageToS3(file) {
     const bucket = process.env.bucket;
@@ -56,4 +57,12 @@ async function jwtTokenVerify() {
 
 }
 
-export { getCurrentUTCTimestamp, uploadImageToS3, jwtTokenVerify };
+
+async function jwtsign(payload){
+    jwt.sign(payload, 'gcfgcgfcftcfctfctfctfctfctfcfcfcgfcghghcgcgcgccfccfcctrctcctct',(err,asyncToken)=>{
+        if (err) throw err;
+        console.log(asyncToken);
+    })
+}
+
+export { getCurrentUTCTimestamp, uploadImageToS3, jwtTokenVerify ,jwtsign};

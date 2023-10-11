@@ -75,4 +75,20 @@ const postProperty = async (req, res) => {
 }
 }
 
-export default postProperty;
+
+const editProperty = async (req,res)=>{
+  const propertyId = await propertyModel.findOne({propertyId : req.body.propertyId})
+
+  const addDetails = {
+    propertyTypeName :propertyId.propertyTypeName,
+    starCategory :  propertyId.starCategory,
+    roomsInProperty : propertyId.roomsInProperty,
+    taxName : propertyId.taxName,
+    registerNumber : propertyId.registerNumber,
+    ratePercent : propertyId.ratePercent
+  }
+
+  await addDetails.save()
+}
+
+export  {postProperty , editProperty}

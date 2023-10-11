@@ -9,6 +9,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  Role:{
+    type: String,
+    required: false
+  },
   lastName: {
     type: String,
     required: false,
@@ -21,6 +25,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false
   }],
+  hotelRcode:{
+    type: String,
+    required: false
+  },
   authToken: {
     type: String
   },
@@ -38,6 +46,8 @@ const userSchema = new mongoose.Schema({
   {
     versionKey: false
   });
+
+
 
 const User = mongoose.model('User', userSchema);
 

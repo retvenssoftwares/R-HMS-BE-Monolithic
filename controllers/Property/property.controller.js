@@ -94,22 +94,28 @@ const editProperty = async (req, res) => {
 
   const newData = {
     propertyName: req.body.propertyName,
+
   };
 
-  const updateNonArrayFields = {
+  const time = await getCurrentUTCTimestamp()
+  console.log(time)
+
+  const updateFields = {
     starCategory: req.body.starCategory,
     roomsInProperty: req.body.roomsInProperty,
     taxName: req.body.taxName,
     registerNumber: req.body.registerNumber,
     ratePercent: req.body.ratePercent,
-    propertyName: req.body.propertyName,
-  };
-
-  const updateArrayField = {
     $push: {
       propertyName: {
-        $each: [newData.propertyName], // Push the propertyName field from newData
-        $position: 0, // Place the new element at the 0th position
+        $each: [
+          {
+            propertyName: newData.propertyName,
+            // Add other fields you need for the new object
+            modifiedDate : time
+          }
+        ],
+        $position: 0,
       },
     },
   };
@@ -121,10 +127,10 @@ const editProperty = async (req, res) => {
 
   try {
     // First, update the non-array fields
-    await propertyModel.findOneAndUpdate(filter, updateNonArrayFields);
+   
 
     // Then, update the array field
-    const updatedDocument = await propertyModel.findOneAndUpdate(filter, updateArrayField, options);
+    const updatedDocument = await propertyModel.findOneAndUpdate(filter, updateFields, options);
 
     if (!updatedDocument) {
       return res.status(404).json({ message: 'Document not found' });

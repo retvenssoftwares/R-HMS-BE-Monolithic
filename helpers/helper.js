@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import s3 from "../utils/url.js"
 
 //function to upload single image ot s3 spaces
@@ -11,8 +13,10 @@ export async function uploadImageToS3(file) {
         ACL: 'public-read',
     };
 
-    const uploadResponse = await s3.upload(params).promise();
-    const imageUrl = uploadResponse.Location;
+    // const uploadResponse = await s3.upload(params).promise();
+    // const imageUrl = uploadResponse.Location;
+    const [uploadResponse] = await Promise.all([s3.upload(params).promise()]);
+    const imageUrl = uploadResponse.Location
 
     return imageUrl;
 }
@@ -26,7 +30,7 @@ function getCurrentUTCTimestamp() {
     return utcTimestamp;
 }
 
-function getCurrentLocalTimestamp(){
+function getCurrentLocalTimestamp() {
     const localTimestamp = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
     return localTimestamp;
 }

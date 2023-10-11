@@ -94,10 +94,6 @@ const propertyChainSchema = new Schema({
         type: String,
         default: ''
     },
-    propertyChainName: {
-        type: String,
-        default: ""
-    },
     propertyType: {
         type: String,
         default: ""
@@ -109,10 +105,6 @@ const propertyChainSchema = new Schema({
     baseCurrency: {
         type: String,
         default: ''
-    },
-    propertyChainName: {
-        type: String,
-        default: ""
     },
     propertyTypeName: {
         type: String,

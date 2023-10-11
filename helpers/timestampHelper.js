@@ -1,10 +1,10 @@
 import s3 from "../utils/url.js"
 
 function getCurrentUTCTimestamp() {
-    const now = new Date();
-    const utcTimestamp = Math.floor(now.getTime() / 1000); // Convert to seconds
-    return utcTimestamp;
-  }
+  const now = new Date();
+  const utcTimestamp = now.toISOString(); // Convert to ISO string
+  return utcTimestamp;
+}
 
 
   async function uploadToS3(file) {
@@ -29,3 +29,4 @@ function getCurrentUTCTimestamp() {
   export  {getCurrentUTCTimestamp ,uploadToS3}
 
 
+export default getCurrentUTCTimestamp;

@@ -247,6 +247,14 @@ const propertySchema = new Schema({
         type: String,
         default: ''
     },
+    roomsInProperty:{
+        type: String,
+        default: ''
+    },
+    taxName:{
+        type: String,
+        default: ''
+    },
     ratePercent: {
         type: String,
         default: ''

@@ -1,10 +1,11 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 import s3 from "../utils/url.js"
+import  jwt  from "jsonwebtoken";
 
 //function to upload single image ot s3 spaces
 const bucket = process.env.bucket
-export async function uploadImageToS3(file) {
+async function uploadImageToS3(file) {
     const params = {
         Bucket: bucket, // Replace with your S3 bucket name
         Key: `hotel_images/${file.originalname}`,
@@ -24,7 +25,7 @@ export async function uploadImageToS3(file) {
 
 
 //function to get utc time
-function getCurrentUTCTimestamp() {
+async function getCurrentUTCTimestamp() {
     const now = new Date();
     const utcTimestamp = now.toISOString(); // Convert to ISO string
     return utcTimestamp;
@@ -56,4 +57,12 @@ async function jwtTokenVerify() {
 
 }
 
-export { getCurrentUTCTimestamp, jwtTokenVerify, getCurrentLocalTimestamp };
+
+async function jwtsign(payload){
+    jwt.sign(payload, 'gcfgcgfcftcfctfctfctfctfctfcfcfcgfcghghcgcgcgccfccfcctrctcctct',(err,asyncToken)=>{
+        if (err) throw err;
+        console.log(asyncToken);
+    })
+}
+
+export  { getCurrentUTCTimestamp, uploadImageToS3, jwtTokenVerify ,jwtsign, getCurrentLocalTimestamp};

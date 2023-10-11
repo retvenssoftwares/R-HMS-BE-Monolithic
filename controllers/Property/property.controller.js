@@ -2,8 +2,8 @@ import Randomstring from 'randomstring';
 import * as dotenv from 'dotenv';
 dotenv.config();
 import propertyModel from '../../models/property.js'
-import getCurrentUTCTimestamp from '../../helpers/timestampHelper.js'
-import uploadImageToS3 from '../../helpers/singleImageUploadHelper.js'
+import {getCurrentUTCTimestamp, uploadImageToS3} from '../../helpers/helper.js'
+// import uploadImageToS3 from '../../helpers/singleImageUploadHelper.js'
 
 //upload property controller
 const postProperty = async (req, res) => {

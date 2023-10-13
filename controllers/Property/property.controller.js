@@ -67,12 +67,12 @@ const postProperty = async (req, res) => {
       ],
       hotelLogo: imageUrl
         ? [
-            {
-              hotelLogoId,
-              hotelLogo: imageUrl,
-              modifiedDate: getCurrentUTCTimestamp(),
-            },
-          ]
+          {
+            hotelLogoId,
+            hotelLogo: imageUrl,
+            modifiedDate: getCurrentUTCTimestamp(),
+          },
+        ]
         : [],
       baseCurrency,
       websiteUrl,
@@ -81,10 +81,10 @@ const postProperty = async (req, res) => {
 
     await newProperty.save();
 
-    return res.status(200).json({ message: "New property added successfully" });
+    return res.status(200).json({ message: "New property added successfully", statuscode: 200 });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
   }
 };
 

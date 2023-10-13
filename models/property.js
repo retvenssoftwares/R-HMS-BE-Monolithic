@@ -16,7 +16,8 @@ const propertySchema = new mongoose.Schema({
     required: false
   },
   authToken: {
-    type:String
+    type:String,
+    default: ''
   }
 },
   {

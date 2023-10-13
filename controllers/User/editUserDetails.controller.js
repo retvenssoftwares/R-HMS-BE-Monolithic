@@ -78,7 +78,7 @@ const editUserOnboarding = async (req, res) => {
 
     catch (err) {
         console.log(err);
-        return res.status(500).json({ message: "Internal Server Error", statuscode: 200 });
+        return res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
     }
 }
 

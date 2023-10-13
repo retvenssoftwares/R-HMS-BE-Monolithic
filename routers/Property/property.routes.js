@@ -3,7 +3,8 @@ import express from 'express';
 import multer from 'multer';
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-import {postProperty, editProperty} from '../../controllers/Property/property.controller.js'
+import {postProperty} from '../../controllers/Property/property.controller.js'
+import editProperty from "../../controllers/Property/editPropert.controller.js"
 
 const router = express.Router();
 

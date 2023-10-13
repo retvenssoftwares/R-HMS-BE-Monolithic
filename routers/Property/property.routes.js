@@ -9,8 +9,8 @@ import {postProperty, editProperty} from '../../controllers/Property/property.co
 
 const router = express.Router();
 
-router.post("/createProperty", upload.single('hotelLogo'), postProperty);
-router.post("/createPropertyChain", upload.single('hotelLogo'), postPropertyChain);
-router.patch("/propertyAdditionalDetails",editProperty)
+router.post("/api/createProperty", upload.single('hotelLogo'), postProperty);
+router.post("/api/createPropertyChain", upload.single('hotelLogo'), postPropertyChain);
+router.patch("/api/propertyAdditionalDetails",editProperty)
 
 export default router;

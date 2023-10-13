@@ -9,34 +9,264 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  Role:{
-    type: String,
-    required: false
-  },
+  role: [{
+    role: {
+      type: String,
+      required: false
+    },
+    modifiedDate: String
+  }],
   lastName: {
     type: String,
     required: false,
   },
-  designation: [{
-    type: String,
-    required: false
-  }],
+  designation: [
+    {
+      designation: {
+        type: String,
+        required: false
+      },
+      modifiedDate: String
+    }],
   phoneNumber: [{
-    type: String,
-    required: false
+    phoneNumber: {
+      type: String,
+      required: false
+    },
+    modifiedDate: String
   }],
-  hotelRcode:{
+  username: [{
+    username: { type: String, default: '' },
+    modifiedDate: String
+  }],
+  hotelRcode: {
     type: String,
-    required: false
+    required: false,
+    default: ''
   },
-  authToken: {
+  authCode: {
     type: String
   },
   email: {
     type: String
   },
-  password: [{
+  link: {
     type: String,
+    default: ''
+  },
+  propertyTypeSOC: { type: String, default: '' }, //single or chain
+  singlePropertyDetails: [{
+    userId: {
+      default: "",
+      type: String
+    },
+    propertyId: {
+      default: "",
+      type: String
+    },
+    dateUTC: {
+      type: String
+    },
+    dateLocal: {
+      type: String
+    },
+    country: {
+      default: "",
+      type: String
+    },
+    propertyAddress: [{
+      propertyAddress: {
+        default: "",
+        type: String
+      },
+      modifiedDate: {
+        type: String,
+        default: ""
+      }
+    }],
+    postCode: [{
+      postCode: {
+        default: "",
+        type: String
+      },
+      modifiedDate: {
+        type: String,
+        default: ""
+      }
+    }],
+
+    city: [{
+      city: {
+        default: "",
+        type: String
+      },
+      modifiedDate: {
+        type: String,
+        default: ""
+      }
+    }],
+    state: [{
+      state: { type: String, default: '' },
+      modifiedDate: { type: String, default: '' }
+    }],
+    location: [{
+
+      latitude: {
+        default: "",
+        type: String,
+
+      },
+      longitude: {
+        default: "",
+        type: String
+      },
+      modifiedDate: {
+        type: String,
+        default: ""
+      }
+    }],
+
+    propertyName: [{
+      propertyName: {
+        default: "",
+        type: String,
+      },
+      modifiedDate: {
+        type: String,
+        default: ""
+      }
+    }],
+
+
+    checkInTime: [{
+      checkInFrom: {
+        default: "",
+        type: String
+      },
+      checkInUntil: {
+        default: "",
+        type: String
+      },
+      modifiedDate: {
+        type: String,
+        default: ""
+      }
+    }],
+
+    checkOutTime: [{
+      checkOutFrom: {
+        default: "",
+        type: String
+      },
+      checkOutUntil: {
+        default: "",
+        type: String
+      },
+      modifiedDate: {
+        type: String,
+        default: ""
+      }
+    }],
+
+
+    coverPhoto: [{
+      coverPhotoId: {
+        default: "",
+        type: String,
+
+      },
+      coverPhoto: {
+        default: "",
+        type: String,
+      },
+      modifiedDate: {
+        type: String,
+        default: ""
+      },
+
+    }],
+
+    hotelLogo: [{
+      hotelLogoId: {
+        default: "",
+        type: String,
+      },
+      hotelLogo: {
+        default: "",
+        type: String,
+      },
+      modifiedDate: {
+        type: String,
+        default: ""
+      },
+
+    }],
+
+
+    propertyEmail: [{
+      propertyEmail: {
+        type: String,
+        default: ''
+      }
+    }],
+    hotelRCode: {
+      type: String,
+      default: ''
+    },
+    websiteUrl: {
+      type: String,
+      default: ""
+    },
+    baseCurrency: {
+      type: String,
+      default: ''
+    },
+    propertyTypeName: {
+      type: String,
+      default: ""
+    },
+    starCategory: {
+      type: String,
+      default: ''
+    },
+    phoneNumber: {
+      type: String,
+      default: ""
+    },
+    reservationNumber: {
+      type: String,
+      default: ''
+    },
+    registrationNumber: {
+      type: String,
+      default: ''
+    },
+    roomsInProperty: {
+      type: String,
+      default: ''
+    },
+    taxName: {
+      type: String,
+      default: ''
+    },
+    ratePercent: {
+      type: String,
+      default: ''
+    },
+    propertyRating: {
+      type: String,
+      default: ''
+    },
+    propertyDescription: {
+      type: String,
+      default: ''
+    }
+  }],
+  password: [{
+    password: {
+      type: String
+    },
+    modifiedDate: String
   }],
 },
   {

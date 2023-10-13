@@ -81,10 +81,10 @@ const postProperty = async (req, res) => {
 
     await newProperty.save();
 
-    return res.status(200).json({ message: "New property added successfully" });
+    return res.status(200).json({ message: "New property added successfully", statuscode: 200 });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
   }
 };
 
@@ -112,7 +112,7 @@ const editProperty = async (req, res) => {
           {
             propertyName: newData.propertyName,
             // Add other fields you need for the new object
-            modifiedDate : time
+            modifiedDate: time
           }
         ],
         $position: 0,
@@ -127,18 +127,18 @@ const editProperty = async (req, res) => {
 
   try {
     // First, update the non-array fields
-   
+
 
     // Then, update the array field
     const updatedDocument = await propertyModel.findOneAndUpdate(filter, updateFields, options);
 
     if (!updatedDocument) {
-      return res.status(404).json({ message: 'Document not found' });
+      return res.status(404).json({ message: 'Document not found', statuscode: 404 });
     }
     res.json(updatedDocument);
   } catch (error) {
     console.error('Update error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error', statuscode: 500 });
   }
 };
 

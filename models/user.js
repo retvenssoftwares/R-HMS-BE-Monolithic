@@ -253,6 +253,7 @@ const userSchema = new mongoose.Schema({
       type: String,
       default: ''
     },
+    propertyType: { type: String, default: '' },
     propertyRating: {
       type: String,
       default: ''
@@ -271,88 +272,88 @@ const userSchema = new mongoose.Schema({
 
 
   ///// multiple 
-  multipleData:[{
+  multipleData: [{
     userId: {
       default: "",
       type: String
-  },
-  propertyChainId: {
+    },
+    propertyChainId: {
       default: "",
       type: String
-  },
-  dateUTC: {
+    },
+    dateUTC: {
       type: String
-  },
-  dateLocal: {
+    },
+    dateLocal: {
       type: String
-  },
+    },
 
-  numberOfProperties: [{
+    numberOfProperties: [{
       numberOfProperties: {
-          default: "",
-          type: String
+        default: "",
+        type: String
       },
       modifiedDate: {
-          type: String,
-          default: ""
+        type: String,
+        default: ""
       }
-  }],
+    }],
 
-  propertyChainName: [{
+    propertyChainName: [{
       propertyChainName: {
-          default: "",
-          type: String,
+        default: "",
+        type: String,
       },
       modifiedDate: {
-          type: String,
-          default: ""
+        type: String,
+        default: ""
       }
-  }],
+    }],
 
-  propertyType:{
-    default :"",
-    type:String
-  },
+    propertyType: {
+      default: "",
+      type: String
+    },
 
-  hotelLogo: [{
+    hotelLogo: [{
       hotelLogoId: {
-          default: "",
-          type: String,
+        default: "",
+        type: String,
       },
       hotelLogo: {
-          default: "",
-          type: String,
+        default: "",
+        type: String,
       },
       modifiedDate: {
-          type: String,
-          default: ""
+        type: String,
+        default: ""
       },
 
-  }],   
+    }],
 
-  
-  hotelRCode: {
+
+    hotelRCode: {
       type: String,
       default: ''
-  },
-  propertyName: [{
-    propertyName: {
-      default: "",
-      type: String,
     },
-    modifiedDate: {
+    propertyName: [{
+      propertyName: {
+        default: "",
+        type: String,
+      },
+      modifiedDate: {
+        type: String,
+        default: ""
+      }
+    }],
+    websiteUrl: {
       type: String,
       default: ""
-    }
-  }],
-  websiteUrl: {
-      type: String,
-      default: ""
-  },
-  baseCurrency: {
+    },
+    baseCurrency: {
       type: String,
       default: ''
-  },
+    },
 
   }]
 },

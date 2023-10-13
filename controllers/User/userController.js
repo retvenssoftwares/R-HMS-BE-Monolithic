@@ -5,11 +5,11 @@ import userModel from '../../models/user.js'
 import { jwtsign, getCurrentUTCTimestamp, encrypt } from "../../helpers/helper.js"
 const postUser = async (req, res) => {
     try {
-       
+
         const password = req.body.password
 
         const encryptedPass = encrypt(password);
-        
+
 
         const email = req.body.email
 
@@ -20,9 +20,9 @@ const postUser = async (req, res) => {
         const modifiedDate = await getCurrentUTCTimestamp()
 
         const encryptedCode = await jwtsign(authTokenPayload)
-
+        const userId = randomstring.generate(8)
         const newData = new userModel({
-            userId: randomstring.generate(8),
+            userId,
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             designation: [{ designation: req.body.designation, modifiedDate: modifiedDate }],
@@ -34,16 +34,22 @@ const postUser = async (req, res) => {
             role: [{
                 role: req.body.role || 'Admin',
                 modifiedDate: modifiedDate
+            }],
+            singlePropertyDetails: [{
+                userId: userId
+            }],
+            multipleData: [{
+                userId: userId
             }]
 
         })
         await newData.save()
         return res.status(200).json({ message: "User successfully added", statuscode: 200 })
-    
-    }catch (err) {
-    console.log(err)
-    return res.status(500).json({ message: "Internal Server Error", statuscode: 500 })
-}
+
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({ message: "Internal Server Error", statuscode: 500 })
+    }
 }
 
 export default postUser

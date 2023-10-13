@@ -8,7 +8,7 @@ import {
 const editUserOnboarding = async (req, res) => {
     const propertyId = randomstring.generate(8);
     const { userId, propertyTypeSOC, propertyAddress, propertyName, propertyTypeName, postCode, state, city, starCategory, ratePercent, baseCurrency, websiteUrl, roomsInProperty, taxName, registrationNumber } = req.body
-    const findRecord = await userModel.findOne({ userId });
+    var findRecord = await userModel.findOne({ userId });
     // Find the specific array element you want to update
     if (!findRecord) {
         return res.status(404).json({ message: "Record not found" })
@@ -71,6 +71,42 @@ const editUserOnboarding = async (req, res) => {
             elementToUpdate.websiteUrl = websiteUrl
             elementToUpdate.propertyId = propertyId
             findRecord.propertyTypeSOC = propertyTypeSOC
+            await findRecord.save();
+        }else{
+            const { userId, propertyChainName, propertyChainId,baseCurrency, websiteUrl } = req.body
+            var findRecord = await userModel.findOne({ userId });
+            //console.log(findRecord)
+            
+            const elementToUpdate = findRecord.multipleData[0];
+            let imageUrl = ''
+            if (req.file) {
+                imageUrl = await uploadImageToS3(req.file)
+            }
+
+           
+            const hotelLogoObject = {
+                hotelLogoId: randomstring.generate(8),
+                hotelLogo: imageUrl,
+                modifiedDate: (await getCurrentUTCTimestamp()).toString()
+            }
+            elementToUpdate.hotelLogo.unshift(hotelLogoObject)
+
+            
+            const propertyChainNameObject = {
+                propertyChainName: propertyChainName,
+                modifiedDate: (await getCurrentUTCTimestamp()).toString()
+            }
+
+            elementToUpdate.propertyChainName.unshift(propertyChainNameObject)
+
+            elementToUpdate.userId = userId;
+            propertyChainId = randomstring.generate(8)
+            findRecord.propertyChainId = propertyChainId
+            elementToUpdate.dateUTC = (await getCurrentUTCTimestamp()).toString();
+
+            elementToUpdate.baseCurrency = baseCurrency
+            elementToUpdate.websiteUrl = websiteUrl
+            findRecord.propertyTypeSOC = "Multiple"
             await findRecord.save();
         }
         return res.status(200).json({ message: "User updated successfully", statuscode: 200 })

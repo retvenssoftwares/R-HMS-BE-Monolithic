@@ -30,21 +30,18 @@ const postProperty = async (req, res) => {
 
     var hotelLogoId = Randomstring.generate(8);
 
-    let imageUrl = null; // Initialize imageUrl to null
-    
+    let imageUrl = ''; // Initialize imageUrl
 
-    const imagesField = req.files['hotelImages'];
-    const imagesLogoField = req.files['hotelLogo'];
-    if (imagesLogoField) {
-      const imageUrls = await uploadMultipleImagesToS3(imagesField);
-      console.log(imageUrls)
+    // Check if a single hotelLogo file is uploaded
+    if (req.files['hotelLogo']) {
+      imageUrl = await uploadImageToS3(req.files['hotelLogo'][0]);
     }
+    const imagesField = req.files['hotelImages'];
 
     if (imagesField) {
       const imageUrls = await uploadMultipleImagesToS3(imagesField);
-      console.log(imageUrls)
     }
-
+    const currentUTCTime = await getCurrentUTCTimestamp();
     //create record
     const newProperty = new propertyModel({
       userId,
@@ -53,37 +50,37 @@ const postProperty = async (req, res) => {
       propertyAddress: [
         {
           propertyAddress,
-          modifiedDate: getCurrentUTCTimestamp(),
+          modifiedDate: currentUTCTime,
         },
       ],
       propertyName: [
         {
           propertyName: propertyName,
-          modifiedDate: getCurrentUTCTimestamp(),
+          modifiedDate: currentUTCTime,
         },
       ],
       postCode: [
         {
           postCode: postCode,
-          modifiedDate: getCurrentUTCTimestamp(),
+          modifiedDate: currentUTCTime,
         },
       ],
       state: [
         {
           state: state,
-          modifiedDate: getCurrentUTCTimestamp(),
+          modifiedDate: currentUTCTime,
         },
       ],
       city: [
         {
           city,
-          modifiedDate: getCurrentUTCTimestamp(),
+          modifiedDate: currentUTCTime,
         },
       ],
       propertyDescription: [
         {
           propertyDescription: propertyDescription,
-          modifiedDate: getCurrentUTCTimestamp(),
+          modifiedDate: currentUTCTime,
         },
       ],
       hotelLogo: imageUrl
@@ -91,14 +88,14 @@ const postProperty = async (req, res) => {
           {
             hotelLogoId,
             hotelLogo: imageUrl,
-            modifiedDate: getCurrentUTCTimestamp(),
+            modifiedDate: currentUTCTime,
           },
         ]
         : [],
       baseCurrency,
       websiteUrl,
-      dateUTC: getCurrentUTCTimestamp,
-      dateLocal: getCurrentLocalTimestamp,
+      dateUTC: currentUTCTime,
+      dateLocal: getCurrentLocalTimestamp(),
       propertyType,
       propertyRating
     });

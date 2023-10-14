@@ -1,7 +1,8 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
+import * as crypto from 'crypto';
 import s3 from "../utils/url.js"
-import  jwt  from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 //function to upload single image ot s3 spaces
 const bucket = process.env.bucket
@@ -37,8 +38,8 @@ function getCurrentLocalTimestamp() {
 }
 
 // Verify the token\
-async function jwtTokenVerify() {
-    jwt.verify(token, 'gcfgcgfcftcfctfctfctfctfctfcfcfcgfcghghcgcgcgccfccfcctrctcctct', (err, decoded) => {
+async function jwtTokenVerify(token) {
+    jwt.verify(token, process.env.jwtsecretkey, (err, decoded) => {
         if (err) {
             // Token verification failed
             console.error('Token verification failed:', err.message);
@@ -57,12 +58,38 @@ async function jwtTokenVerify() {
 
 }
 
-
-async function jwtsign(payload){
-    jwt.sign(payload, 'gcfgcgfcftcfctfctfctfctfctfcfcfcgfcghghcgcgcgccfccfcctrctcctct',(err,asyncToken)=>{
-        if (err) throw err;
-        console.log(asyncToken);
-    })
+// Function to encrypt text
+const key = process.env.key;
+const iv = process.env.iv;
+function encrypt(text) {
+    const cipher = crypto.createCipheriv(
+        "aes-256-cbc",
+        Buffer.from(key, "hex"),
+        Buffer.from(iv)
+    );
+    let encrypted = cipher.update(text, "utf8", "hex");
+    encrypted += cipher.final("hex");
+    return encrypted;
 }
 
-export  { getCurrentUTCTimestamp, uploadImageToS3, jwtTokenVerify ,jwtsign, getCurrentLocalTimestamp};
+// Function to decrypt text
+function decrypt(encryptedText) {
+    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key, 'hex'), Buffer.from(iv));
+    let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+    }
+
+function jwtsign(payload) {
+    return new Promise((resolve, reject) => {
+        jwt.sign(payload, process.env.jwtsecretkey, (err, token) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(token);
+            }
+        });
+    });
+}
+
+export { getCurrentUTCTimestamp, uploadImageToS3, jwtTokenVerify, jwtsign, getCurrentLocalTimestamp, decrypt, encrypt };

@@ -2,9 +2,12 @@ import Randomstring from "randomstring";
 import * as dotenv from "dotenv";
 dotenv.config();
 import propertyModel from "../../models/property.js";
+import propertyImageModel from "../../models/propertyImages.js"
 import {
   getCurrentUTCTimestamp,
+  getCurrentLocalTimestamp,
   uploadImageToS3,
+  uploadMultipleImagesToS3
 } from "../../helpers/helper.js";
 
 //upload property controller
@@ -20,14 +23,26 @@ const postProperty = async (req, res) => {
       city,
       baseCurrency,
       websiteUrl,
+      propertyRating,
+      propertyDescription,
       propertyType,
     } = req.body;
 
     var hotelLogoId = Randomstring.generate(8);
 
     let imageUrl = null; // Initialize imageUrl to null
-    if (req.file) {
-      imageUrl = await uploadImageToS3(req.file);
+    
+
+    const imagesField = req.files['hotelImages'];
+    const imagesLogoField = req.files['hotelLogo'];
+    if (imagesLogoField) {
+      const imageUrls = await uploadMultipleImagesToS3(imagesField);
+      console.log(imageUrls)
+    }
+
+    if (imagesField) {
+      const imageUrls = await uploadMultipleImagesToS3(imagesField);
+      console.log(imageUrls)
     }
 
     //create record
@@ -65,6 +80,12 @@ const postProperty = async (req, res) => {
           modifiedDate: getCurrentUTCTimestamp(),
         },
       ],
+      propertyDescription: [
+        {
+          propertyDescription: propertyDescription,
+          modifiedDate: getCurrentUTCTimestamp(),
+        },
+      ],
       hotelLogo: imageUrl
         ? [
           {
@@ -76,7 +97,10 @@ const postProperty = async (req, res) => {
         : [],
       baseCurrency,
       websiteUrl,
+      dateUTC: getCurrentUTCTimestamp,
+      dateLocal: getCurrentLocalTimestamp,
       propertyType,
+      propertyRating
     });
 
     await newProperty.save();
@@ -90,4 +114,4 @@ const postProperty = async (req, res) => {
 
 
 
-export { postProperty };
+export default postProperty;

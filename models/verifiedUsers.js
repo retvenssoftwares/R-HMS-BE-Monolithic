@@ -1,37 +1,44 @@
 // models/user.js
 import mongoose from 'mongoose';
 
-const verifiedSchema = new mongoose.Schema({
+const verifiedUsersSchema = new mongoose.Schema({
   userId: {
     type: String,
+    default : '',
   },
   firstName: {
     type: String,
-    required: false
+    required: false,
+    default : ''
+    
   },
   role: [{
     role: {
       type: String,
-      required: false
+      required: false,
+      default : ''
     },
     modifiedDate: String
   }],
   lastName: {
     type: String,
     required: false,
+    default : ''
   },
   designation: [
     {
       designation: {
         type: String,
-        required: false
+        required: false,
+        default : ''
       },
       modifiedDate: String
     }],
   phoneNumber: [{
     phoneNumber: {
       type: String,
-      required: false
+      required: false,
+      default : ''
     },
     modifiedDate: String
   }],
@@ -45,10 +52,12 @@ const verifiedSchema = new mongoose.Schema({
     default: ''
   },
   authCode: {
-    type: String
+    type: String,
+    default : ''
   },
   email: {
-    type: String
+    type: String,
+    default : ''
   },
   link: {
     type: String,
@@ -58,7 +67,8 @@ const verifiedSchema = new mongoose.Schema({
  
   password: [{
     password: {
-      type: String
+      type: String,
+      default : ''
     },
     modifiedDate: String
   }],
@@ -74,6 +84,6 @@ const verifiedSchema = new mongoose.Schema({
 
 
 
-const verifiedUser = mongoose.model('verifiedUser', verifiedSchema);
 
+const verifiedUser = mongoose.model('verifiedUser', verifiedUsersSchema);
 export default verifiedUser;

@@ -23,8 +23,36 @@ async function uploadImageToS3(file) {
     return imageUrl;
 }
 
-
-
+async function uploadMultipleImagesToS3(files) {
+    const uploadPromises = files.map((file) => {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const params = {
+            Bucket: bucket, // Replace with your S3 bucket name
+            Key: `hotel_images/${file.originalname}`,
+            Body: file.buffer,
+            ContentType: file.mimetype,
+            ACL: 'public-read',
+          };
+  
+          const [uploadResponse] = await Promise.all([s3.upload(params).promise()]);
+          const imageUrl = uploadResponse.Location;
+  
+          resolve(imageUrl);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+  
+    try {
+      const imageUrls = await Promise.all(uploadPromises);
+      return imageUrls;
+    } catch (error) {
+      throw error;
+    }
+  }
+  
 //function to get utc time
 async function getCurrentUTCTimestamp() {
     const now = new Date();

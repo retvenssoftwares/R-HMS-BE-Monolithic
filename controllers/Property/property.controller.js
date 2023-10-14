@@ -4,6 +4,7 @@ dotenv.config();
 import propertyModel from "../../models/property.js";
 import {
   getCurrentUTCTimestamp,
+  getCurrentLocalTimestamp,
   uploadImageToS3,
 } from "../../helpers/helper.js";
 
@@ -76,6 +77,8 @@ const postProperty = async (req, res) => {
         : [],
       baseCurrency,
       websiteUrl,
+      dateUTC: getCurrentUTCTimestamp,
+      dateLocal: getCurrentLocalTimestamp,
       propertyType,
     });
 

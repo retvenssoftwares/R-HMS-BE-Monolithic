@@ -101,6 +101,8 @@ const roomType = new mongoose.Schema({
             default: ""
         }
     }],
+
+    
     
 
 

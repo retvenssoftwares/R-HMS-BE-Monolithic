@@ -38,8 +38,9 @@ const postProperty = async (req, res) => {
     }
     const imagesField = req.files['hotelImages'];
 
+    let imageUrls = []
     if (imagesField) {
-      const imageUrls = await uploadMultipleImagesToS3(imagesField);
+      imageUrls = await uploadMultipleImagesToS3(imagesField);
     }
     const currentUTCTime = await getCurrentUTCTimestamp();
     //create record
@@ -101,6 +102,23 @@ const postProperty = async (req, res) => {
     });
 
     await newProperty.save();
+
+    // Save the property record
+    const savedProperty = await newProperty.save();
+
+    // Create a propertyImages record and associate it with the property
+    const propertyImages = new propertyImageModel({
+      propertyId: savedProperty.propertyId, // Use the propertyId from the saved property record
+      propertyImages: imageUrls.map((imageUrl) => ({
+        imageId: Randomstring.generate(8),
+        image: imageUrl,
+        displayStatus: '1', // You can set the displayStatus as needed
+      })),
+    });
+
+    // Save the propertyImages record
+    await propertyImages.save();
+
 
     return res.status(200).json({ message: "New property added successfully", statuscode: 200 });
   } catch (err) {

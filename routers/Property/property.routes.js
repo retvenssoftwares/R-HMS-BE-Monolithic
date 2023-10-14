@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post(
     '/api/createProperty',
-    upload.fields([{ name: 'hotelImages', maxCount: 6 }, { name: 'hotelLogo', maxCount: 1 }]),
+    upload.fields([{ name: 'hotelImages', maxCount: 10 }, { name: 'hotelLogo', maxCount: 1 }]),
     postProperty
 );
 //router.post("/api/createPropertyChain", upload.single('hotelLogo'), postPropertyChain);

@@ -27,7 +27,7 @@ const amenitySchema = new mongoose.Schema({
         default : ''
     },
 
-    amenityIconId : {
+    amenityIconLink : {
         type : String,
         default : ''
     },

@@ -9,7 +9,11 @@ import editProperty from "../../controllers/Property/editPropert.controller.js"
 
 const router = express.Router();
 
-router.post("/api/createProperty", upload.fields([{ name: 'hotelImages', maxCount: 6 },{ name: 'hotelLogo', maxCount: 1 }]), postProperty);
+router.post(
+    '/api/createProperty',
+    upload.fields([{ name: 'hotelImages', maxCount: 6 }, { name: 'hotelLogo', maxCount: 1 }]),
+    postProperty
+);
 //router.post("/api/createPropertyChain", upload.single('hotelLogo'), postPropertyChain);
 router.patch("/api/propertyAdditionalDetails", editProperty)
 

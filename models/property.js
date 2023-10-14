@@ -63,7 +63,7 @@ const propertySchema = new Schema({
     }],
     state: [{
         state: { type: String, default: '' },
-        modifiedDate: {type: String, default:''}
+        modifiedDate: { type: String, default: '' }
     }],
     location: [{
 
@@ -115,16 +115,14 @@ const propertySchema = new Schema({
         type: String,
     },
     amenities: [{
+        amenities:[{
         amenitiesId: {
             default: "",
             type: String
         },
-        isSelected: {
-            default: "",
-            type: String
-        }
-
-    }],
+        addedDate:String
+    }]
+}],
 
     checkInTime: [{
         checkInFrom: {
@@ -247,11 +245,11 @@ const propertySchema = new Schema({
         type: String,
         default: ''
     },
-    roomsInProperty:{
+    roomsInProperty: {
         type: String,
         default: ''
     },
-    taxName:{
+    taxName: {
         type: String,
         default: ''
     },
@@ -263,10 +261,13 @@ const propertySchema = new Schema({
         type: String,
         default: ''
     },
-    propertyDescription: {
-        type: String,
-        default: ''
-    }
+    propertyDescription: [{
+        propertyDescription: {
+            type: String,
+            default: ''
+        },
+        modifiedDate: String
+    }]
 
 
 })

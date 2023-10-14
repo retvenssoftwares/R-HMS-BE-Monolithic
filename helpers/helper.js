@@ -120,4 +120,4 @@ function jwtsign(payload) {
     });
 }
 
-export { getCurrentUTCTimestamp, uploadImageToS3, jwtTokenVerify, jwtsign, getCurrentLocalTimestamp, decrypt, encrypt };
+export { getCurrentUTCTimestamp, uploadImageToS3, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt };

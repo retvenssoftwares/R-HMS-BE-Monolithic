@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+Iimport { Schema, model } from "mongoose";
 
 const propertyRoomSchema = Schema({
 

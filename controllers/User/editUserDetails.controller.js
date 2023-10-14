@@ -73,10 +73,10 @@ const editUserOnboarding = async (req, res) => {
             findRecord.propertyTypeSOC = propertyTypeSOC
             await findRecord.save();
         }else{
-            const { userId, propertyChainName, propertyChainId,baseCurrency, websiteUrl } = req.body
+            const { userId, propertyChainName,baseCurrency, websiteUrl } = req.body
             var findRecord = await userModel.findOne({ userId });
             //console.log(findRecord)
-            
+
             const elementToUpdate = findRecord.multipleData[0];
             let imageUrl = ''
             if (req.file) {
@@ -100,8 +100,8 @@ const editUserOnboarding = async (req, res) => {
             elementToUpdate.propertyChainName.unshift(propertyChainNameObject)
 
             elementToUpdate.userId = userId;
-            propertyChainId = randomstring.generate(8)
-            findRecord.propertyChainId = propertyChainId
+            const propertyChainId = randomstring.generate(8)
+            elementToUpdate.propertyChainId = propertyChainId
             elementToUpdate.dateUTC = (await getCurrentUTCTimestamp()).toString();
 
             elementToUpdate.baseCurrency = baseCurrency

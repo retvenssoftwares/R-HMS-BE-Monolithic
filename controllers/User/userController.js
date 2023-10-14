@@ -9,7 +9,7 @@ const postUser = async (req, res) => {
         const password = req.body.password
 
         const encryptedPass = encrypt(password);
-        
+        console.log(encryptedPass)
 
         const email = req.body.email
 

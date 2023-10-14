@@ -1,7 +1,7 @@
 // models/user.js
 import mongoose from 'mongoose';
 
-const verifiedSchema = new mongoose.Schema({
+const verifiedUsersSchema = new mongoose.Schema({
   userId: {
     type: String
   },
@@ -74,6 +74,6 @@ const verifiedSchema = new mongoose.Schema({
 
 
 
-const User = mongoose.model('User', userSchema);
+const verifiedUser = mongoose.model('verifiedUser', verifiedUsersSchema);
 
-export default User;
+export default verifiedUser;

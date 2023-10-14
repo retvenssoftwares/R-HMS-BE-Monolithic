@@ -75,7 +75,7 @@ const editUserOnboarding = async (req, res) => {
             findRecord.propertyTypeSOC = propertyTypeSOC
             await findRecord.save();
         }else{
-            const { userId, propertyChainName,baseCurrency, websiteUrl } = req.body
+            const { userId, propertyChainName,numberOfProperties,propertyType,baseCurrency, websiteUrl } = req.body
             var findRecord = await userModel.findOne({ userId });
             //console.log(findRecord)
 

@@ -7,7 +7,7 @@ import {
 
 const editUserOnboarding = async (req, res) => {
     const propertyId = randomstring.generate(8);
-    const { userId, propertyTypeSOC, propertyAddress, propertyName, propertyTypeName, postCode, state, city, starCategory, ratePercent, baseCurrency, websiteUrl, roomsInProperty, taxName, registrationNumber } = req.body
+    const { userId, propertyTypeSOC } = req.body;
     var findRecord = await userModel.findOne({ userId });
     // Find the specific array element you want to update
     if (!findRecord) {
@@ -15,18 +15,20 @@ const editUserOnboarding = async (req, res) => {
     }
     try {
         if (propertyTypeSOC === 'Single') {
+            const { propertyAddress, propertyName, propertyType, propertyTypeName, postCode, state, city, starCategory, ratePercent, baseCurrency, websiteUrl, roomsInProperty, taxName, registrationNumber } = req.body
 
             const elementToUpdate = findRecord.singlePropertyDetails[0];
             let imageUrl = ''
             if (req.file) {
                 imageUrl = await uploadImageToS3(req.file)
+                const hotelLogoObject = {
+                    hotelLogoId: randomstring.generate(8),
+                    hotelLogo: imageUrl,
+                    modifiedDate: (await getCurrentUTCTimestamp()).toString()
+                }
+                elementToUpdate.hotelLogo.unshift(hotelLogoObject)
             }
-            const hotelLogoObject = {
-                hotelLogoId: randomstring.generate(8),
-                hotelLogo: imageUrl,
-                modifiedDate: (await getCurrentUTCTimestamp()).toString()
-            }
-            elementToUpdate.hotelLogo.unshift(hotelLogoObject)
+
             const propertyNameObject = {
                 propertyName: propertyName,
                 modifiedDate: (await getCurrentUTCTimestamp()).toString()
@@ -34,7 +36,7 @@ const editUserOnboarding = async (req, res) => {
             elementToUpdate.propertyName.unshift(propertyNameObject)
 
             elementToUpdate.propertyTypeName = propertyTypeName;
-
+            elementToUpdate.propertyType = propertyType
             elementToUpdate.starCategory = starCategory;
 
             elementToUpdate.roomsInProperty = roomsInProperty;
@@ -81,17 +83,15 @@ const editUserOnboarding = async (req, res) => {
             let imageUrl = ''
             if (req.file) {
                 imageUrl = await uploadImageToS3(req.file)
+                const hotelLogoObject = {
+                    hotelLogoId: randomstring.generate(8),
+                    hotelLogo: imageUrl,
+                    modifiedDate: (await getCurrentUTCTimestamp()).toString()
+                }
+                elementToUpdate.hotelLogo.unshift(hotelLogoObject)
             }
 
-           
-            const hotelLogoObject = {
-                hotelLogoId: randomstring.generate(8),
-                hotelLogo: imageUrl,
-                modifiedDate: (await getCurrentUTCTimestamp()).toString()
-            }
-            elementToUpdate.hotelLogo.unshift(hotelLogoObject)
 
-            
             const propertyChainNameObject = {
                 propertyChainName: propertyChainName,
                 modifiedDate: (await getCurrentUTCTimestamp()).toString()
@@ -99,12 +99,19 @@ const editUserOnboarding = async (req, res) => {
 
             elementToUpdate.propertyChainName.unshift(propertyChainNameObject)
 
+            const numberOfPropertiesObject = {
+                numberOfProperties: numberOfProperties,
+                modifiedDate: (await getCurrentUTCTimestamp()).toString()
+            }
+            elementToUpdate.numberOfProperties.unshift(numberOfPropertiesObject)
+
             elementToUpdate.userId = userId;
             const propertyChainId = randomstring.generate(8)
             elementToUpdate.propertyChainId = propertyChainId
             elementToUpdate.dateUTC = (await getCurrentUTCTimestamp()).toString();
 
             elementToUpdate.baseCurrency = baseCurrency
+            elementToUpdate.propertyType = propertyType
             elementToUpdate.websiteUrl = websiteUrl
             findRecord.propertyTypeSOC = "Multiple"
             await findRecord.save();
@@ -114,7 +121,7 @@ const editUserOnboarding = async (req, res) => {
 
     catch (err) {
         console.log(err);
-        return res.status(500).json({ message: "Internal Server Error", statuscode: 200 });
+        return res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
     }
 }
 

@@ -355,7 +355,12 @@ const userSchema = new mongoose.Schema({
       default: ''
     },
 
-  }]
+  }],
+
+  verificationStatus: {
+     type: String,
+     default: 'false'
+  },
 },
   {
     versionKey: false

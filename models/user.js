@@ -2,26 +2,48 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-  name: {
+  userId: {
+    type: String
+  },
+  firstName: {
     type: String,
     required: false
   },
-  email: {
+  Role:{
+    type: String,
+    required: false
+  },
+  lastName: {
     type: String,
     required: false,
-    unique: true
   },
-  password: {
+  designation: [{
+    type: String,
+    required: false
+  }],
+  phoneNumber: [{
+    type: String,
+    required: false
+  }],
+  hotelRcode:{
     type: String,
     required: false
   },
   authToken: {
-    type:String
-  }
+    type: String
+  },
+  email: {
+    type: String
+  },
+  password: [{
+    type: String,
+  }],
 },
   {
     versionKey: false
   });
+
+
 
 const User = mongoose.model('User', userSchema);
 

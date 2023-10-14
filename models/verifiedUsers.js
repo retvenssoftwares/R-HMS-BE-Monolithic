@@ -3,35 +3,42 @@ import mongoose from 'mongoose';
 
 const verifiedUsersSchema = new mongoose.Schema({
   userId: {
-    type: String
+    type: String,
+    default : '',
   },
   firstName: {
     type: String,
-    required: false
+    required: false,
+    default : ''
+    
   },
   role: [{
     role: {
       type: String,
-      required: false
+      required: false,
+      default : ''
     },
     modifiedDate: String
   }],
   lastName: {
     type: String,
     required: false,
+    default : ''
   },
   designation: [
     {
       designation: {
         type: String,
-        required: false
+        required: false,
+        default : ''
       },
       modifiedDate: String
     }],
   phoneNumber: [{
     phoneNumber: {
       type: String,
-      required: false
+      required: false,
+      default : ''
     },
     modifiedDate: String
   }],
@@ -45,10 +52,12 @@ const verifiedUsersSchema = new mongoose.Schema({
     default: ''
   },
   authCode: {
-    type: String
+    type: String,
+    default : ''
   },
   email: {
-    type: String
+    type: String,
+    default : ''
   },
   link: {
     type: String,
@@ -58,7 +67,8 @@ const verifiedUsersSchema = new mongoose.Schema({
  
   password: [{
     password: {
-      type: String
+      type: String,
+      default : ''
     },
     modifiedDate: String
   }],

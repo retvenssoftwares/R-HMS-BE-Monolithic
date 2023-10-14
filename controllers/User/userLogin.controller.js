@@ -14,7 +14,7 @@ const userLogin = async (req, res) => {
         const findProfile = await userModel.findOne({ hotelRcode });
 
         if (!findProfile) {
-            return res.status(404).json({ message: "Profile not found", statuscode: 400 })
+            return res.status(404).json({ message: "Profile not found", statuscode: 404 })
         }
         const findPassword = findProfile.password[0].password
         const findUsername = findProfile.username[0].username

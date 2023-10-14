@@ -23,6 +23,59 @@ async function uploadImageToS3(file) {
     return imageUrl;
 }
 
+async function uploadMultipleImagesToS3(file, fieldName) {
+    upload.fields([
+        { name: 'hotelImages', maxCount: 6 },
+        { name: 'roomTypeImages', maxCount: 6 },
+      ])(req, res, async (err) => {
+        try {
+          const propertyId = req.body.propertyId;
+          const roomTypeId = req.body.roomTypeId;
+          const findHotel = await hotelImagesModel.findOne({ propertyId: propertyId });
+          const findRoomTypes = await roomImagesModel.findOne({ roomTypeId: roomTypeId });
+    
+          if (!findHotel) {
+            return res.status(404).json({ error: 'Hotel not found' });
+          }
+    
+          if (req.files['hotelImages']) {
+            const uploadedImageIds = [];
+            const uploadPromises = [];
+            //const img =[];
+            for (const hotel_image of req.files['hotelImages']) {
+              const hotel_image_id = randomstring.generate(10); // Generate a unique ID
+              const hotel_image_params = {
+                Bucket: 'rown-space-bucket/hotel_images',
+                Key: hotel_image.originalname,
+                Body: hotel_image.buffer,
+                ContentType: hotel_image.mimetype,
+                ACL: 'public-read'
+              };
+    
+              const uploadPromise = s3.upload(hotel_image_params).promise()
+                .then(() => {
+                  const imageUrl = `https://rown-space-bucket.nyc3.digitaloceanspaces.com/hotel_images/${hotel_image.originalname}`;
+                  // Create an object with image details
+                  const imageDetails = {
+                    imageId: hotel_image_id,
+                    image: imageUrl,
+                    displayStatus: '1',
+                    imageDescription: ''
+                  };
+    
+                  uploadedImageIds.push({
+                    hotel_id: hotel_image_id,
+                    imglink: imageUrl,
+                  });
+                  findHotel.propertyImages.push(imageDetails);
+                });
+              uploadPromises.push(uploadPromise);
+            }
+    
+            await Promise.all(uploadPromises);
+      
+}
+
 
 
 //function to get utc time

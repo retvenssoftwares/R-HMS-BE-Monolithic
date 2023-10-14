@@ -7,6 +7,7 @@ import {
   getCurrentUTCTimestamp,
   getCurrentLocalTimestamp,
   uploadImageToS3,
+  uploadMultipleImagesToS3
 } from "../../helpers/helper.js";
 
 //upload property controller
@@ -30,14 +31,17 @@ const postProperty = async (req, res) => {
     var hotelLogoId = Randomstring.generate(8);
 
     let imageUrl = null; // Initialize imageUrl to null
-    if (req.file) {
-      imageUrl = await uploadImageToS3(req.file);
-    }
+    
 
     const imagesField = req.files['hotelImages'];
+    const imagesLogoField = req.files['hotelLogo'];
+    if (imagesLogoField) {
+      const imageUrls = await uploadMultipleImagesToS3(imagesField);
+      console.log(imageUrls)
+    }
 
     if (imagesField) {
-      const imageUrls = await uploadImagesToS3(imagesField);
+      const imageUrls = await uploadMultipleImagesToS3(imagesField);
       console.log(imageUrls)
     }
 
@@ -110,4 +114,4 @@ const postProperty = async (req, res) => {
 
 
 
-export { postProperty };
+export default postProperty;

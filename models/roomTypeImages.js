@@ -10,7 +10,7 @@ propertyId: { type: String, default: '', unique: false },
             imageId: {type: String, default:''},
             image: { type: String, default: '' },
             displayStatus: {type:String, default: '1' },
-            imageDescription: {type: String, default: ''}
+            
         }
 
     ],

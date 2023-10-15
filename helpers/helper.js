@@ -24,35 +24,31 @@ async function uploadImageToS3(file) {
 }
 
 async function uploadMultipleImagesToS3(files) {
-    const uploadPromises = files.map((file) => {
-      return new Promise(async (resolve, reject) => {
-        try {
-          const params = {
+    const uploadPromises = files.map(async (file) => {
+        const params = {
             Bucket: bucket, // Replace with your S3 bucket name
             Key: `hotel_images/${file.originalname}`,
             Body: file.buffer,
             ContentType: file.mimetype,
             ACL: 'public-read',
-          };
-  
-          const [uploadResponse] = await Promise.all([s3.upload(params).promise()]);
-          const imageUrl = uploadResponse.Location;
-  
-          resolve(imageUrl);
+        };
+
+        try {
+            const uploadResponse = await s3.upload(params).promise();
+            const imageUrl = uploadResponse.Location;
+            return imageUrl;
         } catch (error) {
-          reject(error);
+            throw error; // You can handle the error at a higher level
         }
-      });
     });
-  
+
     try {
-      const imageUrls = await Promise.all(uploadPromises);
-      return imageUrls;
+        return await Promise.all(uploadPromises);
     } catch (error) {
-      throw error;
+        throw error; // You can handle the error at a higher level
     }
-  }
-  
+}
+
 //function to get utc time
 async function getCurrentUTCTimestamp() {
     const now = new Date();
@@ -106,7 +102,7 @@ function decrypt(encryptedText) {
     let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
     return decrypted;
-    }
+}
 
 function jwtsign(payload) {
     return new Promise((resolve, reject) => {

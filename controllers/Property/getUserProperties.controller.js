@@ -11,6 +11,7 @@ try{
 
     if(userProperties.length>0){
 
+        
            return res.status(200).json({userProperties, statuscode : 200})
     } else {
           res.status(404).json({ error: "no property found", statuscode: 404 })

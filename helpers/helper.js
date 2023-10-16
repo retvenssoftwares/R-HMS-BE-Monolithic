@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
+import async from 'async'
 import * as crypto from 'crypto';
 import s3 from "../utils/url.js"
 import jwt from "jsonwebtoken";
@@ -48,6 +49,9 @@ async function uploadMultipleImagesToS3(files) {
         throw error; // You can handle the error at a higher level
     }
 }
+
+
+  
 
 //function to get utc time
 async function getCurrentUTCTimestamp() {

@@ -23,7 +23,31 @@ async function uploadImageToS3(file) {
     return imageUrl;
 }
 
+async function uploadMultipleImagesToS3(files) {
+    const uploadPromises = files.map(async (file) => {
+        const params = {
+            Bucket: bucket, // Replace with your S3 bucket name
+            Key: `hotel_images/${file.originalname}`,
+            Body: file.buffer,
+            ContentType: file.mimetype,
+            ACL: 'public-read',
+        };
 
+        try {
+            const uploadResponse = await s3.upload(params).promise();
+            const imageUrl = uploadResponse.Location;
+            return imageUrl;
+        } catch (error) {
+            throw error; // You can handle the error at a higher level
+        }
+    });
+
+    try {
+        return await Promise.all(uploadPromises);
+    } catch (error) {
+        throw error; // You can handle the error at a higher level
+    }
+}
 
 //function to get utc time
 async function getCurrentUTCTimestamp() {
@@ -78,7 +102,7 @@ function decrypt(encryptedText) {
     let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
     return decrypted;
-    }
+}
 
 function jwtsign(payload) {
     return new Promise((resolve, reject) => {
@@ -92,4 +116,4 @@ function jwtsign(payload) {
     });
 }
 
-export { getCurrentUTCTimestamp, uploadImageToS3, jwtTokenVerify, jwtsign, getCurrentLocalTimestamp, decrypt, encrypt };
+export { getCurrentUTCTimestamp, uploadImageToS3, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt };

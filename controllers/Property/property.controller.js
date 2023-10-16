@@ -2,9 +2,12 @@ import Randomstring from "randomstring";
 import * as dotenv from "dotenv";
 dotenv.config();
 import propertyModel from "../../models/property.js";
+import propertyImageModel from "../../models/propertyImages.js"
 import {
   getCurrentUTCTimestamp,
+  getCurrentLocalTimestamp,
   uploadImageToS3,
+  uploadMultipleImagesToS3
 } from "../../helpers/helper.js";
 
 //upload property controller
@@ -20,16 +23,26 @@ const postProperty = async (req, res) => {
       city,
       baseCurrency,
       websiteUrl,
+      propertyRating,
+      propertyDescription,
       propertyType,
     } = req.body;
 
     var hotelLogoId = Randomstring.generate(8);
 
-    let imageUrl = null; // Initialize imageUrl to null
-    if (req.file) {
-      imageUrl = await uploadImageToS3(req.file);
-    }
+    let imageUrl = ''; // Initialize imageUrl
 
+    // Check if a single hotelLogo file is uploaded
+    if (req.files['hotelLogo']) {
+      imageUrl = await uploadImageToS3(req.files['hotelLogo'][0]);
+    }
+    const imagesField = req.files['hotelImages'];
+
+    let imageUrls = []
+    if (imagesField) {
+      imageUrls = await uploadMultipleImagesToS3(imagesField);
+    }
+    const currentUTCTime = await getCurrentUTCTimestamp();
     //create record
     const newProperty = new propertyModel({
       userId,
@@ -38,31 +51,37 @@ const postProperty = async (req, res) => {
       propertyAddress: [
         {
           propertyAddress,
-          modifiedDate: getCurrentUTCTimestamp(),
+          modifiedDate: currentUTCTime,
         },
       ],
       propertyName: [
         {
           propertyName: propertyName,
-          modifiedDate: getCurrentUTCTimestamp(),
+          modifiedDate: currentUTCTime,
         },
       ],
       postCode: [
         {
           postCode: postCode,
-          modifiedDate: getCurrentUTCTimestamp(),
+          modifiedDate: currentUTCTime,
         },
       ],
       state: [
         {
           state: state,
-          modifiedDate: getCurrentUTCTimestamp(),
+          modifiedDate: currentUTCTime,
         },
       ],
       city: [
         {
           city,
-          modifiedDate: getCurrentUTCTimestamp(),
+          modifiedDate: currentUTCTime,
+        },
+      ],
+      propertyDescription: [
+        {
+          propertyDescription: propertyDescription,
+          modifiedDate: currentUTCTime,
         },
       ],
       hotelLogo: imageUrl
@@ -70,16 +89,36 @@ const postProperty = async (req, res) => {
           {
             hotelLogoId,
             hotelLogo: imageUrl,
-            modifiedDate: getCurrentUTCTimestamp(),
+            modifiedDate: currentUTCTime,
           },
         ]
         : [],
       baseCurrency,
       websiteUrl,
+      dateUTC: currentUTCTime,
+      dateLocal: getCurrentLocalTimestamp(),
       propertyType,
+      propertyRating
     });
 
     await newProperty.save();
+
+    // Save the property record
+    const savedProperty = await newProperty.save();
+
+    // Create a propertyImages record and associate it with the property
+    const propertyImages = new propertyImageModel({
+      propertyId: savedProperty.propertyId, // Use the propertyId from the saved property record
+      propertyImages: imageUrls.map((imageUrl) => ({
+        imageId: Randomstring.generate(8),
+        image: imageUrl,
+        displayStatus: '1', // You can set the displayStatus as needed
+      })),
+    });
+
+    // Save the propertyImages record
+    await propertyImages.save();
+
 
     return res.status(200).json({ message: "New property added successfully", statuscode: 200 });
   } catch (err) {
@@ -90,4 +129,4 @@ const postProperty = async (req, res) => {
 
 
 
-export { postProperty };
+export default postProperty;

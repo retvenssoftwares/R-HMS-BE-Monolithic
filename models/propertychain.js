@@ -86,6 +86,6 @@ userId: {
 
 })
 
-const propertychain = mongoose.model('propertychai', propertychainSchema);
+const propertychain = mongoose.model('propertychain', propertychainSchema);
 
 export default propertychain;

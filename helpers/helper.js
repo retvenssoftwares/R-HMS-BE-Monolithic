@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
-import async from 'async'
+import { format, utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 import * as crypto from 'crypto';
 import s3 from "../utils/url.js"
 import jwt from "jsonwebtoken";
@@ -46,12 +46,12 @@ async function uploadMultipleImagesToS3(files) {
     try {
         return await Promise.all(uploadPromises);
     } catch (error) {
-        throw error; // You can handle the error at a higher level
+        throw error;
     }
 }
 
 
-  
+
 
 //function to get utc time
 async function getCurrentUTCTimestamp() {
@@ -120,4 +120,22 @@ function jwtsign(payload) {
     });
 }
 
-export { getCurrentUTCTimestamp, uploadImageToS3, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt };
+
+
+function convertTimestampToCustomFormat(utcTimestamp, targetTimeZone) {
+    // Convert the UTC timestamp to the target time zone
+    const zonedTimestamp = utcToZonedTime(utcTimestamp, targetTimeZone);
+
+    // Define the custom format
+    const customFormat = "dd/MM/yy HH:mm:ss";
+
+    // Format the zoned timestamp into the custom format
+    const formattedTimestamp = format(zonedTimestamp, customFormat, {
+        timeZone: targetTimeZone,
+    });
+
+    return formattedTimestamp;
+}
+
+
+export { getCurrentUTCTimestamp, uploadImageToS3,convertTimestampToCustomFormat, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt };

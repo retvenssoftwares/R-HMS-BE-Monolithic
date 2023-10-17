@@ -21,10 +21,22 @@ const transportation = new Schema({
         type:String,
         default:""
     },
-    lastModified:{
-        type:String,
-        default:""
-    }
+    updatedArray:[{
+        roomTypeName:{
+            type:String,
+            default:""
+        },
+        lastModifiedBy:{
+            type:String,
+            default:""
+        },
+        lastModifiedOn:{
+            type:String,
+            default:""
+        }
+
+    }]
+    
 })
 
 const transportationModel = mongoose.model("transportation",transportation)

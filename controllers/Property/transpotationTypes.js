@@ -14,7 +14,6 @@ const transportationAdd = async(req,res)=>{
         roomTypeName:req.body.roomTypeName,
         createdBy : req.body.createdBy,
         createdOn : getCurrentUTCTimestamp(),
-        lastModified : getCurrentUTCTimestamp()
     })
 
     await data.save()
@@ -27,7 +26,19 @@ const updateTransportation = async(req,res)=>{
     if(!UserauthCode){
         return res.status(200).json({message: "Invalid data"})
     }
-    const add = await transportation.updateOne({transportationId:req.body.transportationId} , {$set :{shortCode : req.body.shortCode ,roomTypeName:req.body.roomTypeName, createdBy:req.body.createdBy, lastModified:req.body.lastModified }})
+    const add = await transportation.updateOne(
+        { transportationId: req.body.transportationId },
+        {
+          $push: {
+            updatedArray: {
+              roomTypeName: req.body.roomTypeName,
+              lastModifiedBy: req.body.lastModified,
+              lastModifiedOn: getCurrentUTCTimestamp()// assuming you want to store the current date as a string
+            }
+          }
+        }
+      );
+      
     if(!add){
         return res.status(200).json({message:"Records not found"})
     }
@@ -49,6 +60,9 @@ const getTransportation = async(req,res)=>{
         return res.status(500).json({
             message : "Data not found"
         })
+    }
+    if(getDetails.updatedArray.length>0){
+        return res.status(200).json(getDetails.updatedArray[0])
     }
     return res.status(200).json(getDetails)
 }

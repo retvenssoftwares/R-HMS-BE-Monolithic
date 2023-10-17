@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import {Schema, model, mongoose} from 'mongoose';
 
 const paymentTypeSchema = new mongoose.Schema({
         

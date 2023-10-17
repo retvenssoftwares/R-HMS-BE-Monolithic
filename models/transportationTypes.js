@@ -21,8 +21,16 @@ const transportation = new Schema({
         type:String,
         default:""
     },
+    propertyId:{
+        type:String,
+        default:""
+    },
     updatedArray:[{
         roomTypeName:{
+            type:String,
+            default:""
+        },
+        propertyId:{
             type:String,
             default:""
         },

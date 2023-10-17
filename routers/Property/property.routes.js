@@ -10,7 +10,7 @@ import propertyImageController from '../../controllers/Property/addPropertyImage
 import reservationType  from '../../controllers/Property/reservationType.controller.js'
 import updateReservationType from '../../controllers/Property/updateReservationType.controller.js'
 import userIdentity from "../../controllers/Property/postidentity.controller.js"
-
+import fetchReservation from '../../controllers/Property/getReservation.controller.js'
 const router = express.Router();
 
 router.post(
@@ -29,6 +29,12 @@ router.post("/api/addReservationType", reservationType)
 
 //update ReservationType Route
 router.patch("/api/updateReservationType/:reservationId", updateReservationType)
+
+//get reservationType
+router.get("/api/getreservation/:propertyId",fetchReservation)
+
+
+
 router.post("/api/postIdentity", userIdentity);
 
 export default router;

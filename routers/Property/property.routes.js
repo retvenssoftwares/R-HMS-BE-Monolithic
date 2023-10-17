@@ -9,6 +9,8 @@ import editProperty from "../../controllers/Property/editPropert.controller.js"
 
 import userProperty from "../../controllers/Property/getUserProperties.controller.js"
 
+import userIdentity from "../../controllers/Property/postidentity.controller.js"
+
 const router = express.Router();
 
 router.post(
@@ -20,5 +22,7 @@ router.post(
 router.patch("/api/editProperty",editProperty);
 
 router.get("/api/fetchProperty/:userId",userProperty);
+
+router.post("/api/postIdentity", userIdentity);
 
 export default router;

@@ -74,8 +74,8 @@ const userSchema = new mongoose.Schema({
       default: "",
       type: String
     },
-    propertyAddress: [{
-      propertyAddress: {
+    propertyAddress1: [{
+      propertyAddress1: {
         default: "",
         type: String
       },

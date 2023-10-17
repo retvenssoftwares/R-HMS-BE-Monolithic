@@ -1,7 +1,7 @@
 import transportation from "../../models/transportationTypes.js"
 import verifying  from "../../models/verifiedUsers.js"
 import randomString  from "randomstring"
-import 
+import {getCurrentUTCTimestamp} from "../../helpers/helper.js"
 const transportationAdd = async(req,res)=>{
     const authCode = req.headers["authCode"]
     const UserauthCode = await verifying.findOne({authCode:authCode})
@@ -13,8 +13,8 @@ const transportationAdd = async(req,res)=>{
         shortCode:req.body.shortCode,
         roomTypeName:req.body.roomTypeName,
         createdBy : req.body.createdBy,
-        createdOn : req.body.createdOn,
-        lastModified : req.body.lastModified
+        createdOn : getCurrentUTCTimestamp(),
+        lastModified : getCurrentUTCTimestamp()
     })
 
     await data.save()
@@ -53,4 +53,4 @@ const getTransportation = async(req,res)=>{
     return res.status(200).json(getDetails)
 }
 
-export default {transportationAdd , updateTransportation , getTransportation}
+export  {transportationAdd , updateTransportation , getTransportation}

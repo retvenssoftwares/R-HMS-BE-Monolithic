@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
+import { format, utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 import * as crypto from 'crypto';
 import s3 from "../utils/url.js"
 import jwt from "jsonwebtoken";
@@ -24,42 +25,33 @@ async function uploadImageToS3(file) {
 }
 
 async function uploadMultipleImagesToS3(files) {
-    if (files.length > 1) {
-        const uploadPromises = files.map((file) => {
-            return new Promise(async (resolve, reject) => {
-                try {
-                    const params = {
-                        Bucket: bucket, // Replace with your S3 bucket name
-                        Key: `hotel_images/${file.originalname}`,
-                        Body: file.buffer,
-                        ContentType: file.mimetype,
-                        ACL: 'public-read',
-                    };
-    
-                    const [uploadResponse] = await Promise.all([s3.upload(params).promise()]);
-                    const imageUrl = uploadResponse.Location;
-    
-                    resolve(imageUrl);
-                } catch (error) {
-                    reject(error);
-                }
-            });
-        });
+    const uploadPromises = files.map(async (file) => {
+        const params = {
+            Bucket: bucket, // Replace with your S3 bucket name
+            Key: `hotel_images/${file.originalname}`,
+            Body: file.buffer,
+            ContentType: file.mimetype,
+            ACL: 'public-read',
+        };
 
         try {
-            const imageUrls = await Promise.all(uploadPromises);
-            return imageUrls;
+            const uploadResponse = await s3.upload(params).promise();
+            const imageUrl = uploadResponse.Location;
+            return imageUrl;
         } catch (error) {
-            throw error;
+            throw error; // You can handle the error at a higher level
         }
-    }else{
-       await uploadImageToS3(files)
+    });
+
+    try {
+        return await Promise.all(uploadPromises);
+    } catch (error) {
+        throw error;
     }
-
-   
-
-   
 }
+
+
+
 
 //function to get utc time
 async function getCurrentUTCTimestamp() {
@@ -114,7 +106,7 @@ function decrypt(encryptedText) {
     let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
     return decrypted;
-    }
+}
 
 function jwtsign(payload) {
     return new Promise((resolve, reject) => {
@@ -128,4 +120,22 @@ function jwtsign(payload) {
     });
 }
 
-export { getCurrentUTCTimestamp, uploadImageToS3, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt };
+
+
+function convertTimestampToCustomFormat(utcTimestamp, targetTimeZone) {
+    // Convert the UTC timestamp to the target time zone
+    const zonedTimestamp = utcToZonedTime(utcTimestamp, targetTimeZone);
+
+    // Define the custom format
+    const customFormat = "dd/MM/yy HH:mm:ss";
+
+    // Format the zoned timestamp into the custom format
+    const formattedTimestamp = format(zonedTimestamp, customFormat, {
+        timeZone: targetTimeZone,
+    });
+
+    return formattedTimestamp;
+}
+
+
+export { getCurrentUTCTimestamp, uploadImageToS3,convertTimestampToCustomFormat, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt };

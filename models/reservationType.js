@@ -10,13 +10,13 @@ const reservationTypeSchema = Schema({
     dateLocal: {
         type: String
     },
+    createdBy:{type:String,default:''},
+    createdOn:{type:String,default:''},
     reservationType: [
         {
             
             reservationName: { type: String, default: '' },
             status: {type:String, default: '' },
-            createdBy:{type:String,default:''},
-            createdOn:{type:String,default:''},
             modifiedBy:{type:String,default:''},
             modifiedOn:{type:String,default:''},
         }

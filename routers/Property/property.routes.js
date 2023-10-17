@@ -8,7 +8,9 @@ import addPaymentType from "../../controllers/Property/addPaymentTypes.js"
 import userProperty from "../../controllers/Property/getUserProperties.controller.js"
 import propertyImageController from '../../controllers/Property/addPropertyImages.js'
 import reservationType  from '../../controllers/Property/reservationType.controller.js'
-import updateReservationType  from '../../controllers/Property/updateReservationType.controller.js'
+import updateReservationType from '../../controllers/Property/updateReservationType.controller.js'
+import userIdentity from "../../controllers/Property/postidentity.controller.js"
+
 const router = express.Router();
 
 router.post(
@@ -27,5 +29,6 @@ router.post("/api/addReservationType", reservationType)
 
 //update ReservationType Route
 router.patch("/api/updateReservationType/:reservationId", updateReservationType)
+router.post("/api/postIdentity", userIdentity);
 
 export default router;

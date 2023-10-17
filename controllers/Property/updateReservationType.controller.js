@@ -3,21 +3,30 @@ import {
     getCurrentUTCTimestamp,
     getCurrentLocalTimestamp,
 } from "../../helpers/helper.js";
-import mongoose from "mongoose"; // Import mongoose to use isValidObjectId
+import userModel from '../../models/user.js'
 
-const updateProperty = async (req, res) => {
-    const reservationTypeId = req.params.reservationId;
-    const { reservationName, status, modifiedBy } = req.body;
+const updateReservation = async (req, res) => {
+    const reservationId = req.params.reservationId;
+    const { reservationName, status, userId, modifiedBy } = req.body;
+    const authCodeValue = req.headers['authcode']
+    const findUser = await userModel.findOne({ userId })
+
+    if (!findUser) {
+        return res.status(404).json({ message: "User not found" });
+    }
+    const {authCode}= findUser
+
+    if(authCodeValue!==authCode){
+        return res.status(404).json({message:"invalid authCode"})
+      }
+
+    const userRole = findUser.role[0].role;
+    console.log(userRole)
     const currentUTCTime = await getCurrentUTCTimestamp();
 
     try {
-        // Check if the reservationTypeId is a valid ObjectId
-        if (!mongoose.Types.ObjectId.isValid(reservationTypeId)) {
-            return res.status(400).json({ message: "Invalid reservationTypeId" });
-        }
-
-        // Find the reservation document by its ID
-        const reservation = await ReservationType.findById(reservationTypeId);
+        // Find the reservation document by its reservationId
+        const reservation = await ReservationType.findOne({ reservationTypeId: reservationId });
 
         if (!reservation) {
             return res.status(404).json({ message: "Reservation not found" });
@@ -29,15 +38,17 @@ const updateProperty = async (req, res) => {
             reservation.reservationType = [{
                 reservationName,
                 status,
-                modifiedBy,
+                modifiedBy: userRole,
                 modifiedOn: currentUTCTime,
             }];
         } else {
-            // Update the first object in the array
-            reservation.reservationType[0].reservationName = reservationName;
-            reservation.reservationType[0].status = status;
-            reservation.reservationType[0].modifiedBy = modifiedBy;
-            reservation.reservationType[0].modifiedOn = currentUTCTime;
+            // Push a new object at the beginning of the array
+            reservation.reservationType.unshift({
+                reservationName,
+                status,
+                modifiedBy:userRole,
+                modifiedOn: currentUTCTime,
+            });
         }
 
         // Save the updated document
@@ -50,4 +61,4 @@ const updateProperty = async (req, res) => {
     }
 };
 
-export default updateProperty;
+export default updateReservation;

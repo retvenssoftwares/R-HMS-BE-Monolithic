@@ -46,8 +46,17 @@ const postRoom = async (req, res) => {
     if(authCodeValue!==authCode){
       return res.status(404).json({message:"invalid authCode"})
     }
-
+    const amenityIds = req.body.amenityIds;
+    const amenityIdsArray = amenityIds.split(',');
     const currentUTCTime = await getCurrentUTCTimestamp();
+    const amenityObjects = amenityIdsArray.map((amenityId) => {
+      return {
+        amenityId,
+        addedDate: currentUTCTime,
+      };
+    });
+
+   
     //create record
     const newRoom = new roomModel({
       userId,
@@ -130,6 +139,11 @@ const postRoom = async (req, res) => {
         {
           extraChildRate: extraChildRate,
           modifiedDate: currentUTCTime,
+        },
+      ],
+      amenities: [
+        {
+          amenities: amenityObjects,
         },
       ],
       dateUTC: currentUTCTime,

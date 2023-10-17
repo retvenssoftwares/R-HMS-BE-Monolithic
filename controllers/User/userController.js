@@ -40,8 +40,10 @@ const postUser = async (req, res) => {
             }],
             multipleData: [{
                 userId: userId
+            }],
+            propertyName: [{
+                propertyName: ''
             }]
-
         })
         await newData.save()
         return res.status(200).json({ message: "User successfully added", statuscode: 200 })

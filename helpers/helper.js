@@ -121,7 +121,6 @@ function jwtsign(payload) {
 }
 
 
-
 function convertTimestampToCustomFormat(utcTimestamp, targetTimeZone) {
     // Convert the UTC timestamp to the target time zone
     const zonedTimestamp = utcToZonedTime(utcTimestamp, targetTimeZone);

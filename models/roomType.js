@@ -184,5 +184,5 @@ const roomType = new mongoose.Schema({
 
 })
 
-const roomTypeModel = model("roomType", roomType)
+const roomTypeModel = mongoose.model("roomType", roomType)
 export default roomTypeModel

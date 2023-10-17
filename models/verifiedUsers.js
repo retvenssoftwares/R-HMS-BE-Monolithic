@@ -84,6 +84,6 @@ const verifiedUsersSchema = new mongoose.Schema({
 
 
 
-const verifiedUser = mongoose.model('verifiedUser', verifiedUsersSchema);
 
+const verifiedUser = mongoose.model('verifiedUser', verifiedUsersSchema);
 export default verifiedUser;

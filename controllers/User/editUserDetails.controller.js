@@ -74,8 +74,8 @@ const editUserOnboarding = async (req, res) => {
             elementToUpdate.propertyId = propertyId
             findRecord.propertyTypeSOC = propertyTypeSOC
             await findRecord.save();
-        } else {
-            const { propertyChainName, baseCurrency, websiteUrl, numberOfProperties, propertyType } = req.body
+        }else{
+            const { userId, propertyChainName,numberOfProperties,propertyType,baseCurrency, websiteUrl } = req.body
             var findRecord = await userModel.findOne({ userId });
             //console.log(findRecord)
 
@@ -106,7 +106,8 @@ const editUserOnboarding = async (req, res) => {
             elementToUpdate.numberOfProperties.unshift(numberOfPropertiesObject)
 
             elementToUpdate.userId = userId;
-            elementToUpdate.propertyChainId = randomstring.generate(8)
+            const propertyChainId = randomstring.generate(8)
+            elementToUpdate.propertyChainId = propertyChainId
             elementToUpdate.dateUTC = (await getCurrentUTCTimestamp()).toString();
 
             elementToUpdate.baseCurrency = baseCurrency

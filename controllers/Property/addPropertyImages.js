@@ -1,22 +1,25 @@
 import randomstring from 'randomstring';
 import propertyImageModel from '../../models/propertyImages.js';
-import { uploadImageToS3 } from '../../helpers/helper.js';
+import { uploadImageToS3, getCurrentUTCTimestamp } from '../../helpers/helper.js';
 
 const uploadPropertyImages = async (req, res) => {
     const propertyId = req.params.propertyId;
 
     try {
-        // Generate a unique imageId and get the image URL (replace "imagelink1" with the actual image URL)
+
         const imageId = randomstring.generate(8);
         var imageUrl = "";
 
-        imageUrl = await uploadImageToS3(req.file)
+        if (req.files['hotelImage']) {
+            imageUrl = await uploadImageToS3(req.files['hotelImage'][0]);
+        }
 
         // Create the image object
         const imageObject = {
             imageId: imageId,
             image: imageUrl,
             displayStatus: "1",
+            modifiedDate: await getCurrentUTCTimestamp()
         };
 
         // Find the propertyImage document by propertyId and push the new image object

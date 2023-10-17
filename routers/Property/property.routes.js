@@ -15,7 +15,7 @@ router.post(
     upload.fields([{ name: 'hotelLogo', maxCount: 1 }]),
     postProperty
 );
-router.patch("/api/uploadPropertyImages/:propertyId", upload.single('hotelImage'), propertyImageController);
+router.patch("/api/uploadPropertyImages/:propertyId", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), propertyImageController);
 router.patch("/api/editProperty", editProperty);
 router.post("/api/addPaymentType", addPaymentType)
 router.get("/api/fetchProperty/:userId", userProperty);

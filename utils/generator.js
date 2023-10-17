@@ -1,30 +1,33 @@
-import { log } from 'console';
-import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+import { format, utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 
-// Function to encrypt text
-function encrypt(text, encryptionKey, iv) {
-    const cipher = createCipheriv('aes-256-cbc', encryptionKey, iv);
-    let encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    return encrypted;
-}
+function convertTimestampToCustomFormat(utcTimestamp, targetTimeZone) {
+  // Convert the UTC timestamp to the target time zone
+  const zonedTimestamp = utcToZonedTime(utcTimestamp, targetTimeZone);
 
-// Function to decrypt text
-function decrypt(encrypted, encryptionKey, iv) {
-    const decipher = createDecipheriv('aes-256-cbc', encryptionKey, iv);
-    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
+  // Define the custom format
+  const customFormat = "dd/MM/yy HH:mm:ss";
+
+  // Format the zoned timestamp into the custom format
+  const formattedTimestamp = format(zonedTimestamp, customFormat, {
+    timeZone: targetTimeZone,
+  });
+
+  return formattedTimestamp;
 }
 
 // Example usage:
-const encryptionKey = randomBytes(32); // Generate a random encryption key
-log(encryptionKey)
-const iv = randomBytes(16); // Generate a random IV
-log(iv)
-const originalText = 'text to be encrypted';
-const encryptedText = encrypt(originalText, encryptionKey, iv);
-console.log('Encrypted:', encryptedText);
+const utcTimestamp = "2023-10-16T17:18:48.845Z";
+const targetTimeZone = "America/New_York"; // Change to the desired time zone
 
-const decryptedText = decrypt(encryptedText, encryptionKey, iv);
-console.log('Decrypted:', decryptedText);
+const formattedTimestamp = convertTimestampToCustomFormat(utcTimestamp, targetTimeZone);
+console.log(formattedTimestamp);
+
+function getCurrentUTCTimestamp() {
+    const now = new Date();
+    const utcTimestamp = now.toISOString();
+    return utcTimestamp;
+  }
+  
+  // Example usage:
+  const currentUTC = getCurrentUTCTimestamp();
+  console.log(currentUTC);

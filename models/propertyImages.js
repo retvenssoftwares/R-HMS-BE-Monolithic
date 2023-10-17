@@ -8,7 +8,8 @@ const propertyImageSchema = Schema({
         {
             imageId: {type: String, default:''},
             image: { type: String, default: '' },
-            displayStatus: {type:String, default: '1' }
+            displayStatus: {type:String, default: '1' },
+            modifiedDate: {type: String, default: ''}
         }
     ]
 

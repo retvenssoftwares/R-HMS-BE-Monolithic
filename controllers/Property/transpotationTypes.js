@@ -3,14 +3,21 @@ import verifying  from "../../models/verifiedUsers.js"
 import randomString  from "randomstring"
 import {getCurrentUTCTimestamp} from "../../helpers/helper.js"
 const transportationAdd = async(req,res)=>{
-    const authCode = req.headers["authCode"]
-    const UserauthCode = await verifying.findOne({authCode:authCode})
-    if(!UserauthCode){
+   
+    const UserauthCode = await verifying.findOne({userId:req.body.userId})
+    if(UserauthCode){
         return res.status(200).json({message: "Invalid data"})
     }
+    const{authCode} = UserauthCode
+    const authCodeDetails = req.headers["authCode"]
+    if(authCodeDetails !== authCode){
+        return res.status(500).json({message:"Invalid data"})
+    }
+   
     const data = transportation({
         transportationId : randomString.generate(7),
         shortCode:req.body.shortCode,
+        propertyId : req.body.propertyId,
         roomTypeName:req.body.roomTypeName,
         createdBy : req.body.createdBy,
         createdOn : getCurrentUTCTimestamp(),
@@ -21,16 +28,21 @@ const transportationAdd = async(req,res)=>{
 
 
 const updateTransportation = async(req,res)=>{
-    const authCode = req.headers["authCode"]
-    const UserauthCode = await verifying.findOne({authCode:authCode})
-    if(!UserauthCode){
+    const UserauthCode = await verifying.findOne({userId:req.body.userId})
+    if(UserauthCode){
         return res.status(200).json({message: "Invalid data"})
     }
+    const{authCode} = UserauthCode
+    const authCodeDetails = req.headers["authCode"]
+    if(authCodeDetails !== authCode){
+        return res.status(500).json({message:"Invalid data"})
+    }
     const add = await transportation.updateOne(
-        { transportationId: req.body.transportationId },
+        { propertyId: req.body.propertyId },
         {
           $push: {
             updatedArray: {
+              propertyId : req.body.propertyId,
               roomTypeName: req.body.roomTypeName,
               lastModifiedBy: req.body.lastModified,
               lastModifiedOn: getCurrentUTCTimestamp()// assuming you want to store the current date as a string
@@ -50,12 +62,16 @@ const updateTransportation = async(req,res)=>{
 
 const getTransportation = async(req,res)=>{
 
-    const authCode = req.headers["authCode"]
-    const UserauthCode = await verifying.findOne({authCode:authCode})
-    if(!UserauthCode){
+    const UserauthCode = await verifying.findOne({userId:req.body.userId})
+    if(UserauthCode){
         return res.status(200).json({message: "Invalid data"})
     }
-    const getDetails = await transportation.findOne({transportationId : req.body.transportationId})
+    const{authCode} = UserauthCode
+    const authCodeDetails = req.headers["authCode"]
+    if(authCodeDetails !== authCode){
+        return res.status(500).json({message:"Invalid data"})
+    }
+    const getDetails = await transportation.findOne({propertyId : req.body.propertyId})
     if(!getDetails){
         return res.status(500).json({
             message : "Data not found"

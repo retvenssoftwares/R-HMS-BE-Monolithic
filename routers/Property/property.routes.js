@@ -8,6 +8,9 @@ import {transportationAdd , updateTransportation , getTransportation} from "../.
 import addPaymentType from "../../controllers/Property/addPaymentTypes.js"
 import userProperty from "../../controllers/Property/getUserProperties.controller.js"
 import propertyImageController from '../../controllers/Property/addPropertyImages.js'
+import reservationType  from '../../controllers/Property/reservationType.controller.js'
+import updateReservationType from '../../controllers/Property/updateReservationType.controller.js'
+import userIdentity from "../../controllers/Property/postidentity.controller.js"
 
 const router = express.Router();
 
@@ -25,5 +28,13 @@ router.patch("/api/uploadPropertyImages/:propertyId", upload.fields([{ name: 'ho
 router.patch("/api/editProperty", editProperty);
 router.post("/api/addPaymentType", addPaymentType)
 router.get("/api/fetchProperty/:userId", userProperty);
+
+
+//Post ReservationType Route
+router.post("/api/addReservationType", reservationType)
+
+//update ReservationType Route
+router.patch("/api/updateReservationType/:reservationId", updateReservationType)
+router.post("/api/postIdentity", userIdentity);
 
 export default router;

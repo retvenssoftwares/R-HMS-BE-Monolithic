@@ -1,11 +1,43 @@
 import { Schema, model } from "mongoose";
 
-const propertyRoomSchema = Schema({
+const RoomSchema = Schema({
 
+    roomTypeId : {
+        type : String,
+        default : ''
+    },
+    propertyId : {
+        type : String,
+        default : ''
+    },
+    Room: [
+        {
+            imageId: {type: String, default:''},
+            image: { type: String, default: '' },
+            displayStatus: {type:String, default: '1' },
+            
+        }
 
-propertyId: { type: String, default: '', unique: false },
+    ],
+    View: [
+        {
+            imageId: {type: String, default:''},
+            image: { type: String, default: '' },
+            displayStatus: {type:String, default: '1' },
+            
+        }
 
-    roomImages: [
+    ],
+    bathRoom: [
+        {
+            imageId: {type: String, default:''},
+            image: { type: String, default: '' },
+            displayStatus: {type:String, default: '1' },
+            
+        }
+
+    ],
+    bed: [
         {
             imageId: {type: String, default:''},
             image: { type: String, default: '' },
@@ -15,13 +47,8 @@ propertyId: { type: String, default: '', unique: false },
 
     ],
 
-    roomTypeId : {
-
-        type : String,
-        default : ''
-    }
 
 });
 
-const propertyRoomModel = model("propertyRoomimages", propertyRoomSchema)
+const propertyRoomModel = model("roomimages", RoomSchema)
 export default propertyRoomModel

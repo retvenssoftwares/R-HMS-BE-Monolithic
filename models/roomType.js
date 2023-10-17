@@ -2,6 +2,11 @@ import mongoose, { Schema, model } from "mongoose";
 
 const roomType = new mongoose.Schema({
 
+
+    userId:{
+        type:String,
+        default:"", 
+    },
     roomTypeId:{
         type:String,
         default:"",
@@ -10,6 +15,14 @@ const roomType = new mongoose.Schema({
         type:String,
         default:"",
     },
+  
+    dateUTC: {
+        type: String
+    },
+    dateLocal: {
+        type: String
+    },
+
     shortCode:{
         type:String,
         default:"",
@@ -36,6 +49,43 @@ const roomType = new mongoose.Schema({
         }
 
     }],
+
+    bedType:[{
+        bedType:{
+            type:String,
+            default:"",
+        },
+        modifiedDate: {
+            type: String,
+            default: ""
+        }
+
+    }],
+
+    baseAdult:[{
+        baseAdult:{
+            type:String,
+            default:"",
+        },
+        modifiedDate: {
+            type: String,
+            default: ""
+        }
+
+    }],
+    baseChild:[{
+        baseChild:{
+            type:String,
+            default:"",
+        },
+        modifiedDate: {
+            type: String,
+            default: ""
+        }
+
+    }],
+
+
     maxAdult:[{
         maxAdult:{
             type:String,
@@ -69,8 +119,8 @@ const roomType = new mongoose.Schema({
         }
     }],
 
-    roomRate:[{
-        roomRate:{
+    baseRate:[{
+        baseRate:{
             type:String,
             default:"",
         },
@@ -80,6 +130,27 @@ const roomType = new mongoose.Schema({
         }
     }],
 
+    minimumRate:[{
+        minimumRate:{
+            type:String,
+            default:"",
+        },
+        modifiedDate: {
+            type: String,
+            default: ""
+        }
+    }],
+
+    maximumRate:[{
+        maximumRate:{
+            type:String,
+            default:"",
+        },
+        modifiedDate: {
+            type: String,
+            default: ""
+        }
+    }],
     extraAdultRate:[{
         extraAdultRate:{
             type:String,
@@ -90,7 +161,6 @@ const roomType = new mongoose.Schema({
             default: ""
         }
     }],
-
     extraChildRate:[{
         extraChildRate:{
             type:String,
@@ -102,12 +172,15 @@ const roomType = new mongoose.Schema({
         }
     }],
 
-    
-    
-
-
-
-
+    amenities: [{
+        amenities:[{
+        amenityId: {
+            default: "",
+            type: String
+        },
+        addedDate:String
+    }]
+}],
 
 })
 

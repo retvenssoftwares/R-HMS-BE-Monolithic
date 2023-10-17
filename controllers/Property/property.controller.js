@@ -6,8 +6,7 @@ import propertyImageModel from "../../models/propertyImages.js"
 import {
   getCurrentUTCTimestamp,
   getCurrentLocalTimestamp,
-  uploadImageToS3,
-  uploadMultipleImagesToS3
+  uploadImageToS3
 } from "../../helpers/helper.js";
 
 //upload property controller
@@ -52,12 +51,6 @@ const postProperty = async (req, res) => {
     // Check if a single hotelLogo file is uploaded
     if (req.files['hotelLogo']) {
       imageUrl = await uploadImageToS3(req.files['hotelLogo'][0]);
-    }
-    const imagesField = req.files['hotelImages'];
-
-    let imageUrls = []
-    if (imagesField) {
-      imageUrls = await uploadMultipleImagesToS3(imagesField);
     }
 
     //create record
@@ -140,24 +133,17 @@ const postProperty = async (req, res) => {
       ],
     });
 
-    await newProperty.save();
-
     // Save the property record
     const savedProperty = await newProperty.save();
 
     // Create a propertyImages record and associate it with the property
     const propertyImages = new propertyImageModel({
       propertyId: savedProperty.propertyId, // Use the propertyId from the saved property record
-      propertyImages: imageUrls.map((imageUrl) => ({
-        imageId: Randomstring.generate(8),
-        image: imageUrl,
-        displayStatus: '1', // You can set the displayStatus as needed
-      })),
+      propertyImages: []
     });
 
     // Save the propertyImages record
     await propertyImages.save();
-
 
     return res.status(200).json({ message: "New property added successfully", statuscode: 200 });
   } catch (err) {

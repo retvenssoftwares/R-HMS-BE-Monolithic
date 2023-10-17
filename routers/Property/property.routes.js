@@ -7,6 +7,7 @@ import editProperty from "../../controllers/Property/editPropert.controller.js"
 import addPaymentType from "../../controllers/Property/addPaymentTypes.js"
 import userProperty from "../../controllers/Property/getUserProperties.controller.js"
 import propertyImageController from '../../controllers/Property/addPropertyImages.js'
+import identityType from '../../controllers/Property/getIdentityTypes.controller.js'
 
 import userIdentity from "../../controllers/Property/postidentity.controller.js"
 
@@ -21,7 +22,7 @@ router.patch("/api/uploadPropertyImages/:propertyId", upload.single('hotelImage'
 router.patch("/api/editProperty", editProperty);
 router.post("/api/addPaymentType", addPaymentType)
 router.get("/api/fetchProperty/:userId", userProperty);
-
 router.post("/api/postIdentity", userIdentity);
+router.get("/api/fetchIdentity", identityType);
 
 export default router;

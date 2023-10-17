@@ -9,7 +9,7 @@ const transportationAdd = async(req,res)=>{
         return res.status(200).json({message: "Invalid data"})
     }
     const{authCode} = UserauthCode
-    const authCodeDetails = req.headers["authCode"]
+    const authCodeDetails = req.headers["authcode"]
     if(authCodeDetails !== authCode){
         return res.status(500).json({message:"Invalid data"})
     }
@@ -33,7 +33,7 @@ const updateTransportation = async(req,res)=>{
         return res.status(200).json({message: "Invalid data"})
     }
     const{authCode} = UserauthCode
-    const authCodeDetails = req.headers["authCode"]
+    const authCodeDetails = req.headers["authcode"]
     if(authCodeDetails !== authCode){
         return res.status(500).json({message:"Invalid data"})
     }
@@ -67,7 +67,7 @@ const getTransportation = async(req,res)=>{
         return res.status(200).json({message: "Invalid data"})
     }
     const{authCode} = UserauthCode
-    const authCodeDetails = req.headers["authCode"]
+    const authCodeDetails = req.headers["authcode"]
     if(authCodeDetails !== authCode){
         return res.status(500).json({message:"Invalid data"})
     }

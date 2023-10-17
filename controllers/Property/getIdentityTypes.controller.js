@@ -6,9 +6,9 @@ import identityModel from "../../models/identityTypes.js";
 
 const identityType = async (req, res) => {
     try {
-        const { targetTimeZone } = req.query;
+        const { targetTimeZone , propertyId } = req.query;
         
-        const userIdentity = await identityModel.find({});
+        const userIdentity = await identityModel.find({propertyId});
       
         if (userIdentity.length > 0) {
             // Assuming userTimeZone holds the user's specified time zone

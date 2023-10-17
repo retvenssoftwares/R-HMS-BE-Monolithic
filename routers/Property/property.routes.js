@@ -8,8 +8,8 @@ import addPaymentType from "../../controllers/Property/addPaymentTypes.js"
 import userProperty from "../../controllers/Property/getUserProperties.controller.js"
 import propertyImageController from '../../controllers/Property/addPropertyImages.js'
 import identityType from '../../controllers/Property/getIdentityTypes.controller.js'
-
 import userIdentity from "../../controllers/Property/postidentity.controller.js"
+import seasonType from "../../controllers/Property/postSeason.js"
 
 const router = express.Router();
 
@@ -24,5 +24,6 @@ router.post("/api/addPaymentType", addPaymentType)
 router.get("/api/fetchProperty/:userId", userProperty);
 router.post("/api/postIdentity", userIdentity);
 router.get("/api/fetchIdentity", identityType);
+router.post("/api/postSeason", seasonType);
 
 export default router;

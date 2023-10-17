@@ -101,8 +101,7 @@ const postProperty = async (req, res) => {
       propertyRating
     });
 
-    await newProperty.save();
-
+   
     // Save the property record
     const savedProperty = await newProperty.save();
 

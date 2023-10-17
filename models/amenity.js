@@ -1,37 +1,41 @@
 import mongoose from 'mongoose';
 
 const amenitySchema = new mongoose.Schema({
-    
-    propertyId:{
+
+    propertyId: {
         type: String,
-        default : ''
+        default: ''
     },
-    
+
     amenityName: {
-        type : String,
-        default : ''
+        type: String,
+        default: ''
     },
 
     amenityShortCode: {
-        type : String,
-        default : ''
+        type: String,
+        default: ''
     },
 
-    amenityType : {
-        type : String,
-        default : ''
+    amenityType: {
+        type: String,
+        default: ''
     },
 
-    amenityIcon : {
-        type : String,
-        default : ''
+    amenityIcon: {
+        type: String,
+        default: ''
     },
 
-    amenityIconLink : {
-        type : String,
-        default : ''
+    amenityIconLink: {
+        type: String,
+        default: ''
     },
 
-});
+},
+    {
+        versionKey: false
+    }
+);
 const amenity = model('amenity', amenitySchema);
 export default amenity;

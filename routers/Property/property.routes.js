@@ -12,7 +12,7 @@ import userProperty from "../../controllers/Property/getUserProperties.controlle
 import propertyImageController from '../../controllers/Property/addPropertyImages.js'
 import reservationType  from '../../controllers/Property/reservationType.controller.js'
 import updateReservationType from '../../controllers/Property/updateReservationType.controller.js'
-import userIdentity from "../../controllers/Property/postidentity.controller.js"
+import userIdentity from "../../controllers/Property/postIdentity.controller.js"
 
 const router = express.Router();
 

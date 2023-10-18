@@ -2,6 +2,7 @@ import Randomstring from "randomstring";
 import * as dotenv from "dotenv";
 dotenv.config();
 import propertyModel from "../../models/property.js";
+import verifiedUser from "../../models/verifiedUsers.js";
 import propertyImageModel from "../../models/propertyImages.js"
 import {
   getCurrentUTCTimestamp,
@@ -34,6 +35,18 @@ const postProperty = async (req, res) => {
     } = req.body;
 
     var hotelLogoId = Randomstring.generate(8);
+
+    const findUser = await verifiedUser.findOne({ userId });
+    const authCodeValue = req.headers['authcode']
+    const userToken = findUser.authCode;
+
+    if (!findUser || !userId) {
+      return res.status(404).json({ message: "User not found", statuscode: 404 });
+    }
+
+    if (authCodeValue !== userToken) {
+      return res.status(400).json({ message: "Invalid authentication token", statuscode: 400 });
+    }
 
     let imageUrl = '';
     const amenityIds = req.body.amenityIds;

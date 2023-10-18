@@ -3,11 +3,11 @@ import {
     getCurrentUTCTimestamp,
     getCurrentLocalTimestamp,
 } from "../../helpers/helper.js";
-import userModel from '../../models/verifiedUsers.js'
+import userModel from '../../models/user.js'
 
 const updateReservation = async (req, res) => {
-    const reservationId = req.params.reservationId;
-    const { reservationName, status, userId, modifiedBy } = req.body;
+    const bookingSourceId = req.params.bookingSourceId;
+    const { sourceName, userId, modifiedBy } = req.body;
     const authCodeValue = req.headers['authcode']
     const findUser = await userModel.findOne({ userId })
 

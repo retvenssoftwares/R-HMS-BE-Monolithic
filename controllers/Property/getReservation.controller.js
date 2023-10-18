@@ -16,11 +16,8 @@ const userProperty = async (req, res) => {
                 // Convert the dateUTC to the user's time zone
                 const convertedDateUTC = convertTimestampToCustomFormat(reservation.dateUTC, targetTimeZone);
 
-                // Convert the modifiedOn timestamp to the user's time zone
-               // const convertedModifiedOn = convertTimestampToCustomFormat(reservation.modifiedOn, targetTimeZone);
-
                 // Include the converted date and modifiedOn in the property object
-                return { ...reservation._doc, dateUTC: convertedDateUTC };
+                return { ...reservation._doc, dateUTC: convertedDateUTC,};
             });
 
             return res.status(200).json({ userProperties: convertedProperties, statuscode: 200 });

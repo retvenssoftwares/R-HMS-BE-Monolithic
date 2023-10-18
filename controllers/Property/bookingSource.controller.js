@@ -1,7 +1,7 @@
 import Randomstring from "randomstring";
 import * as dotenv from "dotenv";
 dotenv.config();
-import reservationModel from "../../models/reservationType.js";
+import bookingModel from "../../models/bookingSource.js";
 import userModel from '../../models/verifiedUsers.js'
 
 import {
@@ -9,15 +9,15 @@ import {
   getCurrentLocalTimestamp,
 } from "../../helpers/helper.js";
 
-//upload property controller
-const postReservation = async (req, res) => {
+
+const postBookingSource = async (req, res) => {
   try {
     const {
       userId,
-      reservationTypeId,  
+      bookingSourceId,  
       propertyId,
-      reservationName,
-      status,
+      shortCode,
+      sourceName,
       createdBy,
       createdOn,
       modifiedOn,
@@ -26,7 +26,7 @@ const postReservation = async (req, res) => {
     const authCodeValue = req.headers['authcode']
 
     const findUser = await userModel.findOne({ userId })
-
+    
     if(!findUser){
       return res.status(404).json({message:"user not found"})
     }
@@ -39,25 +39,26 @@ const postReservation = async (req, res) => {
     let userRole = findUser.role[0].role
     const currentUTCTime = await getCurrentUTCTimestamp();
     //create record
-    const newReservation = new reservationModel({
+    const newBookingSource = new bookingModel({
       propertyId,
-      reservationTypeId:Randomstring.generate(8),
+      shortCode,
+      bookingSourceId:Randomstring.generate(8),
       dateUTC: currentUTCTime,
       dateLocal: getCurrentLocalTimestamp(),
       createdBy:userRole,
       createdOn:currentUTCTime,
-      reservationType: [
+      bookingSource: [
         {
-          reservationName:reservationName,
-          status:status,
+          sourceName:sourceName,
+          
         },
       ],
      
     });
 
     // Save the reservation record
-    const savedReservation = await newReservation.save();
-    return res.status(200).json({ message: "New reservation added successfully", statuscode: 200 });
+    const savedReservation = await newBookingSource.save();
+    return res.status(200).json({ message: "New booking Source added successfully", statuscode: 200 });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
@@ -66,4 +67,4 @@ const postReservation = async (req, res) => {
 
 
 
-export default postReservation;
+export default postBookingSource;

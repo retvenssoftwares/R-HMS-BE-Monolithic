@@ -4,6 +4,7 @@ import { format, utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 import * as crypto from 'crypto';
 import s3 from "../utils/url.js"
 import jwt from "jsonwebtoken";
+import verifiedUser from "../models/verifiedUsers.js";
 
 //function to upload single image ot s3 spaces
 const bucket = process.env.bucket;
@@ -25,29 +26,29 @@ async function uploadImageToS3(file) {
 }
 
 async function uploadMultipleImagesToS3(files) {
-    const uploadPromises = files.map(async (file) => {
-        const params = {
-            Bucket: bucket, // Replace with your S3 bucket name
-            Key: `hotel_images/${file.originalname}`,
-            Body: file.buffer,
-            ContentType: file.mimetype,
-            ACL: 'public-read',
-        };
-
-        try {
-            const uploadResponse = await s3.upload(params).promise();
-            const imageUrl = uploadResponse.Location;
-            return imageUrl;
-        } catch (error) {
-            throw error; // You can handle the error at a higher level
-        }
-    });
+  const uploadPromises = files.map(async (file) => {
+    const params = {
+      Bucket: bucket, // Replace with your S3 bucket name
+      Key: `hotel_images/${file.originalname}`,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+      ACL: 'public-read',
+    };
 
     try {
-        return await Promise.all(uploadPromises);
+      const uploadResponse = await s3.upload(params).promise();
+      const imageUrl = uploadResponse.Location;
+      return imageUrl;
     } catch (error) {
-        throw error;
+      throw error; // You can handle the error at a higher level
     }
+  });
+
+  try {
+    return await Promise.all(uploadPromises);
+  } catch (error) {
+    throw error;
+  }
 }
 
 
@@ -103,39 +104,59 @@ function encrypt(text) {
 
 // Function to decrypt text
 function decrypt(encryptedText) {
-    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key, 'hex'), Buffer.from(iv));
-    let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
+  const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key, 'hex'), Buffer.from(iv));
+  let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
 }
 
 function jwtsign(payload) {
-    return new Promise((resolve, reject) => {
-        jwt.sign(payload, process.env.jwtsecretkey, (err, token) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(token);
-            }
-        });
+  return new Promise((resolve, reject) => {
+    jwt.sign(payload, process.env.jwtsecretkey, (err, token) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(token);
+      }
     });
+  });
 }
 
 
 function convertTimestampToCustomFormat(utcTimestamp, targetTimeZone) {
-    // Convert the UTC timestamp to the target time zone
-    const zonedTimestamp = utcToZonedTime(utcTimestamp, targetTimeZone);
+  // Convert the UTC timestamp to the target time zone
+  const zonedTimestamp = utcToZonedTime(utcTimestamp, targetTimeZone);
 
-    // Define the custom format
-    const customFormat = "dd/MM/yy HH:mm:ss";
+  // Define the custom format
+  const customFormat = "dd/MM/yy HH:mm:ss";
 
-    // Format the zoned timestamp into the custom format
-    const formattedTimestamp = format(zonedTimestamp, customFormat, {
-        timeZone: targetTimeZone,
-    });
+  // Format the zoned timestamp into the custom format
+  const formattedTimestamp = format(zonedTimestamp, customFormat, {
+    timeZone: targetTimeZone,
+  });
 
-    return formattedTimestamp;
+  return formattedTimestamp;
 }
 
+const verifyUser = async (userId, authCodeValue) => {
+  try {
+    const findUser = await verifiedUser.findOne({ userId });
 
-export { getCurrentUTCTimestamp, uploadImageToS3,convertTimestampToCustomFormat, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt };
+    if (!findUser) {
+      return { success: false, message: "User not found or invalid userId", statuscode: 400 };
+    }
+
+    const userToken = findUser.authCode;
+
+    if (authCodeValue !== userToken) {
+      return { success: false, message: "Invalid authentication token", statuscode: 400 };
+    }
+
+    return { success: true, user: findUser };
+  } catch (error) {
+    return { success: false, message: "Internal Server Error", statuscode: 500 };
+  }
+};
+
+
+export { getCurrentUTCTimestamp, verifyUser, uploadImageToS3, convertTimestampToCustomFormat, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt };

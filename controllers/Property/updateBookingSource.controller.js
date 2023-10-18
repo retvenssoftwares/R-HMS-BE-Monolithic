@@ -1,11 +1,11 @@
-import ReservationType from "../../models/reservationType.js";
+import bookingModel from "../../models/bookingSource.js";
 import {
     getCurrentUTCTimestamp,
     getCurrentLocalTimestamp,
 } from "../../helpers/helper.js";
-import userModel from '../../models/user.js'
+import userModel from '../../models/verifiedUsers.js'
 
-const updateReservation = async (req, res) => {
+const updateBookingSource = async (req, res) => {
     const bookingSourceId = req.params.bookingSourceId;
     const { sourceName, userId, modifiedBy } = req.body;
     const authCodeValue = req.headers['authcode']
@@ -25,40 +25,38 @@ const updateReservation = async (req, res) => {
     const currentUTCTime = await getCurrentUTCTimestamp();
 
     try {
-        // Find the reservation document by its reservationId
-        const reservation = await ReservationType.findOne({ reservationTypeId: reservationId });
+        // Find the booking document by its bookingSourceId
+        const booking = await bookingModel.findOne({ bookingSourceId: bookingSourceId });
 
-        if (!reservation) {
+        if (!booking) {
             return res.status(404).json({ message: "Reservation not found" });
         }
 
-        // Check if reservationType array exists and is not empty
-        if (!reservation.reservationType || reservation.reservationType.length === 0) {
+        // Check if bookingSource array exists and is not empty
+        if (!booking.bookingSource || booking.bookingSource.length === 0) {
             // If it's empty or doesn't exist, create a new array with one object
-            reservation.reservationType = [{
-                reservationName,
-                status,
+            booking.bookingSource = [{
+                sourceName,
                 modifiedBy: userRole,
                 modifiedOn: currentUTCTime,
             }];
         } else {
             // Push a new object at the beginning of the array
-            reservation.reservationType.unshift({
-                reservationName,
-                status,
-                modifiedBy:userRole,
+            booking.bookingSource.unshift({
+                sourceName,
+                modifiedBy: userRole,
                 modifiedOn: currentUTCTime,
             });
         }
 
         // Save the updated document
-        await reservation.save();
+        await booking.save();
 
-        return res.status(200).json({ message: "Reservation updated successfully" });
+        return res.status(200).json({ message: "booking Source updated successfully" });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
 
-export default updateReservation;
+export default updateBookingSource;

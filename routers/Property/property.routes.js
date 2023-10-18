@@ -15,6 +15,9 @@ import updateReservationType from '../../controllers/Property/updateReservationT
 import userIdentity from "../../controllers/Property/postidentity.controller.js"
 import fetchReservation from '../../controllers/Property/getReservation.controller.js'
 import postBookingSource from '../../controllers/Property/bookingSource.controller.js'
+import updateBookingSource from '../../controllers/Property/updateBookingSource.controller.js'
+import fetchBookingSource from '../../controllers/Property/getBookingSource.controller.js'
+
 const router = express.Router();
 
 router.post(
@@ -50,7 +53,11 @@ router.get("/api/getreservation/:propertyId",fetchReservation)
 //post booking source
 router.post("/api/bookingSource",postBookingSource)
 
+//update booking source
+router.patch("/api/updateBookingSource/:bookingSourceId",updateBookingSource)
 
+//fetch BookingSource
+router.get("/api/getBookingSource/:propertyId",fetchBookingSource)
 
 router.post("/api/postIdentity", userIdentity);
 

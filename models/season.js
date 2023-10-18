@@ -12,7 +12,7 @@ const seasonSchema = new mongoose.Schema({
         default: ''
     },
 
-    seasonShortCode: {
+    shortCode: {
         type: String,
         default: ''
     },

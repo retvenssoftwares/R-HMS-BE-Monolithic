@@ -16,6 +16,7 @@ const userIdentity = async (req , res) =>{
           modifiedOn,
           identityType,
           propertyId,
+          
        }= req.body;
        const findUser = await verifiedUser.findOne({ userId })
        if(findUser){

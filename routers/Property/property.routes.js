@@ -13,8 +13,7 @@ import reservationType  from '../../controllers/Property/reservationType.control
 import updateReservationType from '../../controllers/Property/updateReservationType.controller.js'
 import userIdentity from "../../controllers/Property/postidentity.controller.js"
 import { getTransportation, transportationAdd, updateTransportation } from '../../controllers/Property/transpotationTypes.js';
-
-//import userIdentity from "../../controllers/Property/postIdentity.controller.js"
+import { addBusinessSources, getBusinessSources, updateBusinessSources } from '../../controllers/Property/businessSources.js';
 
 const router = express.Router();
 
@@ -23,9 +22,19 @@ router.post(
     upload.fields([{ name: 'hotelLogo', maxCount: 1 }]),
     postProperty
 );
+
+// transport
 router.post("/api/addTransportation",transportationAdd)
 router.patch("/api/updateTransportation", updateTransportation)
 router.get("/api/getTransportation/:userId/:propertyId",getTransportation)
+
+// business
+router.post("/api/addBusinessSources",addBusinessSources)
+router.patch("/api/updateBusinessSources", updateBusinessSources)
+router.get("/api/getBusinessSources/:userId/:propertyId",getBusinessSources)
+
+
+
 router.patch("/api/propertyAdditionalDetails", editProperty)
 router.patch("/api/uploadPropertyImages/:propertyId", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), propertyImageController);
 router.patch("/api/editProperty", editProperty);

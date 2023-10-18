@@ -15,6 +15,7 @@ import reservationType  from '../../controllers/Property/reservationType.control
 import updateReservationType from '../../controllers/Property/updateReservationType.controller.js'
 import userIdentity from "../../controllers/Property/postidentity.controller.js"
 import seasonType from "../../controllers/Property/postSeason.js"
+import identityTypes from "../../controllers/Property/patchIdentity.js"
 
 const router = express.Router();
 
@@ -30,6 +31,8 @@ router.get("/api/getTransportation",getTransportation)
 router.patch("/api/propertyAdditionalDetails", editProperty)
 router.patch("/api/uploadPropertyImages/:propertyId", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), propertyImageController);
 router.patch("/api/editProperty", editProperty);
+//patch Identity
+router.patch("/api/patchIdentityType/:identityTypeId",identityTypes);
 
 //payment types
 router.post("/api/addPaymentType", addPaymentType)

@@ -74,8 +74,8 @@ const userSchema = new mongoose.Schema({
       default: "",
       type: String
     },
-    propertyAddress: [{
-      propertyAddress: {
+    propertyAddress1: [{
+      propertyAddress1: {
         default: "",
         type: String
       },
@@ -355,7 +355,12 @@ const userSchema = new mongoose.Schema({
       default: ''
     },
 
-  }]
+  }],
+
+  verificationStatus: {
+     type: String,
+     default: 'false'
+  },
 },
   {
     versionKey: false

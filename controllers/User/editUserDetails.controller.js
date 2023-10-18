@@ -15,7 +15,7 @@ const editUserOnboarding = async (req, res) => {
     }
     try {
         if (propertyTypeSOC === 'Single') {
-            const { propertyAddress, propertyName, propertyType, propertyTypeName, postCode, state, city, starCategory, ratePercent, baseCurrency, websiteUrl, roomsInProperty, taxName, registrationNumber } = req.body
+            const { propertyAddress1, propertyName, propertyType, propertyTypeName, postCode, state, city, starCategory, ratePercent, baseCurrency, websiteUrl, roomsInProperty, taxName, registrationNumber } = req.body
 
             const elementToUpdate = findRecord.singlePropertyDetails[0];
             let imageUrl = ''
@@ -47,10 +47,10 @@ const editUserOnboarding = async (req, res) => {
             // Add similar conditions for other fields
 
             const propertyAddressObject = {
-                propertyAddress: propertyAddress,
+                propertyAddress1: propertyAddress1,
                 modifiedDate: (await getCurrentUTCTimestamp()).toString()
             }
-            elementToUpdate.propertyAddress.unshift(propertyAddressObject);
+            elementToUpdate.propertyAddress1.unshift(propertyAddressObject);
             const postCodeObject = {
                 postCode: postCode,
                 modifiedDate: (await getCurrentUTCTimestamp()).toString()
@@ -74,8 +74,8 @@ const editUserOnboarding = async (req, res) => {
             elementToUpdate.propertyId = propertyId
             findRecord.propertyTypeSOC = propertyTypeSOC
             await findRecord.save();
-        } else {
-            const { propertyChainName, baseCurrency, websiteUrl, numberOfProperties, propertyType } = req.body
+        }else{
+            const { userId, propertyChainName,numberOfProperties,propertyType,baseCurrency, websiteUrl } = req.body
             var findRecord = await userModel.findOne({ userId });
             //console.log(findRecord)
 
@@ -106,7 +106,8 @@ const editUserOnboarding = async (req, res) => {
             elementToUpdate.numberOfProperties.unshift(numberOfPropertiesObject)
 
             elementToUpdate.userId = userId;
-            elementToUpdate.propertyChainId = randomstring.generate(8)
+            const propertyChainId = randomstring.generate(8)
+            elementToUpdate.propertyChainId = propertyChainId
             elementToUpdate.dateUTC = (await getCurrentUTCTimestamp()).toString();
 
             elementToUpdate.baseCurrency = baseCurrency

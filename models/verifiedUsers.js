@@ -1,6 +1,7 @@
 // models/user.js
 import mongoose from 'mongoose';
 
+<<<<<<< HEAD
 const userSchema = new mongoose.Schema({
   userId: {
     type: String
@@ -8,30 +9,61 @@ const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: false
+=======
+const verifiedUsersSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    default : '',
+  },
+  firstName: {
+    type: String,
+    required: false,
+    default : ''
+    
+>>>>>>> dev
   },
   role: [{
     role: {
       type: String,
+<<<<<<< HEAD
       required: false
+=======
+      required: false,
+      default : ''
+>>>>>>> dev
     },
     modifiedDate: String
   }],
   lastName: {
     type: String,
     required: false,
+<<<<<<< HEAD
+=======
+    default : ''
+>>>>>>> dev
   },
   designation: [
     {
       designation: {
         type: String,
+<<<<<<< HEAD
         required: false
+=======
+        required: false,
+        default : ''
+>>>>>>> dev
       },
       modifiedDate: String
     }],
   phoneNumber: [{
     phoneNumber: {
       type: String,
+<<<<<<< HEAD
       required: false
+=======
+      required: false,
+      default : ''
+>>>>>>> dev
     },
     modifiedDate: String
   }],
@@ -45,16 +77,26 @@ const userSchema = new mongoose.Schema({
     default: ''
   },
   authCode: {
+<<<<<<< HEAD
     type: String
   },
   email: {
     type: String
+=======
+    type: String,
+    default : ''
+  },
+  email: {
+    type: String,
+    default : ''
+>>>>>>> dev
   },
   link: {
     type: String,
     default: ''
   },
   propertyTypeSOC: { type: String, default: '' }, //single or chain
+<<<<<<< HEAD
   singlePropertyDetails: [{
     userId: {
       default: "",
@@ -266,10 +308,18 @@ const userSchema = new mongoose.Schema({
   password: [{
     password: {
       type: String
+=======
+ 
+  password: [{
+    password: {
+      type: String,
+      default : ''
+>>>>>>> dev
     },
     modifiedDate: String
   }],
 
+<<<<<<< HEAD
 
   ///// multiple 
   multipleData: [{
@@ -356,6 +406,12 @@ const userSchema = new mongoose.Schema({
     },
 
   }]
+=======
+  verificationStatus: {
+      type: String,
+      default: 'false'
+   },
+>>>>>>> dev
 },
   {
     versionKey: false
@@ -363,6 +419,12 @@ const userSchema = new mongoose.Schema({
 
 
 
+<<<<<<< HEAD
 const User = mongoose.model('User', userSchema);
 
 export default User;
+=======
+
+const verifiedUser = mongoose.model('verifiedUser', verifiedUsersSchema);
+export default verifiedUser;
+>>>>>>> dev

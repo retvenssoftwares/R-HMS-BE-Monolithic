@@ -19,8 +19,8 @@ const propertySchema = new Schema({
         default: "",
         type: String
     },
-    propertyAddress: [{
-        propertyAddress: {
+    propertyAddress1: [{
+        propertyAddress1: {
             default: "",
             type: String
         },
@@ -30,8 +30,8 @@ const propertySchema = new Schema({
         }
     }],
 
-    propertyAddress1: [{
-        propertyAddress1: {
+    propertyAddress2: [{
+        propertyAddress2: {
             default: "",
             type: String
         },
@@ -63,7 +63,7 @@ const propertySchema = new Schema({
     }],
     state: [{
         state: { type: String, default: '' },
-        modifiedDate: {type: String, default:''}
+        modifiedDate: { type: String, default: '' }
     }],
     location: [{
 
@@ -115,16 +115,14 @@ const propertySchema = new Schema({
         type: String,
     },
     amenities: [{
-        amenitiesId: {
+        amenities:[{
+        amenityId: {
             default: "",
             type: String
         },
-        isSelected: {
-            default: "",
-            type: String
-        }
-
-    }],
+        addedDate:String
+    }]
+}],
 
     checkInTime: [{
         checkInFrom: {
@@ -201,7 +199,8 @@ const propertySchema = new Schema({
         propertyEmail: {
             type: String,
             default: ''
-        }
+        },
+        modifiedDate: String
     }],
     hotelRCode: {
         type: String,
@@ -235,11 +234,11 @@ const propertySchema = new Schema({
         type: String,
         default: ''
     },
-    phoneNumber: {
+    phone: {
         type: String,
         default: ""
     },
-    reservationNumber: {
+    reservationPhone: {
         type: String,
         default: ''
     },
@@ -247,11 +246,11 @@ const propertySchema = new Schema({
         type: String,
         default: ''
     },
-    roomsInProperty:{
+    roomsInProperty: {
         type: String,
         default: ''
     },
-    taxName:{
+    taxName: {
         type: String,
         default: ''
     },
@@ -263,10 +262,13 @@ const propertySchema = new Schema({
         type: String,
         default: ''
     },
-    propertyDescription: {
-        type: String,
-        default: ''
-    }
+    propertyDescription: [{
+        propertyDescription: {
+            type: String,
+            default: ''
+        },
+        modifiedDate: String
+    }]
 
 
 })

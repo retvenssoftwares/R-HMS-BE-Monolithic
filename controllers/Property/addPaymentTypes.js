@@ -6,7 +6,12 @@ const addPaymentType = async (req, res) => {
     try {
         const { userId, shortCode, paymentMethodName, paymentType, propertyId, receivedTo } = req.body
         const authCodeValue = req.headers['authcode']
+
         const findUser = await verifiedUser.findOne({ userId })
+
+        if (!findUser) {
+            return res.status(400).json({ message: "User not found or invalid userId", statuscode: 400 })
+        }
         const userToken = findUser.authCode
 
         if (authCodeValue !== userToken) {

@@ -38,6 +38,16 @@ const identityTypeSchema = new mongoose.Schema({
         }
     }],
 
+    propertyId : {
+        type : String,
+        default : ''
+    },
+
+    identityTypeId : {
+        type : String,
+        default : ''
+    },
+
 });    
 
 const identity = mongoose.model('identityType', identityTypeSchema);

@@ -2,9 +2,7 @@ import Randomstring from "randomstring";
 import * as dotenv from "dotenv";
 dotenv.config();
 import identityModel from "../../models/identityTypes.js";
-
 import verifiedUser from "../../models/verifiedUsers.js";
-
 import { getCurrentUTCTimestamp } from '../../helpers/helper.js'
 
 const userIdentity = async (req , res) =>{
@@ -17,6 +15,7 @@ const userIdentity = async (req , res) =>{
           modifiedBy,
           modifiedOn,
           identityType,
+          propertyId,
        }= req.body;
        const findUser = await verifiedUser.findOne({ userId })
        if(findUser){
@@ -35,8 +34,13 @@ const userIdentity = async (req , res) =>{
                ],
                identityType : [{
                  identityType : identityType
-    
-           }]
+                
+           }],
+
+             propertyId,
+
+             identityTypeId : Randomstring.generate(8)
+
     
            });
            await newIdentity.save();

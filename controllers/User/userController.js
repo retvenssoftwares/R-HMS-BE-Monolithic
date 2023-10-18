@@ -40,8 +40,10 @@ const postUser = async (req, res) => {
             }],
             multipleData: [{
                 userId: userId
+            }],
+            propertyName: [{
+                propertyName: ''
             }]
-
         })
         const userData=await newData.save()
 

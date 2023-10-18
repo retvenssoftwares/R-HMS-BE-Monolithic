@@ -11,11 +11,8 @@ const userProperty = async (req, res) => {
         const userProperties = await propertyModel.find({ userId: userId });
 
         if (userProperties.length > 0) {
-            // Assuming userTimeZone holds the user's specified time zone
             const convertedProperties = userProperties.map(property => {
-                // Convert the dateUTC to the user's time zone
                 const convertedDateUTC = convertTimestampToCustomFormat(property.dateUTC, targetTimeZone);
-                // Include the converted date in the property object
                 return { ...property._doc, dateUTC: convertedDateUTC };
             });
 

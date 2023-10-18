@@ -6,17 +6,24 @@ import identityModel from "../../models/identityTypes.js";
 
 const identityType = async (req, res) => {
     try {
-        const { targetTimeZone , propertyId } = req.query;
-        
-        const userIdentity = await identityModel.find({propertyId});
-      
+        const { targetTimeZone, propertyId } = req.query;
+
+        const userIdentity = await identityModel.find({ propertyId });
+
         if (userIdentity.length > 0) {
             // Assuming userTimeZone holds the user's specified time zone
             const convertedIdentity = userIdentity.map(identity => {
                 // Convert the dateUTC to the user's time zone
                 const convertedDateUTC = convertTimestampToCustomFormat(identity.createdOn, targetTimeZone);
-                // Include the converted date in the property object
-                return { ...identity._doc, createdOn: convertedDateUTC };
+                const convertedModifiedOn = convertTimestampToCustomFormat(identity.modifiedOn[0].modifiedOn, targetTimeZone);
+                return {
+                    ...identity._doc,
+                    createdOn: convertedDateUTC,
+                    identityType: identity.paymentMethodName[0],
+                    modifiedBy: identity.modifiedBy[0],
+                    modifiedOn: convertedModifiedOn
+                };
+
             });
 
             return res.status(200).json({ userIdentity: convertedIdentity, statuscode: 200 });

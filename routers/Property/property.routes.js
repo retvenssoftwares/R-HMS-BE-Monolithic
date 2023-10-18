@@ -10,10 +10,14 @@ import patchPaymentType from '../../controllers/Property/patchPaymentTypes.js';
 import userProperty from "../../controllers/Property/getUserProperties.controller.js"
 import propertyImageController from '../../controllers/Property/addPropertyImages.js'
 import identityType from '../../controllers/Property/getIdentityTypes.controller.js'
-import reservationType  from '../../controllers/Property/reservationType.controller.js'
+import reservationType from '../../controllers/Property/reservationType.controller.js'
 import updateReservationType from '../../controllers/Property/updateReservationType.controller.js'
 import userIdentity from "../../controllers/Property/postidentity.controller.js"
+
+//seasons
 import seasonType from "../../controllers/Property/postSeason.js"
+import getSeasons from '../../controllers/Property/getSeasons.js';
+import patchSeason from '../../controllers/Property/patchSeason.js';
 import identityTypes from "../../controllers/Property/patchIdentity.js"
 import { getTransportation, transportationAdd, updateTransportation } from '../../controllers/Property/transpotationTypes.js';
 import { addBusinessSources, getBusinessSources, updateBusinessSources } from '../../controllers/Property/businessSources.js';
@@ -59,6 +63,10 @@ router.post("/api/addReservationType", reservationType)
 router.patch("/api/updateReservationType/:reservationId", updateReservationType)
 router.post("/api/postIdentity", userIdentity);
 router.get("/api/fetchIdentity", identityType);
+
+//seasons
 router.post("/api/postSeason", seasonType);
+router.get("/api/getSeasons", getSeasons);
+router.patch("/api/patchSeason/:seasonId", patchSeason)
 
 export default router;

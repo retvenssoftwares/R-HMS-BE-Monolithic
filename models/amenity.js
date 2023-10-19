@@ -7,6 +7,11 @@ const amenitySchema = new mongoose.Schema({
         default: ''
     },
 
+    propertyId: {
+        type: String,
+        default: ''
+    },
+
     createdBy: {
         type: String,
         default: ''

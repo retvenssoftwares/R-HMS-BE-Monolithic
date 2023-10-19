@@ -17,7 +17,9 @@ import fetchReservation from '../../controllers/Property/getReservation.controll
 import postBookingSource from '../../controllers/Property/bookingSource.controller.js'
 import updateBookingSource from '../../controllers/Property/updateBookingSource.controller.js'
 import fetchBookingSource from '../../controllers/Property/getBookingSource.controller.js'
-
+import holiday from '../../controllers/Property/holidays.controller.js'
+import patchHoliday from '../../controllers/Property/updateHoliday.controller.js'
+import getHoliday from '../../controllers/Property/getHoliday.controller.js'
 //seasons
 import seasonType from "../../controllers/Property/postSeason.js"
 import getSeasons from '../../controllers/Property/getSeasons.js';
@@ -64,10 +66,10 @@ router.get("/api/fetchProperty/:userId", userProperty);
 router.post("/api/addReservationType", reservationType)
 
 //update ReservationType Route
-router.patch("/api/updateReservationType/:reservationId", updateReservationType)
+router.patch("/api/updateReservationType/:reservationTypeId", updateReservationType)
 
 //get reservationType
-router.get("/api/getreservation/:propertyId",fetchReservation)
+router.get("/api/getreservation",fetchReservation)
 
 //post booking source
 router.post("/api/bookingSource",postBookingSource)
@@ -85,5 +87,11 @@ router.get("/api/fetchIdentity", identityType);
 router.post("/api/postSeason", seasonType);
 router.get("/api/getSeasons", getSeasons);
 router.patch("/api/patchSeason/:seasonId", patchSeason)
+
+
+//holiday
+router.post("/api/postHoliday",holiday)
+router.patch("/api/patchHoliday/:holidayId",patchHoliday)
+router.get("/api/getHoliday",getHoliday)
 
 export default router;

@@ -1,36 +1,72 @@
-import { Schema, model } from "mongoose";
+import mongoose from 'mongoose';
 
-const holidaySchema = Schema({
+const holidaySchema = new mongoose.Schema({
 
-    propertyId: { type: String, default: '', unique: false },
-    holidayId: {type: String, default:''},
-    shortCode:{
-        type:String,
-        default:''
-    },
-
-    dateUTC: {
+    propertyId: {
         type: String,
-        default:''
+        default: ''
     },
-    dateLocal: {
+
+    holidayId: {
         type: String,
-        default:''
+        default: ''
     },
-    createdBy:{type:String,default:''},
-    createdOn:{type:String,default:''},
-    holidayType: [
-        {
-            
-            holidayName: { type: String, default: '' },
-            startDate: { type: String, default: '' },
-            endDate: { type: String, default: '' },
-            modifiedBy:{type:String,default:''},
-            modifiedOn:{type:String,default:''},
-        }
-    ]
+
+    shortCode: {
+        type: String,
+        default: ''
+    },
+
+    holidayName: [{
+        holidayName: {
+            type: String,
+            default: ''
+        },
+    }],
+
+    startDate: [{
+        startDate: {
+            type: String,
+            default: ''
+        },
+    }],
+
+    endDate: [{
+        endDate: {
+            type: String,
+            default: ''
+        },
+    }],
+
+    createdBy: {
+        type: String,
+        default: ''
+    },
+
+    createdOn: {
+        type: String,
+        default: ''
+    },
+
+    modifiedBy: [{
+        modifiedBy: {
+            type: String,
+            default: ''
+        },
+    }],
+
+    modifiedOn: [{
+        modifiedOn: {
+            type: String,
+            default: ''
+        },
+    }],
+
+   
+
 
 });
 
-const holidayModel = model("holidays", holidaySchema)
-export default holidayModel
+const holiday = mongoose.model('holiday', holidaySchema);
+
+export default holiday;

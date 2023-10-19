@@ -1,66 +1,48 @@
-import * as dotenv from "dotenv";
-dotenv.config();
-import reservationModel from "../../models/reservationType.js";
-import { convertTimestampToCustomFormat } from "../../helpers/helper.js";
+import reservation from '../../models/reservationType.js';
+import { convertTimestampToCustomFormat, verifyUser } from '../../helpers/helper.js';
 
-const userProperty = async (req, res) => {
-  try {
-    const { targetTimeZone } = req.query;
-    const propertyId = req.params.propertyId;
+const getReservation = async (req, res) => {
+    try {
+        const { targetTimeZone, propertyId, userId } = req.query;
+        const authCodeValue = req.headers['authcode']
 
-    const reservationType = await reservationModel.find({
-      propertyId: propertyId,
-    });
+        const result = await verifyUser(userId, authCodeValue);
 
-    if (reservationType.length > 0) {
-      // Assuming userTimeZone holds the user's specified time zone
-      const convertedReservation = reservationType.map((reservation) => {
-        if (reservation.reservationType.length > 0) {
-          // Convert the dateUTC to the user's time zone
-          const convertedDateUTC = convertTimestampToCustomFormat(
-            reservation.dateUTC,
-            targetTimeZone
-          );
-          const convertedDateCreatedOn = convertTimestampToCustomFormat(
-            reservation.createdOn,
-            targetTimeZone
-          );
-          const zeroPositionObject = reservation.reservationType[0];
-          if (zeroPositionObject.modifiedOn) {
-            // Convert the modifiedOn in the zero position object
-            zeroPositionObject.modifiedOn = convertTimestampToCustomFormat(
-              zeroPositionObject.modifiedOn,
-              targetTimeZone
-            );
-          }
-          // Include the converted date and modifiedOn in the property object
-          return {
-            ...reservation._doc,
-            dateUTC: convertedDateUTC,
-            createdOn: convertedDateCreatedOn,
-            reservationType: [zeroPositionObject],
-          };
+        if (result.success) {
+            const findAllReservation = await reservation.find({ propertyId });
+
+            if (findAllReservation.length > 0) {
+                const convertedReservation = findAllReservation.map(reservations => {
+                    const convertedDateUTC = convertTimestampToCustomFormat(reservations.createdOn, targetTimeZone);
+                    var convertedModifiedOn = ''
+                    if (reservations.modifiedOn.length === 0) {
+                        convertedModifiedOn = ''
+                    } else {
+                        convertedModifiedOn = convertTimestampToCustomFormat(reservations.modifiedOn[0].modifiedOn, targetTimeZone);
+                    }
+
+                    return {
+                        ...reservations._doc,
+                        createdOn: convertedDateUTC,
+                        reservationName: reservations.reservationName[0] || {},
+                        status: reservations.status[0] || {},
+                        modifiedBy: reservations.modifiedBy[0] || {},
+                        modifiedOn: convertedModifiedOn,
+                    };
+                });
+
+                return res.status(200).json({ reservation: convertedReservation, statuscode: 200 });
+            } else {
+                return res.status(404).json({ error: "No reservation found", statuscode: 404 });
+            }
+        } else {
+            return res.status(result.statuscode).json({ message: result.message });
         }
-        return {
-          ...reservation._doc,
-          dateUTC: null,
-          createdOn: null,
-          reservationType: [],
-        };
-      });
 
-      return res
-        .status(200)
-        .json({ reservation: convertedReservation, statuscode: 200 });
-    } else {
-      return res
-        .status(404)
-        .json({ error: "No property found", statuscode: 404 });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: "Internal Server Error" });
     }
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: error.message, statusCode: 500 });
-  }
 };
 
-export default userProperty;
+export default getReservation;

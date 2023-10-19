@@ -1,74 +1,63 @@
-// import Randomstring from "randomstring";
-// import * as dotenv from "dotenv";
-// dotenv.config();
-// import holidayModel from "../../models/holidays.js";
-// import userModel from '../../models/verifiedUsers.js'
+import Randomstring from "randomstring";
+import * as dotenv from "dotenv";
+dotenv.config();
+import verifiedUser from "../../models/verifiedUsers.js";
+import holidayModel from "../../models/holidays.js";
+import { getCurrentUTCTimestamp } from "../../helpers/helper.js";
 
-// import {
-//   getCurrentUTCTimestamp,
-//   getCurrentLocalTimestamp,
-// } from "../../helpers/helper.js";
+const postHoliday = async (req, res) => {
+  try {
+    const {
+      userId,
+      shortCode,
+      propertyId,
+      holidayName,
+      startDate,
+      endDate,
+    } = req.body;
 
+    const authCodeValue = req.headers['authcode']
+    const findUser = await verifiedUser.findOne({ userId })
+    if (!findUser) {
+      return res.status(400).json({ message: "User not found or invalid userId", statuscode: 400 })
+    }
+    const userToken = findUser.authCode
 
-// const postHoliday = async (req, res) => {
-//   try {
-//     const {
-//       userId,
-//       holidayId,  
-//       propertyId,
-//       shortCode,
-//       holidayName,
-//       startDate,
-//       endDate,
-//       createdBy,
-//       createdOn,
-//       modifiedOn,
-//     } = req.body;
+    if (authCodeValue !== userToken) {
+      return res.status(400).json({ message: "Invalid authentication token", statuscode: 400 });
+    }
+    let userRole = findUser.role[0].role
 
-//     const authCodeValue = req.headers['authcode']
+    const newHoliday = new holidayModel({
 
-//     const findUser = await userModel.findOne({ userId })
-    
-//     if(!findUser){
-//       return res.status(404).json({message:"user not found"})
-//     }
-//     const {authCode}= findUser
+      propertyId,
+      holidayId: Randomstring.generate(8),
+      shortCode: shortCode,
+      holidayName: [{
+        holidayName: holidayName
+      }],
+      startDate: [{
+        startDate: startDate
+      }],
+      endDate: [{
+        endDate: endDate
+      }],
+      createdBy: userRole,
 
-//     if(authCodeValue!==authCode){
-//       return res.status(404).json({message:"invalid authCode"})
-//     }
-  
-//     let userRole = findUser.role[0].role
-//     const currentUTCTime = await getCurrentUTCTimestamp();
-//     //create record
-//     const newHoliday = new holidayModel({
-//       propertyId,
-//       shortCode,
-//       holidayId:Randomstring.generate(8),
-//       dateUTC: currentUTCTime,
-//       dateLocal: getCurrentLocalTimestamp(),
-//       createdBy:userRole,
-//       createdOn:currentUTCTime,
-//       holidayType: [
-//         {
-//           holidayName:holidayName,
-//           startDate:startDate,
-//           endDate:endDate
-          
-//         },
-//       ],
-     
-//     });
+      createdOn: await getCurrentUTCTimestamp(),
 
-//     // Save the reservation record
-//     const savedReservation = await newHoliday.save();
-//     return res.status(200).json({ message: "New booking Source added successfully", statuscode: 200 });
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
-//   }
-// };
+      modifiedBy: [],
+      modifiedOn: [],
+      days: [],
 
+    });
+    await newHoliday.save();
+    return res.status(200).json({ message: "New holiday added successfully", statuscode: 200 });
 
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
+  }
+};
 
-// export default postHoliday;
+export default postHoliday;

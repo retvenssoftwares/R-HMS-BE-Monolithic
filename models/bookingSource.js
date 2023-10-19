@@ -5,7 +5,10 @@ const bookingSourceSchema = Schema({
     propertyId: { type: String, default: '', unique: false },
     bookingSourceId: {type: String, default:''},
 
-
+    shortCode:{
+        type:String,
+        default:''
+    },
     dateUTC: {
         type: String
     },
@@ -20,10 +23,7 @@ const bookingSourceSchema = Schema({
             sourceName: { type: String, default: '' },
             modifiedBy:{type:String,default:''},
             modifiedOn:{type:String,default:''},
-            shortCode:{
-                type:String,
-                default:''
-            },
+           
         }
     ]
 

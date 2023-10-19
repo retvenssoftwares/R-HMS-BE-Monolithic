@@ -7,25 +7,36 @@ const amenitySchema = new mongoose.Schema({
         default: ''
     },
 
-    amenityName: {
+    amenityId: {
         type: String,
         default: ''
     },
+
+    amenityName: [{
+        amenityName: {
+            type: String,
+            default: ''
+        }
+    }],
 
     amenityShortCode: {
         type: String,
         default: ''
     },
 
-    amenityType: {
-        type: String,
-        default: ''
-    },
+    amenityType: [{
+        amenityType: {
+            type: String,
+            default: ''
+        }
+    }],
 
-    amenityIcon: {
-        type: String,
-        default: ''
-    },
+    amenityIcon: [{
+        amenityIcon: {
+            type: String,
+            default: ''
+        }
+    }],
 
     amenityIconLink: {
         type: String,

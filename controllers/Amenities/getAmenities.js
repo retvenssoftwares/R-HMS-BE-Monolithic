@@ -1,7 +1,7 @@
-import holiday from '../../models/holidays.js';
+import amenity from '../../models/amenity.js';
 import { convertTimestampToCustomFormat, verifyUser } from '../../helpers/helper.js';
 
-const getHoliday = async (req, res) => {
+const getAmenities = async (req, res) => {
     try {
         const { targetTimeZone, propertyId, userId } = req.query;
         const authCodeValue = req.headers['authcode']
@@ -9,35 +9,34 @@ const getHoliday = async (req, res) => {
         const result = await verifyUser(userId, authCodeValue);
 
         if (result.success) {
-            const findAllHoliday = await holiday.find({ propertyId });
+            const findAllAmenities = await amenity.find({ propertyId }, 'amenityId propertyId createdOn amenityName modifiedBy modifiedOn amenityType -_id');
 
-            if (findAllHoliday.length > 0) {
-                const convertedHoliday = findAllHoliday.map(holidays => {
-                    const convertedDateUTC = convertTimestampToCustomFormat(holidays.createdOn, targetTimeZone);
-                    var convertedModifiedOn = ''
-                    if (holidays.modifiedOn.length === 0) {
-                        convertedModifiedOn = ''
+            if (findAllAmenities.length > 0) {
+                const convertedAmenity = findAllAmenities.map(amenities => {
+                    const convertedDateUTC = convertTimestampToCustomFormat(amenities.createdOn, targetTimeZone);
+                    var convertedModifiedOn;
+                    if (amenities.modifiedOn.length === 0) {
+                        convertedModifiedOn = {}
                     } else {
-                        convertedModifiedOn = convertTimestampToCustomFormat(holidays.modifiedOn[0].modifiedOn, targetTimeZone);
+                        convertedModifiedOn = convertTimestampToCustomFormat(amenities.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
 
                     return {
-                        ...holidays._doc,
+                        ...amenities._doc,
                         createdOn: convertedDateUTC,
-                        holidayName: holidays.holidayName[0] || {},
-                        modifiedBy: holidays.modifiedBy[0] || {},
+                        amenityName: amenities.amenityName[0] || {},
+                        modifiedBy: amenities.modifiedBy[0] || {},
                         modifiedOn: convertedModifiedOn,
-                        startDate: holidays.startDate[0] || {},
-                        endDate: holidays.endDate[0] || {}
+                        amenityType: amenities.amenityType[0] || {}
                     };
                 });
 
-                return res.status(200).json({ holidays: convertedHoliday, statuscode: 200 });
+                return res.status(200).json({ amenities: convertedAmenity, statuscode: 200 });
             } else {
-                return res.status(404).json({ error: "No holiday found", statuscode: 404 });
+                return res.status(404).json({ error: "No amenities found", statuscode: 404 });
             }
         } else {
-            return res.status(result.statuscode).json({ message: result.message });
+            return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }
 
     } catch (err) {
@@ -46,4 +45,4 @@ const getHoliday = async (req, res) => {
     }
 };
 
-export default getHoliday;
+export default getAmenities;

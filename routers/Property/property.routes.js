@@ -20,7 +20,11 @@ import fetchBookingSource from '../../controllers/Property/getBookingSource.cont
 import holiday from '../../controllers/Property/holidays.controller.js'
 import patchHoliday from '../../controllers/Property/updateHoliday.controller.js'
 import getHoliday from '../../controllers/Property/getHoliday.controller.js'
-import amenityType from "../../controllers/Property/postAmenity.js"
+
+//amenities
+import amenityType from "../../controllers/Amenities/postAmenity.js"
+import getAmenities from "../../controllers/Amenities/getAmenities.js"
+import patchAmenity from '../../controllers/Amenities/patchAmenity.js';
 
 //seasons
 import seasonType from "../../controllers/Property/postSeason.js"
@@ -97,5 +101,7 @@ router.get("/api/getHoliday", getHoliday)
 
 //amenity type
 router.post("/api/postAmenity", amenityType);
+router.get("/api/getAmenities", getAmenities);
+router.patch("/api/patchAmenity", patchAmenity);
 
 export default router;

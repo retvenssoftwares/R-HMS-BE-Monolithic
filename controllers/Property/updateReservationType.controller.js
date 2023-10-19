@@ -1,64 +1,66 @@
-import ReservationType from "../../models/reservationType.js";
-import {
-    getCurrentUTCTimestamp,
-    getCurrentLocalTimestamp,
-} from "../../helpers/helper.js";
-import userModel from '../../models/user.js'
+import reservation from '../../models/reservationType.js'
+import verifiedUser from '../../models/verifiedUsers.js'
+import { getCurrentUTCTimestamp } from '../../helpers/helper.js'
 
-const updateReservation = async (req, res) => {
-    const reservationId = req.params.reservationId;
-    const { reservationName, status, userId, modifiedBy } = req.body;
-    const authCodeValue = req.headers['authcode']
-    const findUser = await userModel.findOne({ userId })
-
-    if (!findUser) {
-        return res.status(404).json({ message: "User not found" });
-    }
-    const {authCode}= findUser
-
-    if(authCodeValue!==authCode){
-        return res.status(404).json({message:"invalid authCode"})
-      }
-
-    const userRole = findUser.role[0].role;
-    console.log(userRole)
-    const currentUTCTime = await getCurrentUTCTimestamp();
-
+const patchReservation = async (req, res) => {
     try {
-        // Find the reservation document by its reservationId
-        const reservation = await ReservationType.findOne({ reservationTypeId: reservationId });
+        const { userId, reservationName,status } = req.body;
+        const reservationTypeId = req.params.reservationTypeId;
+        const authCodeValue = req.headers['authcode'];
+        const findUser = await verifiedUser.findOne({ userId });
 
-        if (!reservation) {
-            return res.status(404).json({ message: "Reservation not found" });
+        if (!findUser) {
+            return res.status(404).json({ message: "User not found or invalid userid", statuscode: 404 })
+        }
+        const userToken = findUser.authCode;
+        let userRole = findUser.role[0].role;
+
+        if (authCodeValue !== userToken) {
+            return res.status(400).json({ message: "Invalid authentication token", statuscode: 400 });
         }
 
-        // Check if reservationType array exists and is not empty
-        if (!reservation.reservationType || reservation.reservationType.length === 0) {
-            // If it's empty or doesn't exist, create a new array with one object
-            reservation.reservationType = [{
-                reservationName,
-                status,
-                modifiedBy: userRole,
-                modifiedOn: currentUTCTime,
-            }];
+        const findReservation = await reservation.findOne({reservationTypeId: reservationTypeId });
+
+        if (!findReservation) {
+            return res.status(404).json({ message: "reservation not found", statuscode: 404 });
+        }
+
+      
+
+        const currentUTCTime = await getCurrentUTCTimestamp();
+
+        if (reservationName) {
+            const reservationNameObject = {
+                reservationName: reservationName
+            };
+            findReservation.reservationName.unshift(reservationNameObject);
+        }
+
+        if (status) {
+            const statusObject = {
+                status: status
+            };
+            findReservation.status.unshift(statusObject);
+        }
+
+        const modifiedByObject = {
+            modifiedBy: userRole
+        };
+
+        findReservation.modifiedBy.unshift(modifiedByObject);
+        findReservation.modifiedOn.unshift({ modifiedOn: currentUTCTime });
+
+        const updatedReservation = await findReservation.save();
+
+        if (updatedReservation) {
+            return res.status(200).json({ message: "reservation successfully updated", statuscode:200 });
         } else {
-            // Push a new object at the beginning of the array
-            reservation.reservationType.unshift({
-                reservationName,
-                status,
-                modifiedBy:userRole,
-                modifiedOn: currentUTCTime,
-            });
+            return res.status(404).json({ message: "reservation not found", statuscode: 404 });
         }
-
-        // Save the updated document
-        await reservation.save();
-
-        return res.status(200).json({ message: "Reservation updated successfully" });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Internal Server Error" });
+        console.log(error);
+        return res.status(500).json({ message: "Internal Server Error", statuscode:500 });
     }
-};
+}
 
-export default updateReservation;
+export default patchReservation;

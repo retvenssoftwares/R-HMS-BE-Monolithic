@@ -12,8 +12,14 @@ import propertyImageController from '../../controllers/Property/addPropertyImage
 import identityType from '../../controllers/Property/getIdentityTypes.controller.js'
 import reservationType from '../../controllers/Property/reservationType.controller.js'
 import updateReservationType from '../../controllers/Property/updateReservationType.controller.js'
-import userIdentity from "../../controllers/Property/postidentity.controller.js"
-
+import userIdentity from "../../controllers/Property/postIdentity.controller.js"
+import fetchReservation from '../../controllers/Property/getReservation.controller.js'
+import postBookingSource from '../../controllers/Property/bookingSource.controller.js'
+import updateBookingSource from '../../controllers/Property/updateBookingSource.controller.js'
+import fetchBookingSource from '../../controllers/Property/getBookingSource.controller.js'
+import holiday from '../../controllers/Property/holidays.controller.js'
+import patchHoliday from '../../controllers/Property/updateHoliday.controller.js'
+import getHoliday from '../../controllers/Property/getHoliday.controller.js'
 //seasons
 import seasonType from "../../controllers/Property/postSeason.js"
 import getSeasons from '../../controllers/Property/getSeasons.js';
@@ -60,7 +66,20 @@ router.get("/api/fetchProperty/:userId", userProperty);
 router.post("/api/addReservationType", reservationType)
 
 //update ReservationType Route
-router.patch("/api/updateReservationType/:reservationId", updateReservationType)
+router.patch("/api/updateReservationType/:reservationTypeId", updateReservationType)
+
+//get reservationType
+router.get("/api/getreservation",fetchReservation)
+
+//post booking source
+router.post("/api/bookingSource",postBookingSource)
+
+//update booking source
+router.patch("/api/updateBookingSource/:bookingSourceId",updateBookingSource)
+
+//fetch BookingSource
+router.get("/api/getBookingSource/:propertyId",fetchBookingSource)
+
 router.post("/api/postIdentity", userIdentity);
 router.get("/api/fetchIdentity", identityType);
 
@@ -68,5 +87,11 @@ router.get("/api/fetchIdentity", identityType);
 router.post("/api/postSeason", seasonType);
 router.get("/api/getSeasons", getSeasons);
 router.patch("/api/patchSeason/:seasonId", patchSeason)
+
+
+//holiday
+router.post("/api/postHoliday",holiday)
+router.patch("/api/patchHoliday/:holidayId",patchHoliday)
+router.get("/api/getHoliday",getHoliday)
 
 export default router;

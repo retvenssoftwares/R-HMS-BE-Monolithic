@@ -12,7 +12,7 @@ import propertyImageController from '../../controllers/Property/addPropertyImage
 import identityType from '../../controllers/Property/getIdentityTypes.controller.js'
 import reservationType from '../../controllers/Property/reservationType.controller.js'
 import updateReservationType from '../../controllers/Property/updateReservationType.controller.js'
-import userIdentity from "../../controllers/Property/postidentity.controller.js"
+import userIdentity from "../../controllers/Property/postIdentity.controller.js"
 import fetchReservation from '../../controllers/Property/getReservation.controller.js'
 import postBookingSource from '../../controllers/Property/bookingSource.controller.js'
 import updateBookingSource from '../../controllers/Property/updateBookingSource.controller.js'

@@ -2,11 +2,35 @@ import mongoose from 'mongoose';
 
 const amenitySchema = new mongoose.Schema({
 
-    propertyId: {
+    shortCode : {
         type: String,
-        default: ''
+        default : ''
     },
 
+    createdBy: {
+        type : String,
+        default : ''
+    },
+
+    createdOn : {
+        type : String,
+        default : ''
+    },
+
+    modifiedBy : [{
+        modifiedBy : {
+        type : String,
+        default : ''
+        }
+    }],
+
+    modifiedOn : [{
+        modifiedOn : {
+        type : String,
+        default : ''
+        }
+    }],
+    
     amenityId: {
         type: String,
         default: ''
@@ -19,10 +43,6 @@ const amenitySchema = new mongoose.Schema({
         }
     }],
 
-    amenityShortCode: {
-        type: String,
-        default: ''
-    },
 
     amenityType: [{
         amenityType: {
@@ -48,5 +68,5 @@ const amenitySchema = new mongoose.Schema({
         versionKey: false
     }
 );
-const amenity = model('amenity', amenitySchema);
+const amenity = mongoose.model('amenity', amenitySchema);
 export default amenity;

@@ -13,6 +13,7 @@ import identityType from '../../controllers/Property/getIdentityTypes.controller
 import reservationType from '../../controllers/Property/reservationType.controller.js'
 import updateReservationType from '../../controllers/Property/updateReservationType.controller.js'
 import userIdentity from "../../controllers/Property/postidentity.controller.js"
+import  amenityType from "../../controllers/Property/postAmenity.js"
 
 //seasons
 import seasonType from "../../controllers/Property/postSeason.js"
@@ -68,5 +69,8 @@ router.get("/api/fetchIdentity", identityType);
 router.post("/api/postSeason", seasonType);
 router.get("/api/getSeasons", getSeasons);
 router.patch("/api/patchSeason/:seasonId", patchSeason)
+
+//amenity type
+router.post("/api/postAmenity", amenityType);
 
 export default router;

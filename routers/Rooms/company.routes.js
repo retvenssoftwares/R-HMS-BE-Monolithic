@@ -6,7 +6,7 @@ const router = express.Router();
 
 import addCompany from '../../controllers/Rooms/addCompany.js';
 
-router.post("/api/addCompany", addCompany)
+router.post("/api/addCompany", upload.fields([{ name: 'companyLogo', maxCount: 1 }, { name: 'contractPdf', maxCount: 1 }]), addCompany)
 
 export default router;
 

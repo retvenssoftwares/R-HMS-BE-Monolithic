@@ -53,6 +53,36 @@ const companySchema = new mongoose.Schema({
             default: "",
         }
     }],
+
+    companyEmail: [{
+        companyEmail: {
+            type: String,
+            default: "",
+        },
+        modifiedOn: {
+            type: String,
+            default: "",
+        },
+        logId: {
+            type: String,
+            default: "",
+        }
+    }],
+    companyWebsite: [{
+        companyWebsite: {
+            type: String,
+            default: "",
+        },
+        modifiedOn: {
+            type: String,
+            default: "",
+        },
+        logId: {
+            type: String,
+            default: "",
+        }
+    }],
+
     shortCode: [{
         shortCode: {
             type: String,
@@ -121,10 +151,14 @@ const companySchema = new mongoose.Schema({
         }
     }],
 
-    billingPreference: [{
-        billingPreference: {
+    billingCycle: [{
+        month: {
             type: String,
-            default: "",
+            default: ''
+        },
+        days: {
+            type: String,
+            default: ''
         },
         modifiedOn: {
             type: String,
@@ -168,6 +202,21 @@ const companySchema = new mongoose.Schema({
 
     personDesignation: [{
         personDesignation: {
+            type: String,
+            default: "",
+        },
+        modifiedOn: {
+            type: String,
+            default: "",
+        },
+        logId: {
+            type: String,
+            default: "",
+        }
+    }],
+
+    contractPdf: [{
+        contractPdf: {
             type: String,
             default: "",
         },

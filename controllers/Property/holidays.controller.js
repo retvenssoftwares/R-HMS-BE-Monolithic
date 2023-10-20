@@ -2,16 +2,18 @@ import Randomstring from "randomstring";
 import * as dotenv from "dotenv";
 dotenv.config();
 import verifiedUser from "../../models/verifiedUsers.js";
-import reservationModel from "../../models/reservationType.js";
+import holidayModel from "../../models/holidays.js";
 import { getCurrentUTCTimestamp } from "../../helpers/helper.js";
 
 const postHoliday = async (req, res) => {
   try {
     const {
       userId,
+      shortCode,
       propertyId,
-      reservationName,
-      status
+      holidayName,
+      startDate,
+      endDate,
     } = req.body;
 
     const authCodeValue = req.headers['authcode']
@@ -26,25 +28,31 @@ const postHoliday = async (req, res) => {
     }
     let userRole = findUser.role[0].role
 
-    const newReservation = new reservationModel({
+    const newHoliday = new holidayModel({
 
       propertyId,
-      reservationTypeId: Randomstring.generate(8),
-      reservationName: [{
-        reservationName: reservationName
+      holidayId: Randomstring.generate(8),
+      shortCode: shortCode,
+      holidayName: [{
+        holidayName: holidayName
       }],
-      status: [{
-        status: status
+      startDate: [{
+        startDate: startDate
+      }],
+      endDate: [{
+        endDate: endDate
       }],
       createdBy: userRole,
 
       createdOn: await getCurrentUTCTimestamp(),
+
       modifiedBy: [],
       modifiedOn: [],
+      days: [],
 
     });
-    await newReservation.save();
-    return res.status(200).json({ message: "New reservation added successfully", statuscode: 200 });
+    await newHoliday.save();
+    return res.status(200).json({ message: "New holiday added successfully", statuscode: 200 });
 
   } catch (err) {
     console.log(err);

@@ -1,30 +1,40 @@
 import paymentTypeModel from '../../models/paymentTypes.js';
-import { convertTimestampToCustomFormat } from '../../helpers/helper.js';
+import { convertTimestampToCustomFormat, verifyUser } from '../../helpers/helper.js';
 
 const getPaymentTypes = async (req, res) => {
     try {
-        const { targetTimeZone, propertyId } = req.query;
+        const { targetTimeZone, propertyId, userId } = req.query;
+        const authCodeValue = req.headers['authcode']
         const findAllPaymentTypes = await paymentTypeModel.find({ propertyId });
 
-        if (findAllPaymentTypes.length > 0) {
-            const convertedPaymentTypes = findAllPaymentTypes.map(paymentType => {
-                const convertedDateUTC = convertTimestampToCustomFormat(paymentType.createdOn, targetTimeZone);
+        const result = await verifyUser(userId, authCodeValue);
 
-                const convertedModifiedOn = convertTimestampToCustomFormat(paymentType.modifiedOn[0].modifiedOn, targetTimeZone);
-                return {
-                    ...paymentType._doc,
-                    createdOn: convertedDateUTC,
-                    paymentMethodName: paymentType.paymentMethodName[0],
-                    modifiedBy: paymentType.modifiedBy[0],
-                    modifiedOn: convertedModifiedOn,
-                    receivedTo: paymentType.receivedTo[0],
-                };
-            });
+        if (result.success) {
+            if (findAllPaymentTypes.length > 0) {
+                const convertedPaymentTypes = findAllPaymentTypes.map(paymentType => {
+                    const convertedDateUTC = convertTimestampToCustomFormat(paymentType.createdOn, targetTimeZone);
 
-            return res.status(200).json({ paymentTypes: convertedPaymentTypes, statuscode: 200 });
+                    const convertedModifiedOn = convertTimestampToCustomFormat(paymentType.modifiedOn[0].modifiedOn, targetTimeZone);
+                    return {
+                        ...paymentType._doc,
+                        createdOn: convertedDateUTC,
+                        paymentMethodName: paymentType.paymentMethodName[0],
+                        modifiedBy: paymentType.modifiedBy[0],
+                        modifiedOn: convertedModifiedOn,
+                        receivedTo: paymentType.receivedTo[0],
+                    };
+                });
+
+                return res.status(200).json({ paymentTypes: convertedPaymentTypes, statuscode: 200 });
+            }
+            else {
+                return res.status(404).json({ error: "No payment types found", statuscode: 404 });
+            }
         } else {
-            return res.status(404).json({ error: "No payment types found", statuscode: 404 });
+            return res.status(result.statuscode).json({ message: result.message });
         }
+
+
     } catch (err) {
         console.log(err);
         return res.status(500).json({ message: "Internal Server Error" });

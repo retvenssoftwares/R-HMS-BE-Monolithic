@@ -2,6 +2,7 @@ import userModel from "../../models/user.js"
 import verifyUserModel from "../../models/verifiedUsers.js"
 import propertyModel from "../../models/property.js"
 import propertyChain from "../../models/propertychain.js"
+import logsModel from "../../models/logsModel.js"
 const verifyUserProperty =  async (req,res)=>{
 
     const userId = req.body.userId
@@ -83,7 +84,32 @@ const verifyUserProperty =  async (req,res)=>{
         })
 
         await property.save()
+        console.log("cygvhjbkjnl")
 
+            // create the log model
+            const add = new logsModel({
+                propertyId: singleProperty.propertyId,
+                data: [{
+                    companyInfo: [],
+                    propertyInfo: Object.keys(singleProperty).map((key) => {
+                        return {
+                            fieldName: key,
+                            lastModifiedAt: "", // Add appropriate value here
+                            lastModifiedBy: "", // Add appropriate value here
+                            userId: "", // Add appropriate value here
+                            lastValue: singleProperty[key], // Value before modification
+                            currentValue: singleProperty[key], // Current value
+                            deviceType: "", // Add appropriate value here
+                            ipAddress: "" // Add appropriate value here
+                        };
+                    })
+                }]
+            });
+            
+            await add.save();
+
+           
+            
         
     }else{
         const multipleProperty = user.multipleData[0]

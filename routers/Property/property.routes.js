@@ -35,6 +35,7 @@ import { getTransportation, transportationAdd, updateTransportation } from '../.
 import { addBusinessSources, getBusinessSources, updateBusinessSources } from '../../controllers/Property/businessSources.js';
 import { addInclusion, updateInclusion } from '../../controllers/Property/addInclusion.js';
 import { addInclusionPlan, updateInclusionPlan } from '../../controllers/Property/addInclusionPlan.js';
+import { addCompany } from '../../controllers/Property/company.js';
 
 
 const router = express.Router();
@@ -66,6 +67,9 @@ router.patch("/api/uploadPropertyImages/:propertyId", upload.fields([{ name: 'ho
 router.patch("/api/editProperty", editProperty);
 //patch Identity
 router.patch("/api/patchIdentityType/:identityTypeId", identityTypes);
+
+//company
+router.post("/api/addCompany",upload.single({name:"compnayLogo"}),addCompany)
 
 //payment types
 router.post("/api/addPaymentType", addPaymentType)

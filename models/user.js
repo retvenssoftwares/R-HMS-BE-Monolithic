@@ -258,10 +258,13 @@ const userSchema = new mongoose.Schema({
       type: String,
       default: ''
     },
-    propertyDescription: {
-      type: String,
-      default: ''
-    }
+    propertyDescription: [{
+      propertyDescription: {
+        type: String,
+        default: ''
+      },
+      modifiedDate: String
+    }]
   }],
   password: [{
     password: {
@@ -358,8 +361,8 @@ const userSchema = new mongoose.Schema({
   }],
 
   verificationStatus: {
-     type: String,
-     default: 'false'
+    type: String,
+    default: 'false'
   },
 },
   {

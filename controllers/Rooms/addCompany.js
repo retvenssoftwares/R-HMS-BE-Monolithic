@@ -10,8 +10,13 @@ const addCompany = async (req, res) => {
         const result = await verifyUser(userId, authCodeValue);
         if (result.success) {
             var imageUrl = ""
-            if (req.file) {
-                imageUrl = await uploadImageToS3(req.file)
+            var contractLink = ""
+            // Check if a single hotelLogo file is uploaded
+            if (req.files['companyLogo']) {
+                imageUrl = await uploadImageToS3(req.files['companyLogo'][0]);
+            }
+            if (req.files['contractPdf']) {
+                contractLink = await uploadImageToS3(req.files['contractPdf'][0]);
             }
             const addCompanyRecord = new company({
                 propertyId: req.body.propertyId,
@@ -28,6 +33,9 @@ const addCompany = async (req, res) => {
                 shortCode: [{
                     shortCode: req.body.shortCode
                 }],
+                contractPdf: [{
+                    contractPdf: contractLink
+                }],
                 registrationNumber: [{
                     registrationNumber: req.body.registrationNumber
                 }],
@@ -40,13 +48,18 @@ const addCompany = async (req, res) => {
                 creditLimit: [{
                     creditLimit: req.body.creditLimit
                 }],
-                billingPreference: [
-                    {
-                        billingPreference: req.body.billingPreference
-                    }
-                ],
                 contactPerson: [{
                     contactPerson: req.body.contactPerson
+                }],
+                companyEmail: [{
+                    companyEmail: req.body.companyEmail
+                }],
+                companyWebsite: [{
+                    companyWebsite: req.body.companyWebsite
+                }],
+                billingCycle: [{
+                    month: req.body.month,
+                    days: req.body.days
                 }],
                 phoneNumber: [{
                     phoneNumber: req.body.phoneNumber

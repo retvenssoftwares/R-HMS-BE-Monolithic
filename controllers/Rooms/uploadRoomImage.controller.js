@@ -8,7 +8,7 @@ import {
 
 dotenv.config();
 
-const postProperty = async (req, res) => {
+const RoomImage = async (req, res) => {
   try {
     const roomTypeId = req.params.roomTypeId; // Assuming you get the roomTypeId from the request parameters
 
@@ -27,7 +27,7 @@ const postProperty = async (req, res) => {
 
       for (const roomImage of req.files["roomImage"]) {
         const imageUrl = await uploadImageToS3(roomImage);
-        roomImageUrls.push({
+        roomImageUrls.unshift({
           imageId: Randomstring.generate(8),
           image:imageUrl,
           modifiedDate: currentUTCTime,
@@ -44,7 +44,7 @@ const postProperty = async (req, res) => {
 
       for (const viewImage of req.files["viewImage"]) {
         const imageUrl = await uploadImageToS3(viewImage);
-        viewImageUrls.push({
+        viewImageUrls.unshift({
           imageId: Randomstring.generate(8),
           image:imageUrl,
           modifiedDate: currentUTCTime,
@@ -61,7 +61,7 @@ const postProperty = async (req, res) => {
   
         for (const viewImage of req.files["bathRoomImage"]) {
           const imageUrl = await uploadImageToS3(viewImage);
-          viewImageUrls.push({
+          viewImageUrls.unshift({
             imageId: Randomstring.generate(8),
             image:imageUrl,
             modifiedDate: currentUTCTime,
@@ -78,13 +78,12 @@ const postProperty = async (req, res) => {
   
         for (const viewImage of req.files["bedImage"]) {
           const imageUrl = await uploadImageToS3(viewImage);
-          viewImageUrls.push({
+          viewImageUrls.unshift({
             imageId: Randomstring.generate(8),
             image:imageUrl,
             modifiedDate: currentUTCTime,
           });
         }
-  
         // Append the uploaded view images to the existing record
         existingRecord.bed = existingRecord.bed.concat(viewImageUrls);
       }
@@ -100,4 +99,4 @@ const postProperty = async (req, res) => {
   }
 };
 
-export default postProperty
+export default RoomImage

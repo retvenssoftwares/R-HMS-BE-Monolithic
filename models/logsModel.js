@@ -64,10 +64,10 @@ const logs = new mongoose.Schema({
                  type:String,
                  default:""
              },
-             userId:{
-                 type:String,
-                 default:""
-             },
+            //  userId:{
+            //      type:String,
+            //      default:""
+            //  },
              lastValue:{
                  type:String,
                  default:""

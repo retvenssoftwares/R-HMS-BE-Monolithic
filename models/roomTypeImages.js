@@ -34,7 +34,8 @@ const RoomSchema = Schema({
             image: { type: String, default: '' },
             displayStatus: {type:String, default: '1' },
             
-        }
+        },
+        
 
     ],
     bed: [

@@ -38,4 +38,6 @@ export const addCompany = async(req,res)=>{
     })
 
     await add.save()
+
+    
 }

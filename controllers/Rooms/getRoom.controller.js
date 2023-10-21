@@ -1,13 +1,16 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 import roomModel from "../../models/roomType.js";
-import { convertTimestampToCustomFormat } from "../../helpers/helper.js";
+import { convertTimestampToCustomFormat,verifyUser } from "../../helpers/helper.js";
 
 const userProperty = async (req, res) => {
     try {
-        const { targetTimeZone } = req.query;
-        const propertyId = req.params.propertyId;
+        const { targetTimeZone,userId,propertyId } = req.query;
+        const authCodeValue = req.headers['authcode']
+ 
+        const result = await verifyUser(userId, authCodeValue);
 
+   if(result.success){
         const rooms = await roomModel.find({ propertyId: propertyId });
 
         if (rooms.length > 0) {
@@ -124,9 +127,15 @@ const userProperty = async (req, res) => {
         } else {
             return res.status(404).json({ error: "No property found", statuscode: 404 });
         }
+    } else {
+        return res.status(result.statuscode).json({ message: result.message });
+
+    }
     } catch (error) {
         return res.status(500).json({ error: error.message, statusCode: 500 });
     }
 };
 
 export default userProperty;
+
+

@@ -5,11 +5,14 @@ import randomString  from "randomstring"
 
 export const addBusinessSources = async(req,res)=>{
     const UserauthCode = await verifying.findOne({userId:req.body.userId})
+    
     if(!UserauthCode){
         return res.status(200).json({message: "Invalid data"})
     }
+
     const{authCode} = UserauthCode
     const authCodeDetails = req.headers["authcode"]
+
     if(authCodeDetails !== authCode){
         return res.status(500).json({message:"Invalid data"})
     }

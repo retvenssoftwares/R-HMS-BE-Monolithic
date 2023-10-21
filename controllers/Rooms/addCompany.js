@@ -11,7 +11,7 @@ const addCompany = async (req, res) => {
         if (result.success) {
             var imageUrl = ""
             var contractLink = ""
-            // Check if a single hotelLogo file is uploaded
+           
             if (req.files['companyLogo']) {
                 imageUrl = await uploadImageToS3(req.files['companyLogo'][0]);
             }

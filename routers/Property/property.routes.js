@@ -34,6 +34,9 @@ import identityTypes from "../../controllers/Property/patchIdentity.js"
 import { getTransportation, transportationAdd, updateTransportation } from '../../controllers/Property/transpotationTypes.js';
 import { addBusinessSources, getBusinessSources, updateBusinessSources } from '../../controllers/Property/businessSources.js';
 
+//company
+import getCompany from "../../controllers/Property/getCompany.js"
+
 const router = express.Router();
 
 router.post(
@@ -103,5 +106,8 @@ router.get("/api/getHoliday", getHoliday)
 router.post("/api/postAmenity", amenityType);
 router.get("/api/getAmenities", getAmenities);
 router.patch("/api/patchAmenity", patchAmenity);
+
+//company 
+router.get("/api/companyType", getCompany);
 
 export default router;

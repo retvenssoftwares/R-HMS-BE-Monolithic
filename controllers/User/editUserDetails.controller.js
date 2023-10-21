@@ -68,7 +68,13 @@ const editUserOnboarding = async (req, res) => {
                 modifiedDate: (await getCurrentUTCTimestamp()).toString()
             }
 
+
             elementToUpdate.city.unshift(cityObject);
+            const propertyDescriptionObject = {
+                propertyDescription: req.body.propertyDescription,
+                modifiedDate: (await getCurrentUTCTimestamp()).toString()
+            }
+            elementToUpdate.propertyDescription.unshift(propertyDescriptionObject);
             elementToUpdate.userId = userId;
             elementToUpdate.dateUTC = (await getCurrentUTCTimestamp()).toString();
             elementToUpdate.baseCurrency = baseCurrency
@@ -76,8 +82,8 @@ const editUserOnboarding = async (req, res) => {
             elementToUpdate.propertyId = propertyId
             findRecord.propertyTypeSOC = propertyTypeSOC
             await findRecord.save();
-        }else{
-            const { userId, propertyChainName,numberOfProperties,propertyType,baseCurrency, websiteUrl } = req.body
+        } else {
+            const { userId, propertyChainName, numberOfProperties, propertyType, baseCurrency, websiteUrl } = req.body
             var findRecord = await userModel.findOne({ userId });
             //console.log(findRecord)
 

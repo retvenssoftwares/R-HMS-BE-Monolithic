@@ -25,6 +25,18 @@ async function uploadImageToS3(file) {
   return imageUrl;
 }
 
+// const uploadImageToS3 = (file) => {
+//   const params = {
+//     Bucket: bucket,
+//     Key: `hotel_images/${file.originalname}`,
+//     Body: file.buffer,
+//     ContentType: file.mimetype,
+//     ACL: 'public-read',
+//   };
+
+//   return s3.upload(params).promise().then((uploadResponse) => uploadResponse.Location);
+// };
+
 async function uploadMultipleImagesToS3(files) {
   const uploadPromises = files.map(async (file) => {
     const params = {

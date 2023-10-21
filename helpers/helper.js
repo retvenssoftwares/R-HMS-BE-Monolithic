@@ -17,9 +17,8 @@ async function uploadImageToS3(file) {
     ACL: "public-read",
   };
 
-  // const uploadResponse = await s3.upload(params).promise();
-  // const imageUrl = uploadResponse.Location;
-  const [uploadResponse] = await Promise.all([s3.upload(params).promise()]);
+  const uploadPromise = s3.upload(params).promise();
+  const uploadResponse = await uploadPromise;
   const imageUrl = uploadResponse.Location;
 
   return imageUrl;

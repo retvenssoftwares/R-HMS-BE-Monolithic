@@ -33,6 +33,10 @@ import patchSeason from '../../controllers/Property/patchSeason.js';
 import identityTypes from "../../controllers/Property/patchIdentity.js"
 import { getTransportation, transportationAdd, updateTransportation } from '../../controllers/Property/transpotationTypes.js';
 import { addBusinessSources, getBusinessSources, updateBusinessSources } from '../../controllers/Property/businessSources.js';
+import { addInclusion, updateInclusion } from '../../controllers/Property/addInclusion.js';
+import { addInclusionPlan, updateInclusionPlan } from '../../controllers/Property/addInclusionPlan.js';
+import { addCompany } from '../../controllers/Property/company.js';
+
 
 const router = express.Router();
 
@@ -52,13 +56,20 @@ router.post("/api/addBusinessSources", addBusinessSources)
 router.patch("/api/updateBusinessSources", updateBusinessSources)
 router.get("/api/getBusinessSources/:userId/:propertyId", getBusinessSources)
 
-
+//inclusion
+router.post("/api/addInclusion",addInclusion)
+router.patch("/api/updateInclusion",updateInclusion)
+router.post("/api/addInclusionPlan",addInclusionPlan)
+router.patch("/api/updateInclusionPlan",updateInclusionPlan)
 
 router.patch("/api/propertyAdditionalDetails", editProperty)
 router.patch("/api/uploadPropertyImages/:propertyId", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), propertyImageController);
 router.patch("/api/editProperty", editProperty);
 //patch Identity
 router.patch("/api/patchIdentityType/:identityTypeId", identityTypes);
+
+//company
+router.post("/api/addCompany",upload.single({name:"compnayLogo"}),addCompany)
 
 //payment types
 router.post("/api/addPaymentType", addPaymentType)

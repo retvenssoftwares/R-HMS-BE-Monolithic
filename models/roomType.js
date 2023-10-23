@@ -50,11 +50,25 @@ const roomType = new mongoose.Schema({
 
     }],
 
-    bedType:[{
-        bedType:{
+    noOfBeds:[{
+        noOfBeds:{
             type:String,
             default:"",
         },
+        modifiedDate: {
+            type: String,
+            default: ""
+        }
+
+    }],
+
+
+
+    bedType:[{
+        bedType:[{
+            type:String,
+            default:"",
+        }],
         modifiedDate: {
             type: String,
             default: ""
@@ -118,6 +132,9 @@ const roomType = new mongoose.Schema({
             default: ""
         }
     }],
+
+   
+
 
     baseRate:[{
         baseRate:{

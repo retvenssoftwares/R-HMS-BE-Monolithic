@@ -270,7 +270,6 @@ const propertySchema = new Schema({
         modifiedDate: String
     }]
 
-
 })
 
 const property = model('property', propertySchema);

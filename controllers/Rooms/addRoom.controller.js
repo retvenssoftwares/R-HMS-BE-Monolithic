@@ -31,7 +31,9 @@ const postRoom = async (req, res) => {
       minimumRate,
       maximumRate,
       extraAdultRate,
-      extraChildRate
+      extraChildRate,
+      noOfBeds,
+      
     } = req.body;
     
     const authCodeValue = req.headers['authcode']
@@ -81,12 +83,17 @@ const postRoom = async (req, res) => {
           modifiedDate: currentUTCTime,
         },
       ],
-      bedType: [
-        {
-          bedType,
-          modifiedDate: currentUTCTime,
-        },
-      ],
+      noOfBeds:[{
+        noOfBeds,
+        modifiedDate: currentUTCTime,
+      }],
+
+      bedType: [{
+        bedType:bedType,
+        modifiedDate: currentUTCTime,
+    }],
+
+
       roomTypeName: [
         {
           roomTypeName: roomTypeName,

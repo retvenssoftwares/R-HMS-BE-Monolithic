@@ -9,7 +9,7 @@ import {
   getCurrentLocalTimestamp,
   uploadImageToS3
 } from "../../helpers/helper.js";
-
+import logsModel from "../../models/logsModel.js"
 //upload property controller
 const postProperty = async (req, res) => {
   try {
@@ -157,6 +157,13 @@ const postProperty = async (req, res) => {
 
     // Save the propertyImages record
     await propertyImages.save();
+
+    // create the log model
+    const add = new logsModel({
+      propertyId : propertyId
+    })
+
+    await add.save()
 
     return res.status(200).json({ message: "New property added successfully", statuscode: 200 });
   } catch (err) {

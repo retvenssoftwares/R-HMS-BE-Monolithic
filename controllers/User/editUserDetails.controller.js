@@ -55,6 +55,8 @@ const editUserOnboarding = async (req, res) => {
                 postCode: postCode,
                 modifiedDate: (await getCurrentUTCTimestamp()).toString()
             }
+
+            
             elementToUpdate.postCode.unshift(postCodeObject);
             const stateObject = {
                 state: state,

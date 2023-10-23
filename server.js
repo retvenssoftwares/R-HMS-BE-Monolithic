@@ -10,6 +10,7 @@ import companyRoutes from "./routers/Rooms/company.routes.js"
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 
 app.use(propertyRoutes)
 app.use(rooms)

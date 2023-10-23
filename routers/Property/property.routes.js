@@ -57,10 +57,10 @@ router.patch("/api/updateBusinessSources", updateBusinessSources)
 router.get("/api/getBusinessSources/:userId/:propertyId", getBusinessSources)
 
 //inclusion
-router.post("/api/addInclusion",addInclusion)
-router.patch("/api/updateInclusion",updateInclusion)
-router.post("/api/addInclusionPlan",addInclusionPlan)
-router.patch("/api/updateInclusionPlan",updateInclusionPlan)
+// router.post("/api/addInclusion",addInclusion)
+// router.patch("/api/updateInclusion",updateInclusion)
+// router.post("/api/addInclusionPlan",addInclusionPlan)
+// router.patch("/api/updateInclusionPlan",updateInclusionPlan)
 
 router.patch("/api/propertyAdditionalDetails", editProperty)
 router.patch("/api/uploadPropertyImages/:propertyId", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), propertyImageController);

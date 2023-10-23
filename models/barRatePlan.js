@@ -22,12 +22,13 @@ rateType:{
     type:String,
     default:""
 },
+
 roomType:[{
    roomTypeId: {
     type:String,
     default:"",
     },
-    modifiedDate: {
+    logId: {
         type: String,
         default: ""
     }
@@ -38,19 +39,27 @@ ratePlanName:[{
         type:String,
     default:"",
     },
-    modifiedDate: {
+    logId: {
         type: String,
         default: ""
     }
 
 }],
 
-  shortCode: {
-    type: String,
-    default: "",
-  },
+  shortCode: [{
+    shortCode:{
+        type: String,
+        default: "",
+    },
+    logId: {
+        type: String,
+        default: ""
+    }
+  }],
   
-  Inclusion:[{
+  inclusion:[{
+    inclusionPlan:[{
+
         inclusionId:{
             type: String,
             default: "",
@@ -75,7 +84,40 @@ ratePlanName:[{
             type: String,
             default: "",
         },
-  }]
+    }],
+    logId: {
+        type: String,
+        default: ""
+    }
+  }],
+
+
+  
+
+  inclusionTotal:[{
+  inclusionTotal:{
+    type: String,
+    default: "",
+  },
+  logId: {
+    type: String,
+    default: ""
+}
+  
+}],
+
+
+  totalRatePlanPrice:[{
+  totalRatePlanPrice:{
+    type: String,
+    default: "",
+  },
+  logId: {
+    type: String,
+    default: ""
+}
+}]
+
 });
 
 const ratePlan = mongoose.model("barrateplan", barRatePlanSchema);

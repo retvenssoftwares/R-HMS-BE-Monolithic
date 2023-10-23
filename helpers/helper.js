@@ -149,6 +149,17 @@ function convertTimestampToCustomFormat(utcTimestamp, targetTimeZone) {
   return formattedTimestamp;
 }
 
+///
+// function getLocalizedResponse(language, translations) {
+//   // Default to English if the specified language is not found.
+//   const selectedLanguage = translations[language] || translations.en;
+
+//   // Build and return the response object for the specified language.
+//   return selectedLanguage
+// }
+
+
+
 
 //
 const verifyUser = async (userId, authCodeValue) => {

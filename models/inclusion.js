@@ -1,39 +1,83 @@
-import mongoose, { Mongoose, Schema , model } from "mongoose";
+import mongoose from "mongoose";
 
-const inclusion = new mongoose.Schema({
-    inclusionArray:[{
-        inclusionId:{
-            type:String,
-            default:""
-        },
-        inclusionName:{
-            type:String,
-            default:""
-        },
-        defaultPostingRule:{
-            type:String,
-            default:""
-        },
-        defaultChargeRule:{
-            type:String,
-            default:""
-        },
-        inclusionType:{
-            type:String,
-            default:""
-        },
-        defaultPrice:{
-            type:String,
-            default:""
-        }
-       
-    }, 
+const inclusionSchema = new mongoose.Schema({
+  propertyId: {
+    type: String,
+    default: "",
+  },
+  inclusionId: {
+    type: String,
+    default: "",
+  },
+  createdBy:{
+    type:String,
+    default:""
+},
+createdOn:{
+    type:String,
+    default:""
+},
+
+modifiedBy: [{
+  modifiedBy: {
+      type: String,
+      default: ''
+  }
+}],
+
+modifiedOn: [{
+  modifiedOn: {
+      type: String,
+      default: ''
+  }
+}],
+
+  shortCode: {
+    type: String,
+    default: "",
+  },
+
+  charge: [
     {
-        versionKey: false
-    }],
-   
-})
+      charge: {
+        type: String,
+        default: "",
+      },
+    },
+  ],
 
+  inclusionName: [
+    {
+      inclusionName: {
+        type: String,
+        default: "",
+      },
+    },
+  ],
 
-const inclusionDetails = new mongoose.model("inclusionDetails",inclusion)
-export default inclusionDetails
+  inclusionType: [
+    {
+      inclusionType: {
+        type: String,
+        default: "",
+      },
+    },
+  ],
+
+  chargeRule:[{
+    chargeRule:{
+        type: String,
+        default : ''
+    }
+  }],
+  postingRule:[{
+    postingRule:{
+        type: String,
+        default : ''
+    }
+  }]
+  
+});
+
+const inclusion = mongoose.model("inclusion", inclusionSchema);
+export default inclusion;

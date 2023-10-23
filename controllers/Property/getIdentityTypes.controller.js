@@ -19,7 +19,7 @@ const identityType = async (req, res) => {
                 return {
                     ...identity._doc,
                     createdOn: convertedDateUTC,
-                    identityType: identity.paymentMethodName[0],
+                    identityType: identity.identityType[0],
                     modifiedBy: identity.modifiedBy[0],
                     modifiedOn: convertedModifiedOn
                 };

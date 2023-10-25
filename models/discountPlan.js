@@ -2,6 +2,8 @@ import mongoose from "mongoose"
 import db1 from "../db/conn.js"
 
 const discountPlanSchema = new mongoose.Schema({
+    propertyId: { type: String, default: "" },
+    discountPlanId: { type: String, default: "" },
     discountName: [{
         discountName: { type: String, default: '' },
         logId: { type: String, default: '' }
@@ -43,7 +45,8 @@ const discountPlanSchema = new mongoose.Schema({
             ratePlans: [{
                 rateplanId: { type: String, default: '' }
             }]
-        }]
+        }],
+        logId: { type: String, default: "" }
     }]
 }, {
     versionKey: false

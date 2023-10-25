@@ -9,6 +9,8 @@ import uploadRoomImage from '../../controllers/Rooms/uploadRoomImage.controller.
 import updateRoomImage from '../../controllers/Rooms/updateRoomImage.controller.js'
 import changeIndex from '../../controllers/Rooms/uploadPatchRoomImage.controller.js'
 import inclusion from '../../controllers/Rooms/postInclusion.controller.js';
+import BarRatePlan from '../../controllers/Rooms/postBarRatePlan.controller.js'
+import updateBarRatePlan from '../../controllers/Rooms/patchBarRatePlan.controller.js'
 const router = express.Router();
 
 //addroom
@@ -33,4 +35,9 @@ router.patch(
 //post inclusion
 router.post('/api/postInclusion',inclusion)
 
+//post BarRatePlan
+router.post('/api/barRatePlan',BarRatePlan)
+
+//update barRatePlan
+router.patch('/api/updateBarRatePlan/:barRatePlanId',updateBarRatePlan)
 export default router;

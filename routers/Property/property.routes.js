@@ -41,6 +41,13 @@ import { addCompany } from '../../controllers/Property/company.js';
 //company
 import getCompany from "../../controllers/Property/getCompany.js"
 
+//postingRule
+import postingRules from "../../controllers/Property/postPostingRules.js"
+
+//chargeRule
+import chargeRules from "../../controllers/Property/postChargeRules.js"
+import chargeRule from "../../controllers/Property/getChargeRules.js"
+
 const router = express.Router();
 
 router.post(
@@ -120,5 +127,12 @@ router.patch("/api/patchAmenity", patchAmenity);
 
 //company 
 router.get("/api/companyType", getCompany);
+
+//posting 
+router.post("/api/postingRule", postingRules);
+
+//charge
+router.post("/api/chargeRule", chargeRules );
+router.get("/api/getchargeRule", chargeRule);
 
 export default router;

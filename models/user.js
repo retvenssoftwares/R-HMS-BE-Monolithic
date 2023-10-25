@@ -1,6 +1,6 @@
 // models/user.js
 import mongoose from 'mongoose';
-
+import db1 from '../db/conn.js';
 const userSchema = new mongoose.Schema({
   userId: {
     type: String
@@ -371,6 +371,6 @@ const userSchema = new mongoose.Schema({
 
 
 
-const User = mongoose.model('User', userSchema);
+const User = db1.model('User', userSchema);
 
 export default User;

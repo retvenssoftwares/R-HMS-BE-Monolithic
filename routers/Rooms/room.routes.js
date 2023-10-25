@@ -9,6 +9,7 @@ import uploadRoomImage from '../../controllers/Rooms/uploadRoomImage.controller.
 import updateRoomImage from '../../controllers/Rooms/updateRoomImage.controller.js'
 import changeIndex from '../../controllers/Rooms/uploadPatchRoomImage.controller.js'
 import inclusion from '../../controllers/Rooms/postInclusion.controller.js';
+import { compnayRatePlan, updateCompanyRatePlan } from '../../controllers/Rooms/companyRatePlan.js';
 const router = express.Router();
 
 //addroom
@@ -32,5 +33,10 @@ router.patch(
 
 //post inclusion
 router.post('/api/postInclusion',inclusion)
+
+//company rate plan
+router.post("/api/addCompnayRatePlan",compnayRatePlan)
+router.patch("/api/updateCompanyRatePlan",updateCompanyRatePlan)
+// router.patch("/api/updateInclusion",)
 
 export default router;

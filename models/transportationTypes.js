@@ -1,5 +1,5 @@
 import mongoose, { Schema, model } from "mongoose";
-
+import db1 from "../db/conn.js"
 const transportation = new Schema({
     transportationId:{
         type:String,
@@ -47,5 +47,5 @@ const transportation = new Schema({
     
 })
 
-const transportationModel = mongoose.model("transportation",transportation)
+const transportationModel = db1.model("transportation",transportation)
 export default transportationModel

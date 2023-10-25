@@ -1,5 +1,5 @@
 import mongoose, { Mongoose,Schema, model } from "mongoose";
-
+import db1 from "../db/conn.js"
 const inclusionPlan = new mongoose.Schema({
     inclusionPlanName:{
         type:String,
@@ -46,5 +46,5 @@ const inclusionPlan = new mongoose.Schema({
     
 })
 
-const inclusionPlanModel = new mongoose.model("inclusionPlan",inclusionPlan)
+const inclusionPlanModel = db1.model("inclusionPlan",inclusionPlan)
 export default inclusionPlanModel

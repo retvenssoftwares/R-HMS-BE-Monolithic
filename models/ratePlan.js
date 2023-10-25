@@ -1,5 +1,5 @@
 import mongoose, { Schema, model } from "mongoose";
-
+import db1 from "../db/conn.js"
 const ratePlan = new mongoose.Schema({
     ratePlanName:{
         type:String,
@@ -34,5 +34,5 @@ const ratePlan = new mongoose.Schema({
         default:""
     }
 })
-const ratePlanSchema = mongoose.model("RatePlan",ratePlan)
+const ratePlanSchema = db1.model("RatePlan",ratePlan)
 export default ratePlanSchema

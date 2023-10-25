@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import db1 from "../db/conn.js"
 const inclusionSchema = new mongoose.Schema({
   propertyId: {
     type: String,
@@ -79,5 +79,5 @@ modifiedOn: [{
   
 });
 
-const inclusion = mongoose.model("inclusion", inclusionSchema);
+const inclusion = db1.model("inclusion", inclusionSchema);
 export default inclusion;

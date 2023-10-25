@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import db1 from "../db/conn.js"
+import db2 from "../../db/conn2.js"
 const barRatePlanSchema = new mongoose.Schema({
   propertyId: {
     type: String,
@@ -42,6 +42,14 @@ ratePlanName:[{
     logId: {
         type: String,
         default: ""
+    },
+    modifiedOn:{
+        type: String,
+        default: ""
+    },
+    userId:{
+        type: String,
+        default: ""
     }
 
 }],
@@ -54,7 +62,16 @@ ratePlanName:[{
     logId: {
         type: String,
         default: ""
+    },
+    modifiedOn:{
+        type: String,
+        default: ""
+    },
+    userId:{
+        type: String,
+        default: ""
     }
+
   }],
   
   inclusion:[{
@@ -88,7 +105,19 @@ ratePlanName:[{
     logId: {
         type: String,
         default: ""
-    }
+    },
+       request: { type: String, default: '' },
+        response: { type: String, default: '' },
+        modifiedOn:{
+            type: String,
+            default: ""
+        },
+        userId:{
+            type: String,
+            default: ""
+        }
+    
+
   }],
 
 
@@ -102,7 +131,16 @@ ratePlanName:[{
   logId: {
     type: String,
     default: ""
+},
+modifiedOn:{
+    type: String,
+    default: ""
+},
+userId:{
+    type: String,
+    default: ""
 }
+
   
 }],
 
@@ -115,10 +153,18 @@ ratePlanName:[{
   logId: {
     type: String,
     default: ""
+},
+modifiedOn:{
+    type: String,
+    default: ""
+},
+userId:{
+    type: String,
+    default: ""
 }
 }]
 
 });
 
-const ratePlan = db1.model("barrateplan", barRatePlanSchema);
+const ratePlan = db2.model("barrateplan", barRatePlanSchema);
 export default ratePlan;

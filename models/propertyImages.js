@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-
+import db1 from "../db/conn.js"
 const propertyImageSchema = Schema({
 
     propertyId: { type: String, default: '', unique: false },
@@ -15,5 +15,5 @@ const propertyImageSchema = Schema({
 
 });
 
-const propertyImageModel = model("propertyImages", propertyImageSchema)
+const propertyImageModel = db1.model("propertyImages", propertyImageSchema)
 export default propertyImageModel

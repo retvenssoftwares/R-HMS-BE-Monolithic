@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-
+import db1 from "../db/conn.js"
 const bookingSourceSchema = Schema({
 
     propertyId: { type: String, default: '', unique: false },
@@ -29,5 +29,5 @@ const bookingSourceSchema = Schema({
 
 });
 
-const bookingSourceModel = model("bookingSource", bookingSourceSchema)
+const bookingSourceModel = db1.model("bookingSource", bookingSourceSchema)
 export default bookingSourceModel

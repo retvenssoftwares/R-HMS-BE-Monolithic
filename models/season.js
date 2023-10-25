@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+import db1 from "../db/conn.js"
 const seasonSchema = new mongoose.Schema({
 
     propertyId: {
@@ -72,6 +72,6 @@ const seasonSchema = new mongoose.Schema({
 
 });
 
-const season = mongoose.model('season', seasonSchema);
+const season = db1.model('season', seasonSchema);
 
 export default season;

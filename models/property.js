@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-
+import db1 from "../db/conn.js"
 const propertySchema = new Schema({
     userId: {
         default: "",
@@ -272,5 +272,5 @@ const propertySchema = new Schema({
 
 })
 
-const property = model('property', propertySchema);
+const property = db1.model('property', propertySchema);
 export default property;

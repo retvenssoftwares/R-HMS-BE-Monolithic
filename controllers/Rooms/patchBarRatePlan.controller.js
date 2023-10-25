@@ -1,10 +1,11 @@
 import barRatePlan from '../../models/barRatePlan.js'
 import verifiedUser from '../../models/verifiedUsers.js'
 import { getCurrentUTCTimestamp } from '../../helpers/helper.js'
-
+import barPlanLogsModel from "../../models/LogModels/barRatePlanLogs.js";
+import Randomstring from "randomstring";
 const patchBarRatePlan = async (req, res) => {
     try {
-        const { userId, shortCode, ratePlanName, inclusion } = req.body;
+        const { userId, shortCode, ratePlanName, inclusion,inclusionPlan,inclusionTotal,totalRatePlanPrice} = req.body;
         const barRatePlanId = req.params.barRatePlanId;
         const authCodeValue = req.headers['authcode'];
         const findUser = await verifiedUser.findOne({ userId });
@@ -13,7 +14,7 @@ const patchBarRatePlan = async (req, res) => {
             return res.status(404).json({ message: "User not found or invalid userid", statuscode: 404 })
         }
         const userToken = findUser.authCode;
-        //let userRole = findUser.role[0].role;
+       
 
         if (authCodeValue !== userToken) {
             return res.status(400).json({ message: "Invalid authentication token", statuscode: 400 });
@@ -21,50 +22,142 @@ const patchBarRatePlan = async (req, res) => {
 
         const findBarRatePlan = await barRatePlan.findOne({ barRatePlanId });
 
-        if (!findHoliday || !holidayId) {
-            return res.status(404).json({ message: "holiday not found", statuscode: 404 });
-        }
+        const logBarRatePlan = await barPlanLogsModel.findOne({ barRatePlanId });
 
-        if (shortCode) {
-            findHoliday.shortCode = shortCode;
+        if (!findBarRatePlan || !barRatePlanId) {
+            return res.status(404).json({ message: "barRatePlan not found", statuscode: 404 });
         }
+     
+         const shortcodeLog =Randomstring.generate(10)
+         const ratePlanNameLog =Randomstring.generate(10)
+         const inclusionTotalLog =Randomstring.generate(10)
+         const totalRatePlanPriceLog =Randomstring.generate(10)
+         const inclusionPlanLog =Randomstring.generate(10)
+
 
         const currentUTCTime = await getCurrentUTCTimestamp();
 
-        if (holidayName) {
-            const holidayNameObject = {
-                holidayName: holidayName
+        if(shortCode){
+            const shortCodeObject ={
+                shortCode:shortCode,
+                logId:shortcodeLog
             };
-            findHoliday.holidayName.unshift(holidayNameObject);
+            findBarRatePlan.shortCode.unshift(shortCodeObject)
+
         }
 
-        if (startDate) {
-            const startDateObject = {
-                startDate: startDate
+        if (ratePlanName) {
+            const ratePlanNameObject = {
+                ratePlanName: ratePlanName,
+                logId:ratePlanNameLog
             };
-            findHoliday.startDate.unshift(startDateObject);
+            findBarRatePlan.ratePlanName.unshift(ratePlanNameObject);
         }
 
-        if (endDate) {
-            const endDateObject = {
-                endDate: endDate
+        if (inclusionPlan) {
+            const inclusionObject = {
+                inclusionPlan: inclusionPlan,
+                logId:inclusionPlanLog
             };
-            findHoliday.endDate.unshift(endDateObject);
+            findBarRatePlan.inclusion.unshift(inclusionObject);
         }
 
-        const modifiedByObject = {
-            modifiedBy: userRole
+        if (inclusionTotal) {
+            const inclusionObject = {
+                inclusionTotal: inclusionTotal,
+                logId:inclusionTotalLog
+            };
+            findBarRatePlan.inclusionTotal.unshift(inclusionObject);
+        }
+
+        if (totalRatePlanPrice) {
+            const inclusionObject = {
+                totalRatePlanPrice: totalRatePlanPrice,
+                logId:totalRatePlanPriceLog
+            };
+            findBarRatePlan.totalRatePlanPrice.unshift(inclusionObject);
+        }
+
+        ///
+        const requestData = {
+            body: req.body,
+            headers: req.headers, // If needed, you can include headers
+            // Add other request data you want to store
         };
+        const requestDataString = JSON.stringify(requestData)
 
-        findHoliday.modifiedBy.unshift(modifiedByObject);
-        findHoliday.modifiedOn.unshift({ modifiedOn: currentUTCTime });
+        const updatedratePlan = await findBarRatePlan.save();
 
-        const updatedHoliday = await findHoliday.save();
 
-        if (updatedHoliday) {
-            return res.status(200).json({ message: "holiday successfully updated", statuscode:200 });
+        const responseData = {
+            message: res.statusMessage, // Store the response message
+            statuscode: res.statusCode, // Store the response status code
+            // Add other response data you want to store
+        };
+        const responseString = JSON.stringify(responseData)
+
+     
+        ////logs data 
+        if(shortCode){
+            const shortCodeObject ={
+                shortCode:shortCode,
+                logId:shortcodeLog,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId
+            };
+            logBarRatePlan.shortCode.unshift(shortCodeObject)
+        }
+
+        if(ratePlanName){
+            const ratePlanNameObject ={
+                ratePlanName:ratePlanName,
+                logId:ratePlanNameLog,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId
+            };
+            logBarRatePlan.ratePlanName.unshift(ratePlanNameObject)
+        }
+
+        if (inclusionPlan) {
+            const inclusionObject = {
+                inclusionPlan: inclusionPlan,
+                logId:inclusionPlanLog,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                request: requestDataString,
+                response: responseString
+
+            };
+            logBarRatePlan.inclusion.unshift(inclusionObject);
+        }
+
+
+        if (inclusionTotal) {
+            const inclusionObject = {
+                inclusionTotal: inclusionTotal,
+                logId:inclusionTotalLog,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId
+            };
+            logBarRatePlan.inclusionTotal.unshift(inclusionObject);
+        }
+
+        if (totalRatePlanPrice) {
+            const inclusionObject = {
+                totalRatePlanPrice: totalRatePlanPrice,
+                logId:totalRatePlanPriceLog,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId
+            };
+            logBarRatePlan.totalRatePlanPrice.unshift(inclusionObject);
+        }
+
+      await logBarRatePlan.save();
+
+        if (updatedratePlan) {
+            return res.status(200).json({ message: "bar rate plan successfully updated", statuscode:200 });
         } else {
-            return res.status(404).json({ message: "holiday not found", statuscode: 404 });
+            return res.status(404).json({ message: "bar rate plan not found", statuscode: 404 });
         }
     } catch (error) {
         console.log(error);

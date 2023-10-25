@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import db1 from "../db/conn.js"
 const companySchema = new mongoose.Schema({
 
     propertyId: {
@@ -415,5 +415,5 @@ const companySchema = new mongoose.Schema({
 
 
 })
-const company = mongoose.model('company', companySchema);
+const company = db1.model('company', companySchema);
 export default company;

@@ -1,5 +1,5 @@
 import { Schema, model, mongoose } from 'mongoose';
-
+import db1 from "../db/conn.js"
 const paymentTypeSchema = new mongoose.Schema({
 
     shortCode: {
@@ -55,5 +55,5 @@ const paymentTypeSchema = new mongoose.Schema({
 
 });
 
-const payment = model('paymentType', paymentTypeSchema);
+const payment = db1.model('paymentType', paymentTypeSchema);
 export default payment;

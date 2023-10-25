@@ -1,6 +1,6 @@
 // models/user.js
 import mongoose from 'mongoose';
-
+import db1 from "../db/conn.js"
 const verifiedUsersSchema = new mongoose.Schema({
   userId: {
     type: String,
@@ -85,5 +85,5 @@ const verifiedUsersSchema = new mongoose.Schema({
 
 
 
-const verifiedUser = mongoose.model('verifiedUser', verifiedUsersSchema);
+const verifiedUser = db1.model('verifiedUser', verifiedUsersSchema);
 export default verifiedUser;

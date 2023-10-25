@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+import db1 from "../db/conn.js"
 const identityTypeSchema = new mongoose.Schema({
         
     shortCode : {
@@ -50,5 +50,5 @@ const identityTypeSchema = new mongoose.Schema({
 
 });    
 
-const identity = mongoose.model('identityType', identityTypeSchema);
+const identity = db1.model('identityType', identityTypeSchema);
 export default identity;

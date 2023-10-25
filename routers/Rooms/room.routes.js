@@ -9,7 +9,12 @@ import uploadRoomImage from '../../controllers/Rooms/uploadRoomImage.controller.
 import updateRoomImage from '../../controllers/Rooms/updateRoomImage.controller.js'
 import changeIndex from '../../controllers/Rooms/uploadPatchRoomImage.controller.js'
 import inclusion from '../../controllers/Rooms/postInclusion.controller.js';
+<<<<<<< HEAD
 import { compnayRatePlan, updateCompanyRatePlan } from '../../controllers/Rooms/companyRatePlan.js';
+=======
+import BarRatePlan from '../../controllers/Rooms/postBarRatePlan.controller.js'
+import updateBarRatePlan from '../../controllers/Rooms/patchBarRatePlan.controller.js'
+>>>>>>> 606a52d3311d0341d669b8762a9d83406d49df49
 const router = express.Router();
 
 //addroom
@@ -34,9 +39,17 @@ router.patch(
 //post inclusion
 router.post('/api/postInclusion',inclusion)
 
+<<<<<<< HEAD
 //company rate plan
 router.post("/api/addCompnayRatePlan",compnayRatePlan)
 router.patch("/api/updateCompanyRatePlan",updateCompanyRatePlan)
 // router.patch("/api/updateInclusion",)
 
+=======
+//post BarRatePlan
+router.post('/api/barRatePlan',BarRatePlan)
+
+//update barRatePlan
+router.patch('/api/updateBarRatePlan/:barRatePlanId',updateBarRatePlan)
+>>>>>>> 606a52d3311d0341d669b8762a9d83406d49df49
 export default router;

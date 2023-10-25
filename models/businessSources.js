@@ -1,5 +1,5 @@
 import mongoose, { Mongoose, Schema , model } from "mongoose";
-
+import db1 from "../db/conn.js"
 const businessSources = new mongoose.Schema({
     sourceId:{
         type:String,
@@ -41,5 +41,5 @@ const businessSources = new mongoose.Schema({
     }]
 })
 
-const businessSourcesModel = mongoose.model("businessSources" , businessSources)
+const businessSourcesModel = db1.model("businessSources" , businessSources)
 export default businessSourcesModel

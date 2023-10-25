@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-
+import db1 from "../db/conn.js"
 const RoomSchema = Schema({
 
     roomTypeId : {
@@ -46,5 +46,5 @@ const RoomSchema = Schema({
 
 });
 
-const propertyRoomModel = model("roomimages", RoomSchema)
+const propertyRoomModel = db1.model("roomimages", RoomSchema)
 export default propertyRoomModel

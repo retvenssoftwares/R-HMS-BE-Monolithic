@@ -1,9 +1,8 @@
 import express from 'express';
-import multer from 'multer';
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 import ratePlan from "../../controllers/Rooms/ratePlan.js"
+import createDiscountPlan from '../../controllers/Rooms/createDiscountPlan.js';
 const router = express.Router();
 
 router.post("/api/ratePlan", ratePlan);
+router.post("/api/addDiscountPlan", createDiscountPlan);
 export default router;

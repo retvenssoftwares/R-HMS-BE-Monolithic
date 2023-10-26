@@ -178,6 +178,7 @@ const verifyUser = async (userId, authCodeValue) => {
 
     return { success: true, user: findUser };
   } catch (error) {
+    console.log(error)
     return { success: false, message: "Internal Server Error", statuscode: 500 };
   }
 };

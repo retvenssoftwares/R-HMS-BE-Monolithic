@@ -3,6 +3,7 @@ import db2 from "../../db/conn2.js"
 
 const discountPlanLogsSchema = new mongoose.Schema({
     propertyId: String,
+    discountPlanId: { type: String, default: "" },
     discountName: [{
         logId: { type: String, default: "" },
         discountName: { type: String, default: "" },

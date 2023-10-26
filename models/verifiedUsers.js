@@ -63,6 +63,19 @@ const verifiedUsersSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+
+  token:[{
+    token : {
+      type: String,
+      default : ''
+    },
+
+    deviceType:{
+      type: String,
+      default : ''
+    }
+
+  }],
   propertyTypeSOC: { type: String, default: '' }, //single or chain
  
   password: [{

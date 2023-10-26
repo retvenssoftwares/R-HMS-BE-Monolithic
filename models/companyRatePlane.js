@@ -1,5 +1,5 @@
 import { mongoose, Schema, model } from "mongoose";
-
+import db1 from "../db/conn.js"
 const companyRatePlan = new mongoose.Schema(
   {
     propertyId: {
@@ -14,13 +14,25 @@ const companyRatePlan = new mongoose.Schema(
       type: String,
       default: "",
     },
-    roomType: {
+    roomTypeId: {
       type: String,
       default: "",
     },
-
-    rantePlanInclusion: [
-      {
+    companyName:{
+      type: String,
+      default: "",
+    },
+    createdBy:{
+      type:String,
+      default:""
+  },
+    createdOn:{
+        type:String,
+        default:""
+    },
+    
+    ratePlanInclusion: [{
+      ratePlanInclusion:[{
         inclusionId: {
           type: String,
           default: "",
@@ -45,8 +57,18 @@ const companyRatePlan = new mongoose.Schema(
           type: String,
           default: "",
         },
+      }],
+
+      logId: {
+        type: String,
+        default: ""
+       },
+      
+      
       },
+
     ],
+
 
     ratePlanName: [
       {
@@ -54,6 +76,10 @@ const companyRatePlan = new mongoose.Schema(
           type: String,
           default: "",
         },
+        logId: {
+          type: String,
+          default: ""
+      },
       },
     ],
     shortCode: [
@@ -62,25 +88,46 @@ const companyRatePlan = new mongoose.Schema(
           type: String,
           default: "",
         },
+        logId: {
+          type: String,
+          default: ""
+      },
+    
       },
       
     ],
 
-    inclusionTotal: {
-      type: String,
-      default: "",
+
+    inclusionTotal: [{
+      inclusionTotal:{
+        type: String,
+        default: "",
+      },
+      logId: {
+        type: String,
+        default: ""
     },
-    ratePlanTotal: {
-      type: String,
-      default: "",
+   
+     
+    }],
+    ratePlanTotal: [{
+      ratePlanTotal:{
+        type: String,
+        default: "",
+      },
+      logId: {
+        type: String,
+        default: ""
     },
+   
+    }],
   },
   {
     versionKey: false,
   }
 );
 
-const companyRatePlanModel = new mongoose.model(
+const companyRatePlanModel = db1.model(
   "compnayRatePlane",
   companyRatePlan
 );

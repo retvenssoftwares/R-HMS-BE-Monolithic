@@ -39,12 +39,8 @@ const companySchema = new mongoose.Schema({
             default: "",
         }
     }],
-    companyType: [{
-        companyType: {
-            type: String,
-            default: "",
-        },
-        modifiedOn: {
+    accountType: [{
+        accountType: {
             type: String,
             default: "",
         },

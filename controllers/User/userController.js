@@ -45,9 +45,9 @@ const postUser = async (req, res) => {
                 propertyName: ''
             }]
         })
-        const userData=await newData.save()
+        const userData = await newData.save()
 
-        return res.status(200).json({ message: "User successfully added",userId:userData.userId,authcode:userData.authCode, statuscode: 200 })
+        return res.status(200).json({ message: "User successfully added", userId: userData.userId, authcode: userData.authCode, statuscode: 200 })
 
     } catch (err) {
         console.log(err)

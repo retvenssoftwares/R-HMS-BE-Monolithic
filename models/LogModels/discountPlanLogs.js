@@ -61,7 +61,13 @@ const discountPlanLogsSchema = new mongoose.Schema({
         deviceType: { type: String, default: "" },
     }],
 
-    data: [{
+    blackOutDates: [{
+        logId: { type: String, default: "" },
+        request: { type: String, default: '' },
+        response: { type: String, default: '' }
+    }],
+    applicableOn: [{
+        logId: { type: String, default: "" },
         request: { type: String, default: '' },
         response: { type: String, default: '' }
     }]

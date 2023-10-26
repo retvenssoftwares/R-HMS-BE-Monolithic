@@ -121,6 +121,7 @@ function decrypt(encryptedText) {
   return decrypted;
 }
 
+
 function jwtsign(payload) {
   return new Promise((resolve, reject) => {
     jwt.sign(payload, process.env.jwtsecretkey, (err, token) => {

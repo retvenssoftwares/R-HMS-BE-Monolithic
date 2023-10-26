@@ -8,11 +8,11 @@ const logoutUser = async (req, res) => {
             return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 })
         }
 
-        const tokenArray = findUser.token
+        var tokenArray = findUser.token
         if (tokenArray.some((t) => t.token === token)) {
             tokenArray = tokenArray.filter((t) => t.token !== token);
 
-            await findUser.findOneAndUpdate({ userId: userId },
+            await verifiedUser.findOneAndUpdate({ userId: userId },
                 {
                     $set: { token: tokenArray }
                 },

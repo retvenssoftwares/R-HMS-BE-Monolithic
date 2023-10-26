@@ -24,13 +24,69 @@ export const addCompany = async (req, res) => {
   const add = new company({
     propertyId: req.body.propertyId,
     companyId: randomString.generate(7),
-    companyLogo: image,
-    companyName: req.body.companyName,
-    accountType: req.body.accountType,
-    registrationNumber: req.body.registrationNumber,
-    taxId: req.body.taxId,
-    accountDetails: req.body.accountDetails,
-    contactDetails: req.body.contactDetails,
+    companyLogo: [{
+      companyLogo: image,
+      logId: randomString.generate(10)
+    }],
+    companyName: [{
+      companyName: req.body.companyName,
+      logId: randomString.generate(10)
+    }],
+    accountType: [{
+      accountType: req.body.accountType,
+      logId: randomString.generate(10)
+    }],
+    companyEmail: [{
+      companyEmail: req.body.companyEmail,
+      logId: randomString.generate(10)
+    }],
+    companyWebsite: [{
+      companyWebsite: req.body.companyWebsite,
+      logId: randomString.generate(10)
+    }],
+    shortCode: [{
+      shortCode: req.body.shortCode,
+      logId: randomString.generate(10)
+    }],
+    registrationNumber: [{
+      registrationNumber: req.body.registrationNumber,
+      logId: randomString.generate(10)
+    }],
+    taxId: [{
+      taxId: req.body.taxId,
+      logId: randomString.generate(10)
+    }],
+    openingBalance: [{
+      openingBalance: req.body.openingBalance,
+      logId: randomString.generate(10)
+    }],
+    creditLimit: [{
+      creditLimit: req.body.creditLimit,
+      logId: randomString.generate(10)
+    }],
+    billingCycle: [{
+      month: req.body.month,
+      days: req.body.days,
+      logId: randomString.generate(10)
+    }],
+    contactPerson: [{
+      contactPerson: req.body.contactPerson,
+      logId: randomString.generate(10)
+    }],
+    phoneNumber: [{
+      phoneNumber: req.body.phoneNumber,
+      logId: randomString.generate(10)
+    }],
+    personDesignation: [{
+      personDesignation: {
+          type: String,
+          default: "",
+      },
+      logId: {
+          type: String,
+          default: "",
+      }
+  }],
     companyAddress: req.body.companyAddress,
     createdDate: getCurrentUTCTimestamp(),
     createdBy: req.body.createdBy,

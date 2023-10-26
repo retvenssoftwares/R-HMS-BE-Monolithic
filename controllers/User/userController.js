@@ -13,13 +13,10 @@ const postUser = async (req, res) => {
 
         const email = req.body.email
 
-        const authTokenPayload = {
-            email: email,
-            password: password
-        }
+     
         const modifiedDate = await getCurrentUTCTimestamp()
 
-        const encryptedCode = await jwtsign(authTokenPayload)
+        
         const userId = randomstring.generate(8)
         const newData = new userModel({
             userId,
@@ -30,7 +27,6 @@ const postUser = async (req, res) => {
             email: email,
             password: [{ password: encryptedPass, modifiedDate: modifiedDate }],
             username: [{ username: req.body.username || 'Admin', modifiedDate: modifiedDate }],
-            authCode: encryptedCode,
             role: [{
                 role: req.body.role || 'Admin',
                 modifiedDate: modifiedDate

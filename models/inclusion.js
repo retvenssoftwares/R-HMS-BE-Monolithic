@@ -49,34 +49,34 @@ modifiedOn: [{
   inclusionName: [
     {
       inclusionName: {
-        type: String,
-        default: "",
+          type: String,
+          default: ""
       },
-    },
-  ],
-
-  inclusionType: [
-    {
+      defaultPostingRule: {
+          type: String,
+          default: ""
+      },
+      defaultChargeRule: {
+          type: String,
+          default: ""
+      },
       inclusionType: {
-        type: String,
-        default: "",
+          type: String,
+          default: ""
       },
-    },
-  ],
-
-  chargeRule:[{
-    chargeRule:{
-        type: String,
-        default : ''
-    }
+      defaultPrice: {
+          type: String,
+          default: ""
+      }
   }],
-  postingRule:[{
-    postingRule:{
-        type: String,
-        default : ''
-    }
+  charge: [{
+      charge: {
+          type: String,
+          default: "",
+      }
   }]
-  
+}, {
+  versionKey: false
 });
 
 const inclusion = db1.model("inclusion", inclusionSchema);

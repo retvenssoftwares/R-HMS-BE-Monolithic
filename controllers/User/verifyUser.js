@@ -33,6 +33,7 @@ const verifyUserProperty = async (req, res) => {
             password: user.password,
             propertyTypeSOC: user.propertyTypeSOC,
             verificationStatus: user.verificationStatus,
+            
 
         })
 

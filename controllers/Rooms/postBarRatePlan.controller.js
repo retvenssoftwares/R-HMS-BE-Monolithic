@@ -87,6 +87,8 @@ const postBarRatePlan = async (req, res) => {
 
       
     await newSeason.save();
+
+    
     const discountPlanLogs = new barPlanLogsModel({
       
       ratePlanName: req.body,

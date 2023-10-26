@@ -1,4 +1,4 @@
-import db1 from "../db/conn.js"
+// import db1 from "../db/conn.js"
 import { Schema, model } from 'mongoose';
 
 const propertySchema = new Schema({

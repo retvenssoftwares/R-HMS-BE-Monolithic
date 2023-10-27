@@ -96,8 +96,5 @@ const verifiedUsersSchema = new mongoose.Schema({
     versionKey: false
   });
 
-
-
-
 const verifiedUser = db1.model('verifiedUser', verifiedUsersSchema);
 export default verifiedUser;

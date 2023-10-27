@@ -1,4 +1,5 @@
 import express from 'express';
+const router = express.Router();
 import multer from 'multer';
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -41,7 +42,7 @@ import { addBusinessSources, getBusinessSources, updateBusinessSources } from '.
 //import { addInclusion, updateInclusion } from '../../controllers/Property/addInclusion.js';
 //import { addInclusionPlan, updateInclusionPlan } from '../../controllers/Property/addInclusionPlan.js';
 
-const router = express.Router();
+
 
 router.post(
     '/api/createProperty',
@@ -113,9 +114,6 @@ router.post("/api/postHoliday", holiday)
 router.patch("/api/patchHoliday/:holidayId", patchHoliday)
 router.get("/api/getHoliday", getHoliday)
 
-//amenity type
-router.post("/api/postAmenity", amenityType);
-router.get("/api/getAmenities", getAmenities);
-router.patch("/api/patchAmenity", patchAmenity);
+
 
 export default router;

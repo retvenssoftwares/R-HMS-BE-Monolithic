@@ -1,6 +1,6 @@
-import db1 from "../db/conn.js"
-import { Schema, model } from 'mongoose';
 
+import { Schema, model } from 'mongoose';
+import db1 from "../db/conn.js"
 const propertySchema = new Schema({
     userId: {
         default: "",

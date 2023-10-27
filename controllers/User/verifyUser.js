@@ -13,7 +13,7 @@ const verifyUserProperty = async (req, res) => {
 
     const propertyTypeSOC = user.propertyTypeSOC
 
-    console.log(propertyTypeSOC)
+    // console.log(propertyTypeSOC)
 
     if (propertyTypeSOC === "Single") {
         const singleProperty = user.singlePropertyDetails[0]
@@ -33,6 +33,7 @@ const verifyUserProperty = async (req, res) => {
             password: user.password,
             propertyTypeSOC: user.propertyTypeSOC,
             verificationStatus: user.verificationStatus,
+            
 
         })
 

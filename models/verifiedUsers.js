@@ -64,6 +64,19 @@ const verifiedUsersSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+
+  token:[{
+    token : {
+      type: String,
+      default : ''
+    },
+
+    deviceType:{
+      type: String,
+      default : ''
+    }
+
+  }],
   propertyTypeSOC: { type: String, default: '' }, //single or chain
 
   password: [{
@@ -82,9 +95,6 @@ const verifiedUsersSchema = new mongoose.Schema({
   {
     versionKey: false
   });
-
-
-
 
 const verifiedUser = db1.model('verifiedUser', verifiedUsersSchema);
 export default verifiedUser;

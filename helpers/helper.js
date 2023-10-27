@@ -24,17 +24,30 @@ async function uploadImageToS3(file) {
   return imageUrl;
 }
 
-// const uploadImageToS3 = (file) => {
-//   const params = {
-//     Bucket: bucket,
-//     Key: `hotel_images/${file.originalname}`,
-//     Body: file.buffer,
-//     ContentType: file.mimetype,
-//     ACL: 'public-read',
-//   };
+// Create a helper function
+async function findUserByUserIdAndToken(userId, token) {
+  try {
+    // Find the user by userId
+    const user = await verifiedUser.findOne({ userId });
 
-//   return s3.upload(params).promise().then((uploadResponse) => uploadResponse.Location);
-// };
+    if (!user) {
+      return { success: false, message: "User not found or invalid userId", statuscode: 400 };;
+    }
+
+    // Check if the token exists in the token array
+    const tokenExists = user.token.some((userToken) => userToken.token === token);
+
+    if (tokenExists) {
+      return { success: true, user: user };
+    } else {
+      return { success: false, message: "Invalid authentication token", statuscode: 400 };
+    }
+  } catch (error) {
+    // Handle errors here
+    console.error('Error finding user:', error);
+    throw error;
+  }
+}
 
 async function uploadMultipleImagesToS3(files) {
   const uploadPromises = files.map(async (file) => {
@@ -121,6 +134,7 @@ function decrypt(encryptedText) {
   return decrypted;
 }
 
+
 function jwtsign(payload) {
   return new Promise((resolve, reject) => {
     jwt.sign(payload, process.env.jwtsecretkey, (err, token) => {
@@ -139,7 +153,7 @@ function convertTimestampToCustomFormat(utcTimestamp, targetTimeZone) {
   const zonedTimestamp = utcToZonedTime(utcTimestamp, targetTimeZone);
 
   // Define the custom format
-  const customFormat = "dd/MM/yy HH:mm:ss";
+  const customFormat = "dd/MM/yyyy HH:mm:ss";
 
   // Format the zoned timestamp into the custom format
   const formattedTimestamp = format(zonedTimestamp, customFormat, {
@@ -184,4 +198,4 @@ const verifyUser = async (userId, authCodeValue) => {
 };
 
 
-export { getCurrentUTCTimestamp, verifyUser, uploadImageToS3, convertTimestampToCustomFormat, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt };
+export { getCurrentUTCTimestamp, findUserByUserIdAndToken, verifyUser, uploadImageToS3, convertTimestampToCustomFormat, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt };

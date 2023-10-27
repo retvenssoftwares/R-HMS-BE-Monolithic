@@ -1,5 +1,5 @@
 import mongoose from  "mongoose"
-
+import db1 from "../db/conn.js"
 const packagePlan = new mongoose.Schema({
 
     propertId : {

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import db1 from "../db/conn.js";
 
 const chargeRulesSchema =  new mongoose.Schema({
            
@@ -15,6 +15,6 @@ const chargeRulesSchema =  new mongoose.Schema({
 
 });
 
-const chargeRule = mongoose.model('chargeRules', chargeRulesSchema);
+const chargeRule = db1.model('chargeRules', chargeRulesSchema);
 
 export default chargeRule;

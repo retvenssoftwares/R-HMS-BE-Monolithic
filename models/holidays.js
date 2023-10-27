@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+import db1 from "../db/conn.js"
 const holidaySchema = new mongoose.Schema({
 
     propertyId: {
@@ -67,6 +67,6 @@ const holidaySchema = new mongoose.Schema({
 
 });
 
-const holiday = mongoose.model('holiday', holidaySchema);
+const holiday = db1.model('holiday', holidaySchema);
 
 export default holiday;

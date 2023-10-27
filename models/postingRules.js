@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import db1 from "../db/conn.js"
 
 const postingRulesSchema = new mongoose.Schema({
 
@@ -15,6 +16,6 @@ const postingRulesSchema = new mongoose.Schema({
         
 
 });     
-const postingRule = mongoose.model('postingRules', postingRulesSchema);
+const postingRule = db1.model('postingRules', postingRulesSchema);
 
 export default postingRule;

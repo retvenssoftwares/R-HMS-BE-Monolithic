@@ -43,10 +43,23 @@ import getCompany from "../../controllers/Property/getCompany.js"
 
 //postingRule
 import postingRules from "../../controllers/Property/postPostingRules.js"
+import postingRule from "../../controllers/Property/getPostingRules.js"
 
 //chargeRule
 import chargeRules from "../../controllers/Property/postChargeRules.js"
 import chargeRule from "../../controllers/Property/getChargeRules.js"
+
+//bedType
+import bedTypes from "../../controllers/Property/postBedType.js"
+import bedTypeRule from "../../controllers/Property/getBedType.js"
+
+//inclusionType
+import inclusionTypes from "../../controllers/Property/postInclusionType.js"
+import inclusionTypesRule from "../../controllers/Property/getInclusionType.js"
+
+//accountType
+import accountTypes from "../../controllers/Property/postAccountType.js"
+import accountTypesMethod from "../../controllers/Property/getAccountType.js"
 
 const router = express.Router();
 
@@ -130,9 +143,23 @@ router.get("/api/companyType", getCompany);
 
 //posting 
 router.post("/api/postingRule", postingRules);
+router.get("/api/postingRulesModels", postingRule);
+
 
 //charge
 router.post("/api/chargeRule", chargeRules );
 router.get("/api/getchargeRule", chargeRule);
+
+//bedType
+router.post("/api/bedType", bedTypes);
+router.get("/api/getBedType", bedTypeRule);
+
+//inclusionType
+router.post("/api/inclusionType", inclusionTypes);
+router.get("/api/getInclusionType", inclusionTypesRule);
+
+//accountType
+router.post("/api/postAccountType", accountTypes);
+router.get("/api/getAccountType", accountTypesMethod);
 
 export default router;

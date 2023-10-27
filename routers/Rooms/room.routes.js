@@ -12,6 +12,8 @@ import inclusion from '../../controllers/Rooms/postInclusion.controller.js';
 import getInclusion from '../../controllers/Rooms/getInclusion.js';
 import patchInclusions from '../../controllers/Rooms/patchInclusion.js';
 
+import BarRatePlan from '../../controllers/Rooms/postBarRatePlan.controller.js'
+import updateBarRatePlan from '../../controllers/Rooms/patchBarRatePlan.controller.js'
 const router = express.Router();
 
 //addroom
@@ -42,4 +44,9 @@ router.get('/api/inclusionType',getInclusion )
 //patch inclusion
 router.patch('/api/patchInclusion', patchInclusions)
 
+//post BarRatePlan
+router.post('/api/barRatePlan',BarRatePlan)
+
+//update barRatePlan
+router.patch('/api/updateBarRatePlan/:barRatePlanId',updateBarRatePlan)
 export default router;

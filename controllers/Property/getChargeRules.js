@@ -4,10 +4,8 @@ import chargeRuleModel from "../../models/chargeRules.js";
 
 const getchargeRule = async (req, res) => {
       try{
-        
-        const chargeRules = await chargeRuleModel.find({});
-       
-        return res.status(200).json({hargeRule , statusCode})
+        const chargeRules = await chargeRuleModel.find({}).select('chargeRuleId  chargeRule -_id').lean();
+        return res.status(200).json({chargeRules , statusCode: 200});
       }catch (error) {
         return res.status(500).json({ error: error.message, statusCode: 500 });
     }

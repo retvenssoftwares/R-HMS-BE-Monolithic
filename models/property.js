@@ -1,3 +1,4 @@
+import db1 from "../db/conn.js"
 import { Schema, model } from 'mongoose';
 
 const propertySchema = new Schema({
@@ -115,14 +116,14 @@ const propertySchema = new Schema({
         type: String,
     },
     amenities: [{
-        amenities:[{
-        amenityId: {
-            default: "",
-            type: String
-        },
-        addedDate:String
-    }]
-}],
+        amenities: [{
+            amenityId: {
+                default: "",
+                type: String
+            },
+            addedDate: String
+        }]
+    }],
 
     checkInTime: [{
         checkInFrom: {
@@ -272,5 +273,5 @@ const propertySchema = new Schema({
 
 })
 
-const property = model('property', propertySchema);
+const property = db1.model('property', propertySchema);
 export default property;

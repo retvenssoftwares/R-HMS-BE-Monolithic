@@ -1,5 +1,5 @@
 import mongoose, { Mongoose , Schema, model } from "mongoose";
-
+import db1 from "../db/conn.js"
 const logs = new mongoose.Schema({
     propertyId:{
         type:String,
@@ -89,5 +89,5 @@ const logs = new mongoose.Schema({
 })
 
 
-const logsModel = new mongoose.model("logsModel",logs)
+const logsModel = db1.model("logsModel",logs)
 export default logsModel

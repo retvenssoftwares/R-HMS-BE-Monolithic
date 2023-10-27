@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+import db1 from "../db/conn.js"
 const amenitySchema = new mongoose.Schema({
 
     shortCode: {
@@ -75,5 +75,5 @@ const amenitySchema = new mongoose.Schema({
         versionKey: false
     }
 );
-const amenity = mongoose.model('amenity', amenitySchema);
+const amenity = db1.model('amenity', amenitySchema);
 export default amenity;

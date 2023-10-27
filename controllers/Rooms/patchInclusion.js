@@ -1,20 +1,19 @@
 import inclusion from '../../models/inclusion.js'
 import verifiedUser from '../../models/verifiedUsers.js'
-import { getCurrentUTCTimestamp } from '../../helpers/helper.js'
+// import { getCurrentUTCTimestamp } from '../../helpers/helper.js'
 
 const patchInclusion = async (req, res) => {
     try {
 
-        const { userId, inclusionName, inclusionType} = req.body;
-        const inclusionId = req.params.inclusionId;
+        const { userId, inclusionName, inclusionType, inclusionId} = req.query;
         const authCodeValue = req.headers['authcode'];
         const findUser = await verifiedUser.findOne({ userId });
-
+        
         if (!findUser) {
             return res.status(404).json({ message: "User not found or invalid userid", statuscode: 404 })   
         }
         const userToken = findUser.authCode;
-        let userRole = findUser.role[0].role;
+        //  let userRole = findUser.role[0].role;
 
         if (authCodeValue !== userToken) {
             return res.status(400).json({ message: "Invalid authentication token", statuscode: 400 });
@@ -40,16 +39,6 @@ const patchInclusion = async (req, res) => {
             findInclusion.inclusionType.unshift(inclusionTypeObject);
         }
        
-        const modifiedByObject = {
-            modifiedBy: userRole
-        };
-
-        const currentUTCTime = await getCurrentUTCTimestamp();
-
-
-        findInclusion.modifiedBy.unshift(modifiedByObject);
-        findInclusion.modifiedOn.unshift({ modifiedOn: currentUTCTime });
-        
         const updatedInclusion = await findInclusion.save();
 
         if (updatedInclusion) {

@@ -1,5 +1,5 @@
 import mongoose, { Schema, model } from "mongoose";
-
+import db1 from "../db/conn.js"
 const roomType = new mongoose.Schema({
 
 
@@ -201,5 +201,5 @@ const roomType = new mongoose.Schema({
 
 })
 
-const roomTypeModel = mongoose.model("roomType", roomType)
+const roomTypeModel = db1.model("roomType", roomType)
 export default roomTypeModel

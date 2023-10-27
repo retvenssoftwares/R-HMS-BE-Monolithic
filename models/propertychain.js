@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+import db1 from "../db/conn.js"
 const propertychainSchema = new mongoose.Schema({
 
 userId: {
@@ -86,6 +86,6 @@ userId: {
 
 })
 
-const propertychain = mongoose.model('propertychain', propertychainSchema);
+const propertychain = db1.model('propertychain', propertychainSchema);
 
 export default propertychain;

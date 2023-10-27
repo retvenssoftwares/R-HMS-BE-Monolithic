@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import verifiedUser from "../../models/verifiedUsers.js";
 import amenityModel from "../../models/amenity.js";
-import { getCurrentUTCTimestamp, verifyUser } from "../../helpers/helper.js";
+import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const postAmenity = async (req, res) => {
    try {
@@ -11,7 +11,7 @@ const postAmenity = async (req, res) => {
       const { userId } = req.query;
       const authCodeValue = req.headers['authcode']
 
-      const result = await verifyUser(userId, authCodeValue);
+      const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
       if (result.success) {
          const {
@@ -57,7 +57,7 @@ const postAmenity = async (req, res) => {
             return res.status(404).json({ message: "amenity not found", statuscode: 404 });
          }
       } else {
-         return res.status(result.statuscode).json({ message: result.message });
+         return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
       }
    } catch (err) {
       console.log(err);

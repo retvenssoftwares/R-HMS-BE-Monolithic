@@ -31,7 +31,7 @@ const getAmenities = async (req, res) => {
                     };
                 });
 
-                return res.status(200).json({ amenities: convertedAmenity, statuscode: 200 });
+                return res.status(200).json({ data: convertedAmenity, statuscode: 200 });
             } else {
                 return res.status(404).json({ error: "No amenities found", statuscode: 404 });
             }

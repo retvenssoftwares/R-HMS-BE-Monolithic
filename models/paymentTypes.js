@@ -53,6 +53,8 @@ const paymentTypeSchema = new mongoose.Schema({
         }
     }],
 
+}, {
+    versionKey: false
 });
 
 const payment = db1.model('paymentType', paymentTypeSchema);

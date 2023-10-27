@@ -65,7 +65,7 @@ router.get("/api/getTransportation/:userId/:propertyId", getTransportation)
 // business
 router.post("/api/addBusinessSources", addBusinessSources)
 router.patch("/api/updateBusinessSources", updateBusinessSources)
-router.get("/api/getBusinessSources/:userId/:propertyId", getBusinessSources)
+router.get("/api/getBusinessSources", getBusinessSources)
 
 //inclusion
 // router.post("/api/addInclusion",addInclusion)

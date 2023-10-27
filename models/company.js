@@ -16,10 +16,6 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
         logId: {
             type: String,
             default: "",
@@ -30,21 +26,14 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+
         logId: {
             type: String,
             default: "",
         }
     }],
-    companyType: [{
-        companyType: {
-            type: String,
-            default: "",
-        },
-        modifiedOn: {
+    accountType: [{
+        accountType: {
             type: String,
             default: "",
         },
@@ -59,10 +48,6 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
         logId: {
             type: String,
             default: "",
@@ -70,10 +55,6 @@ const companySchema = new mongoose.Schema({
     }],
     companyWebsite: [{
         companyWebsite: {
-            type: String,
-            default: "",
-        },
-        modifiedOn: {
             type: String,
             default: "",
         },
@@ -87,7 +68,8 @@ const companySchema = new mongoose.Schema({
         shortCode: {
             type: String,
             default: "",
-        }
+        },
+        logId: { type: String, default: "" }
     }
     ],
     registrationNumber: [{
@@ -111,10 +93,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+
         logId: {
             type: String,
             default: "",
@@ -126,10 +105,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+
         logId: {
             type: String,
             default: "",
@@ -141,10 +117,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+
         logId: {
             type: String,
             default: "",
@@ -160,10 +133,6 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: ''
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
         logId: {
             type: String,
             default: "",
@@ -175,10 +144,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+
         logId: {
             type: String,
             default: "",
@@ -190,10 +156,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+
         logId: {
             type: String,
             default: "",
@@ -202,10 +165,6 @@ const companySchema = new mongoose.Schema({
 
     personDesignation: [{
         personDesignation: {
-            type: String,
-            default: "",
-        },
-        modifiedOn: {
             type: String,
             default: "",
         },

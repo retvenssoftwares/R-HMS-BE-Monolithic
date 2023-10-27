@@ -1,12 +1,12 @@
 import amenity from '../../models/amenity.js';
-import { convertTimestampToCustomFormat, verifyUser } from '../../helpers/helper.js';
+import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from '../../helpers/helper.js';
 
 const getAmenities = async (req, res) => {
     try {
         const { targetTimeZone, propertyId, userId } = req.query;
         const authCodeValue = req.headers['authcode']
 
-        const result = await verifyUser(userId, authCodeValue);
+        const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
             const findAllAmenities = await amenity.find({ propertyId }).select('amenityId propertyId createdOn amenityName modifiedBy modifiedOn amenityType -_id').lean();

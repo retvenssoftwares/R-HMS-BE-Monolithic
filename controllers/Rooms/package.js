@@ -2,7 +2,7 @@ import packageRatePlanModel from "../../models/package.js"
 import Randomstring from "randomstring"
 import requestIP from "request-ip"
 import verifiedUser from "../../models/verifiedUsers.js";
-import { getCurrentUTCTimestamp } from '../../helpers/helper.js'
+import { findUserByUserIdAndToken, getCurrentUTCTimestamp } from '../../helpers/helper.js'
 
 
 
@@ -17,7 +17,12 @@ export const packageRatePlan = async(req,res)=>{
             return res.status(404).json({ message: "User not found or invalid userid", statusCode: 404 })
         }
 
-        // const userToken = await 
+        const authCode = req.headers["authcode"]
+        const userToken = await findUserByUserIdAndToken(userId , authCode)
+
+        if(!userToken){
+            return res.status(404).json({message : "Invalid token " , statusCode : 404})
+        }
 
         let userRole = findUser.role[0].role;
 
@@ -99,6 +104,13 @@ export const updatePackageRatePlan = async(req,res)=>{
     try{
 
         const {userId,ratePlanName, shortCode , ratePlanInclusion , inclusionTotal,ratePlanTotal ,minimumNights, maximumNights, packageRateAdjustment, deviceType , ipAddress} = req.body;
+
+        const authCode = req.headers["authcode"]
+        const userToken = await findUserByUserIdAndToken(userId , authCode)
+
+        if(!userToken){
+            return res.status(404).json({message : "Invalid token " , statusCode : 404})
+        }
 
         const packageRatePlan = await findOne({packageId : req.params.packageId})
 

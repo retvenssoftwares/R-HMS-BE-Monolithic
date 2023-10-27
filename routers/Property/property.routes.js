@@ -1,7 +1,10 @@
 import express from 'express';
+const router = express.Router();
 import multer from 'multer';
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
+//property
 import postProperty from '../../controllers/Property/property.controller.js'
 import editProperty from "../../controllers/Property/editPropert.controller.js"
 import addPaymentType from "../../controllers/Property/addPaymentTypes.js"
@@ -21,6 +24,9 @@ import holiday from '../../controllers/Property/holidays.controller.js'
 import patchHoliday from '../../controllers/Property/updateHoliday.controller.js'
 import getHoliday from '../../controllers/Property/getHoliday.controller.js'
 
+//company
+import addCompany from "../../controllers/Property/company.js"
+
 //amenities
 import amenityType from "../../controllers/Amenities/postAmenity.js"
 import getAmenities from "../../controllers/Amenities/getAmenities.js"
@@ -35,10 +41,8 @@ import { getTransportation, transportationAdd, updateTransportation } from '../.
 import { addBusinessSources, getBusinessSources, updateBusinessSources } from '../../controllers/Property/businessSources.js';
 //import { addInclusion, updateInclusion } from '../../controllers/Property/addInclusion.js';
 //import { addInclusionPlan, updateInclusionPlan } from '../../controllers/Property/addInclusionPlan.js';
-import { addCompany } from '../../controllers/Property/company.js';
 
 
-const router = express.Router();
 
 router.post(
     '/api/createProperty',
@@ -69,7 +73,7 @@ router.patch("/api/editProperty", editProperty);
 router.patch("/api/patchIdentityType/:identityTypeId", identityTypes);
 
 //company
-router.post("/api/addCompany",upload.single({name:"compnayLogo"}),addCompany)
+router.post("/api/addCompany", upload.fields([{ name: "companyLogo", maxCount: 1 }, { name: "contractPdf", maxCount: 3 }]), addCompany)
 
 //payment types
 router.post("/api/addPaymentType", addPaymentType)
@@ -110,9 +114,6 @@ router.post("/api/postHoliday", holiday)
 router.patch("/api/patchHoliday/:holidayId", patchHoliday)
 router.get("/api/getHoliday", getHoliday)
 
-//amenity type
-router.post("/api/postAmenity", amenityType);
-router.get("/api/getAmenities", getAmenities);
-router.patch("/api/patchAmenity", patchAmenity);
+
 
 export default router;

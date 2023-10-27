@@ -12,11 +12,20 @@ const logoutUser = async (req, res) => {
         if (tokenArray.some((t) => t.token === token)) {
             tokenArray = tokenArray.filter((t) => t.token !== token);
 
+<<<<<<< HEAD
             await verifiedUser.findOneAndUpdate(
                 { userId },
                 { $set: { token: tokenArray } },
                 { new: true }
               );
+=======
+            await verifiedUser.findOneAndUpdate({ userId: userId },
+                {
+                    $set: { token: tokenArray }
+                },
+                { new: true })
+
+>>>>>>> c3115190c6c8572e899978b31d087ad999749db1
             return res.status(200).json({ message: "Logged out successfully", statuscode: 200 })
         } else {
             return res.status(400).json({ message: "Invalid token entered", statuscode: 400 })

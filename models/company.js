@@ -77,10 +77,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+      
         logId: {
             type: String,
             default: "",
@@ -179,25 +176,19 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+        
         logId: {
             type: String,
             default: "",
         }
     }],
 
-    email: [{
-        email: {
+    personEmail: [{
+        personEmail: {
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+        
         logId: {
             type: String,
             default: "",
@@ -209,10 +200,6 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
         logId: {
             type: String,
             default: "",
@@ -221,10 +208,6 @@ const companySchema = new mongoose.Schema({
 
     addressLine2: [{
         addressLine2: {
-            type: String,
-            default: "",
-        },
-        modifiedOn: {
             type: String,
             default: "",
         },
@@ -240,10 +223,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+    
         logId: {
             type: String,
             default: "",
@@ -255,10 +235,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+       
         logId: {
             type: String,
             default: "",
@@ -270,10 +247,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+       
         logId: {
             type: String,
             default: "",
@@ -286,10 +260,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+        
         logId: {
             type: String,
             default: "",
@@ -301,10 +272,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+      
         logId: {
             type: String,
             default: "",
@@ -316,10 +284,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+      
         logId: {
             type: String,
             default: "",
@@ -331,10 +296,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+     
         logId: {
             type: String,
             default: "",
@@ -346,10 +308,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+      
         logId: {
             type: String,
             default: "",
@@ -362,10 +321,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        modifiedOn: {
-            type: String,
-            default: "",
-        },
+      
         logId: {
             type: String,
             default: "",

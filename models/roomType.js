@@ -23,16 +23,36 @@ const roomType = new mongoose.Schema({
         type: String
     },
 
+    createdBy:{
+        type:String,
+        default:""
+    },
+    createdOn:{
+        type:String,
+        default:""
+    },
+
+shortCode:[{
     shortCode:{
         type:String,
         default:"",
     },
+    logId:{
+        type:String,
+        default:"",
+
+    },
+   
+
+
+}],
+ 
     roomDescription:[{
       roomDescription:{
         type:String,
         default:"",
       },
-      modifiedDate: {
+      logId: {
         type: String,
         default: ""
     }
@@ -43,7 +63,7 @@ const roomType = new mongoose.Schema({
             type:String,
             default:"",
         },
-        modifiedDate: {
+        logId: {
             type: String,
             default: ""
         }
@@ -55,7 +75,7 @@ const roomType = new mongoose.Schema({
             type:String,
             default:"",
         },
-        modifiedDate: {
+        logId: {
             type: String,
             default: ""
         }
@@ -66,10 +86,12 @@ const roomType = new mongoose.Schema({
 
     bedType:[{
         bedType:[{
+            bedTypeId:{
             type:String,
             default:"",
+            }
         }],
-        modifiedDate: {
+        logId: {
             type: String,
             default: ""
         }
@@ -81,7 +103,7 @@ const roomType = new mongoose.Schema({
             type:String,
             default:"",
         },
-        modifiedDate: {
+        logId: {
             type: String,
             default: ""
         }
@@ -92,7 +114,7 @@ const roomType = new mongoose.Schema({
             type:String,
             default:"",
         },
-        modifiedDate: {
+        logId: {
             type: String,
             default: ""
         }
@@ -105,7 +127,7 @@ const roomType = new mongoose.Schema({
             type:String,
             default:"",
         },
-        modifiedDate: {
+        logId: {
             type: String,
             default: ""
         }
@@ -116,7 +138,7 @@ const roomType = new mongoose.Schema({
             type:String,
             default:"",
         },
-        modifiedDate: {
+        logId: {
             type: String,
             default: ""
         }
@@ -127,7 +149,7 @@ const roomType = new mongoose.Schema({
             type:String,
             default:"",
         },
-        modifiedDate: {
+        logId: {
             type: String,
             default: ""
         }
@@ -141,7 +163,7 @@ const roomType = new mongoose.Schema({
             type:String,
             default:"",
         },
-        modifiedDate: {
+        logId: {
             type: String,
             default: ""
         }
@@ -152,7 +174,7 @@ const roomType = new mongoose.Schema({
             type:String,
             default:"",
         },
-        modifiedDate: {
+        logId: {
             type: String,
             default: ""
         }
@@ -163,7 +185,7 @@ const roomType = new mongoose.Schema({
             type:String,
             default:"",
         },
-        modifiedDate: {
+        logId: {
             type: String,
             default: ""
         }
@@ -173,7 +195,7 @@ const roomType = new mongoose.Schema({
             type:String,
             default:"",
         },
-        modifiedDate: {
+        logId: {
             type: String,
             default: ""
         }
@@ -183,7 +205,7 @@ const roomType = new mongoose.Schema({
             type:String,
             default:"",
         },
-        modifiedDate: {
+        logId: {
             type: String,
             default: ""
         }
@@ -196,7 +218,11 @@ const roomType = new mongoose.Schema({
             type: String
         },
         addedDate:String
-    }]
+    }],
+    logId: {
+        type: String,
+        default: ""
+    },
 }],
 
 })

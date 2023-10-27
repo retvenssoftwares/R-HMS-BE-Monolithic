@@ -1,12 +1,12 @@
 import holiday from '../../models/holidays.js';
-import { convertTimestampToCustomFormat, verifyUser } from '../../helpers/helper.js';
+import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from '../../helpers/helper.js';
 
 const getHoliday = async (req, res) => {
     try {
         const { targetTimeZone, propertyId, userId } = req.query;
         const authCodeValue = req.headers['authcode']
 
-        const result = await verifyUser(userId, authCodeValue);
+        const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
             const findAllHoliday = await holiday.find({ propertyId });

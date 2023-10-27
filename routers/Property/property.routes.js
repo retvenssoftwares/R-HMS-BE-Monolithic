@@ -11,7 +11,11 @@ import addPaymentType from "../../controllers/Property/addPaymentTypes.js"
 import getPaymentTypes from '../../controllers/Property/getPaymentTypes.js'
 import patchPaymentType from '../../controllers/Property/patchPaymentTypes.js';
 import userProperty from "../../controllers/Property/getUserProperties.controller.js"
-import propertyImageController from '../../controllers/Property/addPropertyImages.js'
+
+//images
+import uploadPropertyImages from '../../controllers/Property/addPropertyImages.js'
+import dragDropPropertyImages from '../../controllers/Property/dragDropPropertyImages.js'
+
 import identityType from '../../controllers/Property/getIdentityTypes.controller.js'
 import reservationType from '../../controllers/Property/reservationType.controller.js'
 import updateReservationType from '../../controllers/Property/updateReservationType.controller.js'
@@ -67,7 +71,11 @@ router.get("/api/getBusinessSources/:userId/:propertyId", getBusinessSources)
 // router.patch("/api/updateInclusionPlan",updateInclusionPlan)
 
 router.patch("/api/propertyAdditionalDetails", editProperty)
-router.patch("/api/uploadPropertyImages/:propertyId", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), propertyImageController);
+
+//images
+router.patch("/api/uploadPropertyImages", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), uploadPropertyImages);
+router.patch("/api/changeImageIndex", dragDropPropertyImages)
+
 router.patch("/api/editProperty", editProperty);
 //patch Identity
 router.patch("/api/patchIdentityType/:identityTypeId", identityTypes);

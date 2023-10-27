@@ -1,8 +1,9 @@
-import verifiedUser from "../../models/verifiedUsers"
+import verifiedUser from "../../models/verifiedUsers.js"
+import crypto from "crypto";
 
 export const sessionOut = async (req, res) => {
     try {
-      const { userId, token, deviceType } = req.body;
+      const { userId, token} = req.body;
       const data = await verifiedUser.findOne({ userId });
   
       let tokenArray = data.token;
@@ -16,13 +17,13 @@ export const sessionOut = async (req, res) => {
           { new: true }
         );
   
-        return res.status(200).json({ message: "Your session timed out" });
+        return res.status(200).json({ message: "Your session timed out", statusCode:200 });
       } else {
-        return res.status(200).json({ message: "Token not found" });
+        return res.status(401).json({ message: "Token not found", statusCode:401 });
       }
     } catch (error) {
       console.log(error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ error: "Internal Server Error" , statusCode:500  });
     }
   };
   

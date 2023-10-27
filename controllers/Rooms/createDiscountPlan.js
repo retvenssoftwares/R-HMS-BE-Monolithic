@@ -6,8 +6,6 @@ import discountPlanLogsModel from "../../models/LogModels/discountPlanLogs.js";
 import { getCurrentUTCTimestamp, verifyUser } from "../../helpers/helper.js"
 const createDiscountPlan = async (req, res) => {
     try {
-
-
         const { userId } = req.query
         const {
             propertyId,

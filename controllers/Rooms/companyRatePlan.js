@@ -38,7 +38,7 @@ export const compnayRatePlan = async (req, res) => {
 
         roomTypeId: roomTypeId,
 
-        createdBy : createdBy,
+        createdBy:  userRole,
 
         createdOn : await getCurrentUTCTimestamp(),
 
@@ -119,10 +119,10 @@ export const compnayRatePlan = async (req, res) => {
       await companyRatePlanLogs.save();
 
       // console.log('Successfully updated:', result);
-      res.status(200).json({ message: 'Successfully added' });
+      return res.status(200).json({ message: 'Successfully added' , statusCode : 200 });
     } catch (error) {
       // console.error('Error occurred while aading:', error);
-      res.status(500).json({ error: 'Error occurred while adding' });
+      return res.status(500).json({ error: 'Error occurred while adding' , statusCode : 500});
     }
   };
   
@@ -275,11 +275,10 @@ export const compnayRatePlan = async (req, res) => {
     return res.status(404).json({ message: "bar rate plan not found", statuscode: 404 });
 }
   
-       
 
     } catch (error) {
        // console.error('Error occurred while updating:', error);
-        res.status(500).json({ error: 'Error occurred while updating' });
+        return res.status(500).json({ error: 'Internal server error' , statusCode :500 });
     }
 };
 

@@ -21,9 +21,12 @@ import reservationType from '../../controllers/Property/reservationType.controll
 import updateReservationType from '../../controllers/Property/updateReservationType.controller.js'
 import userIdentity from "../../controllers/Property/postIdentity.controller.js"
 import fetchReservation from '../../controllers/Property/getReservation.controller.js'
+
+//booking sources
 import postBookingSource from '../../controllers/Property/bookingSource.controller.js'
 import updateBookingSource from '../../controllers/Property/updateBookingSource.controller.js'
-import fetchBookingSource from '../../controllers/Property/getBookingSource.controller.js'
+import bookingSourcesGet from '../../controllers/Property/getBookingSource.controller.js'
+
 import holiday from '../../controllers/Property/holidays.controller.js'
 import patchHoliday from '../../controllers/Property/updateHoliday.controller.js'
 import getHoliday from '../../controllers/Property/getHoliday.controller.js'
@@ -74,7 +77,7 @@ router.patch("/api/propertyAdditionalDetails", editProperty)
 
 //images
 router.patch("/api/uploadPropertyImages", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), uploadPropertyImages);
-router.patch("/api/changeImageIndex", dragDropPropertyImages)
+router.patch("/api/changeImageIndex", dragDropPropertyImages);
 
 router.patch("/api/editProperty", editProperty);
 //patch Identity
@@ -100,14 +103,10 @@ router.patch("/api/updateReservationType/:reservationTypeId", updateReservationT
 //get reservationType
 router.get("/api/getreservation", fetchReservation)
 
-//post booking source
+// booking source
 router.post("/api/bookingSource", postBookingSource)
-
-//update booking source
-router.patch("/api/updateBookingSource/:bookingSourceId", updateBookingSource)
-
-//fetch BookingSource
-router.get("/api/getBookingSource/:propertyId", fetchBookingSource)
+router.patch("/api/updateBookingSource", updateBookingSource)
+router.get("/api/getBookingSource", bookingSourcesGet)
 
 router.post("/api/postIdentity", userIdentity);
 router.get("/api/fetchIdentity", identityType);

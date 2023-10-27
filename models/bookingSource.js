@@ -3,30 +3,34 @@ import db1 from "../db/conn.js"
 const bookingSourceSchema = Schema({
 
     propertyId: { type: String, default: '', unique: false },
-    bookingSourceId: {type: String, default:''},
+    bookingSourceId: { type: String, default: '' },
 
-    shortCode:{
-        type:String,
-        default:''
-    },
-    dateUTC: {
-        type: String
-    },
-    dateLocal: {
-        type: String
-    },
-    createdBy:{type:String,default:''},
-    createdOn:{type:String,default:''},
+    shortCode: [{
+        shortCode: {
+            type: String,
+            default: ''
+        },
+        logId: { type: String, default: '' }
+    }],
+    modifiedBy: [{
+        modifiedBy: { type: String, default: "" },
+        logId: { type: String, default: '' }
+    }],
+    modifiedOn: [{
+        modifiedOn: { type: String, default: "" },
+        logId: { type: String, default: '' }
+    }],
+    createdBy: { type: String, default: '' },
+    createdOn: { type: String, default: '' },
     bookingSource: [
         {
-            
-            sourceName: { type: String, default: '' },
-            modifiedBy:{type:String,default:''},
-            modifiedOn:{type:String,default:''},
-           
+            bookingSource: { type: String, default: '' },
+            logId: { type: String, default: '' }
         }
     ]
 
+}, {
+    versionKey: false
 });
 
 const bookingSourceModel = db1.model("bookingSource", bookingSourceSchema)

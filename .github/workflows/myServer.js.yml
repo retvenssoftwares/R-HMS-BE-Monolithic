@@ -37,6 +37,7 @@ jobs:
 
       - name: Install dependencies & Build
         run: |
+          pwd
           ls
           npm i
         env: 

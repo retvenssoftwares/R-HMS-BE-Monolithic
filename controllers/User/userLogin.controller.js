@@ -31,7 +31,7 @@ const userLogin = async (req, res) => {
             }
             findProfile.token.unshift(authObj)
             await findProfile.save()
-            return res.status(200).json({ message: "Login successful", statuscode: 200, userId: findProfile.userId })
+            return res.status(200).json({ message: "Login successful", statuscode: 200, data: { userId: findProfile.userId, token: authObj.token }})
         }
     } catch (err) {
         console.log(err)

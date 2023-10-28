@@ -132,6 +132,7 @@ const verifyUserProperty = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error", statuscode: 500 })
     }
 
+
 }
 
 export default verifyUserProperty

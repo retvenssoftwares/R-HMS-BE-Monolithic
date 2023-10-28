@@ -10,7 +10,10 @@ import uploadRoomImage from '../../controllers/Rooms/uploadRoomImage.controller.
 import updateRoomImage from '../../controllers/Rooms/updateRoomImage.controller.js'
 import changeIndex from '../../controllers/Rooms/uploadPatchRoomImage.controller.js'
 import inclusion from '../../controllers/Rooms/postInclusion.controller.js';
-import { compnayRatePlan, updateCompanyRatePlan } from '../../controllers/Rooms/companyRatePlan.js';
+import getInclusion from '../../controllers/Rooms/getInclusion.js';
+import patchInclusions from '../../controllers/Rooms/patchInclusion.js';
+
+import { companyRatePlan, updateCompanyRatePlan } from '../../controllers/Rooms/companyRatePlan.js';
 import BarRatePlan from '../../controllers/Rooms/postBarRatePlan.controller.js'
 import updateBarRatePlan from '../../controllers/Rooms/patchBarRatePlan.controller.js'
 import { packageRatePlan, updatePackageRatePlan } from '../../controllers/Rooms/package.js';
@@ -41,12 +44,16 @@ router.patch(
 //post inclusion
 router.post('/api/postInclusion',inclusion)
 
+//get inclusion
+router.get('/api/inclusionType',getInclusion )
+
+//patch inclusion
+router.patch('/api/patchInclusion', patchInclusions)
 //company rate plan
-router.post("/api/addCompnayRatePlan",compnayRatePlan)
+router.post("/api/addCompanyRatePlan",companyRatePlan)
 
 //update companyRtePlan
 router.patch("/api/updateCompanyRatePlan/:compnayRatePlanId",updateCompanyRatePlan)
-
 
 //post BarRatePlan
 router.post('/api/barRatePlan',BarRatePlan)

@@ -20,7 +20,7 @@ const getSeasons = async (req, res) => {
                     } else {
                         convertedModifiedOn = convertTimestampToCustomFormat(seasons.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
-
+                      
                     return {
                         ...seasons._doc,
                         createdOn: convertedDateUTC,

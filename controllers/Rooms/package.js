@@ -17,12 +17,8 @@ export const packageRatePlan = async(req,res)=>{
             return res.status(404).json({ message: "User not found or invalid userid", statusCode: 404 })
         }
 
-        const authCode = req.headers["authcode"]
-        const userToken = await findUserByUserIdAndToken(userId , authCode)
-
-        if(!userToken){
-            return res.status(404).json({message : "Invalid token " , statusCode : 404})
-        }
+        const authCodeValue = req.headers["authcode"]
+        const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         let userRole = findUser.role[0].role;
 
@@ -30,8 +26,9 @@ export const packageRatePlan = async(req,res)=>{
 
         const packageId = Randomstring.generate(10)
 
+        if(result.success){
         const packageRatePlan = new packageRatePlanModel({
-            propertyId,
+            propertyId:propertyId,
 
             packageId : packageId,
 
@@ -86,20 +83,22 @@ export const packageRatePlan = async(req,res)=>{
             }]
             
         })
-
-            
-        const result = await packageRatePlan.save();
-
-
+        const packageplan = await packageRatePlan.save();
        return res.status(200).json({message : "package rate Plan added successfully" , statusCode :200})
-
+    }
+    else{
+        return res.status(result.statuscode).json({ message: result.message });
+    }
 
     }catch(err){
-
+        console.log(err)
+        res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
     }
 }
 
 
+
+//patch Package rate plan
 export const updatePackageRatePlan = async(req,res)=>{
     try{
 

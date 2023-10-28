@@ -31,6 +31,7 @@ import getHoliday from '../../controllers/Property/getHoliday.controller.js'
 
 //company
 import addCompany from "../../controllers/Property/company.js"
+import getCompany from "../../controllers/Property/getCompany.js"
 
 //amenities
 import amenityType from "../../controllers/Amenities/postAmenity.js"
@@ -112,7 +113,6 @@ router.patch("/api/updateBookingSource", updateBookingSource)
 router.get("/api/getBookingSource", bookingSourcesGet)
 
 
-
 //seasons
 router.post("/api/postSeason", seasonType);
 router.get("/api/getSeasons", getSeasons);
@@ -122,6 +122,9 @@ router.patch("/api/patchSeason/:seasonId", patchSeason)
 router.post("/api/postHoliday", holiday)
 router.patch("/api/patchHoliday/:holidayId", patchHoliday)
 router.get("/api/getHoliday", getHoliday)
+
+//company 
+router.get("/api/companyType", getCompany);
 
 
 

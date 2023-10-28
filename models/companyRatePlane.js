@@ -128,7 +128,7 @@ const companyRatePlan = new mongoose.Schema(
 );
 
 const companyRatePlanModel = db1.model(
-  "compnayRatePlane",
+  "companyRatePlan",
   companyRatePlan
 );
 export default companyRatePlanModel;

@@ -1,13 +1,13 @@
 import Randomstring from "randomstring";
 import company from "../../models/company.js";
-import { uploadImageToS3, verifyUser } from "../../helpers/helper.js";
+import { uploadImageToS3, findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const addCompany = async (req, res) => {
     try {
         const { userId } = req.query;
         const authCodeValue = req.headers['authcode']
 
-        const result = await verifyUser(userId, authCodeValue);
+        const result = await findUserByUserIdAndToken(userId, authCodeValue);
         if (result.success) {
             var imageUrl = ""
             var contractLink = ""

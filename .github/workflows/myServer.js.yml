@@ -56,8 +56,8 @@ jobs:
       - name: Start application
         run: |
 
-      - name: Build application
-        run: npm run build
+      # - name: Build application
+      #   run: npm run build
       - name: Restart server application
         run: pm2 restart myServer
 

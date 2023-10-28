@@ -1,12 +1,12 @@
 import amenity from '../../models/amenity.js';
-import { convertTimestampToCustomFormat, verifyUser } from '../../helpers/helper.js';
+import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from '../../helpers/helper.js';
 
 const getAmenities = async (req, res) => {
     try {
         const { targetTimeZone, propertyId, userId } = req.query;
         const authCodeValue = req.headers['authcode']
 
-        const result = await verifyUser(userId, authCodeValue);
+        const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
             const findAllAmenities = await amenity.find({ propertyId }).select('amenityId propertyId createdOn amenityName modifiedBy modifiedOn amenityType -_id').lean();
@@ -31,7 +31,7 @@ const getAmenities = async (req, res) => {
                     };
                 });
 
-                return res.status(200).json({ amenities: convertedAmenity, statuscode: 200 });
+                return res.status(200).json({ data: convertedAmenity, statuscode: 200 });
             } else {
                 return res.status(404).json({ error: "No amenities found", statuscode: 404 });
             }

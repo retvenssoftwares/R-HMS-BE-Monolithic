@@ -1,15 +1,16 @@
 import amenity from '../../models/amenity.js'
 import verifiedUser from '../../models/verifiedUsers.js'
-import { getCurrentUTCTimestamp, verifyUser } from '../../helpers/helper.js'
+import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/helper.js'
 
 const patchAmenity = async (req, res) => {
 
     try {
-        const { userId, shortCode, amenityId, amenityName, amenityType, amenityIcon, amenityIconLink } = req.body;
+        const { userId } = req.query
+        const { shortCode, amenityId, amenityName, amenityType, amenityIcon, amenityIconLink } = req.body;
 
         const authCodeValue = req.headers['authcode'];
 
-        const result = await verifyUser(userId, authCodeValue);
+        const result = await findUserByUserIdAndToken(userId, authCodeValue);
         const findUser = await verifiedUser.findOne({ userId })
 
         if (result.success) {

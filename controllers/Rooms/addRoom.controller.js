@@ -7,15 +7,16 @@ import userModel from "../../models/verifiedUsers.js";
 import {
   getCurrentUTCTimestamp,
   getCurrentLocalTimestamp,
-  uploadMultipleImagesToS3
+  uploadMultipleImagesToS3,
+  findUserByUserIdAndToken
 } from "../../helpers/helper.js";
 
 //upload Room controller
 const postRoom = async (req, res) => {
   try {
+    
     const {
       
-      userId,
       roomTypeId,
       propertyId,
       baseAdult,
@@ -36,18 +37,23 @@ const postRoom = async (req, res) => {
       
     } = req.body;
     
+    const { userId } = req.query;
     const authCodeValue = req.headers['authcode']
 
-    const user = await userModel.findOne({userId:req.body.userId})
+    const user = await userModel.findOne({userId})
+
     if(!user){
       return res.status(404).json({message:"user not found"})
     }
-     const {authCode}= user
-    // console.log(authCode)
 
-    if(authCodeValue!==authCode){
-      return res.status(404).json({message:"invalid authCode"})
-    }
+    const result = await findUserByUserIdAndToken(userId, authCodeValue);
+    if (result.success) {
+      // const {authCode}= user
+      // console.log(authCode)
+
+    // if(authCodeValue!==authCode){
+    //  return res.status(404).json({message:"invalid authCode"})
+    
     const amenityIds = req.body.amenityIds;
     const amenityIdsArray = amenityIds.split(',');
     const currentUTCTime = await getCurrentUTCTimestamp();
@@ -157,7 +163,7 @@ const postRoom = async (req, res) => {
       dateLocal: getCurrentLocalTimestamp(),
     });
 
-   
+    
     // Save the Room record
     const savedRoom = await newRoom.save();
 
@@ -166,12 +172,14 @@ const postRoom = async (req, res) => {
       roomTypeId: savedRoom.roomTypeId, 
       propertyId:savedRoom.propertyId,
     });
-
+  
     // Save the propertyImages record
     await roomImages.save();
-
-
     return res.status(200).json({ message: "New room added successfully", statuscode: 200 });
+  
+  }else {
+    return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
+} 
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Internal Server Error", statuscode: 500 });

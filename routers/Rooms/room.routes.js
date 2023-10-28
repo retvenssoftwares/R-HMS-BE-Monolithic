@@ -12,8 +12,10 @@ import inclusion from '../../controllers/Rooms/postInclusion.controller.js';
 import getInclusion from '../../controllers/Rooms/getInclusion.js';
 import patchInclusions from '../../controllers/Rooms/patchInclusion.js';
 
+import { compnayRatePlan, updateCompanyRatePlan } from '../../controllers/Rooms/companyRatePlan.js';
 import BarRatePlan from '../../controllers/Rooms/postBarRatePlan.controller.js'
 import updateBarRatePlan from '../../controllers/Rooms/patchBarRatePlan.controller.js'
+import { packageRatePlan, updatePackageRatePlan } from '../../controllers/Rooms/package.js';
 const router = express.Router();
 
 //addroom
@@ -43,10 +45,21 @@ router.get('/api/inclusionType',getInclusion )
 
 //patch inclusion
 router.patch('/api/patchInclusion', patchInclusions)
+//company rate plan
+router.post("/api/addCompnayRatePlan",compnayRatePlan)
+
+//update companyRtePlan
+router.patch("/api/updateCompanyRatePlan/:compnayRatePlanId",updateCompanyRatePlan)
 
 //post BarRatePlan
 router.post('/api/barRatePlan',BarRatePlan)
 
 //update barRatePlan
 router.patch('/api/updateBarRatePlan/:barRatePlanId',updateBarRatePlan)
+
+//add package 
+router.post("/api/addPackage",packageRatePlan)
+
+//update PackageRatePlan
+router.patch("/api/updatePackageRatePlan",updatePackageRatePlan)
 export default router;

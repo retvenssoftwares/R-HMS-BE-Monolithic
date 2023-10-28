@@ -1,7 +1,10 @@
 import express from 'express';
+const router = express.Router();
 import multer from 'multer';
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
+//property
 import postProperty from '../../controllers/Property/property.controller.js'
 import editProperty from "../../controllers/Property/editPropert.controller.js"
 import addPaymentType from "../../controllers/Property/addPaymentTypes.js"
@@ -21,6 +24,10 @@ import holiday from '../../controllers/Property/holidays.controller.js'
 import patchHoliday from '../../controllers/Property/updateHoliday.controller.js'
 import getHoliday from '../../controllers/Property/getHoliday.controller.js'
 
+//company
+import addCompany from "../../controllers/Property/company.js"
+import getCompany from "../../controllers/Property/getCompany.js"
+
 //amenities
 import amenityType from "../../controllers/Amenities/postAmenity.js"
 import getAmenities from "../../controllers/Amenities/getAmenities.js"
@@ -33,13 +40,10 @@ import patchSeason from '../../controllers/Property/patchSeason.js';
 import identityTypes from "../../controllers/Property/patchIdentity.js"
 import { getTransportation, transportationAdd, updateTransportation } from '../../controllers/Property/transpotationTypes.js';
 import { addBusinessSources, getBusinessSources, updateBusinessSources } from '../../controllers/Property/businessSources.js';
-import { addInclusion, updateInclusion } from '../../controllers/Property/addInclusion.js';
-import { addInclusionPlan, updateInclusionPlan } from '../../controllers/Property/addInclusionPlan.js';
-import { addCompany } from '../../controllers/Property/company.js';
+//import { addInclusion, updateInclusion } from '../../controllers/Property/addInclusion.js';
+//import { addInclusionPlan, updateInclusionPlan } from '../../controllers/Property/addInclusionPlan.js';
 
 
-//company
-import getCompany from "../../controllers/Property/getCompany.js"
 
 //postingRule
 import postingRules from "../../controllers/Property/postPostingRules.js"
@@ -61,7 +65,7 @@ import inclusionTypesRule from "../../controllers/Property/getInclusionType.js"
 import accountTypes from "../../controllers/Property/postAccountType.js"
 import accountTypesMethod from "../../controllers/Property/getAccountType.js"
 
-const router = express.Router();
+
 
 router.post(
     '/api/createProperty',
@@ -80,10 +84,10 @@ router.patch("/api/updateBusinessSources", updateBusinessSources)
 router.get("/api/getBusinessSources/:userId/:propertyId", getBusinessSources)
 
 //inclusion
-router.post("/api/addInclusion",addInclusion)
-router.patch("/api/updateInclusion",updateInclusion)
-router.post("/api/addInclusionPlan",addInclusionPlan)
-router.patch("/api/updateInclusionPlan",updateInclusionPlan)
+// router.post("/api/addInclusion",addInclusion)
+// router.patch("/api/updateInclusion",updateInclusion)
+// router.post("/api/addInclusionPlan",addInclusionPlan)
+// router.patch("/api/updateInclusionPlan",updateInclusionPlan)
 
 router.patch("/api/propertyAdditionalDetails", editProperty)
 router.patch("/api/uploadPropertyImages/:propertyId", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), propertyImageController);
@@ -92,7 +96,7 @@ router.patch("/api/editProperty", editProperty);
 router.patch("/api/patchIdentityType/:identityTypeId", identityTypes);
 
 //company
-router.post("/api/addCompany",upload.single({name:"compnayLogo"}),addCompany)
+router.post("/api/addCompany", upload.fields([{ name: "companyLogo", maxCount: 1 }, { name: "contractPdf", maxCount: 3 }]), addCompany)
 
 //payment types
 router.post("/api/addPaymentType", addPaymentType)
@@ -133,10 +137,7 @@ router.post("/api/postHoliday", holiday)
 router.patch("/api/patchHoliday/:holidayId", patchHoliday)
 router.get("/api/getHoliday", getHoliday)
 
-//amenity type
-router.post("/api/postAmenity", amenityType);
-router.get("/api/getAmenities", getAmenities);
-router.patch("/api/patchAmenity", patchAmenity);
+
 
 //company 
 router.get("/api/companyType", getCompany);

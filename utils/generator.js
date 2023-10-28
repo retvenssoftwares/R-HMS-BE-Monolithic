@@ -1,33 +1,45 @@
-import { format, utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
+// Import the Mongoose model
+import verifiedUser from '../models/verifiedUsers.js';
 
-function convertTimestampToCustomFormat(utcTimestamp, targetTimeZone) {
-  // Convert the UTC timestamp to the target time zone
-  const zonedTimestamp = utcToZonedTime(utcTimestamp, targetTimeZone);
+// Create a helper function
+async function findUserByUserIdAndToken(userId, token) {
+    try {
+        // Find the user by userId
+        const user = await verifiedUser.findOne({ userId });
 
-  // Define the custom format
-  const customFormat = "dd/MM/yy HH:mm:ss";
+        if (!user) {
+            // User not found
+            return null;
+        }
 
-  // Format the zoned timestamp into the custom format
-  const formattedTimestamp = format(zonedTimestamp, customFormat, {
-    timeZone: targetTimeZone,
-  });
+        // Check if the token exists in the token array
+        const tokenExists = user.token.some((userToken) => userToken.token === token);
 
-  return formattedTimestamp;
+        if (tokenExists) {
+            return user;
+        } else {
+            // Token not found in the user's tokens
+            return null;
+        }
+    } catch (error) {
+        // Handle errors here
+        console.error('Error finding user:', error);
+        throw error;
+    }
 }
 
-// Example usage:
-const utcTimestamp = "2023-10-16T17:18:48.845Z";
-const targetTimeZone = "America/New_York"; // Change to the desired time zone
+// Usage example:
+const userId = '3BPNQz9A';
+const providedToken = '70460de21252cd61810a9e5741d874ea6598eb8b9f428dc076c141e6377a5b77d2acb5e7d09bb5a4b7424dd6cb39ad17010df7c791871c4e56c92cae45b6d0d0';
 
-const formattedTimestamp = convertTimestampToCustomFormat(utcTimestamp, targetTimeZone);
-console.log(formattedTimestamp);
-
-function getCurrentUTCTimestamp() {
-    const now = new Date();
-    const utcTimestamp = now.toISOString();
-    return utcTimestamp;
-  }
-  
-  // Example usage:
-  const currentUTC = getCurrentUTCTimestamp();
-  console.log(currentUTC);
+findUserByUserIdAndToken(userId, providedToken)
+    .then((user) => {
+        if (user) {
+            console.log('User found:', user);
+        } else {
+            console.log('User not found or token does not match.');
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });

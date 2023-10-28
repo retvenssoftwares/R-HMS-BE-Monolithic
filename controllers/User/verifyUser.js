@@ -3,7 +3,7 @@ import verifyUserModel from "../../models/verifiedUsers.js"
 import propertyModel from "../../models/property.js"
 import propertyChain from "../../models/propertychain.js"
 const verifyUserProperty = async (req, res) => {
-
+     try{
     const userId = req.body.userId
 
     // verify the user
@@ -13,7 +13,7 @@ const verifyUserProperty = async (req, res) => {
 
     const propertyTypeSOC = user.propertyTypeSOC
 
-    console.log(propertyTypeSOC)
+    // console.log(propertyTypeSOC)
 
     if (propertyTypeSOC === "Single") {
         const singleProperty = user.singlePropertyDetails[0]
@@ -33,10 +33,12 @@ const verifyUserProperty = async (req, res) => {
             password: user.password,
             propertyTypeSOC: user.propertyTypeSOC,
             verificationStatus: user.verificationStatus,
+            
 
         })
 
         await verifyUserDetails.save()
+       
         //console.log({amenities : singleProperty.amenities})
 
         const property = new propertyModel({
@@ -83,6 +85,7 @@ const verifyUserProperty = async (req, res) => {
         })
 
         await property.save()
+        
 
 
     } else {
@@ -106,7 +109,7 @@ const verifyUserProperty = async (req, res) => {
         })
 
         await verifyUserDetails.save()
-
+        
         const propertChain = new propertyChain({
             userId: multipleProperty.userId,
             propertyChainId: multipleProperty.propertyChainId,
@@ -124,11 +127,13 @@ const verifyUserProperty = async (req, res) => {
         })
 
         await propertChain.save()
-
-
+        
     }
+}catch (error) {
+    // console.error('Error occurred while updating:', error);
+     return res.status(500).json({ error: 'Internal server error' , statusCode :500 });
+ }
 
-
-}
+};
 
 export default verifyUserProperty

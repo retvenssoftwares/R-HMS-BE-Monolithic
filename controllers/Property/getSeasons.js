@@ -33,7 +33,7 @@ const getSeasons = async (req, res) => {
                     };
                 });
 
-                return res.status(200).json({ seasons: convertedSeasons, statuscode: 200 });
+                return res.status(200).json({ data: convertedSeasons, statuscode: 200 });
             } else {
                 return res.status(404).json({ error: "No seasons found", statuscode: 404 });
             }

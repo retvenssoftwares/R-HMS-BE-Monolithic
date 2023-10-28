@@ -16,7 +16,7 @@ const userProperty = async (req, res) => {
                 return { ...property._doc, dateUTC: convertedDateUTC };
             });
 
-            return res.status(200).json({ userProperties: convertedProperties, statuscode: 200 });
+            return res.status(200).json({ data: convertedProperties, statuscode: 200 });
         } else {
             return res.status(404).json({ error: "No property found", statuscode: 404 });
         }

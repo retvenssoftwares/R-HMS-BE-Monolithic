@@ -31,7 +31,7 @@ const getReservation = async (req, res) => {
                     };
                 });
 
-                return res.status(200).json({ reservation: convertedReservation, statuscode: 200 });
+                return res.status(200).json({ data: convertedReservation, statuscode: 200 });
             } else {
                 return res.status(404).json({ error: "No reservation found", statuscode: 404 });
             }

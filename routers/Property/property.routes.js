@@ -15,8 +15,6 @@ import userProperty from "../../controllers/Property/getUserProperties.controlle
 //images
 import uploadPropertyImages from '../../controllers/Property/addPropertyImages.js'
 import dragDropPropertyImages from '../../controllers/Property/dragDropPropertyImages.js'
-
-import identityType from '../../controllers/Property/getIdentityTypes.controller.js'
 import reservationType from '../../controllers/Property/reservationType.controller.js'
 import updateReservationType from '../../controllers/Property/updateReservationType.controller.js'
 import userIdentity from "../../controllers/Property/postIdentity.controller.js"
@@ -43,12 +41,14 @@ import patchAmenity from '../../controllers/Amenities/patchAmenity.js';
 import seasonType from "../../controllers/Property/postSeason.js"
 import getSeasons from '../../controllers/Property/getSeasons.js';
 import patchSeason from '../../controllers/Property/patchSeason.js';
-import identityTypes from "../../controllers/Property/patchIdentity.js"
 import { getTransportation, transportationAdd, updateTransportation } from '../../controllers/Property/transpotationTypes.js';
 import { addBusinessSources, getBusinessSources, updateBusinessSources } from '../../controllers/Property/businessSources.js';
 //import { addInclusion, updateInclusion } from '../../controllers/Property/addInclusion.js';
 //import { addInclusionPlan, updateInclusionPlan } from '../../controllers/Property/addInclusionPlan.js';
 
+//IdentityType
+import identityType from '../../controllers/Property/getIdentityTypes.controller.js'
+import identityTypes from "../../controllers/Property/patchIdentity.js"
 
 
 router.post(
@@ -80,8 +80,11 @@ router.patch("/api/uploadPropertyImages", upload.fields([{ name: 'hotelImage', m
 router.patch("/api/changeImageIndex", dragDropPropertyImages);
 
 router.patch("/api/editProperty", editProperty);
+
 //patch Identity
 router.patch("/api/patchIdentityType/:identityTypeId", identityTypes);
+router.post("/api/postIdentity", userIdentity);
+router.get("/api/fetchIdentity", identityType);
 
 //company
 router.post("/api/addCompany", upload.fields([{ name: "companyLogo", maxCount: 1 }, { name: "contractPdf", maxCount: 3 }]), addCompany)
@@ -108,8 +111,7 @@ router.post("/api/bookingSource", postBookingSource)
 router.patch("/api/updateBookingSource", updateBookingSource)
 router.get("/api/getBookingSource", bookingSourcesGet)
 
-router.post("/api/postIdentity", userIdentity);
-router.get("/api/fetchIdentity", identityType);
+
 
 //seasons
 router.post("/api/postSeason", seasonType);

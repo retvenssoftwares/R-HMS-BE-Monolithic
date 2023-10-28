@@ -87,6 +87,11 @@ const verifiedUsersSchema = new mongoose.Schema({
     modifiedDate: String
   }],
 
+  isLogin:{
+    type:String,
+    default:'false'
+  },
+
   verificationStatus: {
     type: String,
     default: 'false'

@@ -1,21 +1,31 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 // import identityModel from "../../models/property.js";
-import { convertTimestampToCustomFormat } from "../../helpers/helper.js";
+import { convertTimestampToCustomFormat,findUserByUserIdAndToken } from "../../helpers/helper.js";
 import identityModel from "../../models/identityTypes.js";
 
 const identityType = async (req, res) => {
     try {
-        const { targetTimeZone, propertyId } = req.query;
+        const { targetTimeZone, propertyId,userId } = req.query;
+        const authCodeValue = req.headers['authcode']
 
-        const userIdentity = await identityModel.find({ propertyId });
+        const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
-        if (userIdentity.length > 0) {
+        if(result.success){
+        const userIdentity = await identityModel.find({ propertyId:propertyId });
+
+        if (userIdentity) {
             // Assuming userTimeZone holds the user's specified time zone
             const convertedIdentity = userIdentity.map(identity => {
                 // Convert the dateUTC to the user's time zone
                 const convertedDateUTC = convertTimestampToCustomFormat(identity.createdOn, targetTimeZone);
-                const convertedModifiedOn = convertTimestampToCustomFormat(identity.modifiedOn[0].modifiedOn, targetTimeZone);
+                let convertedModifiedOn;
+                    if (identity.modifiedOn.length === 0) {
+                        convertedModifiedOn = ""
+                    } else {
+                        convertedModifiedOn = convertTimestampToCustomFormat(identity.modifiedOn[0].modifiedOn, targetTimeZone);
+                    }
+
                 return {
                     ...identity._doc,
                     createdOn: convertedDateUTC,
@@ -26,12 +36,17 @@ const identityType = async (req, res) => {
 
             });
 
-            return res.status(200).json({ userIdentity: convertedIdentity, statuscode: 200 });
+            return res.status(200).json({ data: convertedIdentity, statuscode: 200 });
         } else {
             return res.status(404).json({ error: "No identity found", statuscode: 404 });
         }
-    } catch (error) {
-        return res.status(500).json({ error: error.message, statusCode: 500 });
+
+    } else {
+        return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
+    }
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({ message: "Internal Server Error", statuscode: 500 })
     }
 };
 

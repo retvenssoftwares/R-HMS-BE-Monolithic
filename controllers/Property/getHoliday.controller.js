@@ -32,7 +32,7 @@ const getHoliday = async (req, res) => {
                     };
                 });
 
-                return res.status(200).json({ holidays: convertedHoliday, statuscode: 200 });
+                return res.status(200).json({ data: convertedHoliday, statuscode: 200 });
             } else {
                 return res.status(404).json({ error: "No holiday found", statuscode: 404 });
             }

@@ -65,15 +65,15 @@ const verifiedUsersSchema = new mongoose.Schema({
     default: ''
   },
 
-  token:[{
-    token : {
+  token: [{
+    token: {
       type: String,
-      default : ''
+      default: ''
     },
 
-    deviceType:{
+    deviceType: {
       type: String,
-      default : ''
+      default: ''
     }
 
   }],
@@ -87,9 +87,9 @@ const verifiedUsersSchema = new mongoose.Schema({
     modifiedDate: String
   }],
 
-  isLogin:{
-    type:String,
-    default:'false'
+  isLogin: {
+    type: String,
+    default: 'false'
   },
 
   verificationStatus: {

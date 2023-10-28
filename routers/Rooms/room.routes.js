@@ -10,8 +10,10 @@ import uploadRoomImage from '../../controllers/Rooms/uploadRoomImage.controller.
 import updateRoomImage from '../../controllers/Rooms/updateRoomImage.controller.js'
 import changeIndex from '../../controllers/Rooms/uploadPatchRoomImage.controller.js'
 import inclusion from '../../controllers/Rooms/postInclusion.controller.js';
+import { compnayRatePlan, updateCompanyRatePlan } from '../../controllers/Rooms/companyRatePlan.js';
 import BarRatePlan from '../../controllers/Rooms/postBarRatePlan.controller.js'
 import updateBarRatePlan from '../../controllers/Rooms/patchBarRatePlan.controller.js'
+import { packageRatePlan, updatePackageRatePlan } from '../../controllers/Rooms/package.js';
 const router = express.Router();
 
 //addroom
@@ -39,9 +41,22 @@ router.patch(
 //post inclusion
 router.post('/api/postInclusion',inclusion)
 
+//company rate plan
+router.post("/api/addCompnayRatePlan",compnayRatePlan)
+
+//update companyRtePlan
+router.patch("/api/updateCompanyRatePlan/:compnayRatePlanId",updateCompanyRatePlan)
+
+
 //post BarRatePlan
 router.post('/api/barRatePlan',BarRatePlan)
 
 //update barRatePlan
 router.patch('/api/updateBarRatePlan/:barRatePlanId',updateBarRatePlan)
+
+//add package 
+router.post("/api/addPackage",packageRatePlan)
+
+//update PackageRatePlan
+router.patch("/api/updatePackageRatePlan",updatePackageRatePlan)
 export default router;

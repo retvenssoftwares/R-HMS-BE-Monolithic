@@ -1,6 +1,6 @@
 // models/user.js
 import mongoose from 'mongoose';
-import db1 from "../db/conn.js"
+import db1 from '../db/conn.js';
 const userSchema = new mongoose.Schema({
   userId: {
     type: String

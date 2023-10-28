@@ -35,9 +35,9 @@ const postBarRatePlan = async (req, res) => {
         .json({ message: "Invalid authentication token", statuscode: 400 });
     }
     let userRole = findUser.role[0].role;
-    const barRatePlanId =Randomstring.generate(10)
+    const barRatePlanId =Randomstring.generate(8)
 
-    const newSeason = new barRatePlan({
+    const newBarRatePlan = new barRatePlan({
       propertyId,
       barRatePlanId: barRatePlanId,
       shortCode: [
@@ -86,10 +86,11 @@ const postBarRatePlan = async (req, res) => {
 
 
       
-    await newSeason.save();
+    await newBarRatePlan.save();
 
-    
-    const discountPlanLogs = new barPlanLogsModel({
+
+    //save data in logs model
+    const barRatePlanLogs = new barPlanLogsModel({
       
       ratePlanName: req.body,
        barRatePlanId: barRatePlanId,
@@ -107,7 +108,7 @@ const postBarRatePlan = async (req, res) => {
       },
     });
 
-    await discountPlanLogs.save();
+    await barRatePlanLogs.save();
 
     return res
       .status(200)

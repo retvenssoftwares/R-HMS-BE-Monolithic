@@ -1,69 +1,110 @@
-import bookingModel from "../../models/bookingSource.js";
+import Randomstring from "randomstring"
+import bookingSourceModel from "../../models/bookingSource.js";
 import {
     getCurrentUTCTimestamp,
-    getCurrentLocalTimestamp,
+    findUserByUserIdAndToken,
 } from "../../helpers/helper.js";
 import userModel from '../../models/verifiedUsers.js';
 
 const updateBookingSource = async (req, res) => {
-    const bookingSourceId = req.params.bookingSourceId;
-    const { sourceName, userId, modifiedBy, shortCode } = req.body;
-    const authCodeValue = req.headers['authcode'];
-    const findUser = await userModel.findOne({ userId: userId });
-
-    if (!findUser) {
-        return res.status(404).json({ message: "User not found" });
-    }
-    const { authCode } = findUser;
-
-    if (authCodeValue !== authCode) {
-        return res.status(404).json({ message: "Invalid authCode" });
-    }
-
-    const userRole = findUser.role[0].role;
-    console.log(userRole);
-    const currentUTCTime = await getCurrentUTCTimestamp();
-
     try {
-        // Find the booking document by its bookingSourceId
-        const booking = await bookingModel.findOne({ bookingSourceId: bookingSourceId });
+        const bookingSourceId = req.query.bookingSourceId;
+        const userId = req.query.userId
+        const { bookingSource, shortCode } = req.body;
+        const authCodeValue = req.headers['authcode'];
 
-        if (!booking) {
-            return res.status(404).json({ message: "Booking not found" });
+        const result = await findUserByUserIdAndToken(userId, authCodeValue)
+
+        const findUser = await userModel.findOne({ userId: userId });
+
+        if (!findUser) {
+            return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 });
         }
 
-        // Check if sourceName is provided in the request
-        if (sourceName) {
-            if (!booking.bookingSource || booking.bookingSource.length === 0) {
-                // If the bookingSource array is empty or doesn't exist, create a new array with one object
-                booking.bookingSource = [{
-                    sourceName,
-                    modifiedBy: userRole,
-                    modifiedOn: currentUTCTime,
-                }];
-            } else {
-                // Push a new object at the beginning of the array
-                booking.bookingSource.unshift({
-                    sourceName,
-                    modifiedBy: userRole,
-                    modifiedOn: currentUTCTime,
+        if (result.success) {
+            const userRole = findUser.role[0].role;
+            // console.log(userRole);
+            const currentUTCTime = await getCurrentUTCTimestamp();
+
+
+            // Find the booking document by its bookingSourceId
+            const booking = await bookingSourceModel.findOne({ bookingSourceId: bookingSourceId });
+
+            if (!booking) {
+                return res.status(404).json({ message: "Booking source not found", statuscode: 404 });
+            }
+
+            // Check if sourceName is provided in the request
+            if (bookingSource) {
+                const logId1 = Randomstring.generate(10)
+                const update1 = {
+                    $push: {
+                        bookingSource: {
+                            $each: [{
+                                bookingSource: bookingSource,
+                                logId: logId1
+                            }],
+                            $position: 0
+                        }
+                    }
+                };
+                const updatedBookingSourceName = await bookingSourceModel.findOneAndUpdate({ bookingSourceId: bookingSourceId }, update1, {
+                    new: true
                 });
             }
+
+            // Check if shortCode is provided in the request
+            if (shortCode) {
+                const logId1 = Randomstring.generate(10)
+                const update1 = {
+                    $push: {
+                        shortCode: {
+                            $each: [{
+                                shortCode: shortCode,
+                                logId: logId1
+                            }],
+                            $position: 0
+                        }
+                    }
+                };
+                const updatedBookingShortCode = await bookingSourceModel.findOneAndUpdate({ bookingSourceId: bookingSourceId }, update1, {
+                    new: true
+                });
+
+            }
+            const logId2 = Randomstring.generate(10)
+            const logId3 = Randomstring.generate(10)
+            const update1 = {
+                $push: {
+                    modifiedBy: {
+                        $each: [{
+                            modifiedBy: userRole,
+                            logId: logId2
+                        }],
+                        $position: 0
+                    },
+                    modifiedOn: {
+                        $each: [{
+                            modifiedOn: await getCurrentUTCTimestamp(),
+                            logId: logId3
+                        }],
+                        $position: 0
+                    }
+                }
+            };
+            const updatedBookingShortCode = await bookingSourceModel.findOneAndUpdate({ bookingSourceId: bookingSourceId }, update1, {
+                new: true
+            });
+
+            return res.status(200).json({ message: "Booking Source updated successfully", statuscode: 200 });
+        } else {
+            return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }
 
-        // Check if shortCode is provided in the request
-        if (shortCode) {
-            // Update the shortCode
-            booking.shortCode = shortCode;
-        }
 
-        // Save the updated document
-        await booking.save();
-
-        return res.status(200).json({ message: "Booking Source updated successfully" });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: "Internal Server Error" });
+        return res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
     }
 };
 

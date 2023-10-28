@@ -11,15 +11,22 @@ import addPaymentType from "../../controllers/Property/addPaymentTypes.js"
 import getPaymentTypes from '../../controllers/Property/getPaymentTypes.js'
 import patchPaymentType from '../../controllers/Property/patchPaymentTypes.js';
 import userProperty from "../../controllers/Property/getUserProperties.controller.js"
-import propertyImageController from '../../controllers/Property/addPropertyImages.js'
+
+//images
+import uploadPropertyImages from '../../controllers/Property/addPropertyImages.js'
+import dragDropPropertyImages from '../../controllers/Property/dragDropPropertyImages.js'
+
 import identityType from '../../controllers/Property/getIdentityTypes.controller.js'
 import reservationType from '../../controllers/Property/reservationType.controller.js'
 import updateReservationType from '../../controllers/Property/updateReservationType.controller.js'
 import userIdentity from "../../controllers/Property/postIdentity.controller.js"
 import fetchReservation from '../../controllers/Property/getReservation.controller.js'
+
+//booking sources
 import postBookingSource from '../../controllers/Property/bookingSource.controller.js'
 import updateBookingSource from '../../controllers/Property/updateBookingSource.controller.js'
-import fetchBookingSource from '../../controllers/Property/getBookingSource.controller.js'
+import bookingSourcesGet from '../../controllers/Property/getBookingSource.controller.js'
+
 import holiday from '../../controllers/Property/holidays.controller.js'
 import patchHoliday from '../../controllers/Property/updateHoliday.controller.js'
 import getHoliday from '../../controllers/Property/getHoliday.controller.js'
@@ -81,7 +88,7 @@ router.get("/api/getTransportation/:userId/:propertyId", getTransportation)
 // business
 router.post("/api/addBusinessSources", addBusinessSources)
 router.patch("/api/updateBusinessSources", updateBusinessSources)
-router.get("/api/getBusinessSources/:userId/:propertyId", getBusinessSources)
+router.get("/api/getBusinessSources", getBusinessSources)
 
 //inclusion
 // router.post("/api/addInclusion",addInclusion)
@@ -90,7 +97,11 @@ router.get("/api/getBusinessSources/:userId/:propertyId", getBusinessSources)
 // router.patch("/api/updateInclusionPlan",updateInclusionPlan)
 
 router.patch("/api/propertyAdditionalDetails", editProperty)
-router.patch("/api/uploadPropertyImages/:propertyId", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), propertyImageController);
+
+//images
+router.patch("/api/uploadPropertyImages", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), uploadPropertyImages);
+router.patch("/api/changeImageIndex", dragDropPropertyImages);
+
 router.patch("/api/editProperty", editProperty);
 //patch Identity
 router.patch("/api/patchIdentityType/:identityTypeId", identityTypes);
@@ -115,14 +126,10 @@ router.patch("/api/updateReservationType/:reservationTypeId", updateReservationT
 //get reservationType
 router.get("/api/getreservation", fetchReservation)
 
-//post booking source
+// booking source
 router.post("/api/bookingSource", postBookingSource)
-
-//update booking source
-router.patch("/api/updateBookingSource/:bookingSourceId", updateBookingSource)
-
-//fetch BookingSource
-router.get("/api/getBookingSource/:propertyId", fetchBookingSource)
+router.patch("/api/updateBookingSource", updateBookingSource)
+router.get("/api/getBookingSource", bookingSourcesGet)
 
 router.post("/api/postIdentity", userIdentity);
 router.get("/api/fetchIdentity", identityType);

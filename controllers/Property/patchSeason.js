@@ -1,74 +1,91 @@
+import Randomstring from 'randomstring'
 import season from '../../models/season.js'
 import verifiedUser from '../../models/verifiedUsers.js'
-import { getCurrentUTCTimestamp } from '../../helpers/helper.js'
+import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/helper.js'
 
 const patchSeason = async (req, res) => {
     try {
-        const { userId, seasonShortCode, seasonName, startDate, endDate } = req.body;
-        const seasonId = req.params.seasonId;
+        const { userId } = req.query
+        const { shortCode, seasonName, startDate, endDate, days } = req.body;
+        const seasonId = req.query.seasonId;
         const authCodeValue = req.headers['authcode'];
         const findUser = await verifiedUser.findOne({ userId });
 
         if (!findUser) {
             return res.status(404).json({ message: "User not found or invalid userid", statuscode: 404 })
         }
-        const userToken = findUser.authCode;
+
         let userRole = findUser.role[0].role;
 
-        if (authCodeValue !== userToken) {
-            return res.status(400).json({ message: "Invalid authentication token", statuscode: 400 });
-        }
+        const result = await findUserByUserIdAndToken(userId, authCodeValue)
 
-        const findSeason = await season.findOne({ seasonId });
+        if (result.success) {
+            const findSeason = await season.findOne({ seasonId });
 
-        if (!findSeason || !seasonId) {
-            return res.status(404).json({ message: "Season not found", statuscode: 404 });
-        }
+            if (!findSeason || !seasonId) {
+                return res.status(404).json({ message: "Season not found", statuscode: 404 });
+            }
 
-        if (seasonShortCode) {
-            findSeason.seasonShortCode = seasonShortCode;
-        }
+            if (shortCode) {
+                const shortCodeObject = {
+                    shortCode: shortCode,
+                    logId: Randomstring.generate(10)
+                };
+                findSeason.seasonName.unshift(shortCodeObject);
+            }
 
-        const currentUTCTime = await getCurrentUTCTimestamp();
+            const currentUTCTime = await getCurrentUTCTimestamp();
 
-        if (seasonName) {
-            const seasonNameObject = {
-                seasonName: seasonName
+            if (seasonName) {
+                const seasonNameObject = {
+                    seasonName: seasonName,
+                    logId: Randomstring.generate(10)
+                };
+                findSeason.seasonName.unshift(seasonNameObject);
+            }
+
+            if (startDate) {
+                const startDateObject = {
+                    startDate: startDate,
+                    logId: Randomstring.generate(10)
+                };
+                findSeason.startDate.unshift(startDateObject);
+            }
+
+            if (endDate) {
+                const endDateObject = {
+                    endDate: endDate,
+                    logId: Randomstring.generate(10)
+                };
+                findSeason.endDate.unshift(endDateObject);
+            }
+
+            if (days) {
+                const daysArray = days.map(dayString => dayString.trim());
+                const daysObject = { days: daysArray, logId: Randomstring.generate(10) }
+                findSeason.days.unshift(daysObject);
+            }
+
+            const modifiedByObject = {
+                modifiedBy: userRole,
+                logId: Randomstring.generate(10)
             };
-            findSeason.seasonName.unshift(seasonNameObject);
-        }
 
-        if (startDate) {
-            const startDateObject = {
-                startDate: startDate
-            };
-            findSeason.startDate.unshift(startDateObject);
-        }
+            findSeason.modifiedBy.unshift(modifiedByObject);
+            findSeason.modifiedOn.unshift({ modifiedOn: currentUTCTime, logId: Randomstring.generate(10) });
 
-        if (endDate) {
-            const endDateObject = {
-                endDate: endDate
-            };
-            findSeason.endDate.unshift(endDateObject);
-        }
+            const updatedSeason = await findSeason.save();
 
-        const modifiedByObject = {
-            modifiedBy: userRole
-        };
-
-        findSeason.modifiedBy.unshift(modifiedByObject);
-        findSeason.modifiedOn.unshift({ modifiedOn: currentUTCTime });
-
-        const updatedSeason = await findSeason.save();
-
-        if (updatedSeason) {
-            return res.status(200).json({ message: "Season successfully updated", statuscode:200 });
+            if (updatedSeason) {
+                return res.status(200).json({ message: "Season successfully updated", statuscode: 200 });
+            }
         } else {
-            return res.status(404).json({ message: "Season not found", statuscode: 404 });
+            return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }
+
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ message: "Internal Server Error", statuscode:500 });
+        return res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
     }
 }
 

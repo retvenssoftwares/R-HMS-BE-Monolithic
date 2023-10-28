@@ -12,16 +12,26 @@ const holidaySchema = new mongoose.Schema({
         default: ''
     },
 
-    shortCode: {
-        type: String,
-        default: ''
-    },
+    shortCode: [{
+        shortCode: {
+            type: String,
+            default: ''
+        },
+        logId: {
+            type: String,
+            default: ''
+        }
+    }],
 
     holidayName: [{
         holidayName: {
             type: String,
             default: ''
         },
+        logId: {
+            type: String,
+            default: ''
+        }
     }],
 
     startDate: [{
@@ -29,6 +39,10 @@ const holidaySchema = new mongoose.Schema({
             type: String,
             default: ''
         },
+        logId: {
+            type: String,
+            default: ''
+        }
     }],
 
     endDate: [{
@@ -36,6 +50,10 @@ const holidaySchema = new mongoose.Schema({
             type: String,
             default: ''
         },
+        logId: {
+            type: String,
+            default: ''
+        }
     }],
 
     createdBy: {
@@ -53,6 +71,10 @@ const holidaySchema = new mongoose.Schema({
             type: String,
             default: ''
         },
+        logId: {
+            type: String,
+            default: ''
+        }
     }],
 
     modifiedOn: [{
@@ -60,11 +82,15 @@ const holidaySchema = new mongoose.Schema({
             type: String,
             default: ''
         },
+        logId: {
+            type: String,
+            default: ''
+        }
     }],
 
-   
 
-
+}, {
+    versionKey: false
 });
 
 const holiday = db1.model('holiday', holidaySchema);

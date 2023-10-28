@@ -2,6 +2,7 @@ import randomstring from 'randomstring'
 import paymentTypeModel from '../../models/paymentTypes.js'
 import verifiedUser from '../../models/verifiedUsers.js'
 import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/helper.js'
+
 const addPaymentType = async (req, res) => {
     try {
         const { userId } = req.query
@@ -18,17 +19,23 @@ const addPaymentType = async (req, res) => {
 
         if (result.success) {
             const createPaymentType = new paymentTypeModel({
-                shortCode: shortCode,
+                shortCode: [{
+                    shortCode: shortCode,
+                    logId: randomstring.generate(10)
+                }],
                 paymentTypeId: randomstring.generate(8),
                 propertyId,
                 paymentMethodName: [{
-                    paymentMethodName: paymentMethodName
+                    paymentMethodName: paymentMethodName,
+                    logId: randomstring.generate(10)
                 }],
                 paymentType: [{
-                    paymentType: paymentType
+                    paymentType: paymentType,
+                    logId: randomstring.generate(10)
                 }],
                 receivedTo: [{
-                    receivedTo: receivedTo
+                    receivedTo: receivedTo,
+                    logId: randomstring.generate(10)
                 }],
                 createdBy: userRole,
                 createdOn: await getCurrentUTCTimestamp(),
@@ -36,7 +43,7 @@ const addPaymentType = async (req, res) => {
                 modifiedOn: []
             });
             await createPaymentType.save();
-            return res.status(200).json({ message: "PaymentType successfully added", statuscode: 200 })
+            return res.status(200).json({ message: "Payment type successfully added", statuscode: 200 })
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }

@@ -5,7 +5,7 @@ import verifiedUser from "../../models/verifiedUsers.js";
 import { getCurrentUTCTimestamp , findUserByUserIdAndToken } from '../../helpers/helper.js'
 import copmanyRatePlanLog from "../../models/LogModels/compnayRatePlanLogs.js"
 
-export const companyRatePlan = async (req, res) => {
+export const compnayRatePlan = async (req, res) => {
     try {
   
       const {userId,propertyId, rateType , companyName ,createdBy , roomTypeId ,  shortCode , ratePlanInclusion ,ratePlanName, inclusionTotal ,ratePlanTotal , ipAddress, deviceType} = req.body

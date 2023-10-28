@@ -17,19 +17,19 @@ import { packageRatePlan, updatePackageRatePlan } from '../../controllers/Rooms/
 const router = express.Router();
 
 //addroom
-router.post('/api/createRoom',postRoom);
+router.post('/api/createRoom', postRoom);
 
 //update Room
-router.patch('/api/updateRoom/:roomTypeId',patchRoom)
+router.patch('/api/updateRoom/:roomTypeId', patchRoom)
 
 //getRoom
-router.get('/api/getRoom',fetchRoom);
+router.get('/api/getRoom', fetchRoom);
 
 //Update roomImage
-router.patch('/api/patchRoomImage',updateRoomImage)
+router.patch('/api/patchRoomImage', updateRoomImage)
 
 //changeRoomIndex
-router.patch('/api/changeIndex/:roomTypeId',changeIndex)
+router.patch('/api/changeIndex/:roomTypeId', changeIndex)
 
 //upload room image
 router.patch(
@@ -39,24 +39,24 @@ router.patch(
 );
 
 //post inclusion
-router.post('/api/postInclusion',inclusion)
+router.post('/api/postInclusion', inclusion)
 
 //company rate plan
-router.post("/api/addCompnayRatePlan",compnayRatePlan)
+router.post("/api/addCompnayRatePlan", compnayRatePlan)
 
 //update companyRtePlan
-router.patch("/api/updateCompanyRatePlan/:compnayRatePlanId",updateCompanyRatePlan)
+router.patch("/api/updateCompanyRatePlan/:compnayRatePlanId", updateCompanyRatePlan)
 
 
 //post BarRatePlan
-router.post('/api/barRatePlan',BarRatePlan)
+router.post('/api/barRatePlan', BarRatePlan)
 
 //update barRatePlan
-router.patch('/api/updateBarRatePlan/:barRatePlanId',updateBarRatePlan)
+router.patch('/api/updateBarRatePlan/:barRatePlanId', updateBarRatePlan)
 
 //add package 
-router.post("/api/addPackage",packageRatePlan)
+router.post("/api/addPackage", packageRatePlan)
 
 //update PackageRatePlan
-router.patch("/api/updatePackageRatePlan",updatePackageRatePlan)
+router.patch("/api/updatePackageRatePlan", updatePackageRatePlan)
 export default router;

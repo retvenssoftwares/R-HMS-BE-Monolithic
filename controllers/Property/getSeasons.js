@@ -1,12 +1,12 @@
 import season from '../../models/season.js';
-import { convertTimestampToCustomFormat, verifyUser } from '../../helpers/helper.js';
+import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from '../../helpers/helper.js';
 
 const getSeasons = async (req, res) => {
     try {
         const { targetTimeZone, propertyId, userId } = req.query;
         const authCodeValue = req.headers['authcode']
 
-        const result = await verifyUser(userId, authCodeValue);
+        const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
             const findAllSeasons = await season.find({ propertyId });
@@ -24,6 +24,7 @@ const getSeasons = async (req, res) => {
                     return {
                         ...seasons._doc,
                         createdOn: convertedDateUTC,
+                        shortCode: seasons.shortCode[0] || {},
                         seasonName: seasons.seasonName[0] || {},
                         modifiedBy: seasons.modifiedBy[0] || {},
                         modifiedOn: convertedModifiedOn,
@@ -38,12 +39,12 @@ const getSeasons = async (req, res) => {
                 return res.status(404).json({ error: "No seasons found", statuscode: 404 });
             }
         } else {
-            return res.status(result.statuscode).json({ message: result.message });
+            return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }
 
     } catch (err) {
         console.log(err);
-        return res.status(500).json({ message: "Internal Server Error" });
+        return res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
     }
 };
 

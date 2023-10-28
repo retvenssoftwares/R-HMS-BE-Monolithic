@@ -1,3 +1,4 @@
+import randomString from 'randomstring'
 import paymentTypeModel from '../../models/paymentTypes.js'
 import verifiedUser from '../../models/verifiedUsers.js'
 import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/helper.js'
@@ -6,7 +7,7 @@ const patchPaymentType = async (req, res) => {
     try {
         const { userId } = req.query;
         const { shortCode, paymentMethodName, receivedTo } = req.body;
-        const paymentTypeId = req.params.paymentTypeId;
+        const paymentTypeId = req.query.paymentTypeId;
         const authCodeValue = req.headers['authcode'];
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
@@ -24,31 +25,38 @@ const patchPaymentType = async (req, res) => {
             }
 
             if (shortCode) {
-                findPaymentType.shortCode = shortCode;
+                const shortCodeObject = {
+                    shortCode: shortCode,
+                    logId: randomString.generate(10)
+                };
+                findPaymentType.shortCode.unshift(shortCodeObject);
             }
 
             const currentUTCTime = await getCurrentUTCTimestamp();
 
             if (paymentMethodName) {
                 const paymentMethodNameObject = {
-                    paymentMethodName: paymentMethodName
+                    paymentMethodName: paymentMethodName,
+                    logId: randomString.generate(10)
                 };
                 findPaymentType.paymentMethodName.unshift(paymentMethodNameObject);
             }
 
             if (receivedTo) {
                 const receivedToObject = {
-                    receivedTo: receivedTo
+                    receivedTo: receivedTo,
+                    logId: randomString.generate(10)
                 };
                 findPaymentType.receivedTo.unshift(receivedToObject);
             }
 
             const modifiedByObject = {
-                modifiedBy: userRole
+                modifiedBy: userRole,
+                logId: randomString.generate(10)
             };
 
             findPaymentType.modifiedBy.unshift(modifiedByObject);
-            findPaymentType.modifiedOn.unshift({ modifiedOn: currentUTCTime });
+            findPaymentType.modifiedOn.unshift({ modifiedOn: currentUTCTime, logId: randomString.generate(10) });
 
             const updatedPaymentType = await findPaymentType.save();
 
@@ -61,7 +69,7 @@ const patchPaymentType = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ message: "Internal Server Error" });
+        return res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
     }
 }
 

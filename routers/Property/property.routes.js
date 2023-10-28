@@ -17,7 +17,7 @@ import uploadPropertyImages from '../../controllers/Property/addPropertyImages.j
 import dragDropPropertyImages from '../../controllers/Property/dragDropPropertyImages.js'
 
 import identityType from '../../controllers/Property/getIdentityTypes.controller.js'
-import reservationType from '../../controllers/Property/reservationType.controller.js'
+import postReservationType from '../../controllers/Property/reservationType.controller.js'
 import updateReservationType from '../../controllers/Property/updateReservationType.controller.js'
 import userIdentity from "../../controllers/Property/postIdentity.controller.js"
 import fetchReservation from '../../controllers/Property/getReservation.controller.js'
@@ -60,7 +60,7 @@ router.post(
 // transport
 router.post("/api/addTransportation", transportationAdd)
 router.patch("/api/updateTransportation", updateTransportation)
-router.get("/api/getTransportation/:userId/:propertyId", getTransportation)
+router.get("/api/getTransportation", getTransportation)
 
 // business
 router.post("/api/addBusinessSources", addBusinessSources)
@@ -81,7 +81,7 @@ router.patch("/api/changeImageIndex", dragDropPropertyImages);
 
 router.patch("/api/editProperty", editProperty);
 //patch Identity
-router.patch("/api/patchIdentityType/:identityTypeId", identityTypes);
+
 
 //company
 router.post("/api/addCompany", upload.fields([{ name: "companyLogo", maxCount: 1 }, { name: "contractPdf", maxCount: 3 }]), addCompany)
@@ -89,17 +89,15 @@ router.post("/api/addCompany", upload.fields([{ name: "companyLogo", maxCount: 1
 //payment types
 router.post("/api/addPaymentType", addPaymentType)
 router.get("/api/getPaymentTypes", getPaymentTypes)
-router.patch("/api/patchPaymentType/:paymentTypeId", patchPaymentType)
+router.patch("/api/patchPaymentType", patchPaymentType)
 
-router.get("/api/fetchProperty/:userId", userProperty);
+router.get("/api/fetchProperty", userProperty);
 
 
 //Post ReservationType Route
-router.post("/api/addReservationType", reservationType)
-
+router.post("/api/addReservationType", postReservationType)
 //update ReservationType Route
-router.patch("/api/updateReservationType/:reservationTypeId", updateReservationType)
-
+router.patch("/api/updateReservationType", updateReservationType)
 //get reservationType
 router.get("/api/getreservation", fetchReservation)
 
@@ -108,13 +106,15 @@ router.post("/api/bookingSource", postBookingSource)
 router.patch("/api/updateBookingSource", updateBookingSource)
 router.get("/api/getBookingSource", bookingSourcesGet)
 
+//identity types
 router.post("/api/postIdentity", userIdentity);
 router.get("/api/fetchIdentity", identityType);
+router.patch("/api/patchIdentityType", identityTypes);
 
 //seasons
 router.post("/api/postSeason", seasonType);
 router.get("/api/getSeasons", getSeasons);
-router.patch("/api/patchSeason/:seasonId", patchSeason)
+router.patch("/api/patchSeason", patchSeason)
 
 //holiday
 router.post("/api/postHoliday", holiday)

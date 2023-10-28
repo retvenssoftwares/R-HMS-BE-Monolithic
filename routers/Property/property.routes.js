@@ -118,7 +118,7 @@ router.patch("/api/patchSeason/:seasonId", patchSeason)
 
 //holiday
 router.post("/api/postHoliday", holiday)
-router.patch("/api/patchHoliday/:holidayId", patchHoliday)
+router.patch("/api/patchHoliday", patchHoliday)
 router.get("/api/getHoliday", getHoliday)
 
 

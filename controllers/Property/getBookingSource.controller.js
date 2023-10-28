@@ -1,40 +1,51 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 import bookingModel from "../../models/bookingSource.js";
-import { convertTimestampToCustomFormat } from "../../helpers/helper.js";
+import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from "../../helpers/helper.js";
 
-const userProperty = async (req, res) => {
+const bookingSourcesGet = async (req, res) => {
     try {
-        const { targetTimeZone } = req.query;
-        const propertyId = req.params.propertyId;
+        const { targetTimeZone, userId, propertyId } = req.query;
 
-        const bookingSource = await bookingModel.find({ propertyId: propertyId });
+        const bookingSource = await bookingModel.find({ propertyId: propertyId }).lean();
+        const authCodeValue = req.headers['authcode']
+        const result = await findUserByUserIdAndToken(userId, authCodeValue)
 
-        if (bookingSource.length > 0) {
-            // Assuming userTimeZone holds the user's specified time zone
-            const convertedBooking = bookingSource.map(booking => {
-                if (booking.bookingSource.length > 0) {
-                    // Convert the dateUTC to the user's time zone
-                    const convertedDateUTC = convertTimestampToCustomFormat(booking.dateUTC, targetTimeZone);
-                    const convertedDateCreatedOn = convertTimestampToCustomFormat(booking.createdOn, targetTimeZone);
-                    const zeroPositionObject = booking.bookingSource[0];
-                    if (zeroPositionObject.modifiedOn) {
-                        // Convert the modifiedOn in the zero position object
-                        zeroPositionObject.modifiedOn = convertTimestampToCustomFormat(zeroPositionObject.modifiedOn, targetTimeZone);
+        if (result.success) {
+            if (bookingSource.length > 0) {
+                const convertedBookingSources = bookingSource.map(bookingSource => {
+                    const convertedDateUTC = convertTimestampToCustomFormat(bookingSource.createdOn, targetTimeZone);
+                    let convertedModifiedOn;
+                    if (bookingSource.modifiedOn.length === 0) {
+                        convertedModifiedOn = ""
+                    } else {
+                        convertedModifiedOn = convertTimestampToCustomFormat(bookingSource.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
-                    // Include the converted date and modifiedOn in the property object
-                    return { ...booking._doc, dateUTC: convertedDateUTC, createdOn:convertedDateCreatedOn, bookingSource: [zeroPositionObject] };
-                }
-               return { ...booking._doc,dateUTC:null,createdOn:null, bookingSource: [] };
-            });
 
-            return res.status(200).json({ bookingSource: convertedBooking, statuscode: 200 });
+                    return {
+                        ...bookingSource._doc,
+                        createdOn: convertedDateUTC,
+                        createdBy: bookingSource.createdBy,
+                        bookingSource: bookingSource.bookingSource[0],
+                        modifiedBy: bookingSource.modifiedBy[0],
+                        modifiedOn: convertedModifiedOn || '',
+                        shortCode: bookingSource.shortCode[0],
+                    };
+                });
+
+                return res.status(200).json({ data: convertedBookingSources, statuscode: 200 });
+            }
+            else {
+                return res.status(404).json({ error: "No booking sources found", statuscode: 404 });
+            }
         } else {
-            return res.status(404).json({ error: "No property found", statuscode: 404 });
+            return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }
+
     } catch (error) {
-        return res.status(500).json({ error: error.message, statusCode: 500 });
+        console.log(error)
+        return res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
     }
 };
 
-export default userProperty;
+export default bookingSourcesGet;

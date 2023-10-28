@@ -45,21 +45,21 @@ jobs:
 
         # this pm2 start function is used when server is restarted 
         # otherwise we will just use pm2 restart 0 and save
-    #   - name: Start server using pm2
-    #     run: |
-    #       pm2 start npm --name “myServer” -- run start
-    #       pm2 save
-    #       pm2 restart 0
-    #     env: 
-    #       CI: true
-
-      # - name: Start application
+      # - name: Start server using pm2
       #   run: |
+      #     pm2 start npm --name “myServer” -- run start
+      #     pm2 save
+      #     pm2 restart 0
+      #   env: 
+      #     CI: true
+
+      - name: Start application
+        run: |
 
       # - name: Build application
       #   run: npm run build
-      # - name: Restart server application
-      #   run: pm2 restart myServer
+      - name: Restart server application
+        run: pm2 restart myServer
 
       - name: Nginx Restart
         run: sudo service nginx restart

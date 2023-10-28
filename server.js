@@ -22,5 +22,5 @@ app.use(roomRoutes)
 app.use(amenityRoutes)
 app.use(companyRoutes)
 app.listen(process.env.PORT || 3000, () => {
-  console.log(`Server started on portt ${process.env.PORT}`);
+  console.log(`Server started on port ${process.env.PORT}`);
 });

@@ -102,7 +102,7 @@ router.post("/api/addReservationType", postReservationType)
 //update ReservationType Route
 router.patch("/api/updateReservationType", updateReservationType)
 //get reservationType
-router.get("/api/getreservation", fetchReservation)
+router.get("/api/getReservation", fetchReservation)
 
 // booking source
 router.post("/api/bookingSource", postBookingSource)

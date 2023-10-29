@@ -24,9 +24,9 @@ const getReservation = async (req, res) => {
                     return {
                         ...reservations._doc,
                         createdOn: convertedDateUTC,
-                        reservationName: reservations.reservationName[0] || {},
-                        status: reservations.status[0] || {},
-                        modifiedBy: reservations.modifiedBy[0] || {},
+                        reservationName: reservations.reservationName[0].reservationName || {},
+                        status: reservations.status[0].status || {},
+                        modifiedBy: reservations.modifiedBy[0].modifiedBy || {},
                         modifiedOn: convertedModifiedOn,
                     };
                 });

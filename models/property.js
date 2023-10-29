@@ -10,6 +10,10 @@ const propertySchema = new Schema({
         default: "",
         type: String
     },
+    createdOn:{
+        type:String,
+        default:""
+    },
 
     country: {
         default: "",

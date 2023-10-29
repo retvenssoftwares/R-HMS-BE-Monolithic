@@ -69,6 +69,7 @@ const postProperty = async (req, res) => {
       const newProperty = new propertyModel({
         userId,
         country,
+        createdOn:currentUTCTime,
         propertyId: randomstring.generate(8),
         propertyAddress1: [
           {

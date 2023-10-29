@@ -38,6 +38,19 @@ const roomType = new mongoose.Schema({
     }
 
     }],
+
+    numberOfRooms:[{
+        numberOfRooms:{
+            type:String,
+            default:"",
+        },
+
+        logId:{
+            type:String,
+            default:"", 
+        }
+    }],
+
     roomTypeName:[{
         roomTypeName:{
             type:String,

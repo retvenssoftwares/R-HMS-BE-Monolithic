@@ -92,8 +92,10 @@ const propertySchema = new Schema({
     },
     amenities: [{
         amenities: [{
-            default: "",
-            type: String
+            amenityId: {
+                default: "",
+                type: String
+            },
         }],
         logId: { type: String, default: '' }
     }],

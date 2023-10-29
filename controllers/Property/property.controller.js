@@ -1,4 +1,4 @@
-import Randomstring from "randomstring";
+import randomstring from "randomstring";
 import * as dotenv from "dotenv";
 dotenv.config();
 import propertyModel from "../../models/property.js";
@@ -34,7 +34,7 @@ const postProperty = async (req, res) => {
       longitude
     } = req.body;
 
-    var hotelLogoId = Randomstring.generate(8);
+    var hotelLogoId = randomstring.generate(8);
 
     const findUser = await verifiedUser.findOne({ userId });
     const authCodeValue = req.headers['authcode']
@@ -69,52 +69,52 @@ const postProperty = async (req, res) => {
       const newProperty = new propertyModel({
         userId,
         country,
-        propertyId: Randomstring.generate(8),
+        propertyId: randomstring.generate(8),
         propertyAddress1: [
           {
             propertyAddress1,
-            logId: randomString.generate(10),
+            logId: randomstring.generate(10),
           },
         ],
         propertyAddress2: [
           {
             propertyAddress2,
-            logId: randomString.generate(10),
+            logId: randomstring.generate(10),
           },
         ],
         propertyName: [
           {
             propertyName: propertyName,
-            logId: randomString.generate(10),
+            logId: randomstring.generate(10),
           },
         ],
         postCode: [
           {
             postCode: postCode,
-            logId: randomString.generate(10),
+            logId: randomstring.generate(10),
           },
         ],
         state: [
           {
             state: state,
-            logId: randomString.generate(10),
+            logId: randomstring.generate(10),
           },
         ],
         city: [
           {
             city,
-            logId: randomString.generate(10),
+            logId: randomstring.generate(10),
           },
         ],
         location: [{
           latitude: latitude,
           longitude: longitude,
-          logId: randomString.generate(10)
+          logId: randomstring.generate(10)
         }],
         propertyDescription: [
           {
             propertyDescription: propertyDescription,
-            logId: randomString.generate(10),
+            logId: randomstring.generate(10),
           },
         ],
         hotelLogo: imageUrl
@@ -122,7 +122,7 @@ const postProperty = async (req, res) => {
             {
               hotelLogoId,
               hotelLogo: imageUrl,
-              logId: randomString.generate(10),
+              logId: randomstring.generate(10),
             },
           ]
           : [],
@@ -135,7 +135,7 @@ const postProperty = async (req, res) => {
         phone,
         propertyEmail: [{
           propertyEmail: propertyEmail,
-          logId: randomString.generate(10)
+          logId: randomstring.generate(10)
         }],
         amenities: [
           {
@@ -158,7 +158,7 @@ const postProperty = async (req, res) => {
 
       // create the log model
       const add = new logsModel({
-        propertyId: propertyId
+        propertyId: savedProperty.propertyId
       })
 
       await add.save()

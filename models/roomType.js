@@ -3,19 +3,19 @@ import db1 from "../db/conn.js"
 const roomType = new mongoose.Schema({
 
 
-    userId:{
-        type:String,
-        default:"", 
+    userId: {
+        type: String,
+        default: "",
     },
-    roomTypeId:{
-        type:String,
-        default:"",
+    roomTypeId: {
+        type: String,
+        default: "",
     },
-    propertyId:{
-        type:String,
-        default:"",
+    propertyId: {
+        type: String,
+        default: "",
     },
-  
+
     dateUTC: {
         type: String
     },
@@ -23,45 +23,45 @@ const roomType = new mongoose.Schema({
         type: String
     },
 
-    createdBy:{
-        type:String,
-        default:""
-    },
-    createdOn:{
-        type:String,
-        default:""
-    },
-
-shortCode:[{
-    shortCode:{
-        type:String,
-        default:"",
-    },
-    logId:{
-        type:String,
-        default:"",
-
-    },
-   
-
-
-}],
- 
-    roomDescription:[{
-      roomDescription:{
-        type:String,
-        default:"",
-      },
-      logId: {
+    createdBy: {
         type: String,
         default: ""
-    }
+    },
+    createdOn: {
+        type: String,
+        default: ""
+    },
+
+    shortCode: [{
+        shortCode: {
+            type: String,
+            default: "",
+        },
+        logId: {
+            type: String,
+            default: "",
+
+        },
+
+
 
     }],
-    roomTypeName:[{
-        roomTypeName:{
-            type:String,
-            default:"",
+
+    roomDescription: [{
+        roomDescription: {
+            type: String,
+            default: "",
+        },
+        logId: {
+            type: String,
+            default: ""
+        }
+
+    }],
+    roomTypeName: [{
+        roomTypeName: {
+            type: String,
+            default: "",
         },
         logId: {
             type: String,
@@ -70,10 +70,15 @@ shortCode:[{
 
     }],
 
-    noOfBeds:[{
-        noOfBeds:{
-            type:String,
-            default:"",
+    numberOfRooms: [{
+        numberOfRooms: { type: Number, default: 0 },
+        logId: { type: String, default: "" }
+    }]
+    ,
+    noOfBeds: [{
+        noOfBeds: {
+            type: String,
+            default: "",
         },
         logId: {
             type: String,
@@ -84,11 +89,11 @@ shortCode:[{
 
 
 
-    bedType:[{
-        bedType:[{
-            bedTypeId:{
-            type:String,
-            default:"",
+    bedType: [{
+        bedType: [{
+            bedTypeId: {
+                type: String,
+                default: "",
             }
         }],
         logId: {
@@ -98,10 +103,10 @@ shortCode:[{
 
     }],
 
-    baseAdult:[{
-        baseAdult:{
-            type:String,
-            default:"",
+    baseAdult: [{
+        baseAdult: {
+            type: String,
+            default: "",
         },
         logId: {
             type: String,
@@ -109,10 +114,10 @@ shortCode:[{
         }
 
     }],
-    baseChild:[{
-        baseChild:{
-            type:String,
-            default:"",
+    baseChild: [{
+        baseChild: {
+            type: String,
+            default: "",
         },
         logId: {
             type: String,
@@ -122,10 +127,10 @@ shortCode:[{
     }],
 
 
-    maxAdult:[{
-        maxAdult:{
-            type:String,
-            default:"",
+    maxAdult: [{
+        maxAdult: {
+            type: String,
+            default: "",
         },
         logId: {
             type: String,
@@ -133,10 +138,10 @@ shortCode:[{
         }
     }],
 
-    maxChild:[{
-        maxChild:{
-            type:String,
-            default:"",
+    maxChild: [{
+        maxChild: {
+            type: String,
+            default: "",
         },
         logId: {
             type: String,
@@ -144,10 +149,10 @@ shortCode:[{
         }
     }],
 
-    maxOccupancy:[{
-        maxOccupancy:{
-            type:String,
-            default:"",
+    maxOccupancy: [{
+        maxOccupancy: {
+            type: String,
+            default: "",
         },
         logId: {
             type: String,
@@ -155,13 +160,13 @@ shortCode:[{
         }
     }],
 
-   
 
 
-    baseRate:[{
-        baseRate:{
-            type:String,
-            default:"",
+
+    baseRate: [{
+        baseRate: {
+            type: String,
+            default: "",
         },
         logId: {
             type: String,
@@ -169,10 +174,10 @@ shortCode:[{
         }
     }],
 
-    minimumRate:[{
-        minimumRate:{
-            type:String,
-            default:"",
+    minimumRate: [{
+        minimumRate: {
+            type: String,
+            default: "",
         },
         logId: {
             type: String,
@@ -180,30 +185,30 @@ shortCode:[{
         }
     }],
 
-    maximumRate:[{
-        maximumRate:{
-            type:String,
-            default:"",
+    maximumRate: [{
+        maximumRate: {
+            type: String,
+            default: "",
         },
         logId: {
             type: String,
             default: ""
         }
     }],
-    extraAdultRate:[{
-        extraAdultRate:{
-            type:String,
-            default:"",
+    extraAdultRate: [{
+        extraAdultRate: {
+            type: String,
+            default: "",
         },
         logId: {
             type: String,
             default: ""
         }
     }],
-    extraChildRate:[{
-        extraChildRate:{
-            type:String,
-            default:"",
+    extraChildRate: [{
+        extraChildRate: {
+            type: String,
+            default: "",
         },
         logId: {
             type: String,
@@ -212,18 +217,18 @@ shortCode:[{
     }],
 
     amenities: [{
-        amenities:[{
-        amenityId: {
-            default: "",
-            type: String
+        amenities: [{
+            amenityId: {
+                default: "",
+                type: String
+            },
+            addedDate: String
+        }],
+        logId: {
+            type: String,
+            default: ""
         },
-        addedDate:String
     }],
-    logId: {
-        type: String,
-        default: ""
-    },
-}],
 
 })
 

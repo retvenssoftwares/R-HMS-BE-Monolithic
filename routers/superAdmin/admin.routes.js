@@ -21,6 +21,10 @@ import inclusionTypesRule from "../../controllers/superAdmin/getInclusionType.js
 import accountTypes from "../../controllers/superAdmin/postAccountType.js"
 import accountTypesMethod from "../../controllers/superAdmin/getAccountType.js"
 
+//PropertyRating
+import postRating from '../../controllers/superAdmin/postPropertyRating.js'
+import getRating from '../../controllers/superAdmin/getPropertyRating.js'
+
 ////////////////////////////////////////////////////
 //bedType
 router.post("/api/bedType", bedTypes);
@@ -42,5 +46,9 @@ router.get("/api/getInclusionType", inclusionTypesRule);
 //accountType
 router.post("/api/postAccountType", accountTypes);
 router.get("/api/getAccountType", accountTypesMethod);
+
+//propertyRating
+router.post("/api/postRating",postRating)
+router.get("/api/getRating",getRating)
 
 export default router;

@@ -15,8 +15,8 @@ const userProperty = async (req, res) => {
         if (result.success) {
             if (userProperties.length > 0) {
                 const convertedProperties = userProperties.map(property => {
-                    const convertedDateUTC = convertTimestampToCustomFormat(property.dateUTC, targetTimeZone);
-                    return { ...property._doc, dateUTC: convertedDateUTC };
+                    const convertedDateUTC = convertTimestampToCustomFormat(property.createdOn, targetTimeZone);
+                    return { ...property._doc, createdOn: convertedDateUTC };
                 });
 
                 return res.status(200).json({ data: convertedProperties, statuscode: 200 });

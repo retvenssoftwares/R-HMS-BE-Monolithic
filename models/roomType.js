@@ -46,7 +46,16 @@ shortCode:[{
 
 
 }],
- 
+numberOfRooms:[{
+    numberOfRooms:{
+        type:String,
+        default:"",
+      },
+      logId: {
+        type: String,
+        default: ""
+    }
+}] ,
     roomDescription:[{
       roomDescription:{
         type:String,

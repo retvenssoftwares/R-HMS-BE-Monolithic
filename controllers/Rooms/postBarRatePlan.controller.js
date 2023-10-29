@@ -4,7 +4,7 @@ dotenv.config();
 import verifiedUser from "../../models/verifiedUsers.js";
 import barRatePlan from "../../models/barRatePlan.js";
 import barPlanLogsModel from "../../models/LogModels/barRatePlanLogs.js";
-import { getCurrentUTCTimestamp } from "../../helpers/helper.js";
+import { getCurrentUTCTimestamp,findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const postBarRatePlan = async (req, res) => {
   try {
@@ -27,17 +27,12 @@ const postBarRatePlan = async (req, res) => {
         .status(400)
         .json({ message: "User not found or invalid userId", statuscode: 400 });
     }
-    const userToken = findUser.authCode;
-
-    if (authCodeValue !== userToken) {
-      return res
-        .status(400)
-        .json({ message: "Invalid authentication token", statuscode: 400 });
-    }
+   
     let userRole = findUser.role[0].role;
-    const barRatePlanId =Randomstring.generate(10)
-
-    const newSeason = new barRatePlan({
+    const barRatePlanId =Randomstring.generate(8)
+    const result = await findUserByUserIdAndToken(userId, authCodeValue)
+    if(result.success){
+    const newBarRatePlan = new barRatePlan({
       propertyId,
       barRatePlanId: barRatePlanId,
       shortCode: [
@@ -84,12 +79,11 @@ const postBarRatePlan = async (req, res) => {
       createdOn: await getCurrentUTCTimestamp(),
     });
 
+    await newBarRatePlan.save();
 
-      
-    await newSeason.save();
 
-    
-    const discountPlanLogs = new barPlanLogsModel({
+    //save data in logs model
+    const barRatePlanLogs = new barPlanLogsModel({
       
       ratePlanName: req.body,
        barRatePlanId: barRatePlanId,
@@ -106,8 +100,7 @@ const postBarRatePlan = async (req, res) => {
         ...req.body, // Include all fields from req.body
       },
     });
-
-    await discountPlanLogs.save();
+    await barRatePlanLogs.save();
 
     return res
       .status(200)
@@ -115,6 +108,10 @@ const postBarRatePlan = async (req, res) => {
         message: "New bar ratePlan added successfully",
         statuscode: 200,
       });
+    }
+    else{
+      return res.status(result.statuscode).json({ message: result.message });
+    }
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Internal Server Error", statuscode: 500 });

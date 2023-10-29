@@ -1,6 +1,6 @@
 import Randomstring from "randomstring"
 import requestIp from "request-ip"
-import { verifyUser, getCurrentUTCTimestamp } from "../../helpers/helper.js";
+import { findUserByUserIdAndToken, getCurrentUTCTimestamp } from "../../helpers/helper.js";
 import discountPlanModel from "../../models/discountPlan.js";
 import discountPlanLogModel from "../../models/LogModels/discountPlanLogs.js";
 
@@ -17,7 +17,7 @@ const editDiscountPlan = async (req, res) => {
         }
         const { discountName, shortCode, deviceType, discountType, discountPercent, blackOutDates, applicableOn, discountPrice, validityPeriodFrom, validityPeriodTo } = req.body
         const authCodeValue = req.headers['authcode']
-        const result = await verifyUser(userId, authCodeValue)
+        const result = await findUserByUserIdAndToken(userId, authCodeValue)
         if (result.success) {
 
             //edit fields

@@ -5,7 +5,7 @@ import verifiedUser from "../../models/verifiedUsers.js";
 import reservationModel from "../../models/reservationType.js";
 import { getCurrentUTCTimestamp } from "../../helpers/helper.js";
 
-const postHoliday = async (req, res) => {
+const postReservationType = async (req, res) => {
   try {
     const {
       userId,
@@ -52,4 +52,4 @@ const postHoliday = async (req, res) => {
   }
 };
 
-export default postHoliday;
+export default postReservationType;

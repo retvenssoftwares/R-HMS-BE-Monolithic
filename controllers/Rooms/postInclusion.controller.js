@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import verifiedUser from "../../models/verifiedUsers.js";
 import inclusionModel from "../../models/inclusion.js";
-import { getCurrentUTCTimestamp } from "../../helpers/helper.js";
+import { getCurrentUTCTimestamp,findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const postInclusion = async (req, res) => {
   try {
@@ -23,18 +23,19 @@ const postInclusion = async (req, res) => {
     if (!findUser) {
       return res.status(400).json({ message: "User not found or invalid userId", statuscode: 400 })
     }
-    const userToken = findUser.authCode
 
-    if (authCodeValue !== userToken) {
-      return res.status(400).json({ message: "Invalid authentication token", statuscode: 400 });
-    }
+    const result = await findUserByUserIdAndToken(userId, authCodeValue);
+
     let userRole = findUser.role[0].role
 
+        if(result.success){
     const newSeason = new inclusionModel({
 
       propertyId,
       inclusionId: Randomstring.generate(8),
-      shortCode: shortCode,
+      shortCode:[{
+        shortCode:shortCode
+      }] ,
       charge: [{
         charge: charge
       }],
@@ -62,8 +63,13 @@ const postInclusion = async (req, res) => {
     await newSeason.save();
     return res.status(200).json({ message: "New Inclusion added successfully", statuscode: 200 });
 
-  } catch (err) {
-    console.log(err);
+  }else {
+      return res.status(result.statuscode).json({ message: result.message });
+
+  }
+  } 
+  catch (err) {
+    // console.log(err);
     res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
   }
 };

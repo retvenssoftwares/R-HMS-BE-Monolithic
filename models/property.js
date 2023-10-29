@@ -10,12 +10,11 @@ const propertySchema = new Schema({
         default: "",
         type: String
     },
-    dateUTC: {
-        type: String
+    createdOn:{
+        type:String,
+        default:""
     },
-    dateLocal: {
-        type: String
-    },
+
     country: {
         default: "",
         type: String
@@ -25,10 +24,8 @@ const propertySchema = new Schema({
             default: "",
             type: String
         },
-        modifiedDate: {
-            type: String,
-            default: ""
-        }
+
+        logId: { type: String, default: '' }
     }],
 
     propertyAddress2: [{
@@ -36,20 +33,14 @@ const propertySchema = new Schema({
             default: "",
             type: String
         },
-        modifiedDate: {
-            type: String,
-            default: ""
-        }
+        logId: { type: String, default: '' }
     }],
     postCode: [{
         postCode: {
             default: "",
             type: String
         },
-        modifiedDate: {
-            type: String,
-            default: ""
-        }
+        logId: { type: String, default: '' }
     }],
 
     city: [{
@@ -57,14 +48,11 @@ const propertySchema = new Schema({
             default: "",
             type: String
         },
-        modifiedDate: {
-            type: String,
-            default: ""
-        }
+        logId: { type: String, default: '' }
     }],
     state: [{
         state: { type: String, default: '' },
-        modifiedDate: { type: String, default: '' }
+        logId: { type: String, default: '' }
     }],
     location: [{
 
@@ -77,10 +65,7 @@ const propertySchema = new Schema({
             default: "",
             type: String
         },
-        modifiedDate: {
-            type: String,
-            default: ""
-        }
+        logId: { type: String, default: '' }
     }],
 
     propertyName: [{
@@ -88,10 +73,7 @@ const propertySchema = new Schema({
             default: "",
             type: String,
         },
-        modifiedDate: {
-            type: String,
-            default: ""
-        }
+        logId: { type: String, default: '' }
     }],
 
     rating: [{
@@ -99,10 +81,7 @@ const propertySchema = new Schema({
             default: "",
             type: String,
         },
-        modifiedDate: {
-            type: String,
-            default: ""
-        }
+        logId: { type: String, default: '' }
 
     }],
 
@@ -121,8 +100,8 @@ const propertySchema = new Schema({
                 default: "",
                 type: String
             },
-            addedDate: String
-        }]
+        }],
+        logId: { type: String, default: '' }
     }],
 
     checkInTime: [{
@@ -182,10 +161,7 @@ const propertySchema = new Schema({
             default: "",
             type: String,
         },
-        modifiedDate: {
-            type: String,
-            default: ""
-        },
+        logId: { type: String, default: '' }
 
     }],
 
@@ -201,7 +177,7 @@ const propertySchema = new Schema({
             type: String,
             default: ''
         },
-        modifiedDate: String
+        logId: { type: String, default: '' }
     }],
     hotelRCode: {
         type: String,
@@ -268,7 +244,7 @@ const propertySchema = new Schema({
             type: String,
             default: ''
         },
-        modifiedDate: String
+        logId: { type: String, default: '' }
     }]
 
 })

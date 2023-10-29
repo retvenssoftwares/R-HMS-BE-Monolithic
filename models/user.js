@@ -360,6 +360,11 @@ const userSchema = new mongoose.Schema({
 
   }],
 
+  isLogin:{
+    type:String,
+    default:'false'
+  },
+
   verificationStatus: {
     type: String,
     default: 'false'

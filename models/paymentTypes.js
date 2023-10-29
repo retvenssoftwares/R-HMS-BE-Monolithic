@@ -2,10 +2,16 @@ import { Schema, model, mongoose } from 'mongoose';
 import db1 from "../db/conn.js"
 const paymentTypeSchema = new mongoose.Schema({
 
-    shortCode: {
-        type: String,
-        default: ''
-    },
+    shortCode: [{
+        shortCode: {
+            type: String,
+            default: ''
+        },
+        logId: {
+            type: String,
+            default: ''
+        }
+    }],
 
     paymentTypeId: {
         type: String,
@@ -13,6 +19,10 @@ const paymentTypeSchema = new mongoose.Schema({
     },
     receivedTo: [{
         receivedTo: {
+            type: String,
+            default: ''
+        },
+        logId: {
             type: String,
             default: ''
         }
@@ -24,6 +34,10 @@ const paymentTypeSchema = new mongoose.Schema({
 
     paymentMethodName: [{
         paymentMethodName: {
+            type: String,
+            default: ''
+        },
+        logId: {
             type: String,
             default: ''
         }
@@ -43,6 +57,10 @@ const paymentTypeSchema = new mongoose.Schema({
         modifiedBy: {
             type: String,
             default: ''
+        },
+        logId: {
+            type: String,
+            default: ''
         }
     }],
 
@@ -50,9 +68,15 @@ const paymentTypeSchema = new mongoose.Schema({
         modifiedOn: {
             type: String,
             default: ''
+        },
+        logId: {
+            type: String,
+            default: ''
         }
     }],
 
+}, {
+    versionKey: false
 });
 
 const payment = db1.model('paymentType', paymentTypeSchema);

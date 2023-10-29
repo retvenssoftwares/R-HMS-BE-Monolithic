@@ -31,11 +31,31 @@ modifiedOn: [{
       default: ''
   }
 }],
-
+ 
+shortCode:[{
   shortCode: {
     type: String,
     default: "",
   },
+
+}],
+
+chargeRule:[{
+  chargeRule:{
+    type: String,
+    default: "",
+  }
+
+}],
+
+postingRule:[{
+  postingRule:{
+    type: String,
+    default: "",
+  }
+
+}],
+
 
   charge: [
     {
@@ -46,35 +66,23 @@ modifiedOn: [{
     },
   ],
 
-  inclusionName: [
-    {
-      inclusionName: {
-          type: String,
-          default: ""
-      },
-      defaultPostingRule: {
-          type: String,
-          default: ""
-      },
-      defaultChargeRule: {
-          type: String,
-          default: ""
-      },
-      inclusionType: {
-          type: String,
-          default: ""
-      },
-      defaultPrice: {
-          type: String,
-          default: ""
-      }
-  }],
-  charge: [{
-      charge: {
-          type: String,
-          default: "",
-      }
-  }]
+ 
+inclusionName:[{
+  inclusionName:{
+    type: String,
+    default: "",
+  }
+
+}],
+inclusionType:[{
+  inclusionType:{
+    type: String,
+    default: "",
+  }
+
+}],
+
+
 }, {
   versionKey: false
 });

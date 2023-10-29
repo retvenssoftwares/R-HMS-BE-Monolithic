@@ -1,12 +1,15 @@
 import holiday from '../../models/holidays.js';
-import { convertTimestampToCustomFormat, verifyUser } from '../../helpers/helper.js';
+import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from '../../helpers/helper.js';
 
 const getHoliday = async (req, res) => {
     try {
         const { targetTimeZone, propertyId, userId } = req.query;
         const authCodeValue = req.headers['authcode']
 
-        const result = await verifyUser(userId, authCodeValue);
+        if (!propertyId) {
+            return res.status(400).json({ message: "Please enter valid propertyId", statuscode: 400 })
+        }
+        const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
             const findAllHoliday = await holiday.find({ propertyId });
@@ -23,6 +26,7 @@ const getHoliday = async (req, res) => {
 
                     return {
                         ...holidays._doc,
+                        shortCode: holidays.shortCode[0] || {},
                         createdOn: convertedDateUTC,
                         holidayName: holidays.holidayName[0] || {},
                         modifiedBy: holidays.modifiedBy[0] || {},
@@ -32,17 +36,17 @@ const getHoliday = async (req, res) => {
                     };
                 });
 
-                return res.status(200).json({ holidays: convertedHoliday, statuscode: 200 });
+                return res.status(200).json({ data: convertedHoliday, statuscode: 200 });
             } else {
-                return res.status(404).json({ error: "No holiday found", statuscode: 404 });
+                return res.status(404).json({ error: "No holidays found", statuscode: 404 });
             }
         } else {
-            return res.status(result.statuscode).json({ message: result.message });
+            return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }
 
     } catch (err) {
         console.log(err);
-        return res.status(500).json({ message: "Internal Server Error" });
+        return res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
     }
 };
 

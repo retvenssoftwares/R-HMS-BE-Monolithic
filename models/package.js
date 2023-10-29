@@ -2,7 +2,7 @@ import mongoose from  "mongoose"
 import db1 from "../db/conn.js"
 const packagePlan = new mongoose.Schema({
 
-    propertId : {
+    propertyId : {
         type: String,
         default: "",
     },
@@ -87,10 +87,7 @@ const packagePlan = new mongoose.Schema({
       }],
 
       packageRateAdjustment:[{
-        packageRateAdjustment:{
-            type: String,
-            default: "",
-        },
+        packageRateAdjustment:[{
         adjustment:{
             type: String,
             default: "",
@@ -104,6 +101,7 @@ const packagePlan = new mongoose.Schema({
             default: ""
         }
       }],
+    }],
 
       ratePlanInclusion: [{
         ratePlanInclusion:[{

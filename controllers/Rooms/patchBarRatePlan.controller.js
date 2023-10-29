@@ -1,6 +1,6 @@
 import barRatePlan from '../../models/barRatePlan.js'
 import verifiedUser from '../../models/verifiedUsers.js'
-import { getCurrentUTCTimestamp } from '../../helpers/helper.js'
+import { getCurrentUTCTimestamp,findUserByUserIdAndToken } from '../../helpers/helper.js'
 import barPlanLogsModel from "../../models/LogModels/barRatePlanLogs.js";
 import Randomstring from "randomstring";
 const patchBarRatePlan = async (req, res) => {
@@ -13,13 +13,11 @@ const patchBarRatePlan = async (req, res) => {
         if (!findUser) {
             return res.status(404).json({ message: "User not found or invalid userid", statuscode: 404 })
         }
-        const userToken = findUser.authCode;
        
 
-        if (authCodeValue !== userToken) {
-            return res.status(400).json({ message: "Invalid authentication token", statuscode: 400 });
-        }
-
+     const result = await findUserByUserIdAndToken(userId, authCodeValue);
+     
+     if(result.success){
         const findBarRatePlan = await barRatePlan.findOne({ barRatePlanId });
 
         const logBarRatePlan = await barPlanLogsModel.findOne({ barRatePlanId });
@@ -159,6 +157,9 @@ const patchBarRatePlan = async (req, res) => {
         } else {
             return res.status(404).json({ message: "bar rate plan not found", statuscode: 404 });
         }
+    }else{
+        return res.status(result.statuscode).json({ message: result.message });
+    }
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal Server Error", statuscode:500 });

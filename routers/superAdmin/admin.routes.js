@@ -57,7 +57,7 @@ router.post("/api/postRating",postRating)
 router.get("/api/getRating",getRating)
 
 //PropertyType
-router.post("/api/getRating",postPropertyType)
+router.post("/api/postPropertyType",postPropertyType)
 router.get("/api/getPropertyType",getPropertyType)
 
 export default router;

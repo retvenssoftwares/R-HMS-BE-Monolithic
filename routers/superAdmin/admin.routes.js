@@ -25,6 +25,11 @@ import accountTypesMethod from "../../controllers/superAdmin/getAccountType.js"
 import postRating from '../../controllers/superAdmin/postPropertyRating.js'
 import getRating from '../../controllers/superAdmin/getPropertyRating.js'
 
+//PropertyType
+import postPropertyType from '../../controllers/superAdmin/postPropertyType.js'
+import getPropertyType from '../../controllers/superAdmin/getPropertyType.js'
+
+
 ////////////////////////////////////////////////////
 //bedType
 router.post("/api/bedType", bedTypes);
@@ -50,5 +55,9 @@ router.get("/api/getAccountType", accountTypesMethod);
 //propertyRating
 router.post("/api/postRating",postRating)
 router.get("/api/getRating",getRating)
+
+//PropertyType
+router.post("/api/getRating",postPropertyType)
+router.get("/api/getPropertyType",getPropertyType)
 
 export default router;

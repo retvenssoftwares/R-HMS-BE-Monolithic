@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import bedTypeModel from "../../models/bedType.js";
+import bedTypeModel from "../../models/superAdmin/bedType.js";
 
 const getBedType = async (req, res) => {
         try{

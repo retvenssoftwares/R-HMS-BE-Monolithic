@@ -1,7 +1,7 @@
 import Randomstring from "randomstring";
 import * as dotenv from "dotenv";
 dotenv.config();
-import chargeRulesModel from "../../models/chargeRules.js";
+import chargeRulesModel from "../../models/superAdmin/chargeRules.js";
 import verifiedUser from "../../models/verifiedUsers.js";
 
 const chargeRule = async (req , res) =>{

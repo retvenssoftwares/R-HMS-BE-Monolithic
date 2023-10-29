@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import postingRulesModel from "../../models/postingRules.js";
+import postingRulesModel from "../../models/superAdmin/postingRules.js";
 
 const postingRulesModels = async (req, res) => {
        try{

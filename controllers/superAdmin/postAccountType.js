@@ -1,7 +1,7 @@
 import Randomstring, { generate } from "randomstring";
 import * as dotenv from "dotenv";
 dotenv.config();
-import accountTypeModel from "../../models/accountType.js";
+import accountTypeModel from "../../models/superAdmin/accountType.js";
 
 const postAccountType = async (req , res) =>{
     try{

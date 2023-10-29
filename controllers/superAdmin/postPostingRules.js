@@ -1,7 +1,7 @@
 import Randomstring from "randomstring";
 import * as dotenv from "dotenv";
 dotenv.config();
-import postingModel from "../../models/postingRules.js";
+import postingModel from "../../models/superAdmin/postingRules.js";
 // import verifiedUser from "../../models/verifiedUsers.js";
 //import { getCurrentUTCTimestamp } from '../../helpers/helper.js'
 

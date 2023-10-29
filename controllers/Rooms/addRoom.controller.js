@@ -9,7 +9,8 @@
   import {
     getCurrentUTCTimestamp,
     getCurrentLocalTimestamp,
-    uploadMultipleImagesToS3
+    uploadMultipleImagesToS3,
+    findUserByUserIdAndToken
   } from "../../helpers/helper.js";
 
   //upload Room controller
@@ -42,14 +43,11 @@
       if(!user){
         return res.status(404).json({message:"user not found"})
       }
-      const {authCode}= user
-      // console.log(authCode)
-
-      if(authCodeValue!==authCode){
-        return res.status(404).json({message:"invalid authCode"})
-      }
-
       let userRole = user.role[0].role;
+
+      const result = await findUserByUserIdAndToken(userId, authCodeValue)
+
+      //amenities
       const amenityIds = req.body.amenityIds;
       const amenityIdsArray = amenityIds.split(',');
       const currentUTCTime = await getCurrentUTCTimestamp();
@@ -69,7 +67,7 @@
         };
       });
 
-
+    if(result.success){
     const roomId =Randomstring.generate(8)
       //create record
       const newRoom = new roomModel({
@@ -318,7 +316,12 @@
 
 
       return res.status(200).json({ message: "New room added successfully", statuscode: 200 });
-    } catch (err) {
+    } 
+    else {
+      return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
+  }
+}
+    catch (err) {
       console.log(err);
       res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
     }

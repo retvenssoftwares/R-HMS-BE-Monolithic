@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 import  inclusionModel from "../../models/inclusion.js";
-import { convertTimestampToCustomFormat,verifyUser } from "../../helpers/helper.js";
+import { convertTimestampToCustomFormat,findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 
 const getInclusion = async (req, res) => {
@@ -9,7 +9,7 @@ const getInclusion = async (req, res) => {
         const { targetTimeZone,userId,propertyId } = req.query;
         const authCodeValue = req.headers['authcode']
 
-        const result = await verifyUser(userId, authCodeValue);
+        const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if(result.success){
             const inclusion = await inclusionModel.find({ propertyId : propertyId });
@@ -43,7 +43,7 @@ const getInclusion = async (req, res) => {
                     };
 
                 });
-                return res.status(200).json({ inclusion: convertedInclusion, statuscode: 200 });
+                return res.status(200).json({ data: convertedInclusion, statuscode: 200 });
             } else {
                 return res.status(404).json({ error: "No inclusion found", statuscode: 404 });
             }
@@ -53,6 +53,7 @@ const getInclusion = async (req, res) => {
         }
             
     } catch (error) {
+        console.log(error)
         return res.status(500).json({ error: error.message, statusCode: 500 });
     }
 

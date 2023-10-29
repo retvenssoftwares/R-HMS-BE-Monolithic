@@ -7,29 +7,23 @@ import copmanyRatePlanLog from "../../models/LogModels/compnayRatePlanLogs.js"
 
 export const compnayRatePlan = async (req, res) => {
     try {
-      const {userId} = req.query;
-      const {propertyId, rateType , companyName ,createdBy , roomTypeId ,  shortCode , ratePlanInclusion ,ratePlanName, inclusionTotal ,ratePlanTotal , ipAddress, deviceType} = req.body
-
+  
+      const {userId,propertyId, rateType , companyName ,createdBy , roomTypeId ,  shortCode , ratePlanInclusion ,ratePlanName, inclusionTotal ,ratePlanTotal , ipAddress, deviceType} = req.body
+      const authCodeValue = req.headers["authcode"]
       const findUser = await verifiedUser.findOne({ userId });
         if (!findUser) {
             return res.status(404).json({ message: "User not found or invalid userid", statuscode: 404 })
         }
-        const userToken = findUser.authCode;
-        // let userRole = findUser.role[0].role;
-        const authCodeValue = req.headers["authcode"]
+      
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
-        if (result.success){
-
-        // if (authCodeValue !== userToken) {
-        //     return res.status(400).json({ message: "Invalid authentication token", statuscode: 400 });
-        // }
-
+     
       let userRole = findUser.role[0].role;
 
       var clientIp = requestIP.getClientIp(req)
 
       const compnayRatePlanId = Randomstring.generate(10)
+      if (result.success){
       const companyRate = new companyRateModel({
         propertyId,
 
@@ -75,6 +69,8 @@ export const compnayRatePlan = async (req, res) => {
   
       const result = await companyRate.save();
 
+
+      //logs
       const companyRatePlanLogs = new copmanyRatePlanLog({
         ratePlanName:[{
           logId:result.ratePlanName[0].logId,
@@ -122,7 +118,7 @@ export const compnayRatePlan = async (req, res) => {
       await companyRatePlanLogs.save();
 
       // console.log('Successfully updated:', result);
-      return res.status(200).json({ message: 'Successfully added' , statusCode : 200 });
+      return res.status(200).json({ message: 'company Rate Plan Successfully added' , statusCode : 200 });
     }else {
       return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
   } 
@@ -135,6 +131,9 @@ export const compnayRatePlan = async (req, res) => {
 
 
   
+
+
+  //update company patch api
   export const updateCompanyRatePlan = async (req, res) => {
     try {
         const {userId,ratePlanName, shortCode , ratePlanInclusion , inclusionTotal,ratePlanTotal , deviceType , ipAddress} = req.body;
@@ -148,14 +147,13 @@ export const compnayRatePlan = async (req, res) => {
         if (!findUser) {
             return res.status(404).json({ message: "User not found or invalid userid", statuscode: 404 })
         }
-        const userToken = findUser.authCode;
+      
         // let userRole = findUser.role[0].role;
         const authCodeValue = req.headers["authcode"]
 
-        if (authCodeValue !== userToken) {
-            return res.status(400).json({ message: "Invalid authentication token", statuscode: 400 });
-        }
+        const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
+          if (result.success){
          const shortcodeLog =Randomstring.generate(10)
          const ratePlanNameLog =Randomstring.generate(10)
          const ratePlanInclusionLog =Randomstring.generate(10)
@@ -275,12 +273,12 @@ export const compnayRatePlan = async (req, res) => {
 
   await compnayRatePlanLogs.save();
 
-  if (updateCompanyPlan) {
-    return res.status(200).json({ message: "bar rate plan successfully updated", statuscode:200 });
-} else {
-    return res.status(404).json({ message: "bar rate plan not found", statuscode: 404 });
-}
-  
+ 
+    return res.status(200).json({ message: "company Rate plan  successfully updated", statuscode:200 });
+} 
+else {
+  return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
+} 
 
     } catch (error) {
        // console.error('Error occurred while updating:', error);

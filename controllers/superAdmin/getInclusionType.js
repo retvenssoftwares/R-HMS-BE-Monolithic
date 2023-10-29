@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import inclusionTypeModel from "../../models/inclusionType.js";
+import inclusionTypeModel from "../../models/superAdmin/inclusionType.js";
 
 const getInclusionType = async (req , res)=>{
     try{

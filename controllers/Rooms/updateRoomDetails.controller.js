@@ -8,7 +8,8 @@ import userModel from "../../models/verifiedUsers.js";
 import {
   getCurrentUTCTimestamp,
   getCurrentLocalTimestamp,
-  uploadMultipleImagesToS3
+  uploadMultipleImagesToS3,
+  findUserByUserIdAndToken
 } from "../../helpers/helper.js";
 
 const patchRoom = async (req,res)=>{
@@ -38,12 +39,8 @@ const patchRoom = async (req,res)=>{
           if (!findUser) {
             return res.status(404).json({ message: "User not found or invalid userid", statuscode: 404 })
         }
-        const userToken = findUser.authCode;
-       
-
-        if (authCodeValue !== userToken) {
-            return res.status(400).json({ message: "Invalid authentication token", statuscode: 400 });
-        }
+        const result = await findUserByUserIdAndToken(userId, authCodeValue);
+        if(result.success){
         const findRoomType = await roomModel.findOne({ roomTypeId });
 
         const logRoomType = await roomModelLogs.findOne({ roomTypeId });
@@ -72,7 +69,6 @@ const patchRoom = async (req,res)=>{
         };
       });
         
-      
 
           // Update the roomType fields
           if (shortCode) {
@@ -129,6 +125,12 @@ const patchRoom = async (req,res)=>{
         res.status(200).json({ message: "Room updated successfully", statuscode: 200 });
 
     }
+    else{
+        return res.status(result.statuscode).json({ message: result.message });
+
+    }
+}
+
     catch(err){
         console.log(err);
     res.status(500).json({ message: "Internal Server Error", statuscode: 500 });

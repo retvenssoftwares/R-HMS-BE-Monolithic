@@ -20,5 +20,5 @@ router.patch("/api/verifyUser", verifyUser)
 router.patch("/api/sessionOut",sessionOut)
 router.patch("/api/sessionIn",sessionIn)
 router.post("/api/logout", logoutUser)
-router.patch("/api/loginUser", logInUsers)
+router.patch("/api/loginStatus", logInUsers)
 export default router;

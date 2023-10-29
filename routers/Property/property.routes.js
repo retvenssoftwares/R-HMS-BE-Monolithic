@@ -16,8 +16,8 @@ import userProperty from "../../controllers/Property/getUserProperties.controlle
 import uploadPropertyImages from '../../controllers/Property/addPropertyImages.js'
 import dragDropPropertyImages from '../../controllers/Property/dragDropPropertyImages.js'
 
-import identityType from '../../controllers/Property/getIdentityTypes.controller.js'
-import reservationType from '../../controllers/Property/reservationType.controller.js'
+//import identityType from '../../controllers/Property/getIdentityTypes.controller.js'
+import postReservationType from '../../controllers/Property/reservationType.controller.js'
 import updateReservationType from '../../controllers/Property/updateReservationType.controller.js'
 import userIdentity from "../../controllers/Property/postIdentity.controller.js"
 import fetchReservation from '../../controllers/Property/getReservation.controller.js'
@@ -44,34 +44,14 @@ import patchAmenity from '../../controllers/Amenities/patchAmenity.js';
 import seasonType from "../../controllers/Property/postSeason.js"
 import getSeasons from '../../controllers/Property/getSeasons.js';
 import patchSeason from '../../controllers/Property/patchSeason.js';
-import identityTypes from "../../controllers/Property/patchIdentity.js"
 import { getTransportation, transportationAdd, updateTransportation } from '../../controllers/Property/transpotationTypes.js';
 import { addBusinessSources, getBusinessSources, updateBusinessSources } from '../../controllers/Property/businessSources.js';
 //import { addInclusion, updateInclusion } from '../../controllers/Property/addInclusion.js';
 //import { addInclusionPlan, updateInclusionPlan } from '../../controllers/Property/addInclusionPlan.js';
 
-
-
-//postingRule
-import postingRules from "../../controllers/Property/postPostingRules.js"
-import postingRule from "../../controllers/Property/getPostingRules.js"
-
-//chargeRule
-import chargeRules from "../../controllers/Property/postChargeRules.js"
-import chargeRule from "../../controllers/Property/getChargeRules.js"
-
-//bedType
-import bedTypes from "../../controllers/Property/postBedType.js"
-import bedTypeRule from "../../controllers/Property/getBedType.js"
-
-//inclusionType
-import inclusionTypes from "../../controllers/Property/postInclusionType.js"
-import inclusionTypesRule from "../../controllers/Property/getInclusionType.js"
-
-//accountType
-import accountTypes from "../../controllers/Property/postAccountType.js"
-import accountTypesMethod from "../../controllers/Property/getAccountType.js"
-
+//IdentityType
+import identityType from '../../controllers/Property/getIdentityTypes.controller.js'
+import identityTypes from "../../controllers/Property/patchIdentity.js"
 
 
 router.post(
@@ -83,7 +63,7 @@ router.post(
 // transport
 router.post("/api/addTransportation", transportationAdd)
 router.patch("/api/updateTransportation", updateTransportation)
-router.get("/api/getTransportation/:userId/:propertyId", getTransportation)
+router.get("/api/getTransportation", getTransportation)
 
 // business
 router.post("/api/addBusinessSources", addBusinessSources)
@@ -103,8 +83,8 @@ router.patch("/api/uploadPropertyImages", upload.fields([{ name: 'hotelImage', m
 router.patch("/api/changeImageIndex", dragDropPropertyImages);
 
 router.patch("/api/editProperty", editProperty);
+
 //patch Identity
-router.patch("/api/patchIdentityType/:identityTypeId", identityTypes);
 
 //company
 router.post("/api/addCompany", upload.fields([{ name: "companyLogo", maxCount: 1 }, { name: "contractPdf", maxCount: 3 }]), addCompany)
@@ -112,17 +92,15 @@ router.post("/api/addCompany", upload.fields([{ name: "companyLogo", maxCount: 1
 //payment types
 router.post("/api/addPaymentType", addPaymentType)
 router.get("/api/getPaymentTypes", getPaymentTypes)
-router.patch("/api/patchPaymentType/:paymentTypeId", patchPaymentType)
+router.patch("/api/patchPaymentType", patchPaymentType)
 
-router.get("/api/fetchProperty/:userId", userProperty);
+router.get("/api/fetchProperty", userProperty);
 
 
 //Post ReservationType Route
-router.post("/api/addReservationType", reservationType)
-
+router.post("/api/addReservationType", postReservationType)
 //update ReservationType Route
-router.patch("/api/updateReservationType/:reservationTypeId", updateReservationType)
-
+router.patch("/api/updateReservationType", updateReservationType)
 //get reservationType
 router.get("/api/getreservation", fetchReservation)
 
@@ -131,43 +109,24 @@ router.post("/api/bookingSource", postBookingSource)
 router.patch("/api/updateBookingSource", updateBookingSource)
 router.get("/api/getBookingSource", bookingSourcesGet)
 
+//identity types
 router.post("/api/postIdentity", userIdentity);
 router.get("/api/fetchIdentity", identityType);
+router.patch("/api/patchIdentityType", identityTypes);
 
 //seasons
 router.post("/api/postSeason", seasonType);
 router.get("/api/getSeasons", getSeasons);
-router.patch("/api/patchSeason/:seasonId", patchSeason)
+router.patch("/api/patchSeason", patchSeason)
 
 //holiday
 router.post("/api/postHoliday", holiday)
 router.patch("/api/patchHoliday", patchHoliday)
 router.get("/api/getHoliday", getHoliday)
 
-
-
 //company 
 router.get("/api/companyType", getCompany);
 
-//posting 
-router.post("/api/postingRule", postingRules);
-router.get("/api/postingRulesModels", postingRule);
 
-
-//charge
-router.post("/api/chargeRule", chargeRules );
-router.get("/api/getchargeRule", chargeRule);
-
-//bedType
-router.post("/api/bedType", bedTypes);
-router.get("/api/getBedType", bedTypeRule);
-
-//inclusionType
-router.post("/api/inclusionType", inclusionTypes);
-router.get("/api/getInclusionType", inclusionTypesRule);
-
-//accountType
-router.post("/api/postAccountType", accountTypes);
-router.get("/api/getAccountType", accountTypesMethod);
 
 export default router;

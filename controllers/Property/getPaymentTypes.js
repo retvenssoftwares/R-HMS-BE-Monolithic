@@ -27,10 +27,11 @@ const getPaymentTypes = async (req, res) => {
                         modifiedBy: paymentType.modifiedBy[0],
                         modifiedOn: convertedModifiedOn || '',
                         receivedTo: paymentType.receivedTo[0],
+                        shortCode: paymentType.shortCode[0] || {}
                     };
                 });
 
-                return res.status(200).json({ paymentTypes: convertedPaymentTypes, statuscode: 200 });
+                return res.status(200).json({ data: convertedPaymentTypes, statuscode: 200 });
             }
             else {
                 return res.status(404).json({ error: "No payment types found", statuscode: 404 });
@@ -39,10 +40,9 @@ const getPaymentTypes = async (req, res) => {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }
 
-
     } catch (err) {
         console.log(err);
-        return res.status(500).json({ message: "Internal Server Error" });
+        return res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
     }
 };
 

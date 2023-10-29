@@ -12,16 +12,20 @@ const seasonSchema = new mongoose.Schema({
         default: ''
     },
 
-    shortCode: {
-        type: String,
-        default: ''
-    },
+    shortCode: [{
+        shortCode: {
+            type: String,
+            default: ''
+        },
+        logId: { type: String, default: '' }
+    }],
 
     seasonName: [{
         seasonName: {
             type: String,
             default: ''
         },
+        logId: { type: String, default: '' }
     }],
 
     startDate: [{
@@ -29,6 +33,7 @@ const seasonSchema = new mongoose.Schema({
             type: String,
             default: ''
         },
+        logId: { type: String, default: '' }
     }],
 
     endDate: [{
@@ -36,6 +41,7 @@ const seasonSchema = new mongoose.Schema({
             type: String,
             default: ''
         },
+        logId: { type: String, default: '' }
     }],
 
     createdBy: {
@@ -53,6 +59,7 @@ const seasonSchema = new mongoose.Schema({
             type: String,
             default: ''
         },
+        logId: { type: String, default: '' }
     }],
 
     modifiedOn: [{
@@ -60,13 +67,15 @@ const seasonSchema = new mongoose.Schema({
             type: String,
             default: ''
         },
+        logId: { type: String, default: '' }
     }],
 
     days: [{
         days: [{
             type: String,
             default: ''
-        }]
+        }],
+        logId: { type: String, default: '' }
     }],
 
 

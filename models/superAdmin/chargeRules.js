@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import db1 from "../db/conn.js";
+import db1 from "../../db/conn.js";
 
 const chargeRulesSchema =  new mongoose.Schema({
            

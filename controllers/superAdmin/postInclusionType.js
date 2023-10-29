@@ -1,7 +1,7 @@
 import Randomstring, { generate } from "randomstring";
 import * as dotenv from "dotenv";
 dotenv.config();
-import inclusionTypeModel from "../../models/inclusionType.js";
+import inclusionTypeModel from "../../models/superAdmin/inclusionType.js";
 
 const inclusionType = async (req , res) =>{
     try{

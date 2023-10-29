@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import chargeRuleModel from "../../models/chargeRules.js";
+import chargeRuleModel from "../../models/superAdmin/chargeRules.js";
 
 const getchargeRule = async (req, res) => {
       try{

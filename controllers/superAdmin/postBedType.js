@@ -1,7 +1,7 @@
 import Randomstring, { generate } from "randomstring";
 import * as dotenv from "dotenv";
 dotenv.config();
-import bedTypeModel from "../../models/bedType.js";
+import bedTypeModel from "../../models/superAdmin/bedType.js";
 
 const bedType = async (req , res) =>{
     try{

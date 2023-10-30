@@ -5,7 +5,7 @@ const getPaymentTypes = async (req, res) => {
     try {
         const { targetTimeZone, propertyId, userId } = req.query;
         const authCodeValue = req.headers['authcode']
-        const findAllPaymentTypes = await paymentTypeModel.find({ propertyId });
+        const findAllPaymentTypes = await paymentTypeModel.find({ propertyId }).lean();
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
@@ -23,11 +23,12 @@ const getPaymentTypes = async (req, res) => {
                     return {
                         ...paymentType._doc,
                         createdOn: convertedDateUTC,
-                        paymentMethodName: paymentType.paymentMethodName[0],
-                        modifiedBy: paymentType.modifiedBy[0],
+                        createdBy:paymentType.createdBy,
+                        paymentMethodName: paymentType.paymentMethodName[0].paymentMethodName || {},
+                        modifiedBy: paymentType.modifiedBy[0].modifiedBy || {},
                         modifiedOn: convertedModifiedOn || '',
-                        receivedTo: paymentType.receivedTo[0],
-                        shortCode: paymentType.shortCode[0] || {}
+                        receivedTo: paymentType.receivedTo[0].receivedTo || {},
+                        shortCode: paymentType.shortCode[0].shortCode || {}
                     };
                 });
 

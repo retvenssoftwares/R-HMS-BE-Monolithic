@@ -7,8 +7,8 @@ import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/
 
 const userIdentity = async (req, res) => {
     try {
-        const { userId, } = req.query
         const {
+            userId,
             shortCode,
             identityType,
             propertyId,

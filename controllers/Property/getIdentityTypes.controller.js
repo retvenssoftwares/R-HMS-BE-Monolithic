@@ -37,9 +37,9 @@ const identityType = async (req, res) => {
                     return {
                         ...identity._doc,
                         createdOn: convertedDateUTC,
-                        shortCode: identity.shortCode[0] || {},
-                        identityType: identity.identityType[0],
-                        modifiedBy: identity.modifiedBy[0],
+                        shortCode: identity.shortCode[0].shortCode || {},
+                        identityType: identity.identityType[0].identityType || {},
+                        modifiedBy: identity.modifiedBy[0].modifiedBy || {},
                         modifiedOn: convertedModifiedOn
                     };
 

@@ -24,13 +24,13 @@ const getSeasons = async (req, res) => {
                     return {
                         ...seasons._doc,
                         createdOn: convertedDateUTC,
-                        shortCode: seasons.shortCode[0] || {},
-                        seasonName: seasons.seasonName[0] || {},
-                        modifiedBy: seasons.modifiedBy[0] || {},
+                        shortCode: seasons.shortCode[0].shortCode || {},
+                        seasonName: seasons.seasonName[0].seasonName || {},
+                        modifiedBy: seasons.modifiedBy[0].modifiedBy || {},
                         modifiedOn: convertedModifiedOn,
-                        startDate: seasons.startDate[0] || {},
-                        endDate: seasons.endDate[0] || {},
-                        days: seasons.days[0] || {}
+                        startDate: seasons.startDate[0].startDate || {},
+                        endDate: seasons.endDate[0].endDate || {},
+                        days: seasons.days[0].days || {}
                     };
                 });
 

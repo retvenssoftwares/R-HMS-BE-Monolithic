@@ -26,13 +26,13 @@ const getHoliday = async (req, res) => {
 
                     return {
                         ...holidays._doc,
-                        shortCode: holidays.shortCode[0] || {},
+                        shortCode: holidays.shortCode[0].shortCode || {},
                         createdOn: convertedDateUTC,
-                        holidayName: holidays.holidayName[0] || {},
-                        modifiedBy: holidays.modifiedBy[0] || {},
+                        holidayName: holidays.holidayName[0].holidayName || {},
+                        modifiedBy: holidays.modifiedBy[0].modifiedBy || {},
                         modifiedOn: convertedModifiedOn,
-                        startDate: holidays.startDate[0] || {},
-                        endDate: holidays.endDate[0] || {}
+                        startDate: holidays.startDate[0].startDate || {},
+                        endDate: holidays.endDate[0].endDate || {}
                     };
                 });
 

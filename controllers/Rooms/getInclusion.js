@@ -30,15 +30,15 @@ const getInclusion = async (req, res) => {
                    
                      createdOn: convertedDateUTC,
                      inclusionId : inclusion.inclusionId,
-                     inclusionName : inclusion.inclusionName[0] || {},
-                     charge : inclusion.charge[0] || {},
+                     inclusionName : inclusion.inclusionName[0].inclusionName || {},
+                     charge : inclusion.charge[0].charge || {},
                      inclusionType : inclusion.inclusionType[0] || {},
-                     chargeRule : inclusion.chargeRule[0] || {},
-                     postingRule : inclusion.postingRule[0] || {},
+                     chargeRule : inclusion.chargeRule[0].inclusionType || {},
+                     postingRule : inclusion.postingRule[0].postingRule || {},
                      modifiedOn : convertedModifiedOn,
-                     modifiedBy : inclusion.modifiedBy[0] || {},
+                     modifiedBy : inclusion.modifiedBy[0].modifiedBy || {},
                      createdBy : inclusion.createdBy,
-                     shortCode : inclusion.shortCode,
+                     shortCode : inclusion.shortCode[0].shortCode || {},
 
                     };
 

@@ -3,8 +3,9 @@ import verifying from "../../models/verifiedUsers.js"
 import randomString from "randomstring"
 import { convertTimestampToCustomFormat, getCurrentUTCTimestamp, findUserByUserIdAndToken } from "../../helpers/helper.js"
 
+//post 
 export const transportationAdd = async (req, res) => {
-    const { userId } = req.query;
+    const { userId } = req.body;
 
     try {
         const UserauthCode = await verifying.findOne({ userId: userId });
@@ -45,7 +46,7 @@ export const transportationAdd = async (req, res) => {
     }
 };
 
-
+//update
 export const updateTransportation = async (req, res) => {
     try {
         const { userId, transportationId } = req.query
@@ -102,7 +103,7 @@ export const updateTransportation = async (req, res) => {
     }
 }
 
-
+//get
 export const getTransportation = async (req, res) => {
     try {
         const userId = req.query.userId;
@@ -138,8 +139,8 @@ export const getTransportation = async (req, res) => {
                         ...transportationType._doc,
                         createdOn: convertedDateUTC,
                         propertyId: transportationType.propertyId,
-                        transportationModeName: transportationType.transportationModeName[0],
-                        modifiedBy: transportationType.modifiedBy[0],
+                        transportationModeName: transportationType.transportationModeName[0].transportationModeName ||{},
+                        modifiedBy: transportationType.modifiedBy[0].modifiedBy || {},
                         modifiedOn: convertedModifiedOn || '',
                         shortCode: transportationType.shortCode[0] || {}
                     };

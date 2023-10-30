@@ -7,7 +7,7 @@ import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from "../../helpers/
 
 const postHoliday = async (req, res) => {
   try {
-    const userId = req.query.userId
+    const userId = req.body.userId
     const {
       shortCode,
       propertyId,

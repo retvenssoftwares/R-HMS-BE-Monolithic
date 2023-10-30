@@ -1,10 +1,8 @@
-
-
-// export default checkInventoryAvailability;
+import moment from 'moment';
 import bookingModel from "../../models/reservation.js"
 import roomTypeModel from "../../models/roomType.js";
 import verifiedUser from "../../models/verifiedUsers.js";
-import { findUserByUserIdAndToken } from "../../helpers/helper.js";
+import { findUserByUserIdAndToken, convertToISODate } from "../../helpers/helper.js";
 
 const checkInventoryAvailability = async (req, res) => {
     const { userId, propertyId, checkInDate, checkOutDate } = req.query;
@@ -17,7 +15,23 @@ const checkInventoryAvailability = async (req, res) => {
 
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
     if (result.success) {
+        if (checkInDate === checkOutDate) {
+            return res.status(400).json({ message: "Check-in date cannot be equal to check-out date", statuscode: 400 });
+        } else if (checkInDate > checkOutDate) {
+            return res.status(400).json({ message: "Check-in date cannot be greater than check-out date", statuscode: 400 });
+        }
+
+        // Validate the date format
+        const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!dateFormatRegex.test(checkInDate) || !dateFormatRegex.test(checkOutDate)) {
+            return res.status(400).json({ message: "Please enter the date in the correct format (yyyy-mm-dd)", statuscode: 400 });
+        }
         try {
+            const startDateObj = new Date(checkInDate)
+            const checkInDateISO = startDateObj.toISOString()
+            const endDateObj = new Date(checkOutDate)
+            const checkOutDateISO = endDateObj.toISOString();
+            // console.log(checkInDateISO, checkOutDateISO)
             const roomTypes = await roomTypeModel.aggregate([
                 {
                     $match: { propertyId }
@@ -42,8 +56,8 @@ const checkInventoryAvailability = async (req, res) => {
 
                 const reservations = await bookingModel.find({
                     propertyId,
-                    "checkIn.checkIn": { $lt: checkOutDate },
-                    "checkOut.checkOut": { $gte: checkInDate },
+                    "checkIn.checkIn": { $gte: checkInDateISO, $lt: checkOutDateISO },
+                    // "checkOut[0].checkOut": { $gte: checkInDateISO },
                     "roomDetails.roomTypeId.roomTypeId": roomTypeId
                 });
 

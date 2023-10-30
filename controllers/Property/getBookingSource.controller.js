@@ -21,13 +21,13 @@ const bookingSourcesGet = async (req, res) => {
                     } else {
                         convertedModifiedOn = convertTimestampToCustomFormat(bookingSource.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
-
+                    const modifiedBy = bookingSource.modifiedBy.length > 0 ? bookingSource.modifiedBy[0].modifiedBy : "";
                     return {
                         ...bookingSource._doc,
                         createdOn: convertedDateUTC,
                         createdBy: bookingSource.createdBy,
                         bookingSource: bookingSource.bookingSource[0].bookingSource || {},
-                        modifiedBy: bookingSource.modifiedBy[0].modifiedBy || {},
+                        modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn || '',
                         shortCode: bookingSource.shortCode[0].shortCode || {},
                     };

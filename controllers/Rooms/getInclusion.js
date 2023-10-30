@@ -25,6 +25,8 @@ const getInclusion = async (req, res) => {
                         convertedModifiedOn = convertTimestampToCustomFormat(inclusion.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
                     
+                    const modifiedBy = inclusion.modifiedBy.length > 0 ? inclusion.modifiedBy[0].modifiedBy : "";
+                    
                     return {
                         ...inclusion._doc,
                    
@@ -36,7 +38,7 @@ const getInclusion = async (req, res) => {
                      chargeRule : inclusion.chargeRule[0].inclusionType || {},
                      postingRule : inclusion.postingRule[0].postingRule || {},
                      modifiedOn : convertedModifiedOn,
-                     modifiedBy : inclusion.modifiedBy[0].modifiedBy || {},
+                     modifiedBy : modifiedBy,
                      createdBy : inclusion.createdBy,
                      shortCode : inclusion.shortCode[0].shortCode || {},
 

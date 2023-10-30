@@ -34,12 +34,15 @@ const identityType = async (req, res) => {
                     } else {
                         convertedModifiedOn = convertTimestampToCustomFormat(identity.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
+
+                    const modifiedBy = identity.modifiedBy.length > 0 ? identity.modifiedBy[0].modifiedBy : "";
                     return {
                         ...identity._doc,
                         createdOn: convertedDateUTC,
+                        createdBy:paymentType.createdBy,
                         shortCode: identity.shortCode[0].shortCode || {},
                         identityType: identity.identityType[0].identityType || {},
-                        modifiedBy: identity.modifiedBy[0].modifiedBy || {},
+                        modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn
                     };
 

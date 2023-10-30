@@ -21,11 +21,13 @@ const getAmenities = async (req, res) => {
                         convertedModifiedOn = convertTimestampToCustomFormat(amenities.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
 
+                    const modifiedBy = amenities.modifiedBy.length > 0 ? amenities.modifiedBy[0].modifiedBy : "";
+
                     return {
                         ...amenities._doc,
                         createdOn: convertedDateUTC,
                         amenityName: amenities.amenityName[0] || {},
-                        modifiedBy: amenities.modifiedBy[0] || {},
+                        modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn,
                         amenityType: amenities.amenityType[0] || {}
                     };

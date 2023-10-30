@@ -21,12 +21,14 @@ const getReservation = async (req, res) => {
                         convertedModifiedOn = convertTimestampToCustomFormat(reservations.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
 
+                    const modifiedBy = reservations.modifiedBy.length > 0 ? reservations.modifiedBy[0].modifiedBy : "";
+
                     return {
                         ...reservations._doc,
                         createdOn: convertedDateUTC,
                         reservationName: reservations.reservationName[0].reservationName || {},
                         status: reservations.status[0].status || {},
-                        modifiedBy: reservations.modifiedBy[0].modifiedBy || {},
+                        modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn,
                     };
                 });

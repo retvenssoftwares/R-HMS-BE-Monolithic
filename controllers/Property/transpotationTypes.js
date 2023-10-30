@@ -134,22 +134,24 @@ export const getTransportation = async (req, res) => {
                     } else {
                         convertedModifiedOn = convertTimestampToCustomFormat(transportationType.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
+                    const modifiedBy = transportationType.modifiedBy.length > 0 ? transportationType.modifiedBy[0].modifiedBy : "";
 
                     return {
                         ...transportationType._doc,
                         createdOn: convertedDateUTC,
+                        createdBy:paymentType.createdBy,
                         propertyId: transportationType.propertyId,
                         transportationModeName: transportationType.transportationModeName[0].transportationModeName ||{},
-                        modifiedBy: transportationType.modifiedBy[0].modifiedBy || {},
+                        modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn || '',
-                        shortCode: transportationType.shortCode[0] || {}
+                        shortCode: transportationType.shortCode[0].shortCode || {}
                     };
                 });
 
                 return res.status(200).json({ data: convertedTransportationTypes, statuscode: 200 });
             }
             else {
-                return res.status(404).json({ error: "No payment types found", statuscode: 404 });
+                return res.status(404).json({ error: "No transportation types found", statuscode: 404 });
             }
 
         } else {

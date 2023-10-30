@@ -24,12 +24,14 @@ const getHoliday = async (req, res) => {
                         convertedModifiedOn = convertTimestampToCustomFormat(holidays.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
 
+                    const modifiedBy = holidays.modifiedBy.length > 0 ? holidays.modifiedBy[0].modifiedBy : "";
+
                     return {
                         ...holidays._doc,
                         shortCode: holidays.shortCode[0].shortCode || {},
                         createdOn: convertedDateUTC,
                         holidayName: holidays.holidayName[0].holidayName || {},
-                        modifiedBy: holidays.modifiedBy[0].modifiedBy || {},
+                        modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn,
                         startDate: holidays.startDate[0].startDate || {},
                         endDate: holidays.endDate[0].endDate || {}

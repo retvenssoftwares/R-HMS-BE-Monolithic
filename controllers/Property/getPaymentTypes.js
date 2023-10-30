@@ -20,12 +20,14 @@ const getPaymentTypes = async (req, res) => {
                         convertedModifiedOn = convertTimestampToCustomFormat(paymentType.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
 
+                    const modifiedBy = paymentType.modifiedBy.length > 0 ? paymentType.modifiedBy[0].modifiedBy : "";
+
                     return {
                         ...paymentType._doc,
                         createdOn: convertedDateUTC,
                         createdBy:paymentType.createdBy,
                         paymentMethodName: paymentType.paymentMethodName[0].paymentMethodName || {},
-                        modifiedBy: paymentType.modifiedBy[0].modifiedBy || {},
+                        modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn || '',
                         receivedTo: paymentType.receivedTo[0].receivedTo || {},
                         shortCode: paymentType.shortCode[0].shortCode || {}

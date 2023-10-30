@@ -32,7 +32,10 @@ const postSeason = async (req, res) => {
 
         propertyId,
         seasonId: Randomstring.generate(8),
-        seasonShortCode: seasonShortCode,
+        shortCode: [{
+          shortCode: shortCode,
+          logId: Randomstring.generate(10)
+      }],
         seasonName: [{
           seasonName: seasonName,
           logId: Randomstring.generate(10)

@@ -124,7 +124,7 @@ export const compnayRatePlan = async (req, res) => {
   } 
     } catch (error) {
       // console.error('Error occurred while aading:', error);
-      return res.status(500).json({ error: 'Error occurred while adding' , statusCode : 500});
+      return res.status(500).json({ message: 'Internal server error' , statusCode : 500});
     }
   };
   

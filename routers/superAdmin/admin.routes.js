@@ -29,6 +29,10 @@ import getRating from '../../controllers/superAdmin/getPropertyRating.js'
 import postPropertyType from '../../controllers/superAdmin/postPropertyType.js'
 import getPropertyType from '../../controllers/superAdmin/getPropertyType.js'
 
+//Desgnation
+import designation from '../../controllers/superAdmin/postDesignation.js'
+import getDesignation from '../../controllers/superAdmin/getDesignation.js'
+
 
 ////////////////////////////////////////////////////
 //bedType
@@ -59,5 +63,9 @@ router.get("/api/getRating",getRating)
 //PropertyType
 router.post("/api/postPropertyType",postPropertyType)
 router.get("/api/getPropertyType",getPropertyType)
+
+//designation
+router.post("/api/postDesignation",designation)
+router.get("/api/getDesignation",getDesignation)
 
 export default router;

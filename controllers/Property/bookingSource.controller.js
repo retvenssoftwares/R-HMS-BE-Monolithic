@@ -10,7 +10,7 @@ import {
 
 const postBookingSource = async (req, res) => {
   try {
-    const { userId } = req.query
+    const { userId } = req.body
     const {
       propertyId,
       shortCode,

@@ -5,7 +5,7 @@ const getPaymentTypes = async (req, res) => {
     try {
         const { targetTimeZone, propertyId, userId } = req.query;
         const authCodeValue = req.headers['authcode']
-        const findAllPaymentTypes = await paymentTypeModel.find({ propertyId });
+        const findAllPaymentTypes = await paymentTypeModel.find({ propertyId }).lean();
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
@@ -20,21 +20,24 @@ const getPaymentTypes = async (req, res) => {
                         convertedModifiedOn = convertTimestampToCustomFormat(paymentType.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
 
+                    const modifiedBy = paymentType.modifiedBy.length > 0 ? paymentType.modifiedBy[0].modifiedBy : "";
+
                     return {
                         ...paymentType._doc,
                         createdOn: convertedDateUTC,
-                        paymentMethodName: paymentType.paymentMethodName[0],
-                        modifiedBy: paymentType.modifiedBy[0],
+                        createdBy:paymentType.createdBy,
+                        paymentMethodName: paymentType.paymentMethodName[0].paymentMethodName || {},
+                        modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn || '',
-                        receivedTo: paymentType.receivedTo[0],
-                        shortCode: paymentType.shortCode[0] || {}
+                        receivedTo: paymentType.receivedTo[0].receivedTo || {},
+                        shortCode: paymentType.shortCode[0].shortCode || {}
                     };
                 });
 
                 return res.status(200).json({ data: convertedPaymentTypes, statuscode: 200 });
             }
             else {
-                return res.status(404).json({ error: "No payment types found", statuscode: 404 });
+                return res.status(404).json({ message: "No payment types found", statuscode: 404 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

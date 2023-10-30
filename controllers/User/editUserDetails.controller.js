@@ -67,8 +67,10 @@ const editUserOnboarding = async (req, res) => {
                 city: city,
                 modifiedDate: (await getCurrentUTCTimestamp()).toString()
             }
-
             elementToUpdate.city.unshift(cityObject);
+
+            elementToUpdate.country = country
+
             const propertyDescriptionObject = {
                 propertyDescription: req.body.propertyDescription,
                 modifiedDate: (await getCurrentUTCTimestamp()).toString()

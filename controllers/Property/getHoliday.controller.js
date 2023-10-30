@@ -24,21 +24,23 @@ const getHoliday = async (req, res) => {
                         convertedModifiedOn = convertTimestampToCustomFormat(holidays.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
 
+                    const modifiedBy = holidays.modifiedBy.length > 0 ? holidays.modifiedBy[0].modifiedBy : "";
+
                     return {
                         ...holidays._doc,
-                        shortCode: holidays.shortCode[0] || {},
+                        shortCode: holidays.shortCode[0].shortCode || {},
                         createdOn: convertedDateUTC,
-                        holidayName: holidays.holidayName[0] || {},
-                        modifiedBy: holidays.modifiedBy[0] || {},
+                        holidayName: holidays.holidayName[0].holidayName || {},
+                        modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn,
-                        startDate: holidays.startDate[0] || {},
-                        endDate: holidays.endDate[0] || {}
+                        startDate: holidays.startDate[0].startDate || {},
+                        endDate: holidays.endDate[0].endDate || {}
                     };
                 });
 
                 return res.status(200).json({ data: convertedHoliday, statuscode: 200 });
             } else {
-                return res.status(404).json({ error: "No holidays found", statuscode: 404 });
+                return res.status(404).json({ message: "No holidays found", statuscode: 404 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

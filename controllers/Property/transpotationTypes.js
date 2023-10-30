@@ -139,7 +139,7 @@ export const getTransportation = async (req, res) => {
                     return {
                         ...transportationType._doc,
                         createdOn: convertedDateUTC,
-                        createdBy:paymentType.createdBy,
+                        createdBy:transportationType.createdBy,
                         propertyId: transportationType.propertyId,
                         transportationModeName: transportationType.transportationModeName[0].transportationModeName ||{},
                         modifiedBy: modifiedBy,
@@ -151,7 +151,7 @@ export const getTransportation = async (req, res) => {
                 return res.status(200).json({ data: convertedTransportationTypes, statuscode: 200 });
             }
             else {
-                return res.status(404).json({ error: "No transportation types found", statuscode: 404 });
+                return res.status(404).json({ message: "No transportation types found", statuscode: 404 });
             }
 
         } else {

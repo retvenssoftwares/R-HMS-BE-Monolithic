@@ -29,7 +29,7 @@ const updateRoomImage = async (req, res) => {
     return res.status(200).json({ message: "Image updated successfully", statuscode: 200 });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Internal Server error",statuscode:500 });
   }
 };
 

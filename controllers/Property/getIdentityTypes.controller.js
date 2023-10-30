@@ -39,7 +39,7 @@ const identityType = async (req, res) => {
                     return {
                         ...identity._doc,
                         createdOn: convertedDateUTC,
-                        createdBy:paymentType.createdBy,
+                        createdBy:identity.createdBy,
                         shortCode: identity.shortCode[0].shortCode || {},
                         identityType: identity.identityType[0].identityType || {},
                         modifiedBy: modifiedBy,
@@ -50,7 +50,7 @@ const identityType = async (req, res) => {
 
                 return res.status(200).json({ data: convertedIdentity, statuscode: 200 });
             } else {
-                return res.status(404).json({ error: "No identities found", statuscode: 404 });
+                return res.status(404).json({ message: "No identities found", statuscode: 404 });
             }
 
         } else {
@@ -58,7 +58,7 @@ const identityType = async (req, res) => {
         }
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ error: "Internal Server Error", statusCode: 500 });
+        return res.status(500).json({ message: "Internal Server Error", statusCode: 500 });
     }
 };
 

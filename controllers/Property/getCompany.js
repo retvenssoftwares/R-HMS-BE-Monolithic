@@ -29,12 +29,12 @@ const companyType = async (req, res) => {
 
             return res.status(200).json({ userCompany: convertedCompany, statuscode: 200 });
         } else {
-            return res.status(404).json({ error: "No company found", statuscode: 404 });
+            return res.status(404).json({ message: "No company found", statuscode: 404 });
         }
 
         }catch (error) {
             console.log(error);
-        return res.status(500).json({ error: error.message, statusCode: 500 });
+        return res.status(500).json({ message: error.message, statusCode: 500 });
     }
 };
 

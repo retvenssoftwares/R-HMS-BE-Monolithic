@@ -40,7 +40,7 @@ const getHoliday = async (req, res) => {
 
                 return res.status(200).json({ data: convertedHoliday, statuscode: 200 });
             } else {
-                return res.status(404).json({ error: "No holidays found", statuscode: 404 });
+                return res.status(404).json({ message: "No holidays found", statuscode: 404 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

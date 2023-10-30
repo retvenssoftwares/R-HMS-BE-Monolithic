@@ -37,7 +37,7 @@ const getPaymentTypes = async (req, res) => {
                 return res.status(200).json({ data: convertedPaymentTypes, statuscode: 200 });
             }
             else {
-                return res.status(404).json({ error: "No payment types found", statuscode: 404 });
+                return res.status(404).json({ message: "No payment types found", statuscode: 404 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

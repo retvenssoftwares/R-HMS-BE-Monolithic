@@ -9,7 +9,7 @@ const postSeason = async (req, res) => {
   try {
     const {
       userId,
-      seasonShortCode,
+      shortCode,
       propertyId,
       seasonName,
       startDate,

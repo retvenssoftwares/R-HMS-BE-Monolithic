@@ -31,7 +31,7 @@ import getPropertyType from '../../controllers/superAdmin/getPropertyType.js'
 
 //Desgnation
 import designation from '../../controllers/superAdmin/postDesignation.js'
-import getDesignation from '../../controllers/superAdmin/postDesignation.js'
+import getDesignation from '../../controllers/superAdmin/getDesignation.js'
 
 
 ////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ router.post("/api/postPropertyType",postPropertyType)
 router.get("/api/getPropertyType",getPropertyType)
 
 //designation
-router.get("/api/postDesignation",designation)
+router.post("/api/postDesignation",designation)
 router.get("/api/getDesignation",getDesignation)
 
 export default router;

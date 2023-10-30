@@ -1,6 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 import express from 'express';
+import cors from 'cors';
 import "./db/conn.js"
 import "./db/conn2.js"
 import propertyRoutes from "./routers/Property/property.routes.js"
@@ -12,7 +13,9 @@ import amenityRoutes from "./routers/Amenities/amenity.routes.js"
 import superAdminRoutes from "./routers/superAdmin/admin.routes.js"
 import testR from './routers/test.router.js'
 const app = express();
-
+app.use(cors({
+  origin: '*'
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(testR)

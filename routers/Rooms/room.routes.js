@@ -45,7 +45,7 @@ router.patch(
 router.post('/api/postInclusion', inclusion)
 
 //get inclusion
-router.get('/api/inclusionType',getInclusion )
+router.get('/api/getInclusion',getInclusion )
 
 //patch inclusion
 router.patch('/api/patchInclusion', patchInclusions)

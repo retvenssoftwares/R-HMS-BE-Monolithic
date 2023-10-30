@@ -7,7 +7,7 @@ const getHoliday = async (req, res) => {
         const authCodeValue = req.headers['authcode']
 
         if (!propertyId) {
-            return res.status(400).json({ message: "Please enter valid propertyId", statuscode: 400 })
+            return res.status(404).json({ message: "Please enter valid propertyId", statuscode: 404 })
         }
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 

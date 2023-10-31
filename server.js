@@ -12,9 +12,11 @@ import companyRoutes from "./routers/Rooms/company.routes.js"
 import amenityRoutes from "./routers/Amenities/amenity.routes.js"
 import superAdminRoutes from "./routers/superAdmin/admin.routes.js"
 import testR from './routers/test.router.js'
-const app = express();
 
-app.use(cors());
+const app = express();
+app.use(cors({
+  origin: '*'
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(testR)

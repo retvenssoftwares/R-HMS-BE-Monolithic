@@ -18,10 +18,10 @@ const companyType = async (req, res) => {
                     ...company._doc,
                     
                     propertyId : company.propertyId,
-                    companyName: company.companyName[0] || {},
+                    companyName: company.companyName[0] || '',
                     companyId : company.companyId,
-                    contactPerson : company.contactPerson[0] || {},
-                    expiration : company.expiration[0] || {},
+                    contactPerson : company.contactPerson[0] || '',
+                    expiration : company.expiration[0] || '',
                     
                 };
 

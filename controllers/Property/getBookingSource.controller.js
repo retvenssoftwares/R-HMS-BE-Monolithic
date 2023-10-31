@@ -26,10 +26,10 @@ const bookingSourcesGet = async (req, res) => {
                         ...bookingSource._doc,
                         createdOn: convertedDateUTC,
                         createdBy: bookingSource.createdBy,
-                        bookingSource: bookingSource.bookingSource[0].bookingSource || {},
+                        bookingSource: bookingSource.bookingSource[0].bookingSource || '',
                         modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn || '',
-                        shortCode: bookingSource.shortCode[0].shortCode || {},
+                        shortCode: bookingSource.shortCode[0].shortCode || '',
                     };
                 });
 

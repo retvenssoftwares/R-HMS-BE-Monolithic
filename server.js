@@ -13,20 +13,17 @@ import amenityRoutes from "./routers/Amenities/amenity.routes.js"
 import superAdminRoutes from "./routers/superAdmin/admin.routes.js"
 import testR from './routers/test.router.js'
 const app = express();
-const corsOpts = {
-  origin: '*',
-
-  methods: [
-    'GET',
-    'POST',
-  ],
-
-  allowedHeaders: [
-    'Content-Type',
-  ],
-};
-
-app.use(cors(corsOpts));
+app.use((req, res, next) => {
+  //allow access from every, elminate CORS
+  res.setHeader('Access-Control-Allow-Origin','*');
+  res.removeHeader('x-powered-by');
+  //set the allowed HTTP methods to be requested
+  res.setHeader('Access-Control-Allow-Methods','POST');
+  //headers clients can use in their requests
+  res.setHeader('Access-Control-Allow-Headers','Content-Type');
+  //allow request to continue and be handled by routes
+  next();
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(testR)

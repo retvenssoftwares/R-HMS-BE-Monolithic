@@ -6,25 +6,52 @@ const manageInventorySchema = new mongoose.Schema({
     roomTypeId: { type: String, default: "" },
     ratePlanId: { type: String, default: '' },
     source: { type: String, default: "" },
-    manageInventory: [{
-        addedInventory: { type: Number, default: "" },
-        blockedInventory: { type: Number, default: "" },
-        date: { type: String, default: "" }
-    }],
-    manageRates: [{
-        date: { type: String, default: "" },
-        baseRate: { type: String, default: '' },
-        extraChildRate: { type: String, default: "" },
-        extraAdultRate: { type: String, default: "" }
-    }],
-    manageRestrictions: [{
-        date: { type: String, default: "" },
-        stopSell: { type: String, default: "false" },
-        COA: { type: String, default: "false" },
-        COD: { type: String, default: "false" },
-        minimumLOS: { type: Number, default: 0 },
-        maximumLOS: { type: Number, default: 0 },
-    }]
+    manageInventory: {
+        addedInventory: [{
+            addedInventory: { type: Number, default: "" },
+            date: { type: String, default: "" }
+        }],
+        blockedInventory: [{
+            blockedInventory: { type: Number, default: "" },
+            date: { type: String, default: '' }
+        }],
+    },
+    manageRates: {
+        baseRate: [{
+            baseRate: { type: String, default: '' },
+            date: { type: String, default: "" }
+        }],
+        extraChildRate: [{
+            date: { type: String, default: "" },
+            extraChildRate: { type: String, default: "" }
+        }],
+        extraAdultRate: [{
+            date: { type: String, default: "" },
+            extraAdultRate: { type: String, default: "" }
+        }],
+    },
+    manageRestrictions: {
+        stopSell: [{
+            stopSell: { type: String, default: "false" },
+            date: { type: String, default: "" }
+        }],
+        COA: [{
+            COA: { type: String, default: "false" },
+            date: { type: String, default: "" }
+        }],
+        COD: [{
+            COD: { type: String, default: "false" },
+            date: { type: String, default: '' }
+        }],
+        minimumLOS: [{
+            minimumLOS: { type: Number, default: 0 },
+            date: { type: String, default: '' }
+        }],
+        maximumLOS: [{
+            maximumLOS: { type: Number, default: 0 },
+            date: { type: String, default: '' }
+        }],
+    }
 }, {
     versionKey: false
 })

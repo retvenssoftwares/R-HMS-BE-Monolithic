@@ -27,7 +27,6 @@ const postAmenity = async (req, res) => {
          if (findUser) {
             let userRole = findUser.role[0].role
             const newAmenity = new amenityModel({
-               shortCode,
                propertyId,
                createdBy: userRole,
                createdOn: await getCurrentUTCTimestamp(),
@@ -37,6 +36,11 @@ const postAmenity = async (req, res) => {
                amenityName: [
                   {
                      amenityName: amenityName
+                  }
+               ],
+               shortCode: [
+                  {
+                     shortCode: shortCode
                   }
                ],
 

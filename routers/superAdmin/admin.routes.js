@@ -73,7 +73,7 @@ router.post("/api/postDesignation",designation)
 router.get("/api/getDesignation",getDesignation)
 
 //Amenitytype
-router.get("/api/postAmenityType",postAmenityType)
+router.post("/api/postAmenityType",postAmenityType)
 router.get("/api/getAmenityType",getAmenityType)
 
 export default router;

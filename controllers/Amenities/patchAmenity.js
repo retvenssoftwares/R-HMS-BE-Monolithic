@@ -22,10 +22,15 @@ const patchAmenity = async (req, res) => {
                 return res.status(404).json({ message: "Amenity not found", statuscode: 404 });
             }
 
-            if (shortCode) {
-                findAmenity.shortCode = shortCode;
-            }
+       
             const currentUTCTime = await getCurrentUTCTimestamp();
+
+            if (shortCode) {
+                const shortCodeObject = {
+                    shortCode: shortCode
+                };
+                findAmenity.shortCode.unshift(shortCodeObject);
+            }
 
             if (amenityName) {
                 const amenityNameObject = {

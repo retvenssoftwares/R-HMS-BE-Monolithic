@@ -5,8 +5,8 @@ import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/
 const patchAmenity = async (req, res) => {
 
     try {
-        const { userId } = req.query
-        const { shortCode, amenityId, amenityName, amenityType, amenityIcon, amenityIconLink } = req.body;
+        const { userId,amenityId} = req.query
+        const { shortCode, amenityName, amenityType, amenityIcon, amenityIconLink } = req.body;
 
         const authCodeValue = req.headers['authcode'];
 

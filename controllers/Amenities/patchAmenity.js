@@ -5,8 +5,8 @@ import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/
 const patchAmenity = async (req, res) => {
 
     try {
-        const { userId } = req.query
-        const { shortCode, amenityId, amenityName, amenityType, amenityIcon, amenityIconLink } = req.body;
+        const { userId,amenityId} = req.query
+        const { shortCode, amenityName, amenityType, amenityIcon, amenityIconLink } = req.body;
 
         const authCodeValue = req.headers['authcode'];
 
@@ -22,10 +22,15 @@ const patchAmenity = async (req, res) => {
                 return res.status(404).json({ message: "Amenity not found", statuscode: 404 });
             }
 
-            if (shortCode) {
-                findAmenity.shortCode = shortCode;
-            }
+       
             const currentUTCTime = await getCurrentUTCTimestamp();
+
+            if (shortCode) {
+                const shortCodeObject = {
+                    shortCode: shortCode
+                };
+                findAmenity.shortCode.unshift(shortCodeObject);
+            }
 
             if (amenityName) {
                 const amenityNameObject = {

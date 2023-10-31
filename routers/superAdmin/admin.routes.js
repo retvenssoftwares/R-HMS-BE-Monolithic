@@ -33,6 +33,10 @@ import getPropertyType from '../../controllers/superAdmin/getPropertyType.js'
 import designation from '../../controllers/superAdmin/postDesignation.js'
 import getDesignation from '../../controllers/superAdmin/getDesignation.js'
 
+//AmenityType
+import postAmenityType from '../../controllers/superAdmin/postAmenityType.js'
+import getAmenityType from '../../controllers/superAdmin/getAmenityType.js'
+
 
 ////////////////////////////////////////////////////
 //bedType
@@ -67,5 +71,9 @@ router.get("/api/getPropertyType",getPropertyType)
 //designation
 router.post("/api/postDesignation",designation)
 router.get("/api/getDesignation",getDesignation)
+
+//Amenitytype
+router.post("/api/postAmenityType",postAmenityType)
+router.get("/api/getAmenityType",getAmenityType)
 
 export default router;

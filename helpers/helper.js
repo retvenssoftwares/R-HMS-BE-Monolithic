@@ -76,7 +76,17 @@ async function uploadMultipleImagesToS3(files) {
 }
 
 
-
+//function to convert into iso format date
+function convertToISODate(dateString) {
+  const parts = dateString.split('/');
+  if (parts.length === 3) {
+    const day = parts[0];
+    const month = parts[1] - 1; // Months in JavaScript are zero-indexed (0-11)
+    const year = parts[2];
+    return new Date(year, month, day).toISOString();
+  }
+  return null; // Handle invalid date string
+}
 
 //function to get utc time
 async function getCurrentUTCTimestamp() {
@@ -153,7 +163,7 @@ function convertTimestampToCustomFormat(utcTimestamp, targetTimeZone) {
   const zonedTimestamp = utcToZonedTime(utcTimestamp, targetTimeZone);
 
   // Define the custom format
-  const customFormat = "dd/MM/yyyy HH:mm:ss";
+  const customFormat = "yyyy-MM-dd HH:mm:ss";
 
   // Format the zoned timestamp into the custom format
   const formattedTimestamp = format(zonedTimestamp, customFormat, {
@@ -198,4 +208,4 @@ const verifyUser = async (userId, authCodeValue) => {
 };
 
 
-export { getCurrentUTCTimestamp, findUserByUserIdAndToken, verifyUser, uploadImageToS3, convertTimestampToCustomFormat, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt };
+export { getCurrentUTCTimestamp, convertToISODate, findUserByUserIdAndToken, verifyUser, uploadImageToS3, convertTimestampToCustomFormat, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt };

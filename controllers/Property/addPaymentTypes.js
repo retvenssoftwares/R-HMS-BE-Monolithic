@@ -28,6 +28,7 @@ const addPaymentType = async (req, res) => {
                     paymentMethodName: paymentMethodName,
                     logId: randomstring.generate(10)
                 }],
+              
                 receivedTo: [{
                     receivedTo: receivedTo,
                     logId: randomstring.generate(10)

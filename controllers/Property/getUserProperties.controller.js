@@ -1,6 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 import propertyModel from "../../models/property.js";
+import roomTypeModel from '../../models/roomType.js'
 import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const userProperty = async (req, res) => {
@@ -9,15 +10,31 @@ const userProperty = async (req, res) => {
         const userId = req.query.userId;
 
         const authCodeValue = req.headers['authcode']
-        const userProperties = await propertyModel.find({ userId: userId });
+        const userProperties = await propertyModel.find({ userId: userId }, 'hotelRcode propertyName propertyType city country amenities -_id createdOn propertyId').lean();
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
+
 
         if (result.success) {
             if (userProperties.length > 0) {
-                const convertedProperties = userProperties.map(property => {
+                const convertedPropertiesPromises = userProperties.map(async (property) => {
                     const convertedDateUTC = convertTimestampToCustomFormat(property.createdOn, targetTimeZone);
-                    return { ...property._doc, createdOn: convertedDateUTC };
+                    const amenitiesCount = property.amenities[0].amenities
+                    // console.log(amenitiesCount.length)
+                    const propertyRoomsCount = await roomTypeModel.find({ propertyId: property.propertyId }).select('roomTypeId').countDocuments();
+                    return {
+                        ...property._doc,
+                        createdOn: convertedDateUTC,
+                        hotelRcode: property.hotelRCode,
+                        propertyName: property.propertyName[0].propertyName || '',
+                        city: property.city[0].city || '',
+                        country: property.country || '',
+                        propertyId: property.propertyId,
+                        totalRooms: propertyRoomsCount,
+                        amenities: amenitiesCount.length
+                    };
                 });
+
+                const convertedProperties = await Promise.all(convertedPropertiesPromises);
 
                 return res.status(200).json({ data: convertedProperties, statuscode: 200 });
             } else {

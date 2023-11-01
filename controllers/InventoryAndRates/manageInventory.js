@@ -38,14 +38,15 @@ const manageInventory = async (req, res) => {
       .select("numberOfRooms");
     let baseInventory = findRoom.numberOfRooms[0].numberOfRooms;
 
-   
+ 
  
 
     // Calculate the baseInventory + inventory value
-    const totalInventory = baseInventory + inventory;
+ //  const totalInventory = baseInventory + latestInventory;
+ 
 
     // Calculate the result of baseInventory - inventory for blockedInventory
-    const totalBlockedInventory = baseInventory - inventory;
+    //const totalBlockedInventory = baseInventory - inventory;
 
     // Create the inventory record if it doesn't exist
     if (!findInventory) {
@@ -90,20 +91,30 @@ const manageInventory = async (req, res) => {
           // If the date exists, update the addedInventory
           findInventory.manageInventory.addedInventory[
             existingEntryIndex
-          ].addedInventory += inventory;
+          ].addedInventory = inventory;
         } else {
           // If the date does not exist, add a new entry to addedInventory
           findInventory.manageInventory.addedInventory.push({
             date: dateString,
-            addedInventory: totalInventory,
+            addedInventory: inventory,
           });
         }
       }
       //const existingEntry = findInventory.manageInventory.blockedInventory.find((entry) => entry.date === dateString);
+      const existingEntryIndex =
+      findInventory.manageInventory.addedInventory.find(
+        (entry) => entry.date === dateString
+      );
+      const addedInventory =existingEntryIndex.addedInventory
+
+     // console.log(addedInventory)
+
+      const totalInventory = baseInventory + addedInventory;
+      console.log(totalInventory)
 
       if (isBlockedInventory) {
         // Update the blockedInventory array
-        if (baseInventory < inventory) {
+        if (totalInventory < inventory) {
           return res.status(400).json({
             message: "Inventory value cannot be greater than baseInventory",
             statuscode: 400,
@@ -119,12 +130,12 @@ const manageInventory = async (req, res) => {
           // If the date exists, update the blockedInventory
           findInventory.manageInventory.blockedInventory[
             existingEntryIndex
-          ].blockedInventory -= inventory;
+          ].blockedInventory = inventory;
         } else {
           // If the date does not exist, add a new entry to blockedInventory
           findInventory.manageInventory.blockedInventory.push({
             date: dateString,
-            blockedInventory: totalBlockedInventory,
+            blockedInventory: inventory,
           });
         }
       }

@@ -26,11 +26,11 @@ const getPaymentTypes = async (req, res) => {
                         ...paymentType._doc,
                         createdOn: convertedDateUTC,
                         createdBy:paymentType.createdBy,
-                        paymentMethodName: paymentType.paymentMethodName[0].paymentMethodName || {},
+                        paymentMethodName: paymentType.paymentMethodName[0].paymentMethodName || '',
                         modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn || '',
-                        receivedTo: paymentType.receivedTo[0].receivedTo || {},
-                        shortCode: paymentType.shortCode[0].shortCode || {}
+                        receivedTo: paymentType.receivedTo[0].receivedTo || '',
+                        shortCode: paymentType.shortCode[0].shortCode || ''
                     };
                 });
 

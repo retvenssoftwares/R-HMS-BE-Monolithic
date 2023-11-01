@@ -13,6 +13,7 @@ import amenityRoutes from "./routers/Amenities/amenity.routes.js"
 import superAdminRoutes from "./routers/superAdmin/admin.routes.js"
 import testR from './routers/test.router.js'
 import bulkUpdateRoutes from './routers/InventoryAndRates/manageInventoryRates.routes.js'
+
 const app = express();
 app.use(cors({
   origin: '*'

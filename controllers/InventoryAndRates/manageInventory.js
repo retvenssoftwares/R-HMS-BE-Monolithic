@@ -114,7 +114,7 @@ const manageInventory = async (req, res) => {
 
       if (isBlockedInventory) {
         // Update the blockedInventory array
-        if (totalInventory < inventory) {
+        if (totalInventory < inventory ) {
           return res.status(400).json({
             message: "Inventory value cannot be greater than baseInventory",
             statuscode: 400,

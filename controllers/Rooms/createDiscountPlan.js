@@ -93,6 +93,7 @@ const createDiscountPlan = async (req, res) => {
             };
             const responseString = JSON.stringify(responseData)
 
+            //logs
             const utcTime = await getCurrentUTCTimestamp()
             const discountPlanLogs = new discountPlanLogsModel({
                 propertyId: propertyId,

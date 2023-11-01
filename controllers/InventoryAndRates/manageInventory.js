@@ -38,8 +38,8 @@ const manageInventory = async (req, res) => {
       .select("numberOfRooms");
     let baseInventory = findRoom.numberOfRooms[0].numberOfRooms;
 
-   
- 
+
+
 
     // Calculate the baseInventory + inventory value
     const totalInventory = baseInventory + inventory;
@@ -79,57 +79,62 @@ const manageInventory = async (req, res) => {
       const dateString = date.toISOString().split("T")[0];
       // console.log(dateString)
       if (!days || days.includes(date.toLocaleDateString("en-US", { weekday: "long" }))) {
-      if (isAddedInventory) {
-        // Find the index of the date in addedInventory, if it exists
-        const existingEntryIndex =
-          findInventory.manageInventory.addedInventory.findIndex(
-            (entry) => entry.date === dateString
-          );
+        if (isAddedInventory) {
+          // Find the index of the date in addedInventory, if it exists
+          const existingEntryIndex =
+            findInventory.manageInventory.addedInventory.findIndex(
+              (entry) => entry.date === dateString
+            );
 
-        if (existingEntryIndex !== -1) {
-          // If the date exists, update the addedInventory
-          findInventory.manageInventory.addedInventory[
-            existingEntryIndex
-          ].addedInventory += inventory;
-        } else {
-          // If the date does not exist, add a new entry to addedInventory
-          findInventory.manageInventory.addedInventory.push({
-            date: dateString,
-            addedInventory: totalInventory,
-          });
+          if (existingEntryIndex !== -1) {
+            // If the date exists, update the addedInventory
+            findInventory.manageInventory.addedInventory[
+              existingEntryIndex
+            ].addedInventory += inventory;
+          } else {
+            // If the date does not exist, add a new entry to addedInventory
+            findInventory.manageInventory.addedInventory.push({
+              date: dateString,
+              addedInventory: totalInventory,
+            });
+          }
         }
-      }
-      //const existingEntry = findInventory.manageInventory.blockedInventory.find((entry) => entry.date === dateString);
+        //const existingEntry = findInventory.manageInventory.blockedInventory.find((entry) => entry.date === dateString);
 
-      if (isBlockedInventory) {
-        // Update the blockedInventory array
-        if (baseInventory < inventory) {
-          return res.status(400).json({
-            message: "Inventory value cannot be greater than baseInventory",
-            statuscode: 400,
-          });
-        }
-        const existingEntryIndex =
-          findInventory.manageInventory.blockedInventory.findIndex(
-            (entry) => entry.date === dateString
-          );
-     
+        if (isBlockedInventory) {
+          // Update the blockedInventory array
+          if (baseInventory < inventory) {
+            return res.status(400).json({
+              message: "Inventory value cannot be greater than baseInventory",
+              statuscode: 400,
+            });
+          }
+          const existingEntryIndex =
+            findInventory.manageInventory.blockedInventory.findIndex(
+              (entry) => entry.date === dateString
+            );
 
-        if (existingEntryIndex !== -1) {
-          // If the date exists, update the blockedInventory
-          findInventory.manageInventory.blockedInventory[
-            existingEntryIndex
-          ].blockedInventory -= inventory;
-        } else {
-          // If the date does not exist, add a new entry to blockedInventory
-          findInventory.manageInventory.blockedInventory.push({
-            date: dateString,
-            blockedInventory: totalBlockedInventory,
-          });
+          const existingEntry = findInventory.manageInventory.blockedInventory.find((entry) => entry.date = dateString)
+          var exis = existingEntry.blockedInventory
+          console.log(exis)
+          if (existingEntryIndex !== -1) {
+            // If the date exists, update the blockedInventory
+            if (exis > inventory) {
+              return res.status(400).json({ message: "Inventory value cannot be greater than the existing value", statuscode: 400 })
+            }
+            findInventory.manageInventory.blockedInventory[
+              existingEntryIndex
+            ].blockedInventory -= inventory;
+          } else {
+            // If the date does not exist, add a new entry to blockedInventory
+            findInventory.manageInventory.blockedInventory.push({
+              date: dateString,
+              blockedInventory: totalBlockedInventory,
+            });
+          }
         }
       }
     }
-}
 
     // Save the updated inventory document
     await findInventory.save();

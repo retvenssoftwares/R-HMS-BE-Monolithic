@@ -53,7 +53,7 @@ const editProperty = async (req, res) => {
     res.json(updatedDocument);
   } catch (error) {
     console.error('Update error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 

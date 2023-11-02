@@ -203,10 +203,6 @@ const propertySchema = new Schema({
         type: String,
         default: ""
     },
-    propertyTypeName: {
-        type: String,
-        default: ""
-    },
     starCategory: {
         type: String,
         default: ''

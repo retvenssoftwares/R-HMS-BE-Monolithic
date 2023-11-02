@@ -15,7 +15,7 @@ const editUserOnboarding = async (req, res) => {
     }
     try {
         if (propertyTypeSOC === 'Single') {
-            const { propertyAddress1, propertyName, propertyType, propertyTypeName, postCode, state, city, starCategory, ratePercent, baseCurrency, websiteUrl, roomsInProperty, taxName, registrationNumber } = req.body
+            const { propertyAddress1, propertyName, propertyType, propertyTypeName, postCode, country, state, city, starCategory, ratePercent, baseCurrency, websiteUrl, roomsInProperty, taxName, registrationNumber } = req.body
 
             const elementToUpdate = findRecord.singlePropertyDetails[0];
             let imageUrl = ''
@@ -56,7 +56,7 @@ const editUserOnboarding = async (req, res) => {
                 modifiedDate: (await getCurrentUTCTimestamp()).toString()
             }
 
-            
+
             elementToUpdate.postCode.unshift(postCodeObject);
             const stateObject = {
                 state: state,
@@ -67,9 +67,10 @@ const editUserOnboarding = async (req, res) => {
                 city: city,
                 modifiedDate: (await getCurrentUTCTimestamp()).toString()
             }
-
-
             elementToUpdate.city.unshift(cityObject);
+
+            elementToUpdate.country = country
+
             const propertyDescriptionObject = {
                 propertyDescription: req.body.propertyDescription,
                 modifiedDate: (await getCurrentUTCTimestamp()).toString()
@@ -79,6 +80,7 @@ const editUserOnboarding = async (req, res) => {
             elementToUpdate.dateUTC = (await getCurrentUTCTimestamp()).toString();
             elementToUpdate.baseCurrency = baseCurrency
             elementToUpdate.websiteUrl = websiteUrl
+            elementToUpdate.country = country
             elementToUpdate.propertyId = propertyId
             findRecord.propertyTypeSOC = propertyTypeSOC
             await findRecord.save();

@@ -5,8 +5,7 @@ import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/
 
 const addPaymentType = async (req, res) => {
     try {
-        const { userId } = req.query
-        const { shortCode, paymentMethodName, paymentType, propertyId, receivedTo } = req.body
+        const {userId, shortCode, paymentMethodName, propertyId, receivedTo } = req.body
         const authCodeValue = req.headers['authcode']
 
         const findUser = await verifiedUser.findOne({ userId })
@@ -29,10 +28,7 @@ const addPaymentType = async (req, res) => {
                     paymentMethodName: paymentMethodName,
                     logId: randomstring.generate(10)
                 }],
-                paymentType: [{
-                    paymentType: paymentType,
-                    logId: randomstring.generate(10)
-                }],
+              
                 receivedTo: [{
                     receivedTo: receivedTo,
                     logId: randomstring.generate(10)

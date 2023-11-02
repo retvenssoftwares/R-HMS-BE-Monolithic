@@ -31,7 +31,7 @@ const patchSeason = async (req, res) => {
                     shortCode: shortCode,
                     logId: Randomstring.generate(10)
                 };
-                findSeason.seasonName.unshift(shortCodeObject);
+                findSeason.shortCode.unshift(shortCodeObject);
             }
 
             const currentUTCTime = await getCurrentUTCTimestamp();

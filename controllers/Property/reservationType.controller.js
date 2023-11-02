@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import verifiedUser from "../../models/verifiedUsers.js";
 import reservationModel from "../../models/reservationType.js";
-import { getCurrentUTCTimestamp } from "../../helpers/helper.js";
+import { getCurrentUTCTimestamp,findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const postReservationType = async (req, res) => {
   try {
@@ -19,13 +19,12 @@ const postReservationType = async (req, res) => {
     if (!findUser) {
       return res.status(400).json({ message: "User not found or invalid userId", statuscode: 400 })
     }
-    const userToken = findUser.authCode
+   
 
-    if (authCodeValue !== userToken) {
-      return res.status(400).json({ message: "Invalid authentication token", statuscode: 400 });
-    }
+  
     let userRole = findUser.role[0].role
-
+    const result = await findUserByUserIdAndToken(userId, authCodeValue);
+    if (result.success) {
     const newReservation = new reservationModel({
 
       propertyId,
@@ -45,7 +44,9 @@ const postReservationType = async (req, res) => {
     });
     await newReservation.save();
     return res.status(200).json({ message: "New reservation added successfully", statuscode: 200 });
-
+  } else {
+    return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
+}
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Internal Server Error", statuscode: 500 });

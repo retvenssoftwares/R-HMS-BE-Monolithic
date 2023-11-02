@@ -34,12 +34,16 @@ const identityType = async (req, res) => {
                     } else {
                         convertedModifiedOn = convertTimestampToCustomFormat(identity.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
+
+                    const modifiedBy = identity.modifiedBy.length > 0 ? identity.modifiedBy[0].modifiedBy : "";
                     return {
                         ...identity._doc,
                         createdOn: convertedDateUTC,
-                        shortCode: identity.shortCode[0] || {},
-                        identityType: identity.identityType[0],
-                        modifiedBy: identity.modifiedBy[0],
+                        identityTypeId: identity.identityTypeId || '',
+                        createdBy: identity.createdBy,
+                        shortCode: identity.shortCode[0].shortCode || '',
+                        identityType: identity.identityType[0].identityType || '',
+                        modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn
                     };
 
@@ -47,7 +51,7 @@ const identityType = async (req, res) => {
 
                 return res.status(200).json({ data: convertedIdentity, statuscode: 200 });
             } else {
-                return res.status(404).json({ error: "No identities found", statuscode: 404 });
+                return res.status(404).json({ message: "No identities found", statuscode: 404 });
             }
 
         } else {
@@ -55,7 +59,7 @@ const identityType = async (req, res) => {
         }
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ error: "Internal Server Error", statusCode: 500 });
+        return res.status(500).json({ message: "Internal Server Error", statusCode: 500 });
     }
 };
 

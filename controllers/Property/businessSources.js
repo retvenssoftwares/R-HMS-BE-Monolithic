@@ -2,10 +2,10 @@ import { convertTimestampToCustomFormat, getCurrentUTCTimestamp, findUserByUserI
 import businessSourcesModel from "../../models/businessSources.js";
 import verifying from "../../models/verifiedUsers.js"
 import randomString from "randomstring"
-
+//post
 export const addBusinessSources = async (req, res) => {
     try {
-        const userId = req.query.userId
+        const userId = req.body.userId
         const findUser = await verifying.findOne({ userId: userId })
 
         if (!findUser) {
@@ -49,7 +49,7 @@ export const addBusinessSources = async (req, res) => {
 
 }
 
-
+//update
 export const updateBusinessSources = async (req, res) => {
     try {
         const { userId, sourceId } = req.query
@@ -139,6 +139,7 @@ export const updateBusinessSources = async (req, res) => {
 
 }
 
+//get
 export const getBusinessSources = async (req, res) => {
     try {
         const { userId, propertyId, targetTimeZone } = req.query
@@ -169,11 +170,12 @@ export const getBusinessSources = async (req, res) => {
                     return {
                         ...businessSource._doc,
                         createdOn: convertedDateUTC,
+                        sourceId: businessSource.sourceId || '',
                         createdBy: businessSource.createdBy,
-                        sourceName: businessSource.sourceName[0],
-                        modifiedBy: businessSource.modifiedBy[0],
+                        sourceName: businessSource.sourceName[0].sourceName || {},
+                        modifiedBy: businessSource.modifiedBy[0].modifiedBy || {},
                         modifiedOn: convertedModifiedOn || '',
-                        shortCode: businessSource.shortCode[0],
+                        shortCode: businessSource.shortCode[0].shortCode || {},
                     };
                 });
 

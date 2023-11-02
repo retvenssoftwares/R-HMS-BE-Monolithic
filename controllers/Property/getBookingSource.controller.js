@@ -21,22 +21,23 @@ const bookingSourcesGet = async (req, res) => {
                     } else {
                         convertedModifiedOn = convertTimestampToCustomFormat(bookingSource.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
-
+                    const modifiedBy = bookingSource.modifiedBy.length > 0 ? bookingSource.modifiedBy[0].modifiedBy : "";
                     return {
                         ...bookingSource._doc,
                         createdOn: convertedDateUTC,
+                        bookingSourceId: bookingSource.bookingSourceId || '',
                         createdBy: bookingSource.createdBy,
-                        bookingSource: bookingSource.bookingSource[0],
-                        modifiedBy: bookingSource.modifiedBy[0],
+                        bookingSource: bookingSource.bookingSource[0].bookingSource || '',
+                        modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn || '',
-                        shortCode: bookingSource.shortCode[0],
+                        shortCode: bookingSource.shortCode[0].shortCode || '',
                     };
                 });
 
                 return res.status(200).json({ data: convertedBookingSources, statuscode: 200 });
             }
             else {
-                return res.status(404).json({ error: "No booking sources found", statuscode: 404 });
+                return res.status(404).json({ message: "No booking sources found", statuscode: 404 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

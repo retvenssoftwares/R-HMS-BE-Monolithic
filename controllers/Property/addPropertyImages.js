@@ -44,6 +44,8 @@ const uploadPropertyImages = async (req, res) => {
                 { new: true }
             );
 
+            // console.log(req.body)
+            // console.log(req.files)
             if (updateRecord) {
                 return res.status(200).json({ message: "Image successfully uploaded", statuscode: 200 });
             } else {

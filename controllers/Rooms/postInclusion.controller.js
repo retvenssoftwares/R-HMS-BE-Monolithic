@@ -64,7 +64,7 @@ const postInclusion = async (req, res) => {
     return res.status(200).json({ message: "New Inclusion added successfully", statuscode: 200 });
 
   }else {
-      return res.status(result.statuscode).json({ message: result.message });
+      return res.status(result.statuscode).json({ message: result.message,statuscode: result.statuscode });
 
   }
   } 

@@ -21,19 +21,22 @@ const getReservation = async (req, res) => {
                         convertedModifiedOn = convertTimestampToCustomFormat(reservations.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
 
+                    const modifiedBy = reservations.modifiedBy.length > 0 ? reservations.modifiedBy[0].modifiedBy : "";
+
                     return {
                         ...reservations._doc,
                         createdOn: convertedDateUTC,
-                        reservationName: reservations.reservationName[0] || {},
-                        status: reservations.status[0] || {},
-                        modifiedBy: reservations.modifiedBy[0] || {},
+                        reservationName: reservations.reservationName[0].reservationName || '',
+                        status: reservations.status[0].status || '',
+                        modifiedBy: modifiedBy,
+                        reservationTypeId: reservations.reservationTypeId || '',
                         modifiedOn: convertedModifiedOn,
                     };
                 });
 
                 return res.status(200).json({ data: convertedReservation, statuscode: 200 });
             } else {
-                return res.status(404).json({ error: "No reservations found", statuscode: 404 });
+                return res.status(404).json({ message: "No reservations found", statuscode: 404 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

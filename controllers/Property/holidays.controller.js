@@ -7,7 +7,7 @@ import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from "../../helpers/
 
 const postHoliday = async (req, res) => {
   try {
-    const userId = req.query.userId
+    const userId = req.body.userId
     const {
       shortCode,
       propertyId,
@@ -19,7 +19,7 @@ const postHoliday = async (req, res) => {
     const authCodeValue = req.headers['authcode']
     const findUser = await verifiedUser.findOne({ userId })
     if (!findUser) {
-      return res.status(400).json({ message: "User not found or invalid userId", statuscode: 400 })
+      return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 })
     }
 
     const result = await findUserByUserIdAndToken(userId, authCodeValue)

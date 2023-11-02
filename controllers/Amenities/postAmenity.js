@@ -8,26 +8,28 @@ import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from "../../helpers/
 const postAmenity = async (req, res) => {
    try {
 
-      const { userId } = req.query;
-      const authCodeValue = req.headers['authcode']
+   
+      const {
+         userId,
+         shortCode,
+         amenityName,
+         propertyId,
+         amenityType,
+         amenityIcon,
+         amenityIconLink
+      } = req.body;
 
+      const authCodeValue = req.headers['authcode']
+      const findUser = await verifiedUser.findOne({ userId:userId })
+
+      if (!findUser || !userId) {
+         return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 });
+       }
+       let userRole = findUser.role[0].role
       const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
-      if (result.success) {
-         const {
-            shortCode,
-            amenityName,
-            propertyId,
-            amenityType,
-            amenityIcon,
-            amenityIconLink
-         } = req.body;
-
-         const findUser = await verifiedUser.findOne({ userId })
-         if (findUser) {
-            let userRole = findUser.role[0].role
+      if (result.success) {      
             const newAmenity = new amenityModel({
-               shortCode,
                propertyId,
                createdBy: userRole,
                createdOn: await getCurrentUTCTimestamp(),
@@ -37,6 +39,11 @@ const postAmenity = async (req, res) => {
                amenityName: [
                   {
                      amenityName: amenityName
+                  }
+               ],
+               shortCode: [
+                  {
+                     shortCode: shortCode
                   }
                ],
 
@@ -53,12 +60,11 @@ const postAmenity = async (req, res) => {
             });
             await newAmenity.save();
             return res.status(200).json({ message: "New amenity added successfully", statuscode: 200 });
-         } else {
-            return res.status(404).json({ message: "amenity not found", statuscode: 404 });
+         } 
+         else {
+            return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
          }
-      } else {
-         return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
-      }
+      
    } catch (err) {
       console.log(err);
       res.status(500).json({ message: "Internal Server Error", statuscode: 500 });

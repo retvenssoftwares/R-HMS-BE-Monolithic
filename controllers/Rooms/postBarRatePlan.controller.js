@@ -110,7 +110,7 @@ const postBarRatePlan = async (req, res) => {
       });
     }
     else{
-      return res.status(result.statuscode).json({ message: result.message });
+      return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode  });
     }
   } catch (err) {
     console.log(err);

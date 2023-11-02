@@ -20,23 +20,26 @@ const getSeasons = async (req, res) => {
                     } else {
                         convertedModifiedOn = convertTimestampToCustomFormat(seasons.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
-                      
+
+                    const modifiedBy = seasons.modifiedBy.length > 0 ? seasons.modifiedBy[0].modifiedBy : "";
+
                     return {
                         ...seasons._doc,
                         createdOn: convertedDateUTC,
-                        shortCode: seasons.shortCode[0] || {},
-                        seasonName: seasons.seasonName[0] || {},
-                        modifiedBy: seasons.modifiedBy[0] || {},
+                        shortCode: seasons.shortCode[0].shortCode || '',
+                        seasonName: seasons.seasonName[0].seasonName || '',
+                        modifiedBy: modifiedBy,
+                        seasonId: seasons.seasonId || '',
                         modifiedOn: convertedModifiedOn,
-                        startDate: seasons.startDate[0] || {},
-                        endDate: seasons.endDate[0] || {},
-                        days: seasons.days[0] || {}
+                        startDate: seasons.startDate[0].startDate || '',
+                        endDate: seasons.endDate[0].endDate || '',
+                        days: seasons.days[0].days || ''
                     };
                 });
 
                 return res.status(200).json({ data: convertedSeasons, statuscode: 200 });
             } else {
-                return res.status(404).json({ error: "No seasons found", statuscode: 404 });
+                return res.status(404).json({ message: "No seasons found", statuscode: 404 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

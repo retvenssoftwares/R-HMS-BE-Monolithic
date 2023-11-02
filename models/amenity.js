@@ -2,10 +2,7 @@ import mongoose from 'mongoose';
 import db1 from "../db/conn.js"
 const amenitySchema = new mongoose.Schema({
 
-    shortCode: {
-        type: String,
-        default: ''
-    },
+  
 
     propertyId: {
         type: String,
@@ -28,6 +25,13 @@ const amenitySchema = new mongoose.Schema({
             default: ''
         }
     }],
+
+    shortCode:[{
+    shortCode: {
+        type: String,
+        default: ''
+    },
+}],
 
     modifiedOn: [{
         modifiedOn: {

@@ -4,12 +4,11 @@ import requestIp from "request-ip"
 import discountPlanModel from "../../models/discountPlan.js";
 import userModel from "../../models/verifiedUsers.js";
 import discountPlanLogsModel from "../../models/LogModels/discountPlanLogs.js";
-import { getCurrentUTCTimestamp,findUserByUserIdAndToken } from "../../helpers/helper.js"
+import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from "../../helpers/helper.js"
 const createDiscountPlan = async (req, res) => {
     try {
-        
+        const { userId } = req.query
         const {
-            userId,
             propertyId,
             discountName,
             shortCode,
@@ -24,9 +23,9 @@ const createDiscountPlan = async (req, res) => {
         } = req.body;
         const authCodeValue = req.headers['authcode']
 
-        const user = await userModel.findOne({userId:userId})
-        if(!user){
-          return res.status(404).json({message:"user not found"})
+        const user = await userModel.findOne({ userId: userId })
+        if (!user) {
+            return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 })
         }
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
         if (result.success) {
@@ -94,6 +93,7 @@ const createDiscountPlan = async (req, res) => {
             };
             const responseString = JSON.stringify(responseData)
 
+            //logs
             const utcTime = await getCurrentUTCTimestamp()
             const discountPlanLogs = new discountPlanLogsModel({
                 propertyId: propertyId,

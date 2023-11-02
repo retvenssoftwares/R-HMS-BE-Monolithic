@@ -1,8 +1,39 @@
 import ratesAndRestrictions from '../../models/manageRatesAndRestrictions.js'
-
+import {findUserByUserIdAndToken} from "../../helpers/helper.js"
 const manageRatesRestrictions = async (req, res) => {
     try {
-        const { propertyId, roomTypeId, startDate, rateTypeId, endDate, isBaseRate, isExtraAdultRate, isExtraChildRate, baseRate, extraAdultRate, extraChildRate, source } = req.body
+        const {
+            userId,
+            propertyId,
+            roomTypeId,
+            startDate,
+            ratePlanId,
+            endDate,
+            isBaseRate,
+            isExtraAdultRate,
+            isExtraChildRate,
+            baseRate,
+            extraAdultRate,
+            extraChildRate,
+            source,
+            stopSell,
+            isStopSell,
+            isCOA,
+            COA,
+            isCOD,
+            COD,
+            isMinimumLOS,
+            minimumLOS,
+            isMaximumLOS,
+            maximumLOS,
+            days
+        } = req.body
+
+        const authCodeValue = req.headers['authcode']
+
+        const result = await findUserByUserIdAndToken(userId, authCodeValue);
+
+        if(result.success){
         // Get today's date as a string in "yyyy-mm-dd" format
         const today = new Date().toISOString().split('T')[0];
 
@@ -15,7 +46,7 @@ const manageRatesRestrictions = async (req, res) => {
         }
 
         // Find the rate document for the specified roomTypeId
-        let findRatesAndRestrictions = await ratesAndRestrictions.findOne({ roomTypeId: roomTypeId, propertyId: propertyId, rateTypeId: rateTypeId });
+        let findRatesAndRestrictions = await ratesAndRestrictions.findOne({ roomTypeId: roomTypeId, propertyId: propertyId, ratePlanId: ratePlanId });
 
         // Create the inventory record if it doesn't exist
         if (!findRatesAndRestrictions) {
@@ -53,6 +84,15 @@ const manageRatesRestrictions = async (req, res) => {
             date.setDate(date.getDate() + i);
 
             const dateString = date.toISOString().split('T')[0];
+
+            // Check if the day of the week is in the excluded list
+            if (days) {
+                const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
+                if (!days.includes(dayOfWeek)) {
+                    continue; // Skip updating rates and restrictions for excluded days
+                }
+            }
+
             // console.log(dateString)
 
             if (isBaseRate) {
@@ -75,7 +115,7 @@ const manageRatesRestrictions = async (req, res) => {
                     existingEntry.extraAdultRate = extraAdultRate;
                 } else {
                     // If the date does not exist, add a new entry to blockedInventory
-                    findRatesAndRestrictions.manageInventory.blockedInventory.push({ date: dateString, extraAdultRate: extraAdultRate });
+                    findRatesAndRestrictions.manageRates.extraAdultRate.push({ date: dateString, extraAdultRate: extraAdultRate });
                 }
             }
 
@@ -87,7 +127,57 @@ const manageRatesRestrictions = async (req, res) => {
                     existingEntry.extraChildRate = extraChildRate;
                 } else {
                     // If the date does not exist, add a new entry to blockedInventory
-                    findRatesAndRestrictions.manageInventory.blockedInventory.push({ date: dateString, extraChildRate: extraChildRate });
+                    findRatesAndRestrictions.manageRates.extraChildRate.push({ date: dateString, extraChildRate: extraChildRate });
+                }
+            }
+
+            if (isStopSell) {
+                const existingEntry = findRatesAndRestrictions.manageRestrictions.stopSell.find(entry => entry.date === dateString);
+
+                if (existingEntry) {
+                    existingEntry.stopSell = stopSell;
+                } else {
+                    findRatesAndRestrictions.manageRestrictions.stopSell.push({ date: dateString, stopSell: stopSell });
+                }
+            }
+
+            if (isCOA) {
+                const existingEntry = findRatesAndRestrictions.manageRestrictions.COA.find(entry => entry.date === dateString);
+
+                if (existingEntry) {
+                    existingEntry.COA = COA;
+                } else {
+                    findRatesAndRestrictions.manageRestrictions.COA.push({ date: dateString, COA: COA });
+                }
+            }
+
+            if (isCOD) {
+                const existingEntry = findRatesAndRestrictions.manageRestrictions.COD.find(entry => entry.date === dateString);
+
+                if (existingEntry) {
+                    existingEntry.COD = COD;
+                } else {
+                    findRatesAndRestrictions.manageRestrictions.COD.push({ date: dateString, COD: COD });
+                }
+            }
+
+            if (isMaximumLOS) {
+                const existingEntry = findRatesAndRestrictions.manageRestrictions.maximumLOS.find(entry => entry.date === dateString);
+
+                if (existingEntry) {
+                    existingEntry.maximumLOS = maximumLOS;
+                } else {
+                    findRatesAndRestrictions.manageRestrictions.maximumLOS.push({ date: dateString, maximumLOS: maximumLOS });
+                }
+            }
+
+            if (isMinimumLOS) {
+                const existingEntry = findRatesAndRestrictions.manageRestrictions.minimumLOS.find(entry => entry.date === dateString);
+
+                if (existingEntry) {
+                    existingEntry.minimumLOS = minimumLOS;
+                } else {
+                    findRatesAndRestrictions.manageRestrictions.minimumLOS.push({ date: dateString, minimumLOS: minimumLOS });
                 }
             }
         }
@@ -96,7 +186,10 @@ const manageRatesRestrictions = async (req, res) => {
         await findRatesAndRestrictions.save();
 
         return res.status(200).json({ message: "Rates and restrictions updated successfully", statuscode: 200 });
-
+    
+    }else{
+        return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
+    }
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: "Internal server error", statuscode: 500 });

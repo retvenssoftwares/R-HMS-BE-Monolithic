@@ -29,6 +29,7 @@ const getSeasons = async (req, res) => {
                         shortCode: seasons.shortCode[0].shortCode || '',
                         seasonName: seasons.seasonName[0].seasonName || '',
                         modifiedBy: modifiedBy,
+                        seasonId: seasons.seasonId || '',
                         modifiedOn: convertedModifiedOn,
                         startDate: seasons.startDate[0].startDate || '',
                         endDate: seasons.endDate[0].endDate || '',

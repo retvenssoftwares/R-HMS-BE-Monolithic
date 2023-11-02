@@ -37,6 +37,7 @@ const userProperty = async (req, res) => {
                 const firstExtraAdultRate = room.extraAdultRate[0].extraAdultRate;
                 const firstExtraChildRate = room.extraChildRate[0].extraChildRate;
                 const amenitiesCount = room.amenities[0].amenities.length;
+                const roomTypeId = room.roomTypeId || ''
                 // Include the converted date and first elements in the property object
 
                 return {
@@ -58,7 +59,8 @@ const userProperty = async (req, res) => {
                     maximumRate: firstMaximumRate,
                     extraAdultRate: firstExtraAdultRate,
                     extraChildRate: firstExtraChildRate,
-                    amenities:amenitiesCount
+                    amenities:amenitiesCount,
+                    roomTypeId: roomTypeId
                 };
             });
 

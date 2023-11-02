@@ -139,10 +139,11 @@ export const getTransportation = async (req, res) => {
                     return {
                         ...transportationType._doc,
                         createdOn: convertedDateUTC,
-                        createdBy:transportationType.createdBy,
+                        createdBy: transportationType.createdBy,
                         propertyId: transportationType.propertyId,
-                        transportationModeName: transportationType.transportationModeName[0].transportationModeName ||'',
+                        transportationModeName: transportationType.transportationModeName[0].transportationModeName || '',
                         modifiedBy: modifiedBy,
+                        transportationId: transportationType.transportationId || '',
                         modifiedOn: convertedModifiedOn || '',
                         shortCode: transportationType.shortCode[0].shortCode || ''
                     };

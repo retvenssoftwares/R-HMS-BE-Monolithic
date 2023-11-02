@@ -22,7 +22,7 @@ const getSeasons = async (req, res) => {
                     }
 
                     const modifiedBy = seasons.modifiedBy.length > 0 ? seasons.modifiedBy[0].modifiedBy : "";
-                      
+
                     return {
                         ...seasons._doc,
                         createdOn: convertedDateUTC,

@@ -1,8 +1,9 @@
-import moment from 'moment';
+
 import bookingModel from "../../models/reservation.js"
 import roomTypeModel from "../../models/roomType.js";
 import verifiedUser from "../../models/verifiedUsers.js";
-import { findUserByUserIdAndToken, convertToISODate } from "../../helpers/helper.js";
+import manageInventory from '../../models/manageInventory.js'
+import { findUserByUserIdAndToken, convertToISODate, getDatesBetweenDates } from "../../helpers/helper.js";
 
 const checkInventoryAvailability = async (req, res) => {
     const { userId, propertyId, checkInDate, checkOutDate } = req.query;
@@ -31,6 +32,8 @@ const checkInventoryAvailability = async (req, res) => {
             const checkInDateISO = startDateObj.toISOString()
             const endDateObj = new Date(checkOutDate)
             const checkOutDateISO = endDateObj.toISOString();
+
+            // const datesBetween = getDatesBetweenDates(startDateObj, endDateObj);
             // console.log(checkInDateISO, checkOutDateISO)
             const roomTypes = await roomTypeModel.aggregate([
                 {
@@ -49,6 +52,8 @@ const checkInventoryAvailability = async (req, res) => {
                 return res.status(400).json({ message: "No room types found", statuscode: 400 });
             }
 
+
+
             const availableRooms = [];
 
             for (const roomType of roomTypes) {
@@ -61,6 +66,43 @@ const checkInventoryAvailability = async (req, res) => {
                     "roomDetails.roomTypeId.roomTypeId": roomTypeId
                 });
 
+                const manageInventoryData = await manageInventory.aggregate([
+                    {
+                        $match: {
+                            propertyId: propertyId,
+                            roomTypeId: roomTypeId
+                        }
+                    },
+                    {
+                        $project: {
+                            addedInventory: {
+                                $filter: {
+                                    input: '$manageInventory.addedInventory',
+                                    as: 'inventory',
+                                    cond: {
+                                        $and: [
+                                            { $gte: ['$$inventory.date', checkInDate] },
+                                            { $lte: ['$$inventory.date', checkOutDate] }
+                                        ]
+                                    }
+                                }
+                            },
+                            blockedInventory: {
+                                $filter: {
+                                    input: '$manageInventory.blockedInventory',
+                                    as: 'inventory',
+                                    cond: {
+                                        $and: [
+                                            { $gte: ['$$inventory.date', checkInDate] },
+                                            { $lte: ['$$inventory.date', checkOutDate] }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]);
+
                 // console.log(reservations)
 
                 if (reservations.length !== 0) {
@@ -68,10 +110,10 @@ const checkInventoryAvailability = async (req, res) => {
                     const reducedCount = reservations.filter(reservation => reservation.roomDetails.some(detail => detail.roomTypeId[0].roomTypeId === roomTypeId)).length
                     const roomTypeCount = roomType.numberOfRooms - reducedCount;
                     // console.log(reducedCount, roomTypeCount)
-                    availableRooms.push({ roomTypeId, numberOfRooms: roomType.numberOfRooms, inventory: roomTypeCount });
+                    availableRooms.push({ roomTypeId, numberOfRooms: roomType.numberOfRooms, manageInventoryData, inventory: roomTypeCount, });
                 } else {
                     // No reservations, full inventory available
-                    availableRooms.push({ roomTypeId, numberOfRooms: roomType.numberOfRooms, inventory: roomType.numberOfRooms });
+                    availableRooms.push({ roomTypeId, numberOfRooms: roomType.numberOfRooms, manageInventoryData, inventory: roomType.numberOfRooms, });
                 }
             }
 

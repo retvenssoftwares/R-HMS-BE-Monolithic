@@ -40,14 +40,6 @@ const manageInventory = async (req, res) => {
 
 
 
-
-    // Calculate the baseInventory + inventory value
-    //  const totalInventory = baseInventory + latestInventory;
-
-
-    // Calculate the result of baseInventory - inventory for blockedInventory
-    //const totalBlockedInventory = baseInventory - inventory;
-
     // Create the inventory record if it doesn't exist
     if (!findInventory) {
       findInventory = new manageInventoryModel({

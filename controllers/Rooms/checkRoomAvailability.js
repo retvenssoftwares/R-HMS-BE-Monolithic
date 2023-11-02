@@ -21,7 +21,7 @@ const checkInventoryAvailability = async (req, res) => {
         } else if (checkInDate > checkOutDate) {
             return res.status(400).json({ message: "Check-in date cannot be greater than check-out date", statuscode: 400 });
         }
-
+ 
         // Validate the date format
         const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
         if (!dateFormatRegex.test(checkInDate) || !dateFormatRegex.test(checkOutDate)) {

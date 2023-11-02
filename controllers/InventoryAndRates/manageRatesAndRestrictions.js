@@ -1,8 +1,9 @@
 import ratesAndRestrictions from '../../models/manageRatesAndRestrictions.js'
-
+import {findUserByUserIdAndToken} from "../../helpers/helper.js"
 const manageRatesRestrictions = async (req, res) => {
     try {
         const {
+            userId,
             propertyId,
             roomTypeId,
             startDate,
@@ -27,6 +28,12 @@ const manageRatesRestrictions = async (req, res) => {
             maximumLOS,
             days
         } = req.body
+
+        const authCodeValue = req.headers['authcode']
+
+        const result = await findUserByUserIdAndToken(userId, authCodeValue);
+
+        if(result.success){
         // Get today's date as a string in "yyyy-mm-dd" format
         const today = new Date().toISOString().split('T')[0];
 
@@ -179,7 +186,10 @@ const manageRatesRestrictions = async (req, res) => {
         await findRatesAndRestrictions.save();
 
         return res.status(200).json({ message: "Rates and restrictions updated successfully", statuscode: 200 });
-
+    
+    }else{
+        return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
+    }
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: "Internal server error", statuscode: 500 });

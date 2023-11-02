@@ -1,9 +1,10 @@
 import manageInventoryModel from "../../models/manageInventory.js";
 import roomType from "../../models/roomType.js";
-
+import {findUserByUserIdAndToken} from "../../helpers/helper.js"
 const manageInventory = async (req, res) => {
   try {
     const {
+      userId,
       propertyId,
       roomTypeId,
       startDate,
@@ -14,6 +15,11 @@ const manageInventory = async (req, res) => {
       source,
       days
     } = req.body;
+    const authCodeValue = req.headers['authcode']
+
+    const result = await findUserByUserIdAndToken(userId, authCodeValue);
+
+    if(result.success){
     // Get today's date as a string in "yyyy-mm-dd" format
     const today = new Date().toISOString().split("T")[0];
 
@@ -37,7 +43,6 @@ const manageInventory = async (req, res) => {
       .findOne({ propertyId: propertyId, roomTypeId: roomTypeId })
       .select("numberOfRooms");
     let baseInventory = findRoom.numberOfRooms[0].numberOfRooms;
-
 
 
     // Create the inventory record if it doesn't exist
@@ -153,6 +158,9 @@ const manageInventory = async (req, res) => {
     return res
       .status(200)
       .json({ message: "Inventory updated successfully", statuscode: 200 });
+  }else{
+    return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
+  }
   } catch (err) {
     console.error(err);
     return res

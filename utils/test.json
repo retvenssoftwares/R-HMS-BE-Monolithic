@@ -1,0 +1,205 @@
+{
+   
+    "propertyId": "property_id_value",
+    "checkIn": [
+        {
+            "checkIn": "check_in_date_value",
+            "logId": "log_id_value"
+        }
+    ],
+    "checkOut": [
+        {
+            "checkOut": "check_out_date_value",
+            "logId": "log_id_value"
+        }
+    ],
+    "nightCount": [
+        {
+            "nightCount": "number_of_nights_value",
+            "logId": "log_id_value"
+        }
+    ],
+    "bookingId": "booking_id_value",
+    "createdBy": [
+        {
+            "createdBy": "created_by_value",
+            "logId": "log_id_value"
+        }
+    ],
+    "createdOn": [
+        {
+            "createdOn": "created_on_date_value",
+            "logId": "log_id_value"
+        }
+    ],
+    "rateType": [
+        {
+            "rateType": "rate_type_value",
+            "logId": "log_id_value"
+        }
+    ],
+    "companyReservation": [
+        {
+            "companyName": "company_name_value",
+            "logId": "log_id_value"
+        }
+    ],
+    "barRateReservation": [
+        {
+            "bookingType": "booking_type_value",
+            "logId": "log_id_value"
+        }
+    ],
+    "discountReservation": [
+        {
+            "bookingType": [
+                {
+                    "bookingType": "booking_type_value",
+                    "logId": "log_id_value"
+                }
+            ],
+            "discountPlan": [
+                {
+                    "discountPlan": "discount_plan_value",
+                    "logId": "log_id_value"
+                }
+            ],
+            "discountType": [
+                {
+                    "discountType": "discount_type_value",
+                    "logId": "log_id_value"
+                }
+            ],
+            "discountAmount": [
+                {
+                    "discountAmount": "discount_amount_value",
+                    "logId": "log_id_value"
+                }
+            ]
+        }
+    ],
+    "roomDetails": [
+        {
+            "roomTypeId": [
+                {
+                    "roomTypeId": "room_type_id_value",
+                    "logId": "log_id_value"
+                }
+            ],
+            "ratePlan": [
+                {
+                    "ratePlan": "rate_plan_value",
+                    "logId": "log_id_value"
+                }
+            ],
+            "adults": [
+                {
+                    "adults": "number_of_adults_value",
+                    "logId": "log_id_value"
+                }
+            ],
+            "child": [
+                {
+                    "child": "number_of_child_value",
+                    "logId": "log_id_value"
+                }
+            ],
+            "charge": [
+                {
+                    "charge": "charge_value",
+                    "logId": "log_id_value"
+                }
+            ],
+            "extraAdult": [
+                {
+                    "extraAdult": "extra_adult_value",
+                    "logId": "log_id_value"
+                }
+            ],
+            "extraInclusion": [
+                {
+                    "extraInclusion": "extra_inclusion_value",
+                    "logId": "log_id_value"
+                }
+            ]
+        }
+    ],
+    "remark": [
+        {
+            "specialRemark": [
+                {
+                    "specialRemark": "special_remark_value",
+                    "logId": "log_id_value"
+                }
+            ],
+            "internalNote": [
+                {
+                    "internalNote": "internal_note_value",
+                    "logId": "log_id_value"
+                }
+            ]
+        }
+    ],
+    "reservationSummary": [
+        {
+            "roomCharges": [
+                {
+                    "roomCharges": "room_charges_value",
+                    "logId": "log_id_value"
+                }
+            ],
+            "extras": [
+                {
+                    "extras": "extras_value",
+                    "logId": "log_id_value"
+                }
+            ],
+            "taxes": [
+                {
+                    "taxes": "taxes_value",
+                    "logId": "log_id_value"
+                }
+            ],
+            "from": [
+                {
+                    "from": "from_date_value",
+                    "logId": "log_id_value"
+                }
+            ],
+            "to": [
+                {
+                    "to": "to_date_value",
+                    "logId": "log_id_value"
+                }
+            ],
+            "grandTotal": [
+                {
+                    "grandTotal": "grand_total_value",
+                    "logId": "log_id_value"
+                }
+            ]
+        }
+    ],
+    "applyDiscount": [
+        {
+            "applyDiscount": "apply_discount_value",
+            "logId": "log_id_value"
+        }
+    ],
+    "paymentDetails": [
+        {
+            "billTo": [
+                {
+                    "billTo": "bill_to_value",
+                    "logId": "log_id_value"
+                }
+            ],
+            "paymentNote": [
+                {
+                    "paymentNote": "payment_note_value",
+                    "logId": "log_id_value"
+                }
+            ]
+        }
+    ]
+}

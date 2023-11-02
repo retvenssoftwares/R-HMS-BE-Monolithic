@@ -21,7 +21,7 @@ const checkInventoryAvailability = async (req, res) => {
         } else if (checkInDate > checkOutDate) {
             return res.status(400).json({ message: "Check-in date cannot be greater than check-out date", statuscode: 400 });
         }
- 
+
         // Validate the date format
         const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
         if (!dateFormatRegex.test(checkInDate) || !dateFormatRegex.test(checkOutDate)) {
@@ -62,7 +62,6 @@ const checkInventoryAvailability = async (req, res) => {
                 const reservations = await bookingModel.find({
                     propertyId,
                     "checkIn.checkIn": { $gte: checkInDateISO, $lt: checkOutDateISO },
-                    // "checkOut[0].checkOut": { $gte: checkInDateISO },
                     "roomDetails.roomTypeId.roomTypeId": roomTypeId
                 });
 
@@ -72,48 +71,79 @@ const checkInventoryAvailability = async (req, res) => {
                             propertyId: propertyId,
                             roomTypeId: roomTypeId
                         }
-                    },
-                    {
-                        $project: {
-                            addedInventory: {
-                                $filter: {
-                                    input: '$manageInventory.addedInventory',
-                                    as: 'inventory',
-                                    cond: {
-                                        $and: [
-                                            { $gte: ['$$inventory.date', checkInDate] },
-                                            { $lte: ['$$inventory.date', checkOutDate] }
-                                        ]
-                                    }
-                                }
-                            },
-                            blockedInventory: {
-                                $filter: {
-                                    input: '$manageInventory.blockedInventory',
-                                    as: 'inventory',
-                                    cond: {
-                                        $and: [
-                                            { $gte: ['$$inventory.date', checkInDate] },
-                                            { $lte: ['$$inventory.date', checkOutDate] }
-                                        ]
-                                    }
-                                }
-                            }
-                        }
                     }
                 ]);
 
-                // console.log(reservations)
-
                 if (reservations.length !== 0) {
-                    // Count the occurrences of roomTypeId in roomDetails
-                    const reducedCount = reservations.filter(reservation => reservation.roomDetails.some(detail => detail.roomTypeId[0].roomTypeId === roomTypeId)).length
+                    const reducedCount = reservations.filter(reservation => reservation.roomDetails.some(detail => detail.roomTypeId[0].roomTypeId === roomTypeId)).length;
                     const roomTypeCount = roomType.numberOfRooms - reducedCount;
-                    // console.log(reducedCount, roomTypeCount)
-                    availableRooms.push({ roomTypeId, numberOfRooms: roomType.numberOfRooms, manageInventoryData, inventory: roomTypeCount, });
+
+                    // Extract unique dates from addedInventory and blockedInventory
+                    const addedInventoryDates = [...new Set(manageInventoryData.flatMap(item => item.manageInventory.addedInventory.map(added => added.date)))];
+                    const blockedInventoryDates = [...new Set(manageInventoryData.flatMap(item => item.manageInventory.blockedInventory.map(blocked => blocked.date)))];
+
+                    // Calculate the final inventory values for each date in the interval
+                    const calculatedInventoryData = [];
+                    const allDates = [...new Set([...addedInventoryDates, ...blockedInventoryDates])];
+
+                    for (const date of allDates) {
+                        const addedInventoryTotal = manageInventoryData.reduce((total, item) => {
+                            const addedItem = item.manageInventory.addedInventory.find(added => added.date === date);
+                            return total + (addedItem ? addedItem.addedInventory : 0);
+                        }, 0);
+
+                        const blockedInventoryTotal = manageInventoryData.reduce((total, item) => {
+                            const blockedItem = item.manageInventory.blockedInventory.find(blocked => blocked.date === date);
+                            return total + (blockedItem ? blockedItem.blockedInventory : 0);
+                        }, 0);
+
+                        calculatedInventoryData.push({
+                            date,
+                            inventory: addedInventoryTotal - blockedInventoryTotal
+                        });
+                        console.log(calculatedInventoryData)
+                    }
+
+                    availableRooms.push({ roomTypeId, numberOfRooms: roomType.numberOfRooms, inventory: roomTypeCount, calculatedInventoryData });
                 } else {
-                    // No reservations, full inventory available
-                    availableRooms.push({ roomTypeId, numberOfRooms: roomType.numberOfRooms, manageInventoryData, inventory: roomType.numberOfRooms, });
+                    // Filter and collect unique dates within the specified date range
+                    const addedInventoryDates = [...new Set(
+                        manageInventoryData.flatMap(item => item.manageInventory.addedInventory
+                            .filter(added => added.date >= checkInDate && added.date <= checkOutDate)
+                            .map(added => added.date)
+                        ))
+                    ];
+
+                    const blockedInventoryDates = [...new Set(
+                        manageInventoryData.flatMap(item => item.manageInventory.blockedInventory
+                            .filter(blocked => blocked.date >= checkInDate && blocked.date <= checkOutDate)
+                            .map(blocked => blocked.date)
+                        ))
+                    ];
+
+                    // Calculate the final inventory values for each date in the interval
+                    const calculatedInventoryData = [];
+                    const allDates = [...new Set([...addedInventoryDates, ...blockedInventoryDates])];
+
+                    for (const date of allDates) {
+                        const addedInventoryTotal = manageInventoryData.reduce((total, item) => {
+                            const addedItem = item.manageInventory.addedInventory.find(added => added.date === date);
+                            return total + (addedItem ? addedItem.addedInventory : 0);
+                        }, 0);
+
+                        const blockedInventoryTotal = manageInventoryData.reduce((total, item) => {
+                            const blockedItem = item.manageInventory.blockedInventory.find(blocked => blocked.date === date);
+                            return total + (blockedItem ? blockedItem.blockedInventory : 0);
+                        }, 0);
+
+                        calculatedInventoryData.push({
+                            date,
+                            inventory: Math.abs(addedInventoryTotal - blockedInventoryTotal)
+                        });
+
+                    }
+                    // console.log(calculatedInventoryData)
+                    availableRooms.push({ roomTypeId, numberOfRooms: roomType.numberOfRooms, inventory: roomType.numberOfRooms, calculatedInventoryData: calculatedInventoryData });
                 }
             }
 

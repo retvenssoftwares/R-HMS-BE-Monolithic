@@ -13,7 +13,7 @@ import inclusion from '../../controllers/Rooms/postInclusion.controller.js';
 import getInclusion from '../../controllers/Rooms/getInclusion.js';
 import patchInclusions from '../../controllers/Rooms/patchInclusion.js';
 
-import { compnayRatePlan, updateCompanyRatePlan } from '../../controllers/Rooms/companyRatePlan.js';
+import { companyRatePlan, updateCompanyRatePlan } from '../../controllers/Rooms/companyRatePlan.js';
 import BarRatePlan from '../../controllers/Rooms/postBarRatePlan.controller.js'
 import updateBarRatePlan from '../../controllers/Rooms/patchBarRatePlan.controller.js'
 import { packageRatePlan, updatePackageRatePlan } from '../../controllers/Rooms/package.js';
@@ -54,7 +54,7 @@ router.get('/api/getInclusion',getInclusion )
 //patch inclusion
 router.patch('/api/patchInclusion', patchInclusions)
 //company rate plan
-router.post("/api/addCompnayRatePlan", compnayRatePlan)
+router.post("/api/addCompnayRatePlan", companyRatePlan)
 
 //update companyRtePlan
 router.patch("/api/updateCompanyRatePlan/:compnayRatePlanId", updateCompanyRatePlan)

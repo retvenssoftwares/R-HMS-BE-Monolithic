@@ -1,12 +1,12 @@
 import { mongoose, Schema, model } from "mongoose";
 import db2 from "../../db/conn2.js";
-const companyRatePlan = new mongoose.Schema(
+const companyRatePlanLogs = new mongoose.Schema(
   {
     propertyId: {
       type: String,
       default: "",
     },
-    compnayRatePlanId: {
+    companyRatePlanId: {
       type: String,
       default: "",
     },
@@ -205,5 +205,5 @@ const companyRatePlan = new mongoose.Schema(
   }
 );
 
-const companyRatePlanModel = db2.model("compnayRatePlaneLogs", companyRatePlan);
-export default companyRatePlanModel;
+const companyRatePlanModelLogs = db2.model("companyRatePlaneLogs", companyRatePlanLogs);
+export default companyRatePlanModelLogs;

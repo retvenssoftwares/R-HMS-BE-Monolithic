@@ -3,9 +3,9 @@ import Randomstring from "randomstring"
 import requestIP from "request-ip"
 import verifiedUser from "../../models/verifiedUsers.js";
 import { getCurrentUTCTimestamp , findUserByUserIdAndToken } from '../../helpers/helper.js'
-import copmanyRatePlanLog from "../../models/LogModels/compnayRatePlanLogs.js"
+import companyLogs from "../../models/LogModels/compnayRatePlanLogs.js"
 
-export const compnayRatePlan = async (req, res) => {
+export const companyRatePlan = async (req, res) => {
     try {
   
       const {userId,propertyId, rateType , companyName ,createdBy , roomTypeId ,  shortCode , ratePlanInclusion ,ratePlanName, inclusionTotal ,ratePlanTotal , ipAddress, deviceType} = req.body
@@ -22,12 +22,12 @@ export const compnayRatePlan = async (req, res) => {
 
       var clientIp = requestIP.getClientIp(req)
 
-      const compnayRatePlanId = Randomstring.generate(10)
+      const companyRatePlanId = Randomstring.generate(10)
       if (result.success){
       const companyRate = new companyRateModel({
         propertyId,
 
-        compnayRatePlanId :  compnayRatePlanId,
+        companyRatePlanId :  companyRatePlanId,
 
         rateType : rateType,
        
@@ -71,7 +71,7 @@ export const compnayRatePlan = async (req, res) => {
 
 
       //logs
-      const companyRatePlanLogs = new copmanyRatePlanLog({
+      const companyRatePlanLogs = new companyLogs({
         ratePlanName:[{
           logId:result.ratePlanName[0].logId,
           ratePlanName:result.ratePlanName[0].ratePlanName,
@@ -79,7 +79,7 @@ export const compnayRatePlan = async (req, res) => {
           ipAddress : clientIp,
           userId : userId
         }],
-        compnayRatePlanId: result.compnayRatePlanId,
+        companyRatePlanId: result.companyRatePlanId,
         shortCode:[{
           logId:result.shortCode[0].logId,
           shortCode : result.shortCode[0].shortCode,
@@ -120,7 +120,7 @@ export const compnayRatePlan = async (req, res) => {
       // console.log('Successfully updated:', result);
       return res.status(200).json({ message: 'company Rate Plan Successfully added' , statusCode : 200 });
     }else {
-      return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
+      return res.status(result.statuscode).json({ message: "company Rate Plan not found", statusCode: result.statuscode });
   } 
     } catch (error) {
       // console.error('Error occurred while aading:', error);
@@ -137,15 +137,15 @@ export const compnayRatePlan = async (req, res) => {
   export const updateCompanyRatePlan = async (req, res) => {
     try {
         const {userId,ratePlanName, shortCode , ratePlanInclusion , inclusionTotal,ratePlanTotal , deviceType , ipAddress} = req.body;
-        const companyRatePlan = await companyRateModel.findOne({ compnayRatePlanId: req.params.compnayRatePlanId })
+        const companyRatePlan = await companyRateModel.findOne({ companyRatePlanId: req.params.companyRatePlanId })
       
-        const compnayRatePlanLogs = await copmanyRatePlanLog.findOne({ compnayRatePlanId: req.params.compnayRatePlanId });
+        const companyRatePlanLogs = await copmanyRatePlanLog.findOne({ companyRatePlanId: req.params.companyRatePlanId });
         var clientIp = requestIP.getClientIp(req)
 
 
         const findUser = await verifiedUser.findOne({ userId });
         if (!findUser) {
-            return res.status(404).json({ message: "User not found or invalid userid", statuscode: 404 })
+            return res.status(404).json({ message: "User not found or invalid userid", statusCode: 404 })
         }
       
         // let userRole = findUser.role[0].role;
@@ -153,7 +153,7 @@ export const compnayRatePlan = async (req, res) => {
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
-          if (result.success){
+          if (result){
          const shortcodeLog =Randomstring.generate(10)
          const ratePlanNameLog =Randomstring.generate(10)
          const ratePlanInclusionLog =Randomstring.generate(10)
@@ -222,12 +222,12 @@ export const compnayRatePlan = async (req, res) => {
 
     if (ratePlanName) {
       const ratePlanNameObject = { ratePlanName: ratePlanName , logId : ratePlanNameLog,  modifiedOn:currentUTCTime, userId:userId , deviveType : deviceType , ipAddress : clientIp};
-      compnayRatePlanLogs.ratePlanName.unshift(ratePlanNameObject);
+      companyRatePlanLogs.ratePlanName.unshift(ratePlanNameObject);
   }
 
   if (shortCode) {
       const shortCodeObject = { shortCode: shortCode , logId :shortcodeLog , modifiedOn:currentUTCTime, userId:userId , deviveType : deviceType , ipAddress : clientIp};
-      compnayRatePlanLogs.shortCode.unshift(shortCodeObject);
+      companyRatePlanLogs.shortCode.unshift(shortCodeObject);
 
   }
 
@@ -242,7 +242,7 @@ export const compnayRatePlan = async (req, res) => {
       deviveType : deviceType , 
       ipAddress : clientIp
     }
-    compnayRatePlanLogs.ratePlanInclusion.unshift(ratePlanInclusionObject);
+    companyRatePlanLogs.ratePlanInclusion.unshift(ratePlanInclusionObject);
   }
 
   if(inclusionTotal){
@@ -255,7 +255,7 @@ export const compnayRatePlan = async (req, res) => {
       ipAddress : clientIp
 
     }
-    compnayRatePlanLogs.inclusionTotal.unshift(inclusionTotalObject);
+    companyRatePlanLogs.inclusionTotal.unshift(inclusionTotalObject);
   }
 
   if(ratePlanTotal){
@@ -267,22 +267,22 @@ export const compnayRatePlan = async (req, res) => {
       deviveType : deviceType , 
       ipAddress : clientIp
     }
-    compnayRatePlanLogs.ratePlanTotal.unshift(ratePlanTotalObject);
+    companyRatePlanLogs.ratePlanTotal.unshift(ratePlanTotalObject);
   }
 
 
-  await compnayRatePlanLogs.save();
+  await companyRatePlanLogs.save();
 
  
-    return res.status(200).json({ message: "company Rate plan  successfully updated", statuscode:200 });
+    return res.status(200).json({ message: "company Rate plan  successfully updated", statusCode:200 });
 } 
 else {
-  return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
+  return res.status(404).json({ message: "company Rate plan  not found" , statusCode: 500 });
 } 
 
     } catch (error) {
        // console.error('Error occurred while updating:', error);
-        return res.status(500).json({ error: 'Internal server error' , statusCode :500 });
+        return res.status(500).json({ message: 'Internal server error' , statusCode :500 });
     }
 };
 

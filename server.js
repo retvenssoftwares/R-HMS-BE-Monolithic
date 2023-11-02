@@ -10,6 +10,7 @@ import user from "./routers/User/user.router.js"
 import rooms from "./routers/Rooms/ratePlanRouter.js"
 import companyRoutes from "./routers/Rooms/company.routes.js"
 import amenityRoutes from "./routers/Amenities/amenity.routes.js"
+import booking from "./routers/Booking/booking.js"
 import superAdminRoutes from "./routers/superAdmin/admin.routes.js"
 import testR from './routers/test.router.js'
 import bulkUpdateRoutes from './routers/InventoryAndRates/manageInventoryRates.routes.js'
@@ -27,6 +28,7 @@ app.use(user)
 app.use(roomRoutes)
 app.use(amenityRoutes)
 app.use(companyRoutes)
+app.use(booking)
 app.use(bulkUpdateRoutes)
 app.use(superAdminRoutes)
 app.listen(process.env.PORT || 3000, () => {

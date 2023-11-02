@@ -87,7 +87,7 @@ export const packageRatePlan = async(req,res)=>{
        return res.status(200).json({message : "package rate Plan added successfully" , statusCode :200})
     }
     else{
-        return res.status(result.statuscode).json({ message: result.message });
+        return res.status(result.statuscode).json({ message: result.message , statusCode :result.statuscode });
     }
 
     }catch(err){

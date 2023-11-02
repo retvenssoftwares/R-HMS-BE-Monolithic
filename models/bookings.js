@@ -179,7 +179,6 @@ const booking = new mongoose.Schema({
             }
         }]
         
-
 }],
 
 

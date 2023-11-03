@@ -14,7 +14,7 @@ const RoomImage = async (req, res) => {
   try {
     const roomTypeId = req.params.roomTypeId; // Assuming you get the roomTypeId from the request parameters
     const {userId}=req.query
-    const {imgTag}=req.body
+    const {imageTags}=req.body
     const authCodeValue = req.headers["authcode"]
     const currentUTCTime = await getCurrentUTCTimestamp();
 
@@ -41,7 +41,7 @@ const RoomImage = async (req, res) => {
         roomImageUrls.unshift({
           imageId: Randomstring.generate(8),
           image:imageUrl,
-          imageTags: [{imgTag:imgTag }] ,// imgTag added to the nested array
+          imageTags: [{imageTags:imageTags }] ,// imgTag added to the nested array
           modifiedDate: currentUTCTime,
         });
       }

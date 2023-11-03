@@ -172,10 +172,10 @@ export const getBusinessSources = async (req, res) => {
                         createdOn: convertedDateUTC,
                         sourceId: businessSource.sourceId || '',
                         createdBy: businessSource.createdBy,
-                        sourceName: businessSource.sourceName[0].sourceName || {},
-                        modifiedBy: businessSource.modifiedBy[0].modifiedBy || {},
+                        sourceName: businessSource.sourceName[0].sourceName || '',
+                        modifiedBy: businessSource.modifiedBy[0].modifiedBy || '',
                         modifiedOn: convertedModifiedOn || '',
-                        shortCode: businessSource.shortCode[0].shortCode || {},
+                        shortCode: businessSource.shortCode[0].shortCode || '',
                     };
                 });
 

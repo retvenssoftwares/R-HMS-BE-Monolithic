@@ -15,7 +15,7 @@ const RoomSchema = Schema({
             imageId: {type: String, default:''},
             image: { type: String, default: '' },
             imageTags:[ {
-
+             
             imageTags:{
                 type:String, default: ''
 

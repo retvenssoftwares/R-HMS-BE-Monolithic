@@ -10,9 +10,8 @@ export const createResrvation = async (req, res) => {
     checkIn,
     checkOut,
     nightCount,
-    rateType,
-    companyReservation,
-    bookingType,
+    rateTypeId,
+    companyId,
     roomDetails,
     remark,
     discountReservation,
@@ -30,7 +29,7 @@ export const createResrvation = async (req, res) => {
       .json({ message: "User not found or invalid userid", statuscode: 404 });
   }
   const userToken = findUser.authCode;
-  console.log(userToken);
+
   const authCodeValue = req.headers["authcode"];
 
   if (authCodeValue !== userToken) {
@@ -39,6 +38,17 @@ export const createResrvation = async (req, res) => {
       .json({ message: "Invalid authentication token", statuscode: 400 });
   }
 
+  // Validate the date format
+  const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!dateFormatRegex.test(checkIn) || !dateFormatRegex.test(checkOut)) {
+      return res.status(400).json({ message: "Please enter the date in the correct format (yyyy-mm-dd)", statuscode: 400 });
+  }
+
+const startDateObj = new Date(checkIn)
+const checkInDateISO = startDateObj.toISOString()
+const endDateObj = new Date(checkOut)
+const checkOutDateISO = endDateObj.toISOString()
+
   let userRole = findUser.role[0].role;
 
   const createBooking = new bookingsModel({
@@ -46,13 +56,13 @@ export const createResrvation = async (req, res) => {
     propertyId: propertyId,
     checkIn: [
       {
-        checkIn: checkIn,
+        checkIn: checkInDateISO,
         logId: randomString.generate(10),
       },
     ],
     checkOut: [
       {
-        checkOut: checkOut,
+        checkOut: checkOutDateISO,
         logId: randomString.generate(10),
       },
     ],
@@ -76,28 +86,28 @@ export const createResrvation = async (req, res) => {
     ],
     rateType: [
       {
-        rateType: rateType,
+        rateTypeId: rateTypeId,
         logId: randomString.generate(10),
       },
     ],
     companyReservation: [
       {
-        companyReservation: companyReservation,
+        companyId: companyId,
         logId: randomString.generate(10),
       },
     ],
 
     discountReservation: discountReservation.map((item) => ({
       bookingType: item.bookingType.map((booking) => ({
-        bookingType: booking.bookingType,
+        bookingTypeId: booking.bookingTypeId,
         logId: randomString.generate(10),
       })),
       discountPlan: item.discountPlan.map((plan) => ({
-        discountPlan: plan.discountPlan,
+        discountPlanId: plan.discountPlanId,
         logId: randomString.generate(10),
       })),
       discountType: item.discountType.map((type) => ({
-        discountType: type.discountType,
+        discountTypeId: type.discountTypeId,
         logId: randomString.generate(10),
       })),
       discountAmount: item.discountAmount.map((amount) => ({
@@ -112,7 +122,7 @@ export const createResrvation = async (req, res) => {
         logId: randomString.generate(10),
       })),
       ratePlan: item.ratePlan.map((plan) => ({
-        ratePlan: plan.ratePlan,
+        ratePlanId: plan.ratePlanId,
         logId: randomString.generate(10),
       })),
       adults: item.adults.map((adult) => ({
@@ -132,7 +142,7 @@ export const createResrvation = async (req, res) => {
         logId: randomString.generate(10),
       })),
       extraInclusion: item.extraInclusion.map((inclusion) => ({
-        extraInclusion: inclusion.extraInclusion,
+        extraInclusionId: inclusion.extraInclusionId,
         logId: randomString.generate(10),
       })),
     })),

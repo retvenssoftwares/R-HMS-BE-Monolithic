@@ -92,9 +92,17 @@ const packagePlan = new mongoose.Schema({
             type: String,
             default: "",
         },
-        newBarRate:{
+        percentage:{
             type: String,
             default: "",
+        },
+        amount:{
+          type: String,
+          default: "",
+        },
+        packageTotal:{
+          type: String,
+          default: "",
         },
         logId: {
             type: String,

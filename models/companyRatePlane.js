@@ -18,6 +18,17 @@ const companyRatePlan = new mongoose.Schema(
       type: String,
       default: "",
     },
+    
+    mealPlan:[{
+      mealPlanId: {
+       type:String,
+       default:"",
+       },
+       logId: {
+           type: String,
+           default: ""
+       }
+    }],
     companyName:{
       type: String,
       default: "",
@@ -68,7 +79,6 @@ const companyRatePlan = new mongoose.Schema(
       },
 
     ],
-
 
     ratePlanName: [
       {
@@ -121,6 +131,83 @@ const companyRatePlan = new mongoose.Schema(
     },
    
     }],
+
+    barRates:{
+      roomBaseRate:[{
+        roomBaseRate:{
+          type: String,
+            default: ""
+        },
+        logId: {
+          type: String,
+          default: ""
+      },
+      }],
+      mealCharge:[{
+        mealCharge:{
+          type: String,
+          default: ""
+        },
+        logId: {
+          type: String,
+          default: ""
+      },
+        
+      }],
+      inclusionCharge:[{
+        inclusionCharge:{
+          type: String,
+          default: ""
+        },
+        logId: {
+          type: String,
+          default: ""
+      },
+      }],
+      roundUp:[{
+        roundUp:{
+          type: String,
+          default: ""
+        },
+        logId: {
+          type: String,
+          default: ""
+      },
+      }],
+      extraAdultRate:[{
+        extraAdultRate:{
+          type: String,
+          default: ""
+        },
+        logId: {
+          type: String,
+          default: ""
+      },
+    
+      }],
+      extraChildRate:[{
+        extraChildRate:{
+          type: String,
+          default: ""
+        },
+        logId: {
+          type: String,
+          default: ""
+      },
+    
+      }],
+      ratePlanTotal:[{
+        ratePlanTotal:{
+          type: String,
+          default: ""
+        },
+        logId: {
+          type: String,
+          default: ""
+      },
+      }]
+    
+    }
   },
   {
     versionKey: false,

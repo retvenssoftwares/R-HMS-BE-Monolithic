@@ -82,7 +82,8 @@ const booking = new mongoose.Schema({
     }],
 
     rateType:[{
-        rateType : {
+        //change to rateTypeId
+        rateTypeId : {
             type:String,
             default:""
         },
@@ -96,8 +97,9 @@ const booking = new mongoose.Schema({
     
 
 // company Reservation
+// change to companyId
     companyReservation :[{
-        companyName:{
+        companyId:{
             type:String,
             default:""
         },
@@ -112,7 +114,7 @@ const booking = new mongoose.Schema({
 
 // bar reservation
     barRateReservation :[{
-        bookingType:{
+        bookingTypeId:{
                 type:String,
                 default:""
         },
@@ -127,7 +129,8 @@ const booking = new mongoose.Schema({
 
 // discount reservation
     discountReservation :[{
-        bookingType:[{
+        // cahnge to id
+        bookingTypeId:[{
             bookingType:{
                 type:String,
                 default:""
@@ -139,9 +142,10 @@ const booking = new mongoose.Schema({
             }
         }],
         
-
+// changed to discountPlanId
         discountPlan:[{
-            discountPlan :{
+            //change to id
+            discountPlanId :{
                 type:String,
                 default:""
             },
@@ -155,7 +159,8 @@ const booking = new mongoose.Schema({
         
 
         discountType:[{
-            discountType :{
+            // changr to id
+            discountTypeId :{
                 type:String,
                 default:""
             },
@@ -197,7 +202,8 @@ const booking = new mongoose.Schema({
         }],
         
         ratePlan:[{
-            ratePlan :{
+            // change to id
+            ratePlanId :{
                 type:String,
                 default:""
             },
@@ -260,7 +266,8 @@ const booking = new mongoose.Schema({
         
 
         extraInclusion:[{
-            extraInclusion :{
+            //change to id
+            extraInclusionId :{
                 type:String,
                 default:""
             },
@@ -300,7 +307,8 @@ const booking = new mongoose.Schema({
         
     }],
 
-    reservationSummary:[{
+    //name will be changed to reservationRate
+    reservationRate:[{
         roomCharges:[{
             roomCharges:{
                 type:String,

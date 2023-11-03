@@ -53,6 +53,10 @@ import { addBusinessSources, getBusinessSources, updateBusinessSources } from '.
 import identityType from '../../controllers/Property/getIdentityTypes.controller.js'
 import identityTypes from "../../controllers/Property/patchIdentity.js"
 
+//mealPlan
+import postMealPlan from '../../controllers/Property/postMealPlan.js';
+import getMealPlan from '../../controllers/Property/getMealPlan.js';
+
 
 router.post(
     '/api/createProperty',
@@ -128,5 +132,8 @@ router.get("/api/getHoliday", getHoliday)
 router.get("/api/companyType", getCompany);
 
 
+//MealPlan
+router.post("/api/postMealPlan",postMealPlan)
+router.get("/api/getMealPlan",getMealPlan)
 
 export default router;

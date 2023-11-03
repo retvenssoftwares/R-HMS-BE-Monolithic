@@ -14,7 +14,7 @@ const RoomImage = async (req, res) => {
   try {
     const roomTypeId = req.params.roomTypeId; // Assuming you get the roomTypeId from the request parameters
     const {userId}=req.query
-    const {imageTags}=req.body
+    const {imgTag}=req.body
     const authCodeValue = req.headers["authcode"]
     const currentUTCTime = await getCurrentUTCTimestamp();
 
@@ -41,9 +41,7 @@ const RoomImage = async (req, res) => {
         roomImageUrls.unshift({
           imageId: Randomstring.generate(8),
           image:imageUrl,
-          imageTags:[{
-            imageTags
-          }],
+          imageTags: [{imgTag:imgTag }] ,// imgTag added to the nested array
           modifiedDate: currentUTCTime,
         });
       }
@@ -51,57 +49,6 @@ const RoomImage = async (req, res) => {
       // Append the uploaded room images to the existing record
       existingRecord.roomImages = existingRecord.roomImages.concat(roomImageUrls);
     }
-
-    // Upload View images
-    // if (req.files["viewImage"]) {
-    //   const viewImageUrls = [];
-
-    //   for (const viewImage of req.files["viewImage"]) {
-    //     const imageUrl = await uploadImageToS3(viewImage);
-    //     viewImageUrls.unshift({
-    //       imageId: Randomstring.generate(8),
-    //       image:imageUrl,
-    //       modifiedDate: currentUTCTime,
-    //     });
-    //   }
-
-    //   // Append the uploaded view images to the existing record
-    //   existingRecord.View = existingRecord.View.concat(viewImageUrls);
-    // }
-
-    //upload bathRoom
-    // if (req.files["bathRoomImage"]) {
-    //     const viewImageUrls = [];
-  
-    //     for (const viewImage of req.files["bathRoomImage"]) {
-    //       const imageUrl = await uploadImageToS3(viewImage);
-    //       viewImageUrls.unshift({
-    //         imageId: Randomstring.generate(8),
-    //         image:imageUrl,
-    //         modifiedDate: currentUTCTime,
-    //       });
-    //     }
-  
-    //     // Append the uploaded view images to the existing record
-    //     existingRecord.bathRoom = existingRecord.bathRoom.concat(viewImageUrls);
-    //   }
-
-      //upload bed
-      // if (req.files["bedImage"]) {
-      //   const viewImageUrls = [];
-  
-      //   for (const viewImage of req.files["bedImage"]) {
-      //     const imageUrl = await uploadImageToS3(viewImage);
-      //     viewImageUrls.unshift({
-      //       imageId: Randomstring.generate(8),
-      //       image:imageUrl,
-      //       modifiedDate: currentUTCTime,
-      //     });
-      //   }
-      //   // Append the uploaded view images to the existing record
-      //   existingRecord.bed = existingRecord.bed.concat(viewImageUrls);
-      // }
-
 
     // Save the updated roomImages record
     const updatedRoomImages = await existingRecord.save();

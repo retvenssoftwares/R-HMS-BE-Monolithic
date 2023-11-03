@@ -14,10 +14,16 @@ const postBarRatePlan = async (req, res) => {
       propertyId,
       rateType,
       roomTypeId,
+      mealPlanId,
       ratePlanName,
       inclusionPlan,
-      inclusionTotal,
-      totalRatePlanPrice,
+      roomBaseRate,
+      mealCharge,
+      inclusionCharge,
+      roundUp,
+      extraAdultRate,
+      extraChildRate,
+      ratePlanTotal
     } = req.body;
 
     const authCodeValue = req.headers["authcode"];
@@ -49,6 +55,12 @@ const postBarRatePlan = async (req, res) => {
           logId: Randomstring.generate(10),
         },
       ],
+      mealPlan: [
+        {
+          mealPlanId: mealPlanId,
+          logId: Randomstring.generate(10),
+        },
+      ],
       ratePlanName: [
         {
           ratePlanName: ratePlanName,
@@ -62,18 +74,40 @@ const postBarRatePlan = async (req, res) => {
         },
       ],
 
-      inclusionTotal: [
-        {
-          inclusionTotal: inclusionTotal,
+      barRates:{
+        roomBaseRate:[{
+          roomBaseRate:roomBaseRate,
           logId: Randomstring.generate(10),
-        },
-      ],
-      totalRatePlanPrice: [
-        {
-          totalRatePlanPrice: totalRatePlanPrice,
+        }],
+
+        mealCharge:[{
+          mealCharge:mealCharge,
           logId: Randomstring.generate(10),
-        },
-      ],
+        }],
+
+        inclusionCharge:[{
+          inclusionCharge:inclusionCharge,
+          logId: Randomstring.generate(10),
+        }],
+
+        roundUp:[{
+          roundUp:roundUp,
+          logId: Randomstring.generate(10),
+        }],
+        extraAdultRate:[{
+          extraAdultRate:extraAdultRate,
+          logId: Randomstring.generate(10),
+        }],
+        extraChildRate:[{
+          extraChildRate:extraChildRate,
+          logId: Randomstring.generate(10),
+        }],
+        ratePlanTotal:[{
+          ratePlanTotal:ratePlanTotal,
+          logId: Randomstring.generate(10),
+        }],
+      },
+
      createdBy: userRole,
 
       createdOn: await getCurrentUTCTimestamp(),
@@ -92,8 +126,6 @@ const postBarRatePlan = async (req, res) => {
       propertyId:propertyId,
       roomType:req.body,
       ratePlanName:req.body,
-      inclusionTotal:req.body,
-      totalRatePlanPrice:req.body,
       createdBy: userRole,
       createdOn: await getCurrentUTCTimestamp(),
       inclusion: {

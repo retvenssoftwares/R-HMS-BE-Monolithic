@@ -189,8 +189,8 @@ const booking = new mongoose.Schema({
 
 
     roomDetails :[{
-        roomType :[{
-            roomType:{
+        roomTypeId :[{
+            roomTypeId:{
                 type:String,
                 default:""
             },

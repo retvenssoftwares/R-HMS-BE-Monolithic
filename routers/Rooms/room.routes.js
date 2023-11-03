@@ -20,6 +20,7 @@ import { packageRatePlan, updatePackageRatePlan } from '../../controllers/Rooms/
 
 //check room availabilty
 import checkInventoryAvailability from "../../controllers/Rooms/checkRoomAvailability.js"
+import getRoom from '../../controllers/Rooms/getRoomsList.js';
 
 const router = express.Router();
 
@@ -41,7 +42,7 @@ router.patch('/api/changeIndex/:roomTypeId', changeIndex)
 //upload room image
 router.patch(
     '/api/uploadRoomImage/:roomTypeId',
-    upload.fields([{ name: 'roomImage', maxCount: 1 }, { name: 'viewImage', maxCount: 1 }, { name: 'bathRoomImage', maxCount: 1 }, { name: 'bedImage', maxCount: 1 }]),
+    upload.fields([{ name: 'roomImage', maxCount: 1 }]),
     uploadRoomImage
 );
 
@@ -73,4 +74,11 @@ router.patch("/api/updatePackageRatePlan", updatePackageRatePlan)
 
 //check room availability
 router.get("/api/getRoomAvailability", checkInventoryAvailability)
+
+
+
+//get RoomAvailability
+
+router.get('/api/getRoomDetails',getRoom);
+
 export default router;

@@ -44,6 +44,14 @@ import getAmenityType from '../../controllers/superAdmin/getAmenityType.js'
 import postAmenityIcon from '../../controllers/superAdmin/postAmenityIcon.js'
 import getAmenityIcon from '../../controllers/superAdmin/getAmenityIcon.js'
 
+//postAmenity
+import postAmenity from '../../controllers/superAdmin/createAmenity.js'
+import getAmenity from '../../controllers/superAdmin/getAmenity.js'
+
+//RateType
+import postRateType from '../../controllers/superAdmin/postRateTypeName.js'
+import getRateType from '../../controllers/superAdmin/getRateTypeName.js'
+
 
 ////////////////////////////////////////////////////
 //bedType
@@ -86,5 +94,13 @@ router.get("/api/getAmenityType",getAmenityType)
 //AmenityIcon
 router.post("/api/postAmenityIcon",upload.fields([{ name: "amenityIcon", maxCount: 1 }]),postAmenityIcon)
 router.get("/api/getAmenityIcon",getAmenityIcon)
+
+//AmenityIcon
+router.post("/api/createAmenity",postAmenity)
+router.get("/api/getAmenity",getAmenity)
+
+//rateType
+router.post("/api/postRateType",postRateType)
+router.get("/api/getRateTypeName",getRateType)
 
 export default router;

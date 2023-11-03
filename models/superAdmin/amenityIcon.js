@@ -12,7 +12,7 @@ const amenityIconSchema = new mongoose.Schema({
         default : ''
     },
 
-    amenityIconTags : {type: String, default: ''}
+    amenityIconTags : [{type: String, default: ''}]
     
     
 });

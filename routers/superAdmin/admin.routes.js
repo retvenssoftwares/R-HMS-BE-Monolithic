@@ -1,5 +1,8 @@
 import express from 'express';
 const router = express.Router();
+import multer from 'multer';
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 //postingRule
 import postingRules from "../../controllers/superAdmin/postPostingRules.js"
@@ -36,6 +39,10 @@ import getDesignation from '../../controllers/superAdmin/getDesignation.js'
 //AmenityType
 import postAmenityType from '../../controllers/superAdmin/postAmenityType.js'
 import getAmenityType from '../../controllers/superAdmin/getAmenityType.js'
+
+//AmenityIcon
+import postAmenityIcon from '../../controllers/superAdmin/postAmenityIcon.js'
+import getAmenityIcon from '../../controllers/superAdmin/getAmenityIcon.js'
 
 
 ////////////////////////////////////////////////////
@@ -75,5 +82,9 @@ router.get("/api/getDesignation",getDesignation)
 //Amenitytype
 router.post("/api/postAmenityType",postAmenityType)
 router.get("/api/getAmenityType",getAmenityType)
+
+//AmenityIcon
+router.post("/api/postAmenityIcon",upload.fields([{ name: "amenityIcon", maxCount: 1 }]),postAmenityIcon)
+router.get("/api/getAmenityIcon",getAmenityIcon)
 
 export default router;

@@ -161,10 +161,16 @@ export const getBusinessSources = async (req, res) => {
                 const convertedBusinessSources = businessSourcesFetch.map(businessSource => {
                     const convertedDateUTC = convertTimestampToCustomFormat(businessSource.createdOn, targetTimeZone);
                     let convertedModifiedOn;
+                    let convertedModifiedBy;
                     if (businessSource.modifiedOn.length === 0) {
                         convertedModifiedOn = ""
                     } else {
                         convertedModifiedOn = convertTimestampToCustomFormat(businessSource.modifiedOn[0].modifiedOn, targetTimeZone);
+                    }
+                    if (businessSource.modifiedBy.length === 0) {
+                        convertedModifiedBy = ""
+                    } else {
+                        convertedModifiedBy = businessSource.modifiedBy[0].modifiedBy
                     }
 
                     return {
@@ -172,10 +178,10 @@ export const getBusinessSources = async (req, res) => {
                         createdOn: convertedDateUTC,
                         sourceId: businessSource.sourceId || '',
                         createdBy: businessSource.createdBy,
-                        sourceName: businessSource.sourceName[0].sourceName || {},
-                        modifiedBy: businessSource.modifiedBy[0].modifiedBy || {},
+                        sourceName: businessSource.sourceName[0].sourceName || '',
+                        modifiedBy: convertedModifiedBy || '',
                         modifiedOn: convertedModifiedOn || '',
-                        shortCode: businessSource.shortCode[0].shortCode || {},
+                        shortCode: businessSource.shortCode[0].shortCode || '',
                     };
                 });
 

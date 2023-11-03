@@ -10,38 +10,46 @@ const RoomSchema = Schema({
         type : String,
         default : ''
     },
-    Room: [
+    roomImages: [
         {
             imageId: {type: String, default:''},
             image: { type: String, default: '' },
+            imageTags:[ {
+
+            imageTags:{
+                type:String, default: ''
+
+            }
+
+            }],
             displayStatus: {type:String, default: '1' },  
         },
     ],
-    View: [
-        {
-            imageId: {type: String, default:''},
-            image: { type: String, default: '' },
-            displayStatus: {type:String, default: '1' },
+    // View: [
+    //     {
+    //         imageId: {type: String, default:''},
+    //         image: { type: String, default: '' },
+    //         displayStatus: {type:String, default: '1' },
             
-        }
+    //     }
 
-    ],
-    bathRoom: [
-        {
-            imageId: {type: String, default:''},
-            image: { type: String, default: '' },
-            displayStatus: {type:String, default: '1' },
+    // ],
+    // bathRoom: [
+    //     {
+    //         imageId: {type: String, default:''},
+    //         image: { type: String, default: '' },
+    //         displayStatus: {type:String, default: '1' },
             
-        },
-    ],
-    bed: [
-        {
-            imageId: {type: String, default:''},
-            image: { type: String, default: '' },
-            displayStatus: {type:String, default: '1' },   
-        }
+    //     },
+    // ],
+    // bed: [
+    //     {
+    //         imageId: {type: String, default:''},
+    //         image: { type: String, default: '' },
+    //         displayStatus: {type:String, default: '1' },   
+    //     }
 
-    ],
+    // ],
 
 
 });

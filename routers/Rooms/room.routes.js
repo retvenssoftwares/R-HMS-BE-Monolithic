@@ -42,7 +42,7 @@ router.patch('/api/changeIndex/:roomTypeId', changeIndex)
 //upload room image
 router.patch(
     '/api/uploadRoomImage/:roomTypeId',
-    upload.fields([{ name: 'roomImage', maxCount: 1 }, { name: 'viewImage', maxCount: 1 }, { name: 'bathRoomImage', maxCount: 1 }, { name: 'bedImage', maxCount: 1 }]),
+    upload.fields([{ name: 'roomImage', maxCount: 1 }]),
     uploadRoomImage
 );
 

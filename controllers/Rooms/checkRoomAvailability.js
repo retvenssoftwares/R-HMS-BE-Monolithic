@@ -1,4 +1,3 @@
-
 import bookingModel from "../../models/reservation.js"
 import roomTypeModel from "../../models/roomType.js";
 import verifiedUser from "../../models/verifiedUsers.js";

@@ -29,6 +29,7 @@ const getReservation = async (req, res) => {
                         reservationName: reservations.reservationName[0].reservationName || '',
                         status: reservations.status[0].status || '',
                         modifiedBy: modifiedBy,
+                        reservationTypeId: reservations.reservationTypeId || '',
                         modifiedOn: convertedModifiedOn,
                     };
                 });

@@ -6,7 +6,7 @@ const companyRatePlan = new mongoose.Schema(
       type: String,
       default: "",
     },
-    compnayRatePlanId: {
+    companyRatePlanId: {
       type: String,
       default: "",
     },

@@ -26,7 +26,8 @@ const getAmenities = async (req, res) => {
                     return {
                         ...amenities._doc,
                         createdOn: convertedDateUTC,
-                        createdBy:amenities.createdBy,
+                        amenityId: amenities.amenityId || '',
+                        createdBy: amenities.createdBy,
                         amenityName: amenities.amenityName[0].amenityName || {},
                         shortCode: amenities.shortCode[0].shortCode || {},
                         modifiedBy: modifiedBy,
@@ -45,7 +46,7 @@ const getAmenities = async (req, res) => {
 
     } catch (err) {
         console.log(err);
-        return res.status(500).json({ message: "Internal Server Error",statuscode: 500 });
+        return res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
     }
 };
 

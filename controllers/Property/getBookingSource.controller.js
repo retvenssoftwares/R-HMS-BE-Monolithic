@@ -25,6 +25,7 @@ const bookingSourcesGet = async (req, res) => {
                     return {
                         ...bookingSource._doc,
                         createdOn: convertedDateUTC,
+                        bookingSourceId: bookingSource.bookingSourceId || '',
                         createdBy: bookingSource.createdBy,
                         bookingSource: bookingSource.bookingSource[0].bookingSource || '',
                         modifiedBy: modifiedBy,

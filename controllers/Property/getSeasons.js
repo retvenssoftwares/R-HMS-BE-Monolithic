@@ -22,13 +22,14 @@ const getSeasons = async (req, res) => {
                     }
 
                     const modifiedBy = seasons.modifiedBy.length > 0 ? seasons.modifiedBy[0].modifiedBy : "";
-                      
+
                     return {
                         ...seasons._doc,
                         createdOn: convertedDateUTC,
                         shortCode: seasons.shortCode[0].shortCode || '',
                         seasonName: seasons.seasonName[0].seasonName || '',
                         modifiedBy: modifiedBy,
+                        seasonId: seasons.seasonId || '',
                         modifiedOn: convertedModifiedOn,
                         startDate: seasons.startDate[0].startDate || '',
                         endDate: seasons.endDate[0].endDate || '',

@@ -29,9 +29,11 @@ const getHoliday = async (req, res) => {
                     return {
                         ...holidays._doc,
                         shortCode: holidays.shortCode[0].shortCode || '',
+
                         createdOn: convertedDateUTC,
                         holidayName: holidays.holidayName[0].holidayName || '',
                         modifiedBy: modifiedBy,
+                        holidayId: holidays.holidayId || '',
                         modifiedOn: convertedModifiedOn,
                         startDate: holidays.startDate[0].startDate || '',
                         endDate: holidays.endDate[0].endDate || ''

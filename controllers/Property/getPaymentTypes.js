@@ -25,7 +25,8 @@ const getPaymentTypes = async (req, res) => {
                     return {
                         ...paymentType._doc,
                         createdOn: convertedDateUTC,
-                        createdBy:paymentType.createdBy,
+                        createdBy: paymentType.createdBy,
+                        paymentTypeId: paymentType.paymentTypeId || '',
                         paymentMethodName: paymentType.paymentMethodName[0].paymentMethodName || '',
                         modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn || '',

@@ -53,7 +53,7 @@ const checkInventoryAvailability = async (req, res) => {
 
             for (const roomType of roomTypes) {
                 const roomTypeId = roomType.roomTypeId;
-                console.log(roomTypeId)
+                // console.log(roomTypeId)
 
                 const reservations = await bookingModel.find({
                     propertyId,
@@ -112,10 +112,10 @@ const checkInventoryAvailability = async (req, res) => {
                             date,
                             inventory: Math.abs(roomType.numberOfRooms + addedInventoryTotal - blockedInventoryTotal - reducedCount)
                         });
-                        console.log(calculatedInventoryData)
+                        // console.log(calculatedInventoryData)
                     }
 
-                    availableRooms.push({ roomTypeId, numberOfRooms: roomType.numberOfRooms, calculatedInventoryData });
+                    availableRooms.push({ roomTypeId, numberOfRooms: roomType.numberOfRooms - reducedCount, calculatedInventoryData });
                 } else {
                     // Filter and collect unique dates within the specified date range
                     const addedInventoryDates = [...new Set(
@@ -154,7 +154,7 @@ const checkInventoryAvailability = async (req, res) => {
 
                     }
                     // console.log(calculatedInventoryData)
-                    availableRooms.push({ roomTypeId, numberOfRooms: roomType.numberOfRooms, calculatedInventoryData: calculatedInventoryData });
+                    availableRooms.push({ roomTypeId, numberOfRooms: roomType.numberOfRooms - reducedCount, calculatedInventoryData: calculatedInventoryData });
                 }
             }
 

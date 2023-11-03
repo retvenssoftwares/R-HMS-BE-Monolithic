@@ -56,6 +56,7 @@ import identityTypes from "../../controllers/Property/patchIdentity.js"
 //mealPlan
 import postMealPlan from '../../controllers/Property/postMealPlan.js';
 import getMealPlan from '../../controllers/Property/getMealPlan.js';
+import patchMealPlan from '../../controllers/Property/updateMealPlan.js'
 
 
 router.post(
@@ -135,5 +136,5 @@ router.get("/api/companyType", getCompany);
 //MealPlan
 router.post("/api/postMealPlan",postMealPlan)
 router.get("/api/getMealPlan",getMealPlan)
-
+router.patch("/api/patchMeal",patchMealPlan)
 export default router;

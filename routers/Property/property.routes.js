@@ -12,9 +12,11 @@ import getPaymentTypes from '../../controllers/Property/getPaymentTypes.js'
 import patchPaymentType from '../../controllers/Property/patchPaymentTypes.js';
 import userProperty from "../../controllers/Property/getUserProperties.controller.js"
 
+
 //images
 import uploadPropertyImages from '../../controllers/Property/addPropertyImages.js'
 import dragDropPropertyImages from '../../controllers/Property/dragDropPropertyImages.js'
+import updatePropertyImage from '../../controllers/Property/updatePropertyImages.js'
 
 //import identityType from '../../controllers/Property/getIdentityTypes.controller.js'
 import postReservationType from '../../controllers/Property/reservationType.controller.js'
@@ -86,6 +88,7 @@ router.patch("/api/propertyAdditionalDetails", editProperty)
 //images
 router.patch("/api/uploadPropertyImages", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), uploadPropertyImages);
 router.patch("/api/changeImageIndex", dragDropPropertyImages);
+router.patch("/api/updatePropertyImage",updatePropertyImage)
 
 router.patch("/api/editProperty", editProperty);
 

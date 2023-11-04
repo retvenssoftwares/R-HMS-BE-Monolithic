@@ -41,8 +41,8 @@ const RoomImage = async (req, res) => {
         roomImageUrls.unshift({
           imageId: Randomstring.generate(8),
           image:imageUrl,
-          imageTags: [{imageTags:imageTags }] ,// imgTag added to the nested array
-          modifiedDate: currentUTCTime,
+          imageTags: imageTags,// imgTag added to the nested array
+          createdOn: currentUTCTime,
         });
       }
 

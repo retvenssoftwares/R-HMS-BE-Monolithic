@@ -161,26 +161,41 @@ const getInventory = async (req, res) => {
                         });
                         // console.log(calculatedInventoryData)
                     }
+                    // Sort the calculated inventory data by date in ascending order
+                    calculatedInventoryData.sort((a, b) => (a.date > b.date) ? 1 : -1);
 
-                    const manageRestrictions = manageRestrictionsData[0] ? manageRestrictionsData[0].manageRestrictions : {};
-                    const stopSell = manageRestrictions.stopSell || [];
-                    const COA = manageRestrictions.COA || [];
-                    const COD = manageRestrictions.COD || [];
-                    const minimumLOS = manageRestrictions.minimumLOS || [];
-                    const maximumLOS = manageRestrictions.maximumLOS || [];
+                    const manageRestrictions = manageRestrictionsData[0] ? manageRestrictionsData[0].manageRestrictions : "false";
+                    const stopSell = manageRestrictions.stopSell || "false";
+                    const COA = manageRestrictions.COA || "false";
+                    const COD = manageRestrictions.COD || "false";
+                    const minimumLOS = manageRestrictions.minimumLOS || "false";
+                    const maximumLOS = manageRestrictions.maximumLOS || "false";
 
-
-                    availableRooms.push({
-                        roomTypeId,
-                        roomTypeName,
-                        numberOfRooms: roomType.numberOfRooms - reducedCount,
-                        calculatedInventoryData,
-                        stopSell,
-                        COA,
-                        COD,
-                        minimumLOS,
-                        maximumLOS
-                    });
+                    if (calculatedInventoryData.length === 0) {
+                        availableRooms.push({
+                            roomTypeId,
+                            roomTypeName,
+                            numberOfRooms: roomType.numberOfRooms - reducedCount,
+                            calculatedInventoryData: "false", // Set to "false" when empty
+                            stopSell,
+                            COA,
+                            COD,
+                            minimumLOS,
+                            maximumLOS
+                        });
+                    } else {
+                        availableRooms.push({
+                            roomTypeId,
+                            roomTypeName,
+                            numberOfRooms: roomType.numberOfRooms - reducedCount,
+                            calculatedInventoryData,
+                            stopSell,
+                            COA,
+                            COD,
+                            minimumLOS,
+                            maximumLOS
+                        });
+                    }
                 } else {
                     // Filter and collect unique dates within the specified date range
                     const addedInventoryDates = [...new Set(
@@ -216,28 +231,43 @@ const getInventory = async (req, res) => {
                             date,
                             inventory: Math.abs(roomType.numberOfRooms + addedInventoryTotal - blockedInventoryTotal - reducedCount)
                         });
-
                     }
                     // console.log(calculatedInventoryData)
-                    const manageRestrictions = manageRestrictionsData[0] ? manageRestrictionsData[0].manageRestrictions : {};
-                    const stopSell = manageRestrictions.stopSell || [];
-                    const COA = manageRestrictions.COA || [];
-                    const COD = manageRestrictions.COD || [];
-                    const minimumLOS = manageRestrictions.minimumLOS || [];
-                    const maximumLOS = manageRestrictions.maximumLOS || [];
+                    // Sort the calculated inventory data by date in ascending order
+                    calculatedInventoryData.sort((a, b) => (a.date > b.date) ? 1 : -1);
+                    const manageRestrictions = manageRestrictionsData[0] ? manageRestrictionsData[0].manageRestrictions : "false";
+                    const stopSell = manageRestrictions.stopSell || "false";
+                    const COA = manageRestrictions.COA || "false";
+                    const COD = manageRestrictions.COD || "false";
+                    const minimumLOS = manageRestrictions.minimumLOS || "false";
+                    const maximumLOS = manageRestrictions.maximumLOS || "false";
 
                     // console.log(modifiedRes)
-                    availableRooms.push({
-                        roomTypeId,
-                        roomTypeName,
-                        numberOfRooms: roomType.numberOfRooms - reducedCount,
-                        calculatedInventoryData,
-                        stopSell,
-                        COA,
-                        COD,
-                        minimumLOS,
-                        maximumLOS
-                    });
+                    if (calculatedInventoryData.length === 0) {
+                        availableRooms.push({
+                            roomTypeId,
+                            roomTypeName,
+                            numberOfRooms: roomType.numberOfRooms - reducedCount,
+                            calculatedInventoryData: "false", // Set to "false" when empty
+                            stopSell,
+                            COA,
+                            COD,
+                            minimumLOS,
+                            maximumLOS
+                        });
+                    } else {
+                        availableRooms.push({
+                            roomTypeId,
+                            roomTypeName,
+                            numberOfRooms: roomType.numberOfRooms - reducedCount,
+                            calculatedInventoryData,
+                            stopSell,
+                            COA,
+                            COD,
+                            minimumLOS,
+                            maximumLOS
+                        });
+                    }
                 }
             }
 

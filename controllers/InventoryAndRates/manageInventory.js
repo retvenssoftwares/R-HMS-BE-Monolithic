@@ -3,9 +3,9 @@ import manageInventoryModel from "../../models/manageInventory.js";
 import roomType from "../../models/roomType.js";
 import axios from 'axios'; // Import Axios
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
-import { io } from "socket.io-client";
 
-const manageInventory = async (req, res) => {
+
+const manageInventory = async (req, res, io) => {
   try {
     const {
       userId,
@@ -164,8 +164,8 @@ const manageInventory = async (req, res) => {
           }
         });
         // Emit the response to connected clients via Socket.io
-        const socket = io("https://api.hotelratna.com"); // Replace YOUR_PORT wit
-        socket.emit("inventoryUpdated", getInventoryResponse.data);
+        // const socket = io("https://api.hotelratna.com"); // Replace YOUR_PORT wit
+        io.emit("inventoryUpdated", getInventoryResponse.data);
         // console.log(getInventoryResponse.data)
 
       }

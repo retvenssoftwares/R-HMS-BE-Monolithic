@@ -1,6 +1,8 @@
 import ratesAndRestrictions from '../../models/manageRatesAndRestrictions.js'
-import { findUserByUserIdAndToken } from "../../helpers/helper.js"
-const manageRatesRestrictions = async (req, res) => {
+import axios from 'axios'; // Import Axios
+import { findUserByUserIdAndToken } from "../../helpers/helper.js";
+
+const manageRates = async (req, res, io) => {
     try {
         const {
             userId,
@@ -16,16 +18,6 @@ const manageRatesRestrictions = async (req, res) => {
             extraAdultRate,
             extraChildRate,
             source,
-            stopSell,
-            isStopSell,
-            isCOA,
-            COA,
-            isCOD,
-            COD,
-            isMinimumLOS,
-            minimumLOS,
-            isMaximumLOS,
-            maximumLOS,
             days
         } = req.body
 
@@ -46,11 +38,11 @@ const manageRatesRestrictions = async (req, res) => {
             }
 
             // Find the rate document for the specified roomTypeId
-            let findRatesAndRestrictions = await ratesAndRestrictions.findOne({ roomTypeId: roomTypeId, propertyId: propertyId, ratePlanId: ratePlanId });
+            let findRates = await ratesAndRestrictions.findOne({ roomTypeId: roomTypeId, propertyId: propertyId, ratePlanId: ratePlanId });
 
             // Create the inventory record if it doesn't exist
-            if (!findRatesAndRestrictions) {
-                findRatesAndRestrictions = new ratesAndRestrictions({
+            if (!findRates) {
+                findRates = new ratesAndRestrictions({
                     roomTypeId: roomTypeId,
                     propertyId: propertyId,
                     ratePlanId: ratePlanId,
@@ -59,13 +51,6 @@ const manageRatesRestrictions = async (req, res) => {
                         baseRate: [],
                         extraChildRate: [],
                         extraAdultRate: []
-                    },
-                    manageRestrictions: {
-                        stopSell: [],
-                        COA: [],
-                        COD: [],
-                        minimumLOS: [],
-                        maximumLOS: []
                     }
                 });
             }
@@ -97,94 +82,55 @@ const manageRatesRestrictions = async (req, res) => {
 
                 if (isBaseRate) {
                     // Update the addedInventory array
-                    const existingEntry = findRatesAndRestrictions.manageRates.baseRate.find(entry => entry.date === dateString);
+                    const existingEntry = findRates.manageRates.baseRate.find(entry => entry.date === dateString);
 
                     if (existingEntry) {
                         existingEntry.baseRate = baseRate;
                     } else {
                         // If the date does not exist, add a new entry to addedInventory
-                        findRatesAndRestrictions.manageRates.baseRate.push({ date: dateString, baseRate: baseRate });
+                        findRates.manageRates.baseRate.push({ date: dateString, baseRate: baseRate });
                     }
                 }
 
                 if (isExtraAdultRate) {
-                    const existingEntry = findRatesAndRestrictions.manageRates.extraAdultRate.find(entry => entry.date === dateString);
+                    const existingEntry = findRates.manageRates.extraAdultRate.find(entry => entry.date === dateString);
 
                     if (existingEntry) {
                         // If the date exists, update the blockedInventory
                         existingEntry.extraAdultRate = extraAdultRate;
                     } else {
                         // If the date does not exist, add a new entry to blockedInventory
-                        findRatesAndRestrictions.manageRates.extraAdultRate.push({ date: dateString, extraAdultRate: extraAdultRate });
+                        findRates.manageRates.extraAdultRate.push({ date: dateString, extraAdultRate: extraAdultRate });
                     }
                 }
 
                 if (isExtraChildRate) {
-                    const existingEntry = findRatesAndRestrictions.manageRates.extraChildRate.find(entry => entry.date === dateString);
+                    const existingEntry = findRates.manageRates.extraChildRate.find(entry => entry.date === dateString);
 
                     if (existingEntry) {
                         // If the date exists, update the blockedInventory
                         existingEntry.extraChildRate = extraChildRate;
                     } else {
                         // If the date does not exist, add a new entry to blockedInventory
-                        findRatesAndRestrictions.manageRates.extraChildRate.push({ date: dateString, extraChildRate: extraChildRate });
+                        findRates.manageRates.extraChildRate.push({ date: dateString, extraChildRate: extraChildRate });
                     }
                 }
 
-                if (isStopSell) {
-                    const existingEntry = findRatesAndRestrictions.manageRestrictions.stopSell.find(entry => entry.date === dateString);
 
-                    if (existingEntry) {
-                        existingEntry.stopSell = stopSell;
-                    } else {
-                        findRatesAndRestrictions.manageRestrictions.stopSell.push({ date: dateString, stopSell: stopSell });
-                    }
-                }
-
-                if (isCOA) {
-                    const existingEntry = findRatesAndRestrictions.manageRestrictions.COA.find(entry => entry.date === dateString);
-
-                    if (existingEntry) {
-                        existingEntry.COA = COA;
-                    } else {
-                        findRatesAndRestrictions.manageRestrictions.COA.push({ date: dateString, COA: COA });
-                    }
-                }
-
-                if (isCOD) {
-                    const existingEntry = findRatesAndRestrictions.manageRestrictions.COD.find(entry => entry.date === dateString);
-
-                    if (existingEntry) {
-                        existingEntry.COD = COD;
-                    } else {
-                        findRatesAndRestrictions.manageRestrictions.COD.push({ date: dateString, COD: COD });
-                    }
-                }
-
-                if (isMaximumLOS) {
-                    const existingEntry = findRatesAndRestrictions.manageRestrictions.maximumLOS.find(entry => entry.date === dateString);
-
-                    if (existingEntry) {
-                        existingEntry.maximumLOS = maximumLOS;
-                    } else {
-                        findRatesAndRestrictions.manageRestrictions.maximumLOS.push({ date: dateString, maximumLOS: maximumLOS });
-                    }
-                }
-
-                if (isMinimumLOS) {
-                    const existingEntry = findRatesAndRestrictions.manageRestrictions.minimumLOS.find(entry => entry.date === dateString);
-
-                    if (existingEntry) {
-                        existingEntry.minimumLOS = minimumLOS;
-                    } else {
-                        findRatesAndRestrictions.manageRestrictions.minimumLOS.push({ date: dateString, minimumLOS: minimumLOS });
-                    }
-                }
             }
 
             // Save the updated inventory document
-            await findRatesAndRestrictions.save();
+            await findRates.save();
 
+            // After inventory updates are done, call the getInventory API using Axios
+            const getRatesResponse = await axios.get(`https://api.hotelratna.com/api/getInventory?userId=${userId}&propertyId=${propertyId}&checkInDate=${startDate}&checkOutDate=${endDate}`, {
+                headers: {
+                    'authcode': authCodeValue
+                }
+            });
+            // Emit the response to connected clients via Socket.io
+            // const socket = io("https://api.hotelratna.com"); // Replace YOUR_PORT wit
+            io.emit("ratesUpdated", getRatesResponse.data);
             return res.status(200).json({ message: "Rates updated successfully", statuscode: 200 });
 
         } else {
@@ -197,4 +143,4 @@ const manageRatesRestrictions = async (req, res) => {
 
 }
 
-export default manageRatesRestrictions
+export default manageRates

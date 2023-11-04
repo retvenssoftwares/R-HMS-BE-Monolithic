@@ -47,7 +47,11 @@ io.on("connection", (socket) => {
   console.log("A user connected");
   // Handle socket.io events
 });
+
+
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Server started on port ${process.env.PORT}`);
 });
+
+export {io}
 

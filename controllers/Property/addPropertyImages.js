@@ -6,6 +6,7 @@ import { uploadImageToS3, getCurrentUTCTimestamp, findUserByUserIdAndToken } fro
 const uploadPropertyImages = async (req, res) => {
 
     const { userId, propertyId } = req.query
+    const {imageTags}=req.body
 
     try {
 
@@ -30,7 +31,8 @@ const uploadPropertyImages = async (req, res) => {
                 imageId: imageId,
                 image: imageUrl,
                 displayStatus: "1",
-                modifiedDate: await getCurrentUTCTimestamp()
+                imageTags: imageTags,// imgTag added to the nested array
+                createdOn: await getCurrentUTCTimestamp()
             };
 
             // Find the propertyImage document by propertyId and push the new image object

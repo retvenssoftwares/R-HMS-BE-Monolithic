@@ -23,8 +23,25 @@ const RoomSchema = Schema({
             }]
             }],
             displayStatus: {type:String, default: '1' },  
+            createdOn: {type: String, default: ''}
         },
     ],
+    deletedRoomImages:[{
+        
+        imageId: {type: String, default:''},
+        image: { type: String, default: '' },
+        imageTags:[ {
+
+        imageTags:[{
+          
+            type:String, default: ''
+            
+        }]
+        }],
+        displayStatus: {type:String, default: '' },  
+        modifiedDate: {type: String, default: ''}
+
+    }]
     
 });
 

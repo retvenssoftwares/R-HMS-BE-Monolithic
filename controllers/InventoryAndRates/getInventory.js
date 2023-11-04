@@ -2,6 +2,7 @@ import bookingModel from "../../models/bookings.js"
 import roomTypeModel from "../../models/roomType.js";
 import verifiedUser from "../../models/verifiedUsers.js";
 import manageInventory from '../../models/manageInventory.js'
+import restrictions from '../../models/manageRestrictions.js'
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const getInventory = async (req, res) => {

@@ -166,7 +166,7 @@ const manageInventory = async (req, res) => {
         // Emit the response to connected clients via Socket.io
         const socket = io("https://api.hotelratna.com"); // Replace YOUR_PORT wit
         socket.emit("inventoryUpdated", getInventoryResponse.data);
-        console.log(getInventoryResponse.data)
+        // console.log(getInventoryResponse.data)
 
       }
 

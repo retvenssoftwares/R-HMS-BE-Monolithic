@@ -128,15 +128,17 @@ const checkRate = async (req, res) => {
           roomTypeId
         });
 
-        const filteredStopSell = filterByDate(restrictionDocument.manageRestrictions.stopSell, startDate, endDate);
-        const filteredCOA = filterByDate(restrictionDocument.manageRestrictions.COA, startDate, endDate);
-        const filteredCOD = filterByDate(restrictionDocument.manageRestrictions.COD, startDate, endDate);
-        const filteredMinimumLOS = filterByDate(restrictionDocument.manageRestrictions.minimumLOS, startDate, endDate);
-        const filteredMaximumLOS = filterByDate(restrictionDocument.manageRestrictions.maximumLOS, startDate, endDate);
+        const filteredStopSell = sortAndFilterByDate(restrictionDocument.manageRestrictions.stopSell, startDate, endDate);
+        const filteredCOA = sortAndFilterByDate(restrictionDocument.manageRestrictions.COA, startDate, endDate);
+        const filteredCOD = sortAndFilterByDate(restrictionDocument.manageRestrictions.COD, startDate, endDate);
+        const filteredMinimumLOS = sortAndFilterByDate(restrictionDocument.manageRestrictions.minimumLOS, startDate, endDate);
+        const filteredMaximumLOS = sortAndFilterByDate(restrictionDocument.manageRestrictions.maximumLOS, startDate, endDate);
 
-        // Filter the baseRate array
-        const filteredBaseRate = filterByDate(rateDocument ? rateDocument.manageRates.baseRate : [], startDate, endDate);
-
+            // Filter and sort the baseRate array, and replace empty array with false
+            const baseRate = rateDocument ? rateDocument.manageRates.baseRate : "false";
+            const filteredBaseRate = Array.isArray(baseRate)
+              ? sortAndFilterByDate(baseRate, startDate, endDate)
+              : baseRate;
 
         // Include restrictions and rates
         response.push({
@@ -155,18 +157,20 @@ const checkRate = async (req, res) => {
           roomTypeId
         });
 
-         // Filter the baseRate array
-         const filteredBaseRate = filterByDate(rateDocument ? rateDocument.manageRates.baseRate : [], startDate, endDate);
-
+            // Filter and sort the baseRate array, and replace empty array with false
+            const baseRate = rateDocument ? rateDocument.manageRates.baseRate : "false";
+            const filteredBaseRate = Array.isArray(baseRate)
+              ? sortAndFilterByDate(baseRate, startDate, endDate)
+              : baseRate;
         // Include rates, but no restrictions
         response.push({
           ...result,
           baseRates:filteredBaseRate,
-          stopSell: [],
-          COA: [],
-          COD: [],
-          minimumLOS: [],
-          maximumLOS: [],
+          stopSell: "false",
+          COA: "false",
+          COD: "false",
+          minimumLOS:"false",
+          maximumLOS: "false",
         });
       }
     }
@@ -178,9 +182,27 @@ const checkRate = async (req, res) => {
   }
 };
 
-// Helper function to filter an array of objects by date
-function filterByDate(array, startDate, endDate) {
-  return array.filter(item => item.date >= startDate && item.date <= endDate);
+// // Helper function to filter an array of objects by date
+// function filterByDate(array, startDate, endDate) {
+//   return array.filter(item => item.date >= startDate && item.date <= endDate);
+// }
+
+// // Helper function to filter and sort an array of objects by date
+// function sortAndFilterByDate(array, startDate, endDate) {
+//   const filteredArray = array.filter(item => item.date >= startDate && item.date <= endDate);
+//   // Sort the filtered array by the date field in ascending order
+//   return filteredArray.sort((a, b) => new Date(a.date) - new Date(b.date));
+// }
+
+// Helper function to filter and sort an array of objects by date
+function sortAndFilterByDate(array, startDate, endDate) {
+  if (Array.isArray(array)) {
+    const filteredArray = array.filter(item => item.date >= startDate && item.date <= endDate);
+    // Sort the filtered array by the date field in ascending order
+    return filteredArray.sort((a, b) => new Date(a.date) - new Date(b.date));
+  } else {
+    return array;
+  }
 }
 
 export default checkRate;

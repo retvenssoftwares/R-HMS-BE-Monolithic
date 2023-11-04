@@ -20,6 +20,7 @@ import { packageRatePlan, updatePackageRatePlan } from '../../controllers/Rooms/
 
 //check room availabilty
 import checkInventoryAvailability from "../../controllers/Rooms/checkRoomAvailability.js"
+import checkRateAvailability from '../../controllers/Rooms/checkAvailableRates.js'
 import getRoom from '../../controllers/Rooms/getRoomsList.js';
 
 const router = express.Router();
@@ -74,11 +75,12 @@ router.patch("/api/updatePackageRatePlan", updatePackageRatePlan)
 
 //check room availability
 router.get("/api/getRoomAvailability", checkInventoryAvailability)
+router.get("/api/getRate",checkRateAvailability)
 
 
 
-//get RoomAvailability
 
+//
 router.get('/api/getRoomDetails',getRoom);
 
 export default router;

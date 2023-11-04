@@ -46,5 +46,5 @@ const manageRatesAndRestrictions = mongoose.Schema({
     versionKey: false
 });
 
-const ratesAndRestrictions = db1.model('ratesAndRestrictions', manageRatesAndRestrictions);
+const ratesAndRestrictions = db1.model('managerate', manageRatesAndRestrictions);
 export default ratesAndRestrictions;

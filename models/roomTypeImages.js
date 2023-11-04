@@ -16,42 +16,33 @@ const RoomSchema = Schema({
             image: { type: String, default: '' },
             imageTags:[ {
 
-            imageTags:{
+            imageTags:[{
+              
                 type:String, default: ''
-
-            }
-
+                
+            }]
             }],
             displayStatus: {type:String, default: '1' },  
+            createdOn: {type: String, default: ''}
         },
     ],
-    // View: [
-    //     {
-    //         imageId: {type: String, default:''},
-    //         image: { type: String, default: '' },
-    //         displayStatus: {type:String, default: '1' },
+    deletedRoomImages:[{
+        
+        imageId: {type: String, default:''},
+        image: { type: String, default: '' },
+        imageTags:[ {
+
+        imageTags:[{
+          
+            type:String, default: ''
             
-    //     }
+        }]
+        }],
+        displayStatus: {type:String, default: '' },  
+        modifiedDate: {type: String, default: ''}
 
-    // ],
-    // bathRoom: [
-    //     {
-    //         imageId: {type: String, default:''},
-    //         image: { type: String, default: '' },
-    //         displayStatus: {type:String, default: '1' },
-            
-    //     },
-    // ],
-    // bed: [
-    //     {
-    //         imageId: {type: String, default:''},
-    //         image: { type: String, default: '' },
-    //         displayStatus: {type:String, default: '1' },   
-    //     }
-
-    // ],
-
-
+    }]
+    
 });
 
 const propertyRoomModel = db1.model("roomimages", RoomSchema)

@@ -5,7 +5,7 @@ import barPlanLogsModel from "../../models/LogModels/barRatePlanLogs.js";
 import Randomstring from "randomstring";
 const patchBarRatePlan = async (req, res) => {
     try {
-        const { userId, shortCode, ratePlanName, inclusion,inclusionPlan,inclusionTotal,totalRatePlanPrice} = req.body;
+        const { userId, shortCode, ratePlanName, inclusion,inclusionPlan,roomBaseRate,mealCharge,inclusionCharge,roundUp,extraAdultRate,extraChildRate,ratePlanTotal} = req.body;
         const barRatePlanId = req.params.barRatePlanId;
         const authCodeValue = req.headers['authcode'];
         const findUser = await verifiedUser.findOne({ userId });
@@ -60,21 +60,63 @@ const patchBarRatePlan = async (req, res) => {
             findBarRatePlan.inclusion.unshift(inclusionObject);
         }
 
-        if (inclusionTotal) {
-            const inclusionObject = {
-                inclusionTotal: inclusionTotal,
-                logId:inclusionTotalLog
+        if (roomBaseRate) {
+            const roomBaseRateObject = {
+                roomBaseRate: roomBaseRate,
+                logId: Randomstring.generate(10),
             };
-            findBarRatePlan.inclusionTotal.unshift(inclusionObject);
+            findBarRatePlan.barRates.roomBaseRate.unshift(roomBaseRateObject);
         }
 
-        if (totalRatePlanPrice) {
-            const inclusionObject = {
-                totalRatePlanPrice: totalRatePlanPrice,
-                logId:totalRatePlanPriceLog
+        if (mealCharge) {
+            const mealChargeObject = {
+                mealCharge: mealCharge,
+                logId: Randomstring.generate(10),
             };
-            findBarRatePlan.totalRatePlanPrice.unshift(inclusionObject);
+            findBarRatePlan.barRates.mealCharge.unshift(mealChargeObject);
         }
+
+        if (inclusionCharge) {
+            const inclusionChargeObject = {
+                inclusionCharge: inclusionCharge,
+                logId: Randomstring.generate(10),
+            };
+            findBarRatePlan.barRates.inclusionCharge.unshift(inclusionChargeObject);
+        }
+
+        if (roundUp) {
+            const roundUpObject = {
+                roundUp: roundUp,
+                logId: Randomstring.generate(10),
+            };
+            findBarRatePlan.barRates.roundUp.unshift(roundUpObject);
+        }
+
+        if (extraAdultRate) {
+            const extraAdultRateObject = {
+                extraAdultRate: extraAdultRate,
+                logId: Randomstring.generate(10),
+            };
+            findBarRatePlan.barRates.extraAdultRate.unshift(extraAdultRateObject);
+        }
+
+        if (extraChildRate) {
+            const extraChildRateObject = {
+                extraChildRate: extraChildRate,
+                logId: Randomstring.generate(10),
+            };
+            findBarRatePlan.barRates.extraChildRate.unshift(extraChildRateObject);
+        }
+
+        if (ratePlanTotal) {
+            const ratePlanTotalObject = {
+                ratePlanTotal: ratePlanTotal,
+                logId: Randomstring.generate(10),
+            };
+            findBarRatePlan.barRates.ratePlanTotal.unshift(ratePlanTotalObject);
+        }
+
+
 
         ///
         const requestData = {
@@ -129,26 +171,6 @@ const patchBarRatePlan = async (req, res) => {
             logBarRatePlan.inclusion.unshift(inclusionObject);
         }
 
-
-        if (inclusionTotal) {
-            const inclusionObject = {
-                inclusionTotal: inclusionTotal,
-                logId:inclusionTotalLog,
-                modifiedOn:currentUTCTime,
-                userId:req.body.userId
-            };
-            logBarRatePlan.inclusionTotal.unshift(inclusionObject);
-        }
-
-        if (totalRatePlanPrice) {
-            const inclusionObject = {
-                totalRatePlanPrice: totalRatePlanPrice,
-                logId:totalRatePlanPriceLog,
-                modifiedOn:currentUTCTime,
-                userId:req.body.userId
-            };
-            logBarRatePlan.totalRatePlanPrice.unshift(inclusionObject);
-        }
 
       await logBarRatePlan.save();
 

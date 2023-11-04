@@ -1,6 +1,10 @@
+
 import manageInventoryModel from "../../models/manageInventory.js";
 import roomType from "../../models/roomType.js";
-import { findUserByUserIdAndToken } from "../../helpers/helper.js"
+import axios from 'axios'; // Import Axios
+import { findUserByUserIdAndToken } from "../../helpers/helper.js";
+import { io } from "socket.io-client";
+
 const manageInventory = async (req, res) => {
   try {
     const {
@@ -152,9 +156,20 @@ const manageInventory = async (req, res) => {
 
         // Save the updated inventory document
         await findInventory.save();
-        // await findDumpInventory.save();
+
+        // After inventory updates are done, call the getInventory API using Axios
+        const getInventoryResponse = await axios.get(`https://api.hotelratna.com/api/getInventory?userId=${userId}&propertyId=${propertyId}&checkInDate=${startDate}&checkOutDate=${endDate}`, {
+          headers: {
+            'authcode': authCodeValue // Replace 'Your-Header-Field' and 'Header-Value' with the actual header field and its value
+          }
+        });
+        // Emit the response to connected clients via Socket.io
+        const socket = io("https://api.hotelratna.com"); // Replace YOUR_PORT wit
+        socket.emit("inventoryUpdated", getInventoryResponse.data);
+        // console.log(getInventoryResponse.data)
 
       }
+
       return res
         .status(200)
         .json({ message: "Inventory updated successfully", statuscode: 200 });

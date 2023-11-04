@@ -1,6 +1,6 @@
-import ratesAndRestrictions from '../../models/manageRatesAndRestrictions.js'
+import restrictions from '../../models/manageRestrictions.js'
 import { findUserByUserIdAndToken } from "../../helpers/helper.js"
-const manageRatesRestrictions = async (req, res) => {
+const manageRestrictions = async (req, res) => {
     try {
         const {
             userId,
@@ -9,12 +9,6 @@ const manageRatesRestrictions = async (req, res) => {
             startDate,
             ratePlanId,
             endDate,
-            isBaseRate,
-            isExtraAdultRate,
-            isExtraChildRate,
-            baseRate,
-            extraAdultRate,
-            extraChildRate,
             source,
             stopSell,
             isStopSell,
@@ -46,20 +40,15 @@ const manageRatesRestrictions = async (req, res) => {
             }
 
             // Find the rate document for the specified roomTypeId
-            let findRatesAndRestrictions = await ratesAndRestrictions.findOne({ roomTypeId: roomTypeId, propertyId: propertyId, ratePlanId: ratePlanId });
+            let findRestrictions = await restrictions.findOne({ roomTypeId: roomTypeId, propertyId: propertyId, ratePlanId: ratePlanId });
 
             // Create the inventory record if it doesn't exist
-            if (!findRatesAndRestrictions) {
-                findRatesAndRestrictions = new ratesAndRestrictions({
+            if (!findRestrictions) {
+                findRestrictions = new restrictions({
                     roomTypeId: roomTypeId,
                     propertyId: propertyId,
                     ratePlanId: ratePlanId,
                     source: source,
-                    manageRates: {
-                        baseRate: [],
-                        extraChildRate: [],
-                        extraAdultRate: []
-                    },
                     manageRestrictions: {
                         stopSell: [],
                         COA: [],
@@ -95,97 +84,61 @@ const manageRatesRestrictions = async (req, res) => {
 
                 // console.log(dateString)
 
-                if (isBaseRate) {
-                    // Update the addedInventory array
-                    const existingEntry = findRatesAndRestrictions.manageRates.baseRate.find(entry => entry.date === dateString);
-
-                    if (existingEntry) {
-                        existingEntry.baseRate = baseRate;
-                    } else {
-                        // If the date does not exist, add a new entry to addedInventory
-                        findRatesAndRestrictions.manageRates.baseRate.push({ date: dateString, baseRate: baseRate });
-                    }
-                }
-
-                if (isExtraAdultRate) {
-                    const existingEntry = findRatesAndRestrictions.manageRates.extraAdultRate.find(entry => entry.date === dateString);
-
-                    if (existingEntry) {
-                        // If the date exists, update the blockedInventory
-                        existingEntry.extraAdultRate = extraAdultRate;
-                    } else {
-                        // If the date does not exist, add a new entry to blockedInventory
-                        findRatesAndRestrictions.manageRates.extraAdultRate.push({ date: dateString, extraAdultRate: extraAdultRate });
-                    }
-                }
-
-                if (isExtraChildRate) {
-                    const existingEntry = findRatesAndRestrictions.manageRates.extraChildRate.find(entry => entry.date === dateString);
-
-                    if (existingEntry) {
-                        // If the date exists, update the blockedInventory
-                        existingEntry.extraChildRate = extraChildRate;
-                    } else {
-                        // If the date does not exist, add a new entry to blockedInventory
-                        findRatesAndRestrictions.manageRates.extraChildRate.push({ date: dateString, extraChildRate: extraChildRate });
-                    }
-                }
-
                 if (isStopSell) {
-                    const existingEntry = findRatesAndRestrictions.manageRestrictions.stopSell.find(entry => entry.date === dateString);
+                    const existingEntry = findRestrictions.manageRestrictions.stopSell.find(entry => entry.date === dateString);
 
                     if (existingEntry) {
                         existingEntry.stopSell = stopSell;
                     } else {
-                        findRatesAndRestrictions.manageRestrictions.stopSell.push({ date: dateString, stopSell: stopSell });
+                        findRestrictions.manageRestrictions.stopSell.push({ date: dateString, stopSell: stopSell });
                     }
                 }
 
                 if (isCOA) {
-                    const existingEntry = findRatesAndRestrictions.manageRestrictions.COA.find(entry => entry.date === dateString);
+                    const existingEntry = findRestrictions.manageRestrictions.COA.find(entry => entry.date === dateString);
 
                     if (existingEntry) {
                         existingEntry.COA = COA;
                     } else {
-                        findRatesAndRestrictions.manageRestrictions.COA.push({ date: dateString, COA: COA });
+                        findRestrictions.manageRestrictions.COA.push({ date: dateString, COA: COA });
                     }
                 }
 
                 if (isCOD) {
-                    const existingEntry = findRatesAndRestrictions.manageRestrictions.COD.find(entry => entry.date === dateString);
+                    const existingEntry = findRestrictions.manageRestrictions.COD.find(entry => entry.date === dateString);
 
                     if (existingEntry) {
                         existingEntry.COD = COD;
                     } else {
-                        findRatesAndRestrictions.manageRestrictions.COD.push({ date: dateString, COD: COD });
+                        findRestrictions.manageRestrictions.COD.push({ date: dateString, COD: COD });
                     }
                 }
 
                 if (isMaximumLOS) {
-                    const existingEntry = findRatesAndRestrictions.manageRestrictions.maximumLOS.find(entry => entry.date === dateString);
+                    const existingEntry = findRestrictions.manageRestrictions.maximumLOS.find(entry => entry.date === dateString);
 
                     if (existingEntry) {
                         existingEntry.maximumLOS = maximumLOS;
                     } else {
-                        findRatesAndRestrictions.manageRestrictions.maximumLOS.push({ date: dateString, maximumLOS: maximumLOS });
+                        findRestrictions.manageRestrictions.maximumLOS.push({ date: dateString, maximumLOS: maximumLOS });
                     }
                 }
 
                 if (isMinimumLOS) {
-                    const existingEntry = findRatesAndRestrictions.manageRestrictions.minimumLOS.find(entry => entry.date === dateString);
+                    const existingEntry = findRestrictions.manageRestrictions.minimumLOS.find(entry => entry.date === dateString);
 
                     if (existingEntry) {
                         existingEntry.minimumLOS = minimumLOS;
                     } else {
-                        findRatesAndRestrictions.manageRestrictions.minimumLOS.push({ date: dateString, minimumLOS: minimumLOS });
+                        findRestrictions.manageRestrictions.minimumLOS.push({ date: dateString, minimumLOS: minimumLOS });
                     }
                 }
             }
 
             // Save the updated inventory document
-            await findRatesAndRestrictions.save();
+            await findRestrictions.save();
 
-            return res.status(200).json({ message: "Rates updated successfully", statuscode: 200 });
+            return res.status(200).json({ message: "Restrictions updated successfully", statuscode: 200 });
 
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
@@ -197,4 +150,4 @@ const manageRatesRestrictions = async (req, res) => {
 
 }
 
-export default manageRatesRestrictions
+export default manageRestrictions

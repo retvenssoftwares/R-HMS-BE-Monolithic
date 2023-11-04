@@ -79,6 +79,50 @@ const getInventory = async (req, res) => {
                     }
                 ]);
 
+                const manageRestrictionsData = await restrictions.aggregate([
+                    {
+                        $match: {
+                            propertyId: propertyId,
+                            roomTypeId: roomTypeId
+                        }
+                    },
+                    {
+                        $unwind: "$manageRestrictions" // Unwind to access each restriction entry
+                    },
+                    {
+                        $match: {
+                            $or: [
+                                {
+                                    "manageRestrictions.stopSell.date": { $gte: checkInDate, $lte: checkOutDate }
+                                },
+                                {
+                                    "manageRestrictions.COA.date": { $gte: checkInDate, $lte: checkOutDate }
+                                },
+                                {
+                                    "manageRestrictions.COD.date": { $gte: checkInDate, $lte: checkOutDate }
+                                },
+                                {
+                                    "manageRestrictions.minimumLOS.date": { $gte: checkInDate, $lte: checkOutDate }
+                                },
+                                {
+                                    "manageRestrictions.maximumLOS.date": { $gte: checkInDate, $lte: checkOutDate }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        $project: {
+                            _id: 0,
+                            "manageRestrictions.stopSell": 1,
+                            "manageRestrictions.COA": 1,
+                            "manageRestrictions.COD": 1,
+                            "manageRestrictions.minimumLOS": 1,
+                            "manageRestrictions.maximumLOS": 1
+                        }
+                    }
+                ]);
+
+
                 if (reservations.length !== 0) {
                     // const reducedCount = reservations.filter(reservation => reservation.roomDetails.some(detail => detail.roomTypeId[0].roomTypeId === roomTypeId)).length;
                     // const roomTypeCount = roomType.numberOfRooms - reducedCount;
@@ -118,7 +162,25 @@ const getInventory = async (req, res) => {
                         // console.log(calculatedInventoryData)
                     }
 
-                    availableRooms.push({ roomTypeId, roomTypeName: roomTypeName, numberOfRooms: roomType.numberOfRooms - reducedCount, calculatedInventoryData });
+                    const manageRestrictions = manageRestrictionsData[0] ? manageRestrictionsData[0].manageRestrictions : {};
+                    const stopSell = manageRestrictions.stopSell || [];
+                    const COA = manageRestrictions.COA || [];
+                    const COD = manageRestrictions.COD || [];
+                    const minimumLOS = manageRestrictions.minimumLOS || [];
+                    const maximumLOS = manageRestrictions.maximumLOS || [];
+
+
+                    availableRooms.push({
+                        roomTypeId,
+                        roomTypeName,
+                        numberOfRooms: roomType.numberOfRooms - reducedCount,
+                        calculatedInventoryData,
+                        stopSell,
+                        COA,
+                        COD,
+                        minimumLOS,
+                        maximumLOS
+                    });
                 } else {
                     // Filter and collect unique dates within the specified date range
                     const addedInventoryDates = [...new Set(
@@ -157,7 +219,25 @@ const getInventory = async (req, res) => {
 
                     }
                     // console.log(calculatedInventoryData)
-                    availableRooms.push({ roomTypeId, roomTypeName: roomTypeName, numberOfRooms: roomType.numberOfRooms - reducedCount, calculatedInventoryData: calculatedInventoryData });
+                    const manageRestrictions = manageRestrictionsData[0] ? manageRestrictionsData[0].manageRestrictions : {};
+                    const stopSell = manageRestrictions.stopSell || [];
+                    const COA = manageRestrictions.COA || [];
+                    const COD = manageRestrictions.COD || [];
+                    const minimumLOS = manageRestrictions.minimumLOS || [];
+                    const maximumLOS = manageRestrictions.maximumLOS || [];
+
+                    // console.log(modifiedRes)
+                    availableRooms.push({
+                        roomTypeId,
+                        roomTypeName,
+                        numberOfRooms: roomType.numberOfRooms - reducedCount,
+                        calculatedInventoryData,
+                        stopSell,
+                        COA,
+                        COD,
+                        minimumLOS,
+                        maximumLOS
+                    });
                 }
             }
 

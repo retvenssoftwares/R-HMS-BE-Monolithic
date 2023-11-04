@@ -34,6 +34,17 @@ roomType:[{
     }
 }],
 
+mealPlan:[{
+  mealPlanId: {
+   type:String,
+   default:"",
+   },
+   logId: {
+       type: String,
+       default: ""
+   }
+}],
+
 ratePlanName:[{
     ratePlanName:{
         type:String,
@@ -92,32 +103,82 @@ ratePlanName:[{
   }],
 
 
-  
-
-  inclusionTotal:[{
-  inclusionTotal:{
-    type: String,
-    default: "",
+barRates:{
+  roomBaseRate:[{
+    roomBaseRate:{
+      type: String,
+        default: ""
+    },
+    logId: {
+      type: String,
+      default: ""
   },
-  logId: {
-    type: String,
-    default: ""
-}
-  
-}],
-
-
-  totalRatePlanPrice:[{
-  totalRatePlanPrice:{
-    type: String,
-    default: "",
+  }],
+  mealCharge:[{
+    mealCharge:{
+      type: String,
+      default: ""
+    },
+    logId: {
+      type: String,
+      default: ""
   },
-  logId: {
-    type: String,
-    default: ""
-}
-}]
+    
+  }],
+  inclusionCharge:[{
+    inclusionCharge:{
+      type: String,
+      default: ""
+    },
+    logId: {
+      type: String,
+      default: ""
+  },
+  }],
+  roundUp:[{
+    roundUp:{
+      type: String,
+      default: ""
+    },
+    logId: {
+      type: String,
+      default: ""
+  },
+  }],
+  extraAdultRate:[{
+    extraAdultRate:{
+      type: String,
+      default: ""
+    },
+    logId: {
+      type: String,
+      default: ""
+  },
 
+  }],
+  extraChildRate:[{
+    extraChildRate:{
+      type: String,
+      default: ""
+    },
+    logId: {
+      type: String,
+      default: ""
+  },
+
+  }],
+  ratePlanTotal:[{
+    ratePlanTotal:{
+      type: String,
+      default: ""
+    },
+    logId: {
+      type: String,
+      default: ""
+  },
+  }]
+
+}
 });
 
 const ratePlan = db1.model("barrateplan", barRatePlanSchema);

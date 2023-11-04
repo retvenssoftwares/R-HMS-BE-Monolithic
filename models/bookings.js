@@ -7,6 +7,13 @@ const booking = new mongoose.Schema({
         default:""
     },
 
+    guestId :[{
+        guestId:{
+            type:String,
+            default:""
+        }
+    }],
+
     checkIn :[{
        checkIn:{
         type:String,
@@ -130,8 +137,8 @@ const booking = new mongoose.Schema({
 // discount reservation
     discountReservation :[{
         // cahnge to id
-        bookingTypeId:[{
-            bookingType:{
+        bookingType:[{
+            bookingTypeId:{
                 type:String,
                 default:""
             },

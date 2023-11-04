@@ -54,11 +54,6 @@ export const companyRatePlan = async (req, res) => {
           logId: Randomstring.generate(10),
         }],
 
-        // ratePlanTotal : [{
-        //   ratePlanTotal : ratePlanTotal,
-        //   logId: Randomstring.generate(10),
-        // }],
-
         ratePlanInclusion :[{
           ratePlanInclusion : ratePlanInclusion,
           logId: Randomstring.generate(10),

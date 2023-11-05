@@ -123,14 +123,32 @@ const manageRates = async (req, res, io) => {
             await findRates.save();
 
             // After inventory updates are done, call the getInventory API using Axios
-            const getRatesResponse = await axios.get(`https://api.hotelratna.com/api/getInventory?userId=${userId}&propertyId=${propertyId}&checkInDate=${startDate}&checkOutDate=${endDate}`, {
-                headers: {
-                    'authcode': authCodeValue
+            // const getRatesResponse = await axios.get(`https://api.hotelratna.com/api/getInventory?userId=${userId}&propertyId=${propertyId}&checkInDate=${startDate}&checkOutDate=${endDate}`, {
+            //     headers: {
+            //         'authcode': authCodeValue
+            //     }
+            // });
+            // // Emit the response to connected clients via Socket.io
+            // // const socket = io("https://api.hotelratna.com"); // Replace YOUR_PORT wit
+            // io.emit("ratesUpdated", getRatesResponse.data);
+            const emitData = async () => {
+                try {
+                    const getInventoryResponse = await axios.get(`https://api.hotelratna.com/api/getInventory?userId=${userId}&propertyId=${propertyId}&checkInDate=${startDate}&checkOutDate=${endDate}`, {
+                        headers: {
+                            'authcode': authCodeValue
+                        }
+                    });
+
+                    // Emit the response to connected clients via Socket.io
+                    io.emit("inventoryUpdated", getInventoryResponse.data);
+                    console.log(getInventoryResponse.data);
+                } catch (error) {
+                    console.error(error);
                 }
-            });
-            // Emit the response to connected clients via Socket.io
-            // const socket = io("https://api.hotelratna.com"); // Replace YOUR_PORT wit
-            io.emit("ratesUpdated", getRatesResponse.data);
+            };
+
+            // Use the asynchronous function to emit data
+            emitData();
             return res.status(200).json({ message: "Rates updated successfully", statuscode: 200 });
 
         } else {

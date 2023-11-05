@@ -157,16 +157,25 @@ const manageInventory = async (req, res, io) => {
         // Save the updated inventory document
         await findInventory.save();
 
-        // After inventory updates are done, call the getInventory API using Axios
-        const getInventoryResponse = await axios.get(`https://api.hotelratna.com/api/getInventory?userId=${userId}&propertyId=${propertyId}&checkInDate=${startDate}&checkOutDate=${endDate}`, {
-          headers: {
-            'authcode': authCodeValue // Replace 'Your-Header-Field' and 'Header-Value' with the actual header field and its value
-          }
-        });
-        // Emit the response to connected clients via Socket.io
-        // const socket = io("https://api.hotelratna.com"); // Replace YOUR_PORT wit
-        io.emit("inventoryUpdated", getInventoryResponse.data);
-        // console.log(getInventoryResponse.data)
+      // After inventory updates are done, initiate the data emission
+const emitData = async () => {
+  try {
+    const getInventoryResponse = await axios.get(`https://api.hotelratna.com/api/getInventory?userId=${userId}&propertyId=${propertyId}&checkInDate=${startDate}&checkOutDate=${endDate}`, {
+      headers: {
+        'authcode': authCodeValue
+      }
+    });
+
+    // Emit the response to connected clients via Socket.io
+    io.emit("inventoryUpdated", getInventoryResponse.data);
+    console.log(getInventoryResponse.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// Use the asynchronous function to emit data
+emitData();
 
       }
 

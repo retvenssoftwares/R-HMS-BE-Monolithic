@@ -427,7 +427,7 @@ function sortAndFilterByDate(array, startDate, endDate) {
 }
 
 // Helper function to fill missing dates in an array and sort it
-function fillMissingDatesAndSort(array, startDate, endDate, ratePlanTotal, stopSell, COA, COD,minimumLOS,maximumLOS) {
+function fillMissingDatesAndSort(array, startDate, endDate, ratePlanTotal, stopSell, COA, COD, minimumLOS, maximumLOS) {
   if (!Array.isArray(array)) {
     return "false";
   }
@@ -437,33 +437,40 @@ function fillMissingDatesAndSort(array, startDate, endDate, ratePlanTotal, stopS
 
   while (currentDate <= new Date(endDate)) {
     const formattedDate = currentDate.toISOString().slice(0, 10);
-    if (!dateSet.has(formattedDate)) {
-      const matchingStopSell = stopSell ? stopSell.find(item => item.date === formattedDate) : undefined;
-      const matchingCOA = COA ? COA.find(item => item.date === formattedDate) : undefined;
-      const matchingCOD = COD ? COD.find(item => item.date === formattedDate) : undefined;
-      const matchingMinimumLOS = minimumLOS ? minimumLOS.find(item => item.date === formattedDate) : undefined;
-      const matchingMaximumLOS = maximumLOS ? maximumLOS.find(item => item.date === formattedDate) : undefined;
-      if (matchingStopSell && matchingCOA && matchingCOD&&matchingMinimumLOS&&matchingMaximumLOS) {
-        array.push({
-          baseRate: ratePlanTotal,
-          stopSell: matchingStopSell.stopSell,
-          COA: matchingCOA.COA,
-          COD: matchingCOD.COD,
-          minimumLOS:matchingMinimumLOS.minimumLOS,
-          maximumLOS:matchingMaximumLOS.maximumLOS,
-          date: formattedDate,
-        });
-      } else {
-        array.push({
-          baseRate: ratePlanTotal,
-          date: formattedDate,
-        });
+    
+    if (formattedDate <= endDate) {
+      if (!dateSet.has(formattedDate)) {
+        const matchingStopSell = stopSell ? stopSell.find(item => item.date === formattedDate) : undefined;
+        const matchingCOA = COA ? COA.find(item => item.date === formattedDate) : undefined;
+        const matchingCOD = COD ? COD.find(item => item.date === formattedDate) : undefined;
+        const matchingMinimumLOS = minimumLOS ? minimumLOS.find(item => item.date === formattedDate) : undefined;
+        const matchingMaximumLOS = maximumLOS ? maximumLOS.find(item => item.date === formattedDate) : undefined;
+
+        if (matchingStopSell && matchingCOA && matchingCOD && matchingMinimumLOS && matchingMaximumLOS) {
+          array.push({
+            baseRate: ratePlanTotal,
+            stopSell: matchingStopSell.stopSell,
+            COA: matchingCOA.COA,
+            COD: matchingCOD.COD,
+            minimumLOS: matchingMinimumLOS.minimumLOS,
+            maximumLOS: matchingMaximumLOS.maximumLOS,
+            date: formattedDate,
+          });
+        } else {
+          array.push({
+            baseRate: ratePlanTotal,
+            date: formattedDate,
+          });
+        }
       }
     }
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
-  return array.sort((a, b) => new Date(a.date) - new Date(b.date));
+  return array
+    .filter(item => item.date <= endDate)
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
 }
+
 
 export default checkRate;

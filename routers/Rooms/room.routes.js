@@ -54,8 +54,9 @@ router.get('/api/getInclusion',getInclusion )
 
 //patch inclusion
 router.patch('/api/patchInclusion', patchInclusions)
+
 //company rate plan
-router.post("/api/addCompnayRatePlan", companyRatePlan)
+router.post("/api/addCompanyRatePlan", companyRatePlan)
 
 //update companyRtePlan
 router.patch("/api/updateCompanyRatePlan/:compnayRatePlanId", updateCompanyRatePlan)

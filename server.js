@@ -10,7 +10,7 @@ const server = http.createServer(app); // Create an HTTP server using the Expres
 const io = new Server(server);
 
 
-
+import "./helpers/deletOldBooking.js"
 import "./db/conn.js"
 import "./db/conn2.js"
 import propertyRoutes from "./routers/Property/property.routes.js"
@@ -23,8 +23,7 @@ import booking from "./routers/Booking/booking.js"
 import superAdminRoutes from "./routers/superAdmin/admin.routes.js"
 import testR from './routers/test.router.js'
 import bulkUpdateRoutes from './routers/InventoryAndRates/manageInventoryRates.routes.js'
-
-
+// import { oldBooking } from "./helpers/deletOldBooking.js";
 
 app.use(cors({
   origin: '*'

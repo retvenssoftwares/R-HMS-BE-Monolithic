@@ -272,7 +272,8 @@ const checkRate = async (req, res) => {
           roomTypeId
         });
 
-        const filteredStopSell = sortAndFilterByDate(restrictionDocument.manageRestrictions.stopSell, startDate, endDate);
+        const filteredStopSell = fillMissingDatesAndSort(restrictionDocument.manageRestrictions.stopSell, startDate, endDate);
+        console.log(filteredStopSell)
         const filteredCOA = sortAndFilterByDate(restrictionDocument.manageRestrictions.COA, startDate, endDate);
         const filteredCOD = sortAndFilterByDate(restrictionDocument.manageRestrictions.COD, startDate, endDate);
         const filteredMinimumLOS = sortAndFilterByDate(restrictionDocument.manageRestrictions.minimumLOS, startDate, endDate);
@@ -292,9 +293,9 @@ const checkRate = async (req, res) => {
             startDate,
             endDate,
              result.ratePlanTotal,  // Pass ratePlanTotal from result
-
+            
           ),
-          stopSell: filteredStopSell,
+          stopSell:filteredStopSell,
           COA: filteredCOA,
           COD: filteredCOD,
           minimumLOS: filteredMinimumLOS,
@@ -353,7 +354,8 @@ function sortAndFilterByDate(array, startDate, endDate) {
 }
 
 // Helper function to fill missing dates in an array and sort it
-function fillMissingDatesAndSort(array, startDate, endDate,ratePlanTotal) {
+// Helper function to fill missing dates in an array and sort it
+function fillMissingDatesAndSort(array, startDate, endDate, ratePlanTotal, stopSell) {
   if (!Array.isArray(array)) {
     return "false";
   }
@@ -364,10 +366,20 @@ function fillMissingDatesAndSort(array, startDate, endDate,ratePlanTotal) {
   while (currentDate <= new Date(endDate)) {
     const formattedDate = currentDate.toISOString().slice(0, 10);
     if (!dateSet.has(formattedDate)) {
-      array.push({
-        baseRate:ratePlanTotal, // Set the default value for missing dates
-        date: formattedDate,
-      });
+      const matchingStopSell = stopSell ? stopSell.find(item => item.date === formattedDate) : undefined;
+
+      if (matchingStopSell) {
+        array.push({
+          baseRate: ratePlanTotal,
+          stopSell: matchingStopSell.stopSell,
+          date: formattedDate,
+        });
+      } else {
+        array.push({
+          baseRate: ratePlanTotal,
+          date: formattedDate,
+        });
+      }
     }
     currentDate.setDate(currentDate.getDate() + 1);
   }

@@ -23,7 +23,8 @@ import booking from "./routers/Booking/booking.js"
 import superAdminRoutes from "./routers/superAdmin/admin.routes.js"
 import testR from './routers/test.router.js'
 import bulkUpdateRoutes from './routers/InventoryAndRates/manageInventoryRates.routes.js'
-import { oldBooking } from "./helpers/deletOldBooking.js";
+
+
 
 app.use(cors({
   origin: '*'
@@ -41,6 +42,7 @@ app.use(companyRoutes)
 app.use(booking)
 app.use(bulkUpdateRoutes)
 app.use(superAdminRoutes)
+
 
 app.get("/",(req,res)=>{
   return res.status(200).send("welcome to HMS backend services")

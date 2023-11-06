@@ -31,6 +31,10 @@ app.use(companyRoutes)
 app.use(booking)
 app.use(bulkUpdateRoutes)
 app.use(superAdminRoutes)
+
+app.get("/",(req,res)=>{
+  return res.status(200).json({message : "welcome to HMS backend services"})
+})
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Server started on port ${process.env.PORT}`);
 });

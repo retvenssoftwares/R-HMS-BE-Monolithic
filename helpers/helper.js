@@ -199,6 +199,20 @@ function convertTimestampToCustomFormat(utcTimestamp, targetTimeZone) {
 
 
 //
+
+function generateFourDigitRandomNumber() {
+  return new Promise((resolve, reject) => {
+    try {
+      const randomNumber = Math.floor(1000 + Math.random() * 9000);
+      
+      resolve(randomNumber);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+
 const verifyUser = async (userId, authCodeValue) => {
   try {
     const findUser = await verifiedUser.findOne({ userId });
@@ -218,7 +232,10 @@ const verifyUser = async (userId, authCodeValue) => {
     console.log(error)
     return { success: false, message: "Internal Server Error", statuscode: 500 };
   }
+
+
+  
 };
 
 
-export { getCurrentUTCTimestamp, getDatesBetweenDates, convertToISODate, findUserByUserIdAndToken, verifyUser, uploadImageToS3, convertTimestampToCustomFormat, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt };
+export { getCurrentUTCTimestamp, getDatesBetweenDates, convertToISODate, findUserByUserIdAndToken, verifyUser, uploadImageToS3, convertTimestampToCustomFormat, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt, generateFourDigitRandomNumber};

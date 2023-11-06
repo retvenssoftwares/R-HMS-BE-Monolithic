@@ -432,8 +432,19 @@ const booking = new mongoose.Schema({
             }
         }]
         
-    }]
+    }],
 
+    reservationNumber:{
+        type:String,
+        default:""
+    },
+
+    reservationIds:[{
+        
+         type:String,
+         default:""
+        
+    }]
 },
 
 {

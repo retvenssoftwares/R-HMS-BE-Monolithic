@@ -1,4 +1,5 @@
-import bookingModel from "../../models/bookings.js"
+import bookingModel from "../../models/confirmBooking.js"
+import holdBookings from '../../models/holdBooking.js'
 import roomTypeModel from "../../models/roomType.js";
 import verifiedUser from "../../models/verifiedUsers.js";
 import manageInventory from '../../models/manageInventory.js'
@@ -60,7 +61,7 @@ const getInventory = async (req, res) => {
 
                 const reservations = await bookingModel.find({
                     propertyId,
-                    "checkIn.checkIn": { $gte: checkInDateISO, $lt: checkOutDateISO },
+                    checkIn: { $gte: checkInDateISO, $lt: checkOutDateISO },
                     "roomDetails.roomTypeId.roomTypeId": roomTypeId
                 }).lean();
 
@@ -213,17 +214,17 @@ const getInventory = async (req, res) => {
 
                     const matchedStopSell = matchingDates.map((date) => {
                         const stopSellEntry = sortedStopSell.find((entry) => entry.date === date);
-                        return stopSellEntry ? stopSellEntry.stopSell :  "false";
+                        return stopSellEntry ? stopSellEntry.stopSell : "false";
                     });
 
                     const matchedCOA = matchingDates.map((date) => {
                         const COAEntry = sortedCOA.find((entry) => entry.date === date);
-                        return COAEntry ? COAEntry.COA :  "false";
+                        return COAEntry ? COAEntry.COA : "false";
                     });
 
                     const matchedCOD = matchingDates.map((date) => {
                         const CODEntry = sortedCOD.find((entry) => entry.date === date);
-                        return CODEntry ? CODEntry.COD :  "false";
+                        return CODEntry ? CODEntry.COD : "false";
                     });
 
                     const matchedMinimumLOS = matchingDates.map((date) => {
@@ -325,22 +326,22 @@ const getInventory = async (req, res) => {
 
                     const matchedStopSell = matchingDates.map((date) => {
                         const stopSellEntry = sortedStopSell.find((entry) => entry.date === date);
-                        return stopSellEntry ? stopSellEntry.stopSell :  "false";
+                        return stopSellEntry ? stopSellEntry.stopSell : "false";
                     });
 
                     const matchedCOA = matchingDates.map((date) => {
                         const COAEntry = sortedCOA.find((entry) => entry.date === date);
-                        return COAEntry ? COAEntry.COA :  "false";
+                        return COAEntry ? COAEntry.COA : "false";
                     });
 
                     const matchedCOD = matchingDates.map((date) => {
                         const CODEntry = sortedCOD.find((entry) => entry.date === date);
-                        return CODEntry ? CODEntry.COD :  "false";
+                        return CODEntry ? CODEntry.COD : "false";
                     });
 
                     const matchedMinimumLOS = matchingDates.map((date) => {
                         const minimumLOSEntry = sortedMinimumLOS.find((entry) => entry.date === date);
-                        return minimumLOSEntry ? minimumLOSEntry.minimumLOS :  "false";
+                        return minimumLOSEntry ? minimumLOSEntry.minimumLOS : "false";
                     });
 
                     const matchedMaximumLOS = matchingDates.map((date) => {

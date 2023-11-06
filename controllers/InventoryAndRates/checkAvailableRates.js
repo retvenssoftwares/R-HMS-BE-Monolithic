@@ -213,9 +213,18 @@
 import barRateModel from '../../models/barRatePlan.js';
 import rateModel from '../../models/manageRatesAndRestrictions.js';
 import restrictionModel from '../../models/manageRestrictions.js';
+import { findUserByUserIdAndToken } from "../../helpers/helper.js";
+import verifiedUser from "../../models/verifiedUsers.js";
+
 
 const checkRate = async (req, res) => {
-  const { propertyId, startDate, endDate } = req.query;
+  const { userId,propertyId, startDate, endDate } = req.query;
+  const authCodeValue = req.headers['authcode'];
+  
+  const findUser = await verifiedUser.findOne({ userId });
+  if (!findUser || !userId) {
+      return res.status(400).json({ message: "User not found or invalid userId", statuscode: 400 });
+  }
 
   if (startDate === endDate) {
     return res.status(400).json({ message: "start date cannot be equal to end date", statuscode: 400 });

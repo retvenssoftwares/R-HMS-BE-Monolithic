@@ -104,11 +104,12 @@ const packagePlan = new mongoose.Schema({
           type: String,
           default: "",
         },
-        logId: {
-            type: String,
-            default: ""
-        }
+        
       }],
+      logId: {
+        type: String,
+        default: ""
+    }
     }],
 
       ratePlanInclusion: [{

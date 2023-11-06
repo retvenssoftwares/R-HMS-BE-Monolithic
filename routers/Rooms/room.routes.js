@@ -15,6 +15,7 @@ import patchInclusions from '../../controllers/Rooms/patchInclusion.js';
 
 import { companyRatePlan, updateCompanyRatePlan } from '../../controllers/Rooms/companyRatePlan.js';
 import BarRatePlan from '../../controllers/Rooms/postBarRatePlan.controller.js'
+import fetchBarRatePlan from '../../controllers/Rooms/getBarRatePlan.js'
 import updateBarRatePlan from '../../controllers/Rooms/patchBarRatePlan.controller.js'
 import { packageRatePlan, updatePackageRatePlan } from '../../controllers/Rooms/package.js';
 
@@ -53,17 +54,21 @@ router.get('/api/getInclusion',getInclusion )
 
 //patch inclusion
 router.patch('/api/patchInclusion', patchInclusions)
+
 //company rate plan
-router.post("/api/addCompnayRatePlan", companyRatePlan)
+router.post("/api/addCompanyRatePlan", companyRatePlan)
 
 //update companyRtePlan
-router.patch("/api/updateCompanyRatePlan/:compnayRatePlanId", updateCompanyRatePlan)
+router.patch("/api/updateCompanyRatePlan", updateCompanyRatePlan)
 
 //post BarRatePlan
 router.post('/api/barRatePlan', BarRatePlan)
 
 //update barRatePlan
 router.patch('/api/updateBarRatePlan/:barRatePlanId', updateBarRatePlan)
+
+//get barRatePlan
+router.get('/api/getBarRatePlans',fetchBarRatePlan)
 
 //add package 
 router.post("/api/addPackage", packageRatePlan)
@@ -73,10 +78,7 @@ router.patch("/api/updatePackageRatePlan", updatePackageRatePlan)
 
 
 
-
-
-
 //
-router.get('/api/getRoomDetails',getRoom);
+router.get("/api/getRoomList",getRoom);
 
 export default router;

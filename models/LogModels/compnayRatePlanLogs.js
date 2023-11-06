@@ -23,6 +23,38 @@ const companyRatePlanLogs = new mongoose.Schema(
       default: "",
     },
 
+    ratePlanName: [
+      {
+        ratePlanName: {
+          type: String,
+          default: "",
+        },
+        logId:{
+          type: String,
+          default: "",
+        },
+        request: { type: String, default: "" },
+        response: { type: String, default: "" },
+        modifiedOn: {
+          type: String,
+          default: "",
+        },
+        userId: {
+          type: String,
+          default: "",
+        },
+        ipAddress: {
+          type: String,
+          default: "",
+        },
+
+        deviceType: {
+          type: String,
+          default: "",
+        },
+      },
+    ],    
+
     ratePlanInclusion: [
       {
         ratePlanInclusion: [

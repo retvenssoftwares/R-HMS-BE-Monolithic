@@ -261,7 +261,7 @@ const getInventory = async (req, res) => {
                         // Add isBlocked variable based on the blockedInventory data
                         const inventoryWithBlockedInfo = calculatedInventoryData.map((item) => ({
                             ...item,
-                            isBlocked: blockedInventoryDates.includes(item.date),
+                            isBlocked: blockedInventoryDates.includes(item.date).toString(),
                         }));
                         availableRooms.push({
                             roomTypeId,

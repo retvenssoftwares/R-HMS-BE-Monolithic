@@ -262,44 +262,126 @@ const checkRate = async (req, res) => {
       const restrictionDocument = await restrictionModel.findOne({
         propertyId,
         roomTypeId,
-        ratePlanId:barRatePlanId
+        ratePlanId: barRatePlanId
       });
      // console.log(restrictionDocument)
 
       if (restrictionDocument) {
         const rateDocument = await rateModel.findOne({
           propertyId,
-          roomTypeId
+          roomTypeId,
+          ratePlanId: barRatePlanId
         });
+ // Filter and sort the baseRate array, and replace empty array with ratePlanTotal
+ //const filteredBaseRate = rateDocument ? rateDocument.manageRates.baseRate : "false";
 
         const filteredStopSell = fillMissingDatesAndSort(restrictionDocument.manageRestrictions.stopSell, startDate, endDate);
-        console.log(filteredStopSell)
-        const filteredCOA = sortAndFilterByDate(restrictionDocument.manageRestrictions.COA, startDate, endDate);
-        const filteredCOD = sortAndFilterByDate(restrictionDocument.manageRestrictions.COD, startDate, endDate);
-        const filteredMinimumLOS = sortAndFilterByDate(restrictionDocument.manageRestrictions.minimumLOS, startDate, endDate);
-        const filteredMaximumLOS = sortAndFilterByDate(restrictionDocument.manageRestrictions.maximumLOS, startDate, endDate);
-
-            // // Filter and sort the baseRate array, and replace empty array with false
-            // const baseRate = rateDocument ? rateDocument.manageRates.baseRate : "false";
-            // const filteredBaseRate = Array.isArray(baseRate)
-            //   ? sortAndFilterByDate(baseRate, startDate, endDate)
-            //   : baseRate;
+        const filteredCOA = fillMissingDatesAndSort(restrictionDocument.manageRestrictions.COA, startDate, endDate);
+        const filteredCOD = fillMissingDatesAndSort(restrictionDocument.manageRestrictions.COD, startDate, endDate);
+        const filteredMinimumLOS = fillMissingDatesAndSort(restrictionDocument.manageRestrictions.minimumLOS, startDate, endDate);
+        const filteredMaximumLOS = fillMissingDatesAndSort(restrictionDocument.manageRestrictions.maximumLOS, startDate, endDate);
 
         // Include restrictions and rates
+        const baseRates = [];
+        //stopSell
+        filteredStopSell.forEach(item => {
+          const baseRateEntry = {
+            baseRate: result.ratePlanTotal,
+            stopSell: item.stopSell,
+            date: item.date
+          };
+          baseRates.push(baseRateEntry);
+        });
+
+        //COA
+        filteredCOA.forEach(item => {
+          const existingBaseRate = baseRates.find(entry => entry.date === item.date);
+          if (existingBaseRate) {
+            existingBaseRate.COA = item.COA;
+          } else {
+            const baseRateEntry = {
+              baseRate: result.ratePlanTotal,
+              COA: item.COA,
+              date: item.date
+            };
+            baseRates.push(baseRateEntry);
+          }
+        });
+
+        //COD
+        filteredCOD.forEach(item => {
+          const existingBaseRate = baseRates.find(entry => entry.date === item.date);
+          if (existingBaseRate) {
+            existingBaseRate.COD = item.COD;
+          } else {
+            const baseRateEntry = {
+              baseRate: result.ratePlanTotal,
+              COD: item.COD,
+              date: item.date
+            };
+            baseRates.push(baseRateEntry);
+        }});
+
+        //minimumLOS
+        filteredMinimumLOS.forEach(item => {
+          const existingBaseRate = baseRates.find(entry => entry.date === item.date);
+          if (existingBaseRate) {
+            existingBaseRate.minimumLOS = item.minimumLOS;
+          } else {
+            const baseRateEntry = {
+              baseRate: result.ratePlanTotal,
+              minimumLOS: item.minimumLOS,
+              date: item.date
+            };
+            baseRates.push(baseRateEntry);
+        }});
+
+           //maximumLOS
+           filteredMaximumLOS.forEach(item => {
+            const existingBaseRate = baseRates.find(entry => entry.date === item.date);
+            if (existingBaseRate) {
+              existingBaseRate.maximumLOS = item.maximumLOS;
+            } else {
+              const baseRateEntry = {
+                baseRate: result.ratePlanTotal,
+                maximumLOS: item.maximumLOS,
+                date: item.date
+              };
+              baseRates.push(baseRateEntry);
+          }});
+
+          
+
+          // Filter and sort the baseRate array, and replace empty array with false
+            const baseRate = rateDocument ? rateDocument.manageRates.baseRate : "false";
+            console.log(baseRate)
+            const filteredBaseRate = Array.isArray(baseRate)
+              ? sortAndFilterByDate(baseRate, startDate, endDate)
+              : baseRate;
+
+              
+
+              filteredBaseRate.forEach(item => {
+                const existingBaseRate = baseRates.find(entry => entry.date === item.date);
+                if (existingBaseRate) {
+                  existingBaseRate.baseRate = item.baseRate;
+                } else {
+                  const baseRateEntry = {
+                    baseRate: result.ratePlanTotal,
+                    maximumLOS: item.maximumLOS,
+                    date: item.date
+                  };
+                  baseRates.push(baseRateEntry);
+              }});
+              
+       // Include restrictions and rates  
+
         response.push({
           ...result,
-          baseRates: fillMissingDatesAndSort(
-            rateDocument ? rateDocument.manageRates.baseRate : "false",
-            startDate,
-            endDate,
-             result.ratePlanTotal,  // Pass ratePlanTotal from result
-            
-          ),
-          stopSell:filteredStopSell,
-          COA: filteredCOA,
-          COD: filteredCOD,
-          minimumLOS: filteredMinimumLOS,
-          maximumLOS: filteredMaximumLOS,
+          baseRates,
+          // filteredBaseRate: Array.isArray(rateDocument.manageRates.baseRate)
+          // ? sortAndFilterByDate(rateDocument.manageRates.baseRate, startDate, endDate)
+          // : "false",
         });
       } else {
         // No matching restrictions, check for rates
@@ -308,12 +390,6 @@ const checkRate = async (req, res) => {
           roomTypeId
         });
 
-            // // Filter and sort the baseRate array, and replace empty array with false
-            // const baseRate = rateDocument ? rateDocument.manageRates.baseRate : "false";
-            // const filteredBaseRate = Array.isArray(baseRate)
-            //   ? sortAndFilterByDate(baseRate, startDate, endDate)
-            //   : baseRate;
-
         // Include rates, but no restrictions
         response.push({
           ...result,
@@ -321,13 +397,12 @@ const checkRate = async (req, res) => {
             rateDocument ? rateDocument.manageRates.baseRate : "false",
             startDate,
             endDate,
-            result.ratePlanTotal  // Pass ratePlanTotal from result
-            
+            result.ratePlanTotal // Pass ratePlanTotal from result
           ),
           stopSell: "false",
           COA: "false",
           COD: "false",
-          minimumLOS:"false",
+          minimumLOS: "false",
           maximumLOS: "false",
         });
       }
@@ -339,8 +414,6 @@ const checkRate = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error', statuscode: 500 });
   }
 };
-
-
 
 // Helper function to filter and sort an array of objects by date
 function sortAndFilterByDate(array, startDate, endDate) {
@@ -354,8 +427,7 @@ function sortAndFilterByDate(array, startDate, endDate) {
 }
 
 // Helper function to fill missing dates in an array and sort it
-// Helper function to fill missing dates in an array and sort it
-function fillMissingDatesAndSort(array, startDate, endDate, ratePlanTotal, stopSell) {
+function fillMissingDatesAndSort(array, startDate, endDate, ratePlanTotal, stopSell, COA, COD, minimumLOS, maximumLOS) {
   if (!Array.isArray(array)) {
     return "false";
   }
@@ -365,26 +437,39 @@ function fillMissingDatesAndSort(array, startDate, endDate, ratePlanTotal, stopS
 
   while (currentDate <= new Date(endDate)) {
     const formattedDate = currentDate.toISOString().slice(0, 10);
-    if (!dateSet.has(formattedDate)) {
-      const matchingStopSell = stopSell ? stopSell.find(item => item.date === formattedDate) : undefined;
+    
+    if (formattedDate <= endDate) {
+      if (!dateSet.has(formattedDate)) {
+        const matchingStopSell = stopSell ? stopSell.find(item => item.date === formattedDate) : undefined;
+        const matchingCOA = COA ? COA.find(item => item.date === formattedDate) : undefined;
+        const matchingCOD = COD ? COD.find(item => item.date === formattedDate) : undefined;
+        const matchingMinimumLOS = minimumLOS ? minimumLOS.find(item => item.date === formattedDate) : undefined;
+        const matchingMaximumLOS = maximumLOS ? maximumLOS.find(item => item.date === formattedDate) : undefined;
 
-      if (matchingStopSell) {
-        array.push({
-          baseRate: ratePlanTotal,
-          stopSell: matchingStopSell.stopSell,
-          date: formattedDate,
-        });
-      } else {
-        array.push({
-          baseRate: ratePlanTotal,
-          date: formattedDate,
-        });
+        if (matchingStopSell && matchingCOA && matchingCOD && matchingMinimumLOS && matchingMaximumLOS) {
+          array.push({
+            baseRate: ratePlanTotal,
+            stopSell: matchingStopSell.stopSell,
+            COA: matchingCOA.COA,
+            COD: matchingCOD.COD,
+            minimumLOS: matchingMinimumLOS.minimumLOS,
+            maximumLOS: matchingMaximumLOS.maximumLOS,
+            date: formattedDate,
+          });
+        } else {
+          array.push({
+            baseRate: ratePlanTotal,
+            date: formattedDate,
+          });
+        }
       }
     }
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
-  return array.sort((a, b) => new Date(a.date) - new Date(b.date));
+  return array
+    .filter(item => item.date <= endDate)
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
 }
 
 

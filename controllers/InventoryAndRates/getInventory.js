@@ -213,17 +213,17 @@ const getInventory = async (req, res) => {
 
                     const matchedStopSell = matchingDates.map((date) => {
                         const stopSellEntry = sortedStopSell.find((entry) => entry.date === date);
-                        return stopSellEntry ? stopSellEntry.stopSell :  "false";
+                        return stopSellEntry ? stopSellEntry.stopSell : "false";
                     });
 
                     const matchedCOA = matchingDates.map((date) => {
                         const COAEntry = sortedCOA.find((entry) => entry.date === date);
-                        return COAEntry ? COAEntry.COA :  "false";
+                        return COAEntry ? COAEntry.COA : "false";
                     });
 
                     const matchedCOD = matchingDates.map((date) => {
                         const CODEntry = sortedCOD.find((entry) => entry.date === date);
-                        return CODEntry ? CODEntry.COD :  "false";
+                        return CODEntry ? CODEntry.COD : "false";
                     });
 
                     const matchedMinimumLOS = matchingDates.map((date) => {
@@ -240,13 +240,12 @@ const getInventory = async (req, res) => {
 
                     calculatedInventoryData = calculatedInventoryData.map((item) => ({
                         ...item,
-                        stopSell: matchedStopSell[matchingDates.indexOf(item.date)],
-                        COA: matchedCOA[matchingDates.indexOf(item.date)],
-                        COD: matchedCOD[matchingDates.indexOf(item.date)],
-                        minimumLOS: matchedMinimumLOS[matchingDates.indexOf(item.date)],
-                        maximumLOS: matchedMaximumLOS[matchingDates.indexOf(item.date)],
+                        // stopSell: matchedStopSell[matchingDates.indexOf(item.date)],
+                        // COA: matchedCOA[matchingDates.indexOf(item.date)],
+                        // COD: matchedCOD[matchingDates.indexOf(item.date)],
+                        // minimumLOS: matchedMinimumLOS[matchingDates.indexOf(item.date)],
+                        // maximumLOS: matchedMaximumLOS[matchingDates.indexOf(item.date)],
                     }));
-
 
 
                     if (calculatedInventoryData.length === 0) {
@@ -259,13 +258,16 @@ const getInventory = async (req, res) => {
 
                         });
                     } else {
+                        // Add isBlocked variable based on the blockedInventory data
+                        const inventoryWithBlockedInfo = calculatedInventoryData.map((item) => ({
+                            ...item,
+                            isBlocked: blockedInventoryDates.includes(item.date).toString(),
+                        }));
                         availableRooms.push({
                             roomTypeId,
                             roomTypeName,
                             numberOfRooms: roomType.numberOfRooms,
-                            calculatedInventoryData,
-
-
+                            calculatedInventoryData: inventoryWithBlockedInfo
                         });
                     }
                 } else {
@@ -325,22 +327,22 @@ const getInventory = async (req, res) => {
 
                     const matchedStopSell = matchingDates.map((date) => {
                         const stopSellEntry = sortedStopSell.find((entry) => entry.date === date);
-                        return stopSellEntry ? stopSellEntry.stopSell :  "false";
+                        return stopSellEntry ? stopSellEntry.stopSell : "false";
                     });
 
                     const matchedCOA = matchingDates.map((date) => {
                         const COAEntry = sortedCOA.find((entry) => entry.date === date);
-                        return COAEntry ? COAEntry.COA :  "false";
+                        return COAEntry ? COAEntry.COA : "false";
                     });
 
                     const matchedCOD = matchingDates.map((date) => {
                         const CODEntry = sortedCOD.find((entry) => entry.date === date);
-                        return CODEntry ? CODEntry.COD :  "false";
+                        return CODEntry ? CODEntry.COD : "false";
                     });
 
                     const matchedMinimumLOS = matchingDates.map((date) => {
                         const minimumLOSEntry = sortedMinimumLOS.find((entry) => entry.date === date);
-                        return minimumLOSEntry ? minimumLOSEntry.minimumLOS :  "false";
+                        return minimumLOSEntry ? minimumLOSEntry.minimumLOS : "false";
                     });
 
                     const matchedMaximumLOS = matchingDates.map((date) => {
@@ -352,11 +354,11 @@ const getInventory = async (req, res) => {
 
                     calculatedInventoryData = calculatedInventoryData.map((item) => ({
                         ...item,
-                        stopSell: matchedStopSell[matchingDates.indexOf(item.date)],
-                        COA: matchedCOA[matchingDates.indexOf(item.date)],
-                        COD: matchedCOD[matchingDates.indexOf(item.date)],
-                        minimumLOS: matchedMinimumLOS[matchingDates.indexOf(item.date)],
-                        maximumLOS: matchedMaximumLOS[matchingDates.indexOf(item.date)],
+                        // stopSell: matchedStopSell[matchingDates.indexOf(item.date)],
+                        // COA: matchedCOA[matchingDates.indexOf(item.date)],
+                        // COD: matchedCOD[matchingDates.indexOf(item.date)],
+                        // minimumLOS: matchedMinimumLOS[matchingDates.indexOf(item.date)],
+                        // maximumLOS: matchedMaximumLOS[matchingDates.indexOf(item.date)],
                     }));
                     // console.log(modifiedRes)
                     if (calculatedInventoryData.length === 0) {
@@ -367,11 +369,15 @@ const getInventory = async (req, res) => {
                             calculatedInventoryData: false, // Set to [] when empty
                         });
                     } else {
+                        const inventoryWithBlockedInfo = calculatedInventoryData.map((item) => ({
+                            ...item,
+                            isBlocked: blockedInventoryDates.includes(item.date).toString(),
+                        }));
                         availableRooms.push({
                             roomTypeId,
                             roomTypeName,
                             numberOfRooms: roomType.numberOfRooms,
-                            calculatedInventoryData,
+                            calculatedInventoryData: inventoryWithBlockedInfo,
                         });
                     }
                 }

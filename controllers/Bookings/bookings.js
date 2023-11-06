@@ -381,15 +381,21 @@ export const createResrvation = async (req, res) => {
         ) {
           if (booking.guestId.length === 1) {
             const hold = new holdData({
-              bookingId: booking.bookingId,
-              reservationId: booking.reservationIds[i],
-              propertyId: booking.propertyId,
-              roomTypeId: roomDetail[i].roomTypeId[0].roomTypeId,
-              guestId: booking.guestId[0].guestId,
-              bookingTime: await getCurrentUTCTimestamp(),
-              checkInDate: booking.checkIn[0].checkIn,
-              checkOutDate: booking.checkOut[0].checkOut,
-              inventory: dictionary[roomDetail[i].roomTypeId[0].roomTypeId].toString(),
+              bookingId: booking.bookingId || "",
+                reservationId: booking.reservationIds && booking.reservationIds[i] || "",
+                propertyId: booking.propertyId || "",
+                roomTypeId: roomDetail[i].roomTypeId && roomDetail[i].roomTypeId[0] && roomDetail[i].roomTypeId[0].roomTypeId || "",
+                guestId: booking.guestId && booking.guestId[0] && booking.guestId[0].guestId || "",
+                guestName: booking.guestName && booking.guestName[0] && booking.guestName[0].guestName || "",
+                salutation: booking.salutation && booking.salutation[0] && booking.salutation[0].salutation || "",
+                phoneNumber: booking.phoneNumber && booking.phoneNumber[0] && booking.phoneNumber[0].phoneNumber || "",
+                emailAddress: booking.emailAdddress && booking.emailAdddress[0] && booking.emailAdddress[0].emailAdddress || "",
+                bookingTime: await getCurrentUTCTimestamp(),
+                checkInDate: booking.checkIn && booking.checkIn[0] && booking.checkIn[0].checkIn || "",
+                reservationNumber: booking.reservationNumber || "",
+                checkOutDate: booking.checkOut && booking.checkOut[0] && booking.checkOut[0].checkOut || "",
+                inventory: dictionary[roomDetail[i].roomTypeId && roomDetail[i].roomTypeId[0] && roomDetail[i].roomTypeId[0].roomTypeId] ? dictionary[roomDetail[i].roomTypeId[0].roomTypeId].toString() : ""
+                ,
             });
 
             await hold.save();
@@ -397,15 +403,21 @@ export const createResrvation = async (req, res) => {
          
 
             const hold = new holdData({
-              bookingId: booking.bookingId,
-              reservationId: booking.reservationIds[i],
-              roomTypeId: roomDetail[i].roomTypeId[0].roomTypeId,
-              propertyId: booking.propertyId,
-              guestId: booking.guestId[i].guestId,
+              bookingId: booking.bookingId || "",
+              reservationId: booking.reservationIds && booking.reservationIds[i] || "",
+              propertyId: booking.propertyId || "",
+              roomTypeId: roomDetail[i].roomTypeId && roomDetail[i].roomTypeId[0] && roomDetail[i].roomTypeId[0].roomTypeId || "",
+              guestId: booking.guestId && booking.guestId[i] && booking.guestId[i].guestId || "",
+              guestName: booking.guestName && booking.guestName[0] && booking.guestName[0].guestName || "",
+              salutation: booking.salutation && booking.salutation[0] && booking.salutation[0].salutation || "",
+              phoneNumber: booking.phoneNumber && booking.phoneNumber[0] && booking.phoneNumber[0].phoneNumber || "",
+              emailAddress: booking.emailAdddress && booking.emailAdddress[0] && booking.emailAdddress[0].emailAdddress || "",
               bookingTime: await getCurrentUTCTimestamp(),
-              checkInDate: booking.checkIn[0].checkIn,
-              checkOutDate: booking.checkOut[0].checkOut,
-              inventory: dictionary[roomDetail[i].roomTypeId[0].roomTypeId].toString(),
+              checkInDate: booking.checkIn && booking.checkIn[0] && booking.checkIn[0].checkIn || "",
+              reservationNumber: booking.reservationNumber || "",
+              checkOutDate: booking.checkOut && booking.checkOut[0] && booking.checkOut[0].checkOut || "",
+              inventory: dictionary[roomDetail[i].roomTypeId && roomDetail[i].roomTypeId[0] && roomDetail[i].roomTypeId[0].roomTypeId] ? dictionary[roomDetail[i].roomTypeId[0].roomTypeId].toString() : ""
+              
             });
 
             await hold.save();
@@ -414,10 +426,12 @@ export const createResrvation = async (req, res) => {
         }
       }
 
-      return res.status(200).json({ message: "booking created successfully", statusCode: 200 });
+      
     } else {
       console.error("No data found in the response");
     }
+
+    return res.status(200).json({ message: "booking created successfully", statusCode: 200 });
   })
   .catch((error) => {
     console.error("Error fetching data:", error);

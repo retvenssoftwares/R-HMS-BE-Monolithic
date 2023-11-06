@@ -7,6 +7,27 @@ const holdDetails = new mongoose.Schema({
         default:""
     },
 
+    guestName:{
+        type:String,
+        default:""
+    },
+
+    salutation:{
+        type:String,
+        default:""
+    },
+
+    phoneNumber:{
+        type:String,
+        default:""
+    },
+
+    emailAddress:{
+        type:String,
+        default:""
+    },
+
+
     reservationId:{
         type:String,
         default:""
@@ -46,6 +67,11 @@ const holdDetails = new mongoose.Schema({
         type:Number,
         default:0
     },
+
+    reservationNumber:{
+        type:String,
+        default:""
+    }
 
 
 })

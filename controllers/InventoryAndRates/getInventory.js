@@ -1,5 +1,4 @@
-import bookingModel from "../../models/confirmBooking.js"
-import holdBookings from '../../models/holdBooking.js'
+import bookingModel from "../../models/bookings.js"
 import roomTypeModel from "../../models/roomType.js";
 import verifiedUser from "../../models/verifiedUsers.js";
 import manageInventory from '../../models/manageInventory.js'
@@ -61,7 +60,7 @@ const getInventory = async (req, res) => {
 
                 const reservations = await bookingModel.find({
                     propertyId,
-                    checkIn: { $gte: checkInDateISO, $lt: checkOutDateISO },
+                    "checkIn.checkIn": { $gte: checkInDateISO, $lt: checkOutDateISO },
                     "roomDetails.roomTypeId.roomTypeId": roomTypeId
                 }).lean();
 
@@ -241,13 +240,12 @@ const getInventory = async (req, res) => {
 
                     calculatedInventoryData = calculatedInventoryData.map((item) => ({
                         ...item,
-                        stopSell: matchedStopSell[matchingDates.indexOf(item.date)],
-                        COA: matchedCOA[matchingDates.indexOf(item.date)],
-                        COD: matchedCOD[matchingDates.indexOf(item.date)],
-                        minimumLOS: matchedMinimumLOS[matchingDates.indexOf(item.date)],
-                        maximumLOS: matchedMaximumLOS[matchingDates.indexOf(item.date)],
+                        // stopSell: matchedStopSell[matchingDates.indexOf(item.date)],
+                        // COA: matchedCOA[matchingDates.indexOf(item.date)],
+                        // COD: matchedCOD[matchingDates.indexOf(item.date)],
+                        // minimumLOS: matchedMinimumLOS[matchingDates.indexOf(item.date)],
+                        // maximumLOS: matchedMaximumLOS[matchingDates.indexOf(item.date)],
                     }));
-
 
 
                     if (calculatedInventoryData.length === 0) {
@@ -260,13 +258,16 @@ const getInventory = async (req, res) => {
 
                         });
                     } else {
+                        // Add isBlocked variable based on the blockedInventory data
+                        const inventoryWithBlockedInfo = calculatedInventoryData.map((item) => ({
+                            ...item,
+                            isBlocked: blockedInventoryDates.includes(item.date),
+                        }));
                         availableRooms.push({
                             roomTypeId,
                             roomTypeName,
                             numberOfRooms: roomType.numberOfRooms,
-                            calculatedInventoryData,
-
-
+                            calculatedInventoryData: inventoryWithBlockedInfo
                         });
                     }
                 } else {
@@ -353,11 +354,11 @@ const getInventory = async (req, res) => {
 
                     calculatedInventoryData = calculatedInventoryData.map((item) => ({
                         ...item,
-                        stopSell: matchedStopSell[matchingDates.indexOf(item.date)],
-                        COA: matchedCOA[matchingDates.indexOf(item.date)],
-                        COD: matchedCOD[matchingDates.indexOf(item.date)],
-                        minimumLOS: matchedMinimumLOS[matchingDates.indexOf(item.date)],
-                        maximumLOS: matchedMaximumLOS[matchingDates.indexOf(item.date)],
+                        // stopSell: matchedStopSell[matchingDates.indexOf(item.date)],
+                        // COA: matchedCOA[matchingDates.indexOf(item.date)],
+                        // COD: matchedCOD[matchingDates.indexOf(item.date)],
+                        // minimumLOS: matchedMinimumLOS[matchingDates.indexOf(item.date)],
+                        // maximumLOS: matchedMaximumLOS[matchingDates.indexOf(item.date)],
                     }));
                     // console.log(modifiedRes)
                     if (calculatedInventoryData.length === 0) {
@@ -368,11 +369,15 @@ const getInventory = async (req, res) => {
                             calculatedInventoryData: false, // Set to [] when empty
                         });
                     } else {
+                        const inventoryWithBlockedInfo = calculatedInventoryData.map((item) => ({
+                            ...item,
+                            isBlocked: blockedInventoryDates.includes(item.date).toString(),
+                        }));
                         availableRooms.push({
                             roomTypeId,
                             roomTypeName,
                             numberOfRooms: roomType.numberOfRooms,
-                            calculatedInventoryData,
+                            calculatedInventoryData: inventoryWithBlockedInfo,
                         });
                     }
                 }

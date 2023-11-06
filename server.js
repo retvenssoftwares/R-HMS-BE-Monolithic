@@ -42,6 +42,9 @@ app.use(booking)
 app.use(bulkUpdateRoutes)
 app.use(superAdminRoutes)
 
+app.get("/",(req,res)=>{
+  return res.status(200).json({message : "welcome to HMS backend services"})
+})
 
 io.on("connection", (socket) => {
   console.log("A user connected");

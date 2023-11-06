@@ -285,7 +285,7 @@ const getInventory = async (req, res) => {
                     ];
 
                     // Calculate the final inventory values for each date in the interval
-                    const calculatedInventoryData = [];
+                    let calculatedInventoryData = [];
                     const allDates = [...new Set([...addedInventoryDates, ...blockedInventoryDates])];
 
                     // Iterate through the date range, and add missing dates with numberOfRooms value

@@ -10,7 +10,8 @@ export const companyRatePlan = async (req, res) => {
   
       const {userId,propertyId, rateType , companyName ,createdBy , roomTypeId ,  shortCode , ratePlanInclusion ,ratePlanName, inclusionTotal ,ratePlanTotal , ipAddress, deviceType,roomBaseRate,mealCharge,inclusionCharge,roundUp,extraAdultRate,extraChildRate,mealPlanId} = req.body
       const authCodeValue = req.headers["authcode"]
-      const findUser = await verifiedUser.findOne({ userId });
+      const findUser = await verifiedUser.findOne({ userId:userId});
+  
         if (!findUser) {
             return res.status(404).json({ message: "User not found or invalid userid", statuscode: 404 })
         }
@@ -138,13 +139,13 @@ export const companyRatePlan = async (req, res) => {
           ipAddress : clientIp,
           userId : userId
         }],
-        ratePlanTotal:[{
-          logId:result.ratePlanTotal[0].logId,
-          ratePlanTotal : result.ratePlanTotal[0].ratePlanTotal,
-          deviceType:deviceType,
-          ipAddress : clientIp,
-          userId : userId
-        }],
+        // ratePlanTotal:[{
+        //   logId:result.ratePlanTotal[0].logId,
+        //   ratePlanTotal : result.ratePlanTotal[0].ratePlanTotal,
+        //   deviceType:deviceType,
+        //   ipAddress : clientIp,
+        //   userId : userId
+        // }],
         createdBy: userRole,
         createdOn: await getCurrentUTCTimestamp(),
       });
@@ -157,7 +158,7 @@ export const companyRatePlan = async (req, res) => {
       return res.status(result.statuscode).json({ message: "company Rate Plan not found", statusCode: result.statuscode });
   } 
     } catch (error) {
-      // console.error('Error occurred while aading:', error);
+      console.error('Error occurred while aading:', error);
       return res.status(500).json({ message: 'Internal server error' , statusCode : 500});
     }
   };
@@ -171,9 +172,14 @@ export const companyRatePlan = async (req, res) => {
   export const updateCompanyRatePlan = async (req, res) => {
     try {
         const {userId,ratePlanName, shortCode , ratePlanInclusion , inclusionTotal,ratePlanTotal , deviceType , ipAddress,roomBaseRate,mealCharge,inclusionCharge,roundUp,extraAdultRate,extraChildRate} = req.body;
-        const companyRatePlan = await companyRateModel.findOne({ companyRatePlanId: req.params.companyRatePlanId })
+        const companyRatePlan = await companyRateModel.findOne({ companyRatePlanId: req.query.companyRatePlanId })
+
+        if(!companyRatePlan){
+          return res.status(404).JSON({ message: "No company rate plan", statusCode : 404})
+        }
+        // console.log(companyRatePlan)
       
-        const companyRatePlanLogs = await companyLogs.findOne({ companyRatePlanId: req.params.companyRatePlanId });
+        const companyRatePlanLogs = await companyLogs.findOne({ companyRatePlanId: req.query.companyRatePlanId });
         var clientIp = requestIP.getClientIp(req)
 
 
@@ -198,7 +204,7 @@ export const companyRatePlan = async (req, res) => {
          const inclusionChargeLog = Randomstring.generate(10)
          const roundUpLog = Randomstring.generate(10)
          const extraAdultRateLog = Randomstring.generate(10)
-         const extraChildRateLog = Randomstring(10)
+         const extraChildRateLog = Randomstring.generate(10)
 
         if (ratePlanName) {
             const ratePlanNameObject = { ratePlanName: ratePlanName , logId : ratePlanNameLog, ipAddress : clientIp,deviceType : deviceType};
@@ -238,7 +244,7 @@ export const companyRatePlan = async (req, res) => {
             deviceType : deviceType,
             logId : ratePlanTotalLog
           }
-          companyRatePlan.ratePlanTotal.unshift(ratePlanTotalObject);
+          companyRatePlan.barRates.ratePlanTotal.unshift(ratePlanTotalObject);
         }
 
 
@@ -385,7 +391,7 @@ else {
 } 
 
     } catch (error) {
-       // console.error('Error occurred while updating:', error);
+       console.error('Error occurred while updating:', error);
         return res.status(500).json({ message: 'Internal server error' , statusCode :500 });
     }
 };

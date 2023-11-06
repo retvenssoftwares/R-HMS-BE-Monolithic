@@ -213,10 +213,21 @@
 import barRateModel from '../../models/barRatePlan.js';
 import rateModel from '../../models/manageRatesAndRestrictions.js';
 import restrictionModel from '../../models/manageRestrictions.js';
+import { findUserByUserIdAndToken } from "../../helpers/helper.js";
+import verifiedUser from "../../models/verifiedUsers.js";
+
 
 const checkRate = async (req, res) => {
-  const { propertyId, startDate, endDate } = req.query;
+  const { userId,propertyId, startDate, endDate } = req.query;
+  const authCodeValue = req.headers['authcode'];
 
+  const findUser = await verifiedUser.findOne({ userId });
+  if (!findUser || !userId) {
+      return res.status(400).json({ message: "User not found or invalid userId", statuscode: 400 });
+  }
+ const result = await findUserByUserIdAndToken(userId, authCodeValue);
+
+ if(result.success){
   if (startDate === endDate) {
     return res.status(400).json({ message: "start date cannot be equal to end date", statuscode: 400 });
   } else if (startDate > endDate) {
@@ -241,6 +252,12 @@ const checkRate = async (req, res) => {
           _id: 0,
           ratePlanTotal: {
             $arrayElemAt: ['$barRates.ratePlanTotal.ratePlanTotal', 0]
+          },
+          extraAdultRate: {
+            $arrayElemAt: ['$barRates.extraAdultRate.extraAdultRate', 0]
+          },
+          extraChildRate: {
+            $arrayElemAt: ['$barRates.extraChildRate.extraChildRate', 0]
           },
           roomTypeId: {
             $arrayElemAt: ['$roomType.roomTypeId', 0]
@@ -276,8 +293,8 @@ const checkRate = async (req, res) => {
  //const filteredBaseRate = rateDocument ? rateDocument.manageRates.baseRate : "false";
 
         const filteredStopSell = fillMissingDatesAndSort(restrictionDocument.manageRestrictions.stopSell, startDate, endDate);
-        const filteredCOA = fillMissingDatesAndSort(restrictionDocument.manageRestrictions.COA, startDate, endDate);
-        const filteredCOD = fillMissingDatesAndSort(restrictionDocument.manageRestrictions.COD, startDate, endDate);
+        // const filteredCOA = fillMissingDatesAndSort(restrictionDocument.manageRestrictions.COA, startDate, endDate);
+        // const filteredCOD = fillMissingDatesAndSort(restrictionDocument.manageRestrictions.COD, startDate, endDate);
         const filteredMinimumLOS = fillMissingDatesAndSort(restrictionDocument.manageRestrictions.minimumLOS, startDate, endDate);
         const filteredMaximumLOS = fillMissingDatesAndSort(restrictionDocument.manageRestrictions.maximumLOS, startDate, endDate);
 
@@ -287,40 +304,42 @@ const checkRate = async (req, res) => {
         filteredStopSell.forEach(item => {
           const baseRateEntry = {
             baseRate: result.ratePlanTotal,
+            extraAdultRate:result.extraAdultRate,
+            extraChildRate:result.extraChildRate,
             stopSell: item.stopSell,
             date: item.date
           };
           baseRates.push(baseRateEntry);
         });
 
-        //COA
-        filteredCOA.forEach(item => {
-          const existingBaseRate = baseRates.find(entry => entry.date === item.date);
-          if (existingBaseRate) {
-            existingBaseRate.COA = item.COA;
-          } else {
-            const baseRateEntry = {
-              baseRate: result.ratePlanTotal,
-              COA: item.COA,
-              date: item.date
-            };
-            baseRates.push(baseRateEntry);
-          }
-        });
+        // //COA
+        // filteredCOA.forEach(item => {
+        //   const existingBaseRate = baseRates.find(entry => entry.date === item.date);
+        //   if (existingBaseRate) {
+        //     existingBaseRate.COA = item.COA;
+        //   } else {
+        //     const baseRateEntry = {
+        //       //baseRate: result.ratePlanTotal,
+        //       COA: item.COA,
+        //       date: item.date
+        //     };
+        //     baseRates.push(baseRateEntry);
+        //   }
+        // });
 
-        //COD
-        filteredCOD.forEach(item => {
-          const existingBaseRate = baseRates.find(entry => entry.date === item.date);
-          if (existingBaseRate) {
-            existingBaseRate.COD = item.COD;
-          } else {
-            const baseRateEntry = {
-              baseRate: result.ratePlanTotal,
-              COD: item.COD,
-              date: item.date
-            };
-            baseRates.push(baseRateEntry);
-        }});
+        // //COD
+        // filteredCOD.forEach(item => {
+        //   const existingBaseRate = baseRates.find(entry => entry.date === item.date);
+        //   if (existingBaseRate) {
+        //     existingBaseRate.COD = item.COD;
+        //   } else {
+        //     const baseRateEntry = {
+        //      // baseRate: result.ratePlanTotal,
+        //       COD: item.COD,
+        //       date: item.date
+        //     };
+        //     baseRates.push(baseRateEntry);
+        // }});
 
         //minimumLOS
         filteredMinimumLOS.forEach(item => {
@@ -329,7 +348,7 @@ const checkRate = async (req, res) => {
             existingBaseRate.minimumLOS = item.minimumLOS;
           } else {
             const baseRateEntry = {
-              baseRate: result.ratePlanTotal,
+              //baseRate: result.ratePlanTotal,
               minimumLOS: item.minimumLOS,
               date: item.date
             };
@@ -343,7 +362,7 @@ const checkRate = async (req, res) => {
               existingBaseRate.maximumLOS = item.maximumLOS;
             } else {
               const baseRateEntry = {
-                baseRate: result.ratePlanTotal,
+               // baseRate: result.ratePlanTotal,
                 maximumLOS: item.maximumLOS,
                 date: item.date
               };
@@ -354,34 +373,70 @@ const checkRate = async (req, res) => {
 
           // Filter and sort the baseRate array, and replace empty array with false
             const baseRate = rateDocument ? rateDocument.manageRates.baseRate : "false";
-            console.log(baseRate)
+            // console.log(baseRate)
             const filteredBaseRate = Array.isArray(baseRate)
               ? sortAndFilterByDate(baseRate, startDate, endDate)
               : baseRate;
 
-              
-
-              filteredBaseRate.forEach(item => {
+               ///filteredBaseRate
+               filteredBaseRate.forEach(item => {
                 const existingBaseRate = baseRates.find(entry => entry.date === item.date);
                 if (existingBaseRate) {
                   existingBaseRate.baseRate = item.baseRate;
                 } else {
                   const baseRateEntry = {
                     baseRate: result.ratePlanTotal,
-                    maximumLOS: item.maximumLOS,
                     date: item.date
                   };
                   baseRates.push(baseRateEntry);
               }});
+
+              
+          // Filter and sort the extraAdultRate array, and replace empty array with false
+            const extraAdultRate = rateDocument ? rateDocument.manageRates.extraAdultRate : "false";
+          //  console.log(extraAdultRate)
+            const filteredextraAdultRate = Array.isArray(extraAdultRate)
+              ? sortAndFilterByDate(extraAdultRate, startDate, endDate)
+              : extraAdultRate;
+
+            ///filteredExtraAdultRate
+            filteredextraAdultRate.forEach(item => {
+              const existingExtraAdultRate = baseRates.find(entry => entry.date === item.date);
+              if (existingExtraAdultRate) {
+                existingExtraAdultRate.extraAdultRate = item.extraAdultRate;
+              } else {
+                const baseRateEntry = {
+                  extraAdultRate: result.extraAdultRate,
+                  date: item.date
+                };
+                baseRates.push(baseRateEntry);
+            }});
+
+             // Filter and sort the extraChildtRate array, and replace empty array with false
+             const extraChildRate = rateDocument ? rateDocument.manageRates.extraChildRate : "false";
+             //  console.log(extraAdultRate)
+               const filteredextraChildRate = Array.isArray(extraChildRate)
+                 ? sortAndFilterByDate(extraChildRate, startDate, endDate)
+                 : extraChildRate;
+   
+               ///filteredExtraChildRate
+               filteredextraChildRate.forEach(item => {
+                 const existingExtraChildRate = baseRates.find(entry => entry.date === item.date);
+                 if (existingExtraChildRate) {
+                  existingExtraChildRate.extraChildRate = item.extraChildRate;
+                 } else {
+                   const baseRateEntry = {
+                    extraChildRate: result.extraChildRate,
+                     date: item.date
+                   };
+                   baseRates.push(baseRateEntry);
+               }});
+
               
        // Include restrictions and rates  
-
         response.push({
           ...result,
           baseRates,
-          // filteredBaseRate: Array.isArray(rateDocument.manageRates.baseRate)
-          // ? sortAndFilterByDate(rateDocument.manageRates.baseRate, startDate, endDate)
-          // : "false",
         });
       } else {
         // No matching restrictions, check for rates
@@ -399,9 +454,15 @@ const checkRate = async (req, res) => {
             endDate,
             result.ratePlanTotal // Pass ratePlanTotal from result
           ),
+          extraAdultRate: fillMissingDatesAndSort(
+            rateDocument ? rateDocument.manageRates.extraAdultRate : "false",
+            startDate,
+            endDate,
+            result.extraAdultRate // Pass extraAdultRate from result
+          ),
           stopSell: "false",
-          COA: "false",
-          COD: "false",
+          // COA: "false",
+          // COD: "false",
           minimumLOS: "false",
           maximumLOS: "false",
         });
@@ -413,6 +474,9 @@ const checkRate = async (req, res) => {
     console.error(err);
     return res.status(500).json({ message: 'Internal server error', statuscode: 500 });
   }
+} else {
+  return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
+}
 };
 
 // Helper function to filter and sort an array of objects by date
@@ -427,7 +491,7 @@ function sortAndFilterByDate(array, startDate, endDate) {
 }
 
 // Helper function to fill missing dates in an array and sort it
-function fillMissingDatesAndSort(array, startDate, endDate, ratePlanTotal, stopSell, COA, COD, minimumLOS, maximumLOS) {
+function fillMissingDatesAndSort(array, startDate, endDate, ratePlanTotal,extraAdultRate, stopSell, COA, COD, minimumLOS, maximumLOS) {
   if (!Array.isArray(array)) {
     return "false";
   }
@@ -441,17 +505,18 @@ function fillMissingDatesAndSort(array, startDate, endDate, ratePlanTotal, stopS
     if (formattedDate <= endDate) {
       if (!dateSet.has(formattedDate)) {
         const matchingStopSell = stopSell ? stopSell.find(item => item.date === formattedDate) : undefined;
-        const matchingCOA = COA ? COA.find(item => item.date === formattedDate) : undefined;
-        const matchingCOD = COD ? COD.find(item => item.date === formattedDate) : undefined;
+        // const matchingCOA = COA ? COA.find(item => item.date === formattedDate) : undefined;
+        // const matchingCOD = COD ? COD.find(item => item.date === formattedDate) : undefined;
         const matchingMinimumLOS = minimumLOS ? minimumLOS.find(item => item.date === formattedDate) : undefined;
         const matchingMaximumLOS = maximumLOS ? maximumLOS.find(item => item.date === formattedDate) : undefined;
 
         if (matchingStopSell && matchingCOA && matchingCOD && matchingMinimumLOS && matchingMaximumLOS) {
           array.push({
             baseRate: ratePlanTotal,
+            extraAdultRate:extraAdultRate,
             stopSell: matchingStopSell.stopSell,
-            COA: matchingCOA.COA,
-            COD: matchingCOD.COD,
+            // COA: matchingCOA.COA,
+            // COD: matchingCOD.COD,
             minimumLOS: matchingMinimumLOS.minimumLOS,
             maximumLOS: matchingMaximumLOS.maximumLOS,
             date: formattedDate,
@@ -459,6 +524,7 @@ function fillMissingDatesAndSort(array, startDate, endDate, ratePlanTotal, stopS
         } else {
           array.push({
             baseRate: ratePlanTotal,
+            extraAdultRate:extraAdultRate,
             date: formattedDate,
           });
         }

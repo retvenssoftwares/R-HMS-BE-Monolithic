@@ -211,30 +211,30 @@ const getInventory = async (req, res) => {
 
                     const matchingDates = calculatedInventoryData.map((item) => item.date);
 
-                    const matchedStopSell = matchingDates.map((date) => {
-                        const stopSellEntry = sortedStopSell.find((entry) => entry.date === date);
-                        return stopSellEntry ? stopSellEntry.stopSell : "false";
-                    });
+                    // const matchedStopSell = matchingDates.map((date) => {
+                    //     const stopSellEntry = sortedStopSell.find((entry) => entry.date === date);
+                    //     return stopSellEntry ? stopSellEntry.stopSell : "false";
+                    // });
 
-                    const matchedCOA = matchingDates.map((date) => {
-                        const COAEntry = sortedCOA.find((entry) => entry.date === date);
-                        return COAEntry ? COAEntry.COA : "false";
-                    });
+                    // const matchedCOA = matchingDates.map((date) => {
+                    //     const COAEntry = sortedCOA.find((entry) => entry.date === date);
+                    //     return COAEntry ? COAEntry.COA : "false";
+                    // });
 
-                    const matchedCOD = matchingDates.map((date) => {
-                        const CODEntry = sortedCOD.find((entry) => entry.date === date);
-                        return CODEntry ? CODEntry.COD : "false";
-                    });
+                    // const matchedCOD = matchingDates.map((date) => {
+                    //     const CODEntry = sortedCOD.find((entry) => entry.date === date);
+                    //     return CODEntry ? CODEntry.COD : "false";
+                    // });
 
-                    const matchedMinimumLOS = matchingDates.map((date) => {
-                        const minimumLOSEntry = sortedMinimumLOS.find((entry) => entry.date === date);
-                        return minimumLOSEntry ? minimumLOSEntry.minimumLOS : "false";
-                    });
+                    // const matchedMinimumLOS = matchingDates.map((date) => {
+                    //     const minimumLOSEntry = sortedMinimumLOS.find((entry) => entry.date === date);
+                    //     return minimumLOSEntry ? minimumLOSEntry.minimumLOS : "false";
+                    // });
 
-                    const matchedMaximumLOS = matchingDates.map((date) => {
-                        const maximumLOSEntry = sortedMaximumLOS.find((entry) => entry.date === date);
-                        return maximumLOSEntry ? maximumLOSEntry.maximumLOS : "false";
-                    });
+                    // const matchedMaximumLOS = matchingDates.map((date) => {
+                    //     const maximumLOSEntry = sortedMaximumLOS.find((entry) => entry.date === date);
+                    //     return maximumLOSEntry ? maximumLOSEntry.maximumLOS : "false";
+                    // });
 
                     // Then, update the calculatedInventoryData array with the matched values:
 
@@ -325,30 +325,30 @@ const getInventory = async (req, res) => {
 
                     const matchingDates = calculatedInventoryData.map((item) => item.date);
 
-                    const matchedStopSell = matchingDates.map((date) => {
-                        const stopSellEntry = sortedStopSell.find((entry) => entry.date === date);
-                        return stopSellEntry ? stopSellEntry.stopSell : "false";
-                    });
+                    // const matchedStopSell = matchingDates.map((date) => {
+                    //     const stopSellEntry = sortedStopSell.find((entry) => entry.date === date);
+                    //     return stopSellEntry ? stopSellEntry.stopSell : "false";
+                    // });
 
-                    const matchedCOA = matchingDates.map((date) => {
-                        const COAEntry = sortedCOA.find((entry) => entry.date === date);
-                        return COAEntry ? COAEntry.COA : "false";
-                    });
+                    // const matchedCOA = matchingDates.map((date) => {
+                    //     const COAEntry = sortedCOA.find((entry) => entry.date === date);
+                    //     return COAEntry ? COAEntry.COA : "false";
+                    // });
 
-                    const matchedCOD = matchingDates.map((date) => {
-                        const CODEntry = sortedCOD.find((entry) => entry.date === date);
-                        return CODEntry ? CODEntry.COD : "false";
-                    });
+                    // const matchedCOD = matchingDates.map((date) => {
+                    //     const CODEntry = sortedCOD.find((entry) => entry.date === date);
+                    //     return CODEntry ? CODEntry.COD : "false";
+                    // });
 
-                    const matchedMinimumLOS = matchingDates.map((date) => {
-                        const minimumLOSEntry = sortedMinimumLOS.find((entry) => entry.date === date);
-                        return minimumLOSEntry ? minimumLOSEntry.minimumLOS : "false";
-                    });
+                    // const matchedMinimumLOS = matchingDates.map((date) => {
+                    //     const minimumLOSEntry = sortedMinimumLOS.find((entry) => entry.date === date);
+                    //     return minimumLOSEntry ? minimumLOSEntry.minimumLOS : "false";
+                    // });
 
-                    const matchedMaximumLOS = matchingDates.map((date) => {
-                        const maximumLOSEntry = sortedMaximumLOS.find((entry) => entry.date === date);
-                        return maximumLOSEntry ? maximumLOSEntry.maximumLOS : "false";
-                    });
+                    // const matchedMaximumLOS = matchingDates.map((date) => {
+                    //     const maximumLOSEntry = sortedMaximumLOS.find((entry) => entry.date === date);
+                    //     return maximumLOSEntry ? maximumLOSEntry.maximumLOS : "false";
+                    // });
 
                     // Then, update the calculatedInventoryData array with the matched values:
 

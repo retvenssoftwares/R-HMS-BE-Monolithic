@@ -27,7 +27,7 @@ const holdDetails = new mongoose.Schema({
         default:""
     },
 
-    checkOut:{
+    checkOutDate:{
         type:String,
         default:""
     },

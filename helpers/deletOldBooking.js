@@ -71,7 +71,7 @@ const deleteBookingJob = cron.schedule('*/1 * * * *', removeOldBookings);
 
 
 // Start the cron job
-let startVar = deleteBookingJob.start();
+// let startVar = deleteBookingJob.start();
 // if (startVar) { console.log("ok") }
 
 export default removeOldBookings;

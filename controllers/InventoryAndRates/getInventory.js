@@ -124,19 +124,19 @@ const getInventory = async (req, res) => {
 
                 const manageRestrictions = manageRestrictionsData[0] ? manageRestrictionsData[0].manageRestrictions : [];
                 // Initialize these variables as empty arrays by default
-                let sortedStopSell = [];
+                // let sortedStopSell = [];
                 let sortedCOA = [];
                 let sortedCOD = [];
-                let sortedMinimumLOS = [];
-                let sortedMaximumLOS = [];
+                // let sortedMinimumLOS = [];
+                // let sortedMaximumLOS = [];
                 const stopSell = manageRestrictions.stopSell || [];
                 const COA = manageRestrictions.COA || [];
                 const COD = manageRestrictions.COD || [];
                 const minimumLOS = manageRestrictions.minimumLOS || [];
                 const maximumLOS = manageRestrictions.maximumLOS || [];
-                sortedStopSell = stopSell.length === 0
-                    ? []
-                    : stopSell.sort((a, b) => (a.date > b.date) ? 1 : -1);
+                // sortedStopSell = stopSell.length === 0
+                //     ? []
+                //     : stopSell.sort((a, b) => (a.date > b.date) ? 1 : -1);
 
                 sortedCOA = COA.length === 0
                     ? []
@@ -146,13 +146,13 @@ const getInventory = async (req, res) => {
                     ? []
                     : COD.sort((a, b) => (a.date > b.date) ? 1 : -1);
 
-                sortedMinimumLOS = minimumLOS.length === 0
-                    ? []
-                    : minimumLOS.sort((a, b) => (a.date > b.date) ? 1 : -1);
+                // sortedMinimumLOS = minimumLOS.length === 0
+                //     ? []
+                //     : minimumLOS.sort((a, b) => (a.date > b.date) ? 1 : -1);
 
-                sortedMaximumLOS = maximumLOS.length === 0
-                    ? []
-                    : maximumLOS.sort((a, b) => (a.date > b.date) ? 1 : -1);
+                // sortedMaximumLOS = maximumLOS.length === 0
+                //     ? []
+                //     : maximumLOS.sort((a, b) => (a.date > b.date) ? 1 : -1);
 
 
                 if (reservations.length !== 0) {

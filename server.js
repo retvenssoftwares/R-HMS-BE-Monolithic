@@ -23,7 +23,7 @@ import booking from "./routers/Booking/booking.js"
 import superAdminRoutes from "./routers/superAdmin/admin.routes.js"
 import testR from './routers/test.router.js'
 import bulkUpdateRoutes from './routers/InventoryAndRates/manageInventoryRates.routes.js'
-
+import { oldBooking } from "./helpers/deletOldBooking.js";
 
 app.use(cors({
   origin: '*'

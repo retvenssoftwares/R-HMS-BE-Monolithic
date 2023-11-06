@@ -78,7 +78,7 @@ axios.get(apiUrl, { headers: config.headers })
               guestId : booking.guestId[0].guestId,
               bookingTime : time,
               checkInDate : booking.checkIn[0].checkIn,
-              checkOut : booking.checkOut[0].checkOut,
+              checkOutDate : booking.checkOut[0].checkOut,
               inventory: dictionary[roomDetail[i].roomTypeId[0].roomTypeId],
             });
   
@@ -95,7 +95,7 @@ axios.get(apiUrl, { headers: config.headers })
               bookingId: booking.bookingId,
               propertyId : booking.propertyId,
               checkInDate : booking.checkIn[0].checkIn,
-              checkOut : booking.checkOut[0].checkOut,
+              checkOutDate : booking.checkOut[0].checkOut,
               guestId : booking.guestId[0].guestId,
               reservationNo: reservationNo,
               roomDetails: roomDetail[i],
@@ -116,7 +116,7 @@ axios.get(apiUrl, { headers: config.headers })
                 guestId : booking.guestId[i].guestId,
                 bookingTime : time,
                 checkInDate : booking.checkIn[0].checkIn,
-                checkOut : booking.checkOut[0].checkOut,
+                checkOutDate : booking.checkOut[0].checkOut,
                 inventory: dictionary[roomDetail[i].roomTypeId[0].roomTypeId],
               });
     
@@ -133,7 +133,7 @@ axios.get(apiUrl, { headers: config.headers })
                 propertyId : booking.propertyId,
                 reservationNo: reservationNo,
                 checkInDate : booking.checkIn[0].checkIn,
-                checkOut : booking.checkOut[0].checkOut,
+                checkOutDate : booking.checkOut[0].checkOut,
                 guestId : booking.guestId[i].guestId,
                 roomDetails: roomDetail[i],
               });

@@ -74,10 +74,7 @@ router.patch("/api/updatePackageRatePlan", updatePackageRatePlan)
 
 
 
-
-
-
 //
-router.get('/api/getRoomDetails',getRoom);
+router.get("/api/getRoomList",getRoom);
 
 export default router;

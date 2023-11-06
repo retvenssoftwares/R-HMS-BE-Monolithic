@@ -32,7 +32,7 @@ const confirmBookingDetails = new mongoose.Schema({
         default:""
     },
 
-    checkOut:{
+    checkOutDate:{
         type:String,
         default:""
     },

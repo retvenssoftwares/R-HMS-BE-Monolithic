@@ -13,7 +13,7 @@ const getInventory = async (req, res) => {
     if (!findUser || !userId) {
         return res.status(400).json({ message: "User not found or invalid userId", statuscode: 400 });
     }
-
+ 
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
     if (result.success) {
         if (checkInDate === checkOutDate) {
@@ -216,15 +216,15 @@ const getInventory = async (req, res) => {
                     //     return stopSellEntry ? stopSellEntry.stopSell : "false";
                     // });
 
-                    // const matchedCOA = matchingDates.map((date) => {
-                    //     const COAEntry = sortedCOA.find((entry) => entry.date === date);
-                    //     return COAEntry ? COAEntry.COA : "false";
-                    // });
+                    const matchedCOA = matchingDates.map((date) => {
+                        const COAEntry = sortedCOA.find((entry) => entry.date === date);
+                        return COAEntry ? COAEntry.COA : "false";
+                    });
 
-                    // const matchedCOD = matchingDates.map((date) => {
-                    //     const CODEntry = sortedCOD.find((entry) => entry.date === date);
-                    //     return CODEntry ? CODEntry.COD : "false";
-                    // });
+                    const matchedCOD = matchingDates.map((date) => {
+                        const CODEntry = sortedCOD.find((entry) => entry.date === date);
+                        return CODEntry ? CODEntry.COD : "false";
+                    });
 
                     // const matchedMinimumLOS = matchingDates.map((date) => {
                     //     const minimumLOSEntry = sortedMinimumLOS.find((entry) => entry.date === date);
@@ -241,8 +241,8 @@ const getInventory = async (req, res) => {
                     calculatedInventoryData = calculatedInventoryData.map((item) => ({
                         ...item,
                         // stopSell: matchedStopSell[matchingDates.indexOf(item.date)],
-                        // COA: matchedCOA[matchingDates.indexOf(item.date)],
-                        // COD: matchedCOD[matchingDates.indexOf(item.date)],
+                        COA: matchedCOA[matchingDates.indexOf(item.date)],
+                        COD: matchedCOD[matchingDates.indexOf(item.date)],
                         // minimumLOS: matchedMinimumLOS[matchingDates.indexOf(item.date)],
                         // maximumLOS: matchedMaximumLOS[matchingDates.indexOf(item.date)],
                     }));
@@ -330,15 +330,15 @@ const getInventory = async (req, res) => {
                     //     return stopSellEntry ? stopSellEntry.stopSell : "false";
                     // });
 
-                    // const matchedCOA = matchingDates.map((date) => {
-                    //     const COAEntry = sortedCOA.find((entry) => entry.date === date);
-                    //     return COAEntry ? COAEntry.COA : "false";
-                    // });
+                    const matchedCOA = matchingDates.map((date) => {
+                        const COAEntry = sortedCOA.find((entry) => entry.date === date);
+                        return COAEntry ? COAEntry.COA : "false";
+                    });
 
-                    // const matchedCOD = matchingDates.map((date) => {
-                    //     const CODEntry = sortedCOD.find((entry) => entry.date === date);
-                    //     return CODEntry ? CODEntry.COD : "false";
-                    // });
+                    const matchedCOD = matchingDates.map((date) => {
+                        const CODEntry = sortedCOD.find((entry) => entry.date === date);
+                        return CODEntry ? CODEntry.COD : "false";
+                    });
 
                     // const matchedMinimumLOS = matchingDates.map((date) => {
                     //     const minimumLOSEntry = sortedMinimumLOS.find((entry) => entry.date === date);
@@ -355,8 +355,8 @@ const getInventory = async (req, res) => {
                     calculatedInventoryData = calculatedInventoryData.map((item) => ({
                         ...item,
                         // stopSell: matchedStopSell[matchingDates.indexOf(item.date)],
-                        // COA: matchedCOA[matchingDates.indexOf(item.date)],
-                        // COD: matchedCOD[matchingDates.indexOf(item.date)],
+                        COA: matchedCOA[matchingDates.indexOf(item.date)],
+                        COD: matchedCOD[matchingDates.indexOf(item.date)],
                         // minimumLOS: matchedMinimumLOS[matchingDates.indexOf(item.date)],
                         // maximumLOS: matchedMaximumLOS[matchingDates.indexOf(item.date)],
                     }));

@@ -12,9 +12,11 @@ import getPaymentTypes from '../../controllers/Property/getPaymentTypes.js'
 import patchPaymentType from '../../controllers/Property/patchPaymentTypes.js';
 import userProperty from "../../controllers/Property/getUserProperties.controller.js"
 
+
 //images
 import uploadPropertyImages from '../../controllers/Property/addPropertyImages.js'
 import dragDropPropertyImages from '../../controllers/Property/dragDropPropertyImages.js'
+import updatePropertyImage from '../../controllers/Property/updatePropertyImages.js'
 
 //import identityType from '../../controllers/Property/getIdentityTypes.controller.js'
 import postReservationType from '../../controllers/Property/reservationType.controller.js'
@@ -56,6 +58,7 @@ import identityTypes from "../../controllers/Property/patchIdentity.js"
 //mealPlan
 import postMealPlan from '../../controllers/Property/postMealPlan.js';
 import getMealPlan from '../../controllers/Property/getMealPlan.js';
+import patchMealPlan from '../../controllers/Property/updateMealPlan.js'
 
 
 router.post(
@@ -85,6 +88,7 @@ router.patch("/api/propertyAdditionalDetails", editProperty)
 //images
 router.patch("/api/uploadPropertyImages", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), uploadPropertyImages);
 router.patch("/api/changeImageIndex", dragDropPropertyImages);
+router.patch("/api/updatePropertyImage",updatePropertyImage)
 
 router.patch("/api/editProperty", editProperty);
 
@@ -135,5 +139,5 @@ router.get("/api/companyType", getCompany);
 //MealPlan
 router.post("/api/postMealPlan",postMealPlan)
 router.get("/api/getMealPlan",getMealPlan)
-
+router.patch("/api/patchMeal",patchMealPlan)
 export default router;

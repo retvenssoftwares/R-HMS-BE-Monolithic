@@ -8,14 +8,13 @@ import companyLogs from "../../models/LogModels/compnayRatePlanLogs.js"
 export const companyRatePlan = async (req, res) => {
     try {
   
-      const {userId,propertyId, rateType , companyName ,createdBy , roomTypeId ,  shortCode , ratePlanInclusion ,ratePlanName, inclusionTotal ,ratePlanTotal , ipAddress, deviceType} = req.body
+      const {userId,propertyId, rateType , companyName ,createdBy , roomTypeId ,  shortCode , ratePlanInclusion ,ratePlanName, inclusionTotal ,ratePlanTotal , ipAddress, deviceType,roomBaseRate,mealCharge,inclusionCharge,roundUp,extraAdultRate,extraChildRate,mealPlanId} = req.body
       const authCodeValue = req.headers["authcode"]
       const findUser = await verifiedUser.findOne({ userId });
         if (!findUser) {
             return res.status(404).json({ message: "User not found or invalid userid", statuscode: 404 })
         }
       
-
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
      
       let userRole = findUser.role[0].role;
@@ -55,15 +54,50 @@ export const companyRatePlan = async (req, res) => {
           logId: Randomstring.generate(10),
         }],
 
-        ratePlanTotal : [{
-          ratePlanTotal : ratePlanTotal,
-          logId: Randomstring.generate(10),
-        }],
-
         ratePlanInclusion :[{
           ratePlanInclusion : ratePlanInclusion,
           logId: Randomstring.generate(10),
-        }]
+        }],
+
+        mealPlan :[{
+          mealPlanId : mealPlanId,
+          logId: Randomstring.generate(10),
+        }],
+
+
+        barRates:{
+          roomBaseRate:[{
+            roomBaseRate:roomBaseRate,
+            logId: Randomstring.generate(10),
+        }],
+  
+          mealCharge:[{
+            mealCharge:mealCharge,
+            logId: Randomstring.generate(10),
+          }],
+  
+          inclusionCharge:[{
+            inclusionCharge:inclusionCharge,
+            logId: Randomstring.generate(10),
+          }],
+  
+          roundUp:[{
+            roundUp:roundUp,
+            logId: Randomstring.generate(10),
+          }],
+          extraAdultRate:[{
+            extraAdultRate:extraAdultRate,
+            logId: Randomstring.generate(10),
+          }],
+          extraChildRate:[{
+            extraChildRate:extraChildRate,
+            logId: Randomstring.generate(10),
+          }],
+          ratePlanTotal:[{
+            ratePlanTotal:ratePlanTotal,
+            logId: Randomstring.generate(10),
+          }],
+        },
 
       })
   
@@ -136,10 +170,10 @@ export const companyRatePlan = async (req, res) => {
   //update company patch api
   export const updateCompanyRatePlan = async (req, res) => {
     try {
-        const {userId,ratePlanName, shortCode , ratePlanInclusion , inclusionTotal,ratePlanTotal , deviceType , ipAddress} = req.body;
+        const {userId,ratePlanName, shortCode , ratePlanInclusion , inclusionTotal,ratePlanTotal , deviceType , ipAddress,roomBaseRate,mealCharge,inclusionCharge,roundUp,extraAdultRate,extraChildRate} = req.body;
         const companyRatePlan = await companyRateModel.findOne({ companyRatePlanId: req.params.companyRatePlanId })
       
-        const companyRatePlanLogs = await copmanyRatePlanLog.findOne({ companyRatePlanId: req.params.companyRatePlanId });
+        const companyRatePlanLogs = await companyLogs.findOne({ companyRatePlanId: req.params.companyRatePlanId });
         var clientIp = requestIP.getClientIp(req)
 
 
@@ -153,16 +187,21 @@ export const companyRatePlan = async (req, res) => {
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
-          if (result){
+        if (result.success){
          const shortcodeLog =Randomstring.generate(10)
          const ratePlanNameLog =Randomstring.generate(10)
          const ratePlanInclusionLog =Randomstring.generate(10)
          const inclusionTotalLog =Randomstring.generate(10)
          const ratePlanTotalLog =Randomstring.generate(10)
-
+         const roomBaseRateLog = Randomstring.generate(10)
+         const mealChargeLog = Randomstring.generate(10)
+         const inclusionChargeLog = Randomstring.generate(10)
+         const roundUpLog = Randomstring.generate(10)
+         const extraAdultRateLog = Randomstring.generate(10)
+         const extraChildRateLog = Randomstring(10)
 
         if (ratePlanName) {
-            const ratePlanNameObject = { ratePlanName: ratePlanName , logId : ratePlanNameLog, ipAddress : clientIp,deviceType : deviceType,};
+            const ratePlanNameObject = { ratePlanName: ratePlanName , logId : ratePlanNameLog, ipAddress : clientIp,deviceType : deviceType};
             companyRatePlan.ratePlanName.unshift(ratePlanNameObject);
         }
 
@@ -201,6 +240,71 @@ export const companyRatePlan = async (req, res) => {
           }
           companyRatePlan.ratePlanTotal.unshift(ratePlanTotalObject);
         }
+
+
+        if(roomBaseRate){
+          const roomBaseRateObject = {
+            roomBaseRate : roomBaseRate,
+            logId: roomBaseRateLog,
+            ipAddress : clientIp,
+            deviceType : deviceType,
+          }
+          companyRatePlan.barRates.roomBaseRate.unshift(roomBaseRateObject);
+        }
+
+
+        if(mealCharge){
+          const mealChargeObject = {
+            mealCharge : mealCharge,
+            logId: mealChargeLog,
+            ipAddress : clientIp,
+            deviceType : deviceType,
+          }
+          companyRatePlan.barRates.mealCharge.unshift(mealChargeObject);
+        }
+
+        
+        if(inclusionCharge){
+          const inclusionChargeObject = {
+            inclusionCharge : inclusionCharge,
+            logId: inclusionChargeLog,
+            ipAddress : clientIp,
+            deviceType : deviceType,
+          }
+          companyRatePlan.barRates.inclusionCharge.unshift(inclusionChargeObject);
+        }
+
+        if(roundUp){
+          const roundUpObject = {
+            roundUp : roundUp,
+            logId: roundUpLog,
+            ipAddress : clientIp,
+            deviceType : deviceType,
+          }
+          companyRatePlan.barRates.roundUp.unshift(roundUpObject);
+        }
+
+        if(extraAdultRate){
+          const extraAdultRateObject = {
+            extraAdultRate : extraAdultRate,
+            logId: extraAdultRateLog,
+            ipAddress : clientIp,
+            deviceType : deviceType,
+          }
+          companyRatePlan.barRates.extraAdultRate.unshift(extraAdultRateObject);
+        }
+
+
+        if(extraChildRate){
+          const extraChildRateObject = {
+            extraChildRate : extraChildRate,
+            logId: extraChildRateLog,
+            ipAddress : clientIp,
+            deviceType : deviceType,
+          }
+          companyRatePlan.barRates.extraChildRate.unshift(extraChildRateObject);
+        }
+
 
 
         const requestData = {

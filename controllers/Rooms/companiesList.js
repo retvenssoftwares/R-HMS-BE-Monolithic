@@ -1,5 +1,5 @@
 import companyModel from "../../models/company.js";
-import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from "../../helpers/helper.js";
+import { findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const companyNames = async (req, res) => {
   try {

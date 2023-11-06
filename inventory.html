@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Socket Test</title>
+</head>
+
+<body>
+    <h1>Socket Test</h1>
+    <div id="response"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+    <script>
+
+
+        const socket = io('https://api.hotelratna.com');
+        socket.on('connect', () => {
+            console.log('Connected to the Socket.IO server');
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Disconnected from the Socket.IO server');
+        });
+        socket.on('roomAvailability', (data) => {
+            console.log(data);
+            document.getElementById('response').innerHTML = JSON.stringify(data);
+        });
+
+        // Call the function to get room availability and emit the response using socket
+        const getRoomAvailability = async () => {
+            try {
+                const response = await axios.get(`https://api.hotelratna.com/api/getRoomAvailability?userId=cVDoB8BP&propertyId=4OCGYRmP&checkInDate=2023-12-19&checkOutDate=2023-12-25`, {
+                    headers: {
+                        authcode: '90ff4b4a3f8a638039dd7f2da92d3ad3ad64a42753f549152746a7597f29ceac2bd1916830d7dd0680d26b92672c4981753f6a096da15704bfb8964b97bbc2af',
+                    },
+                });
+                const socket = io('https://api.hotelratna.com');
+                socket.emit('roomAvailability', response.data);
+                console.log(response.data);
+                document.getElementById('response').innerHTML = JSON.stringify(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        // Call the function to get room availability and emit the response using socket
+        getRoomAvailability();
+    </script>
+</body>
+
+</html>

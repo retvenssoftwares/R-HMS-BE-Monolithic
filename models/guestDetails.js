@@ -7,11 +7,6 @@ const guestDetails = new mongoose.Schema({
         default:""
     },
 
-    // bookingId:{
-    //     type:String,
-    //     default:""
-    // },
-
     salutation:[{
         salutation:{
             type:String,
@@ -176,7 +171,7 @@ const guestDetails = new mongoose.Schema({
             type:String,
             default:""
         },
-        driectBillingAccountId:{
+        directBillingAccountId:{
             type:String,
             default:""
         },

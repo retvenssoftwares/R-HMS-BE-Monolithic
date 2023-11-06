@@ -20,8 +20,6 @@ import updateBarRatePlan from '../../controllers/Rooms/patchBarRatePlan.controll
 import { packageRatePlan, updatePackageRatePlan } from '../../controllers/Rooms/package.js';
 
 //check room availabilty
-import checkInventoryAvailability from "../../controllers/Rooms/checkRoomAvailability.js"
-import checkRateAvailability from '../../controllers/Rooms/checkAvailableRates.js'
 import getRoom from '../../controllers/Rooms/getRoomsList.js';
 
 const router = express.Router();
@@ -56,11 +54,12 @@ router.get('/api/getInclusion',getInclusion )
 
 //patch inclusion
 router.patch('/api/patchInclusion', patchInclusions)
+
 //company rate plan
-router.post("/api/addCompnayRatePlan", companyRatePlan)
+router.post("/api/addCompanyRatePlan", companyRatePlan)
 
 //update companyRtePlan
-router.patch("/api/updateCompanyRatePlan/:compnayRatePlanId", updateCompanyRatePlan)
+router.patch("/api/updateCompanyRatePlan", updateCompanyRatePlan)
 
 //post BarRatePlan
 router.post('/api/barRatePlan', BarRatePlan)
@@ -77,9 +76,7 @@ router.post("/api/addPackage", packageRatePlan)
 //update PackageRatePlan
 router.patch("/api/updatePackageRatePlan", updatePackageRatePlan)
 
-//check room availability
-router.get("/api/getRoomAvailability", checkInventoryAvailability)
-router.get("/api/getRate",checkRateAvailability)
+
 
 
 

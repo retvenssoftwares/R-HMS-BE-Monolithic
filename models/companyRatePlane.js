@@ -123,17 +123,17 @@ const companyRatePlan = new mongoose.Schema(
    
      
     }],
-    ratePlanTotal: [{
-      ratePlanTotal:{
-        type: String,
-        default: "",
-      },
-      logId: {
-        type: String,
-        default: ""
-    },
+    // ratePlanTotal: [{
+    //   ratePlanTotal:{
+    //     type: String,
+    //     default: "",
+    //   },
+    //   logId: {
+    //     type: String,
+    //     default: ""
+    // },
    
-    }],
+    // }],
 
     barRates:{
       roomBaseRate:[{

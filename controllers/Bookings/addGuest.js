@@ -4,44 +4,67 @@ import { getCurrentUTCTimestamp, encrypt } from "../../helpers/helper.js"
 const addUser = async (req, res) => {
     try {
 
-        const password = req.body.password
 
-        const encryptedPass = encrypt(password);
-        // console.log(encryptedPass)
+       const {salutation ,guestName, phoneNumber, emailAddress,addressLine1, addressLine2, country, state , city , pinCode} = req.body
 
-        const email = req.body.email
-
-     
-        const modifiedDate = await getCurrentUTCTimestamp()
-
-        
-        const userId = randomstring.generate(8)
         const newData = new addguest({
-            userId,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            designation: [{ designation: req.body.designation, modifiedDate: modifiedDate }],
-            phoneNumber: [{ phoneNumber: req.body.phoneNumber, modifiedDate: modifiedDate }],
-            email: email,
-            password: [{ password: encryptedPass, modifiedDate: modifiedDate }],
-            username: [{ username: req.body.username || 'Admin', modifiedDate: modifiedDate }],
-            role: [{
-                role: req.body.role || 'Admin',
-                modifiedDate: modifiedDate
+            guestId : randomstring.generate(10),
+
+            salutation :[{
+                salutation : salutation,
+                logId :randomstring.generate(10)
             }],
-            singlePropertyDetails: [{
-                userId: userId
+
+            guestName:[{
+                guestName :guestName,
+                logId :randomstring.generate(10)
             }],
-            multipleData: [{
-                userId: userId
+
+            phoneNumber :[{
+                phoneNumber : phoneNumber,
+                logId :randomstring.generate(10)
             }],
-            propertyName: [{
-                propertyName: ''
+
+            emailAddress :[{
+                emailAddress : emailAddress,
+                logId : randomstring.generate(10)
+            }],
+
+            addressLine1 :[{
+                addressLine1 : addressLine1,
+                logId : randomstring.generate(10)
+            }],
+
+            addressLine2:[{
+                addressLine2 :addressLine2,
+                logId : randomstring.generate(10)
+            }],
+
+            country :[{
+                country : country,
+                logId : randomstring.generate(10)
+            }],
+
+            state:[{
+                state : state,
+                logId : randomstring.generate(10)
+            }],
+
+            city:[{
+                city : city,
+                logId : randomstring.generate(10)
+            }],
+
+            pinCode:[{
+                pinCode : pinCode,
+                logId : randomstring.generate(10)
             }]
+           
+
         })
         const userData = await newData.save()
 
-        return res.status(200).json({ message: "User successfully added", userId: userData.userId, authcode: userData.authCode, statuscode: 200 })
+        return res.status(200).json({ message: "guest successfully added", statuscode: 200 })
 
     } catch (err) {
         console.log(err)

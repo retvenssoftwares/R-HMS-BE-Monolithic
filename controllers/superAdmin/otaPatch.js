@@ -3,7 +3,7 @@ import otaModel from "../../models/superAdmin/otaModel.js";
 const otaPatch = async (req, res) => {
   const { otaId } = req.query;
   try {
-    const findOta = await otaModel.findOne({ "otaId.otaId": otaId },{isConfig:"true"});
+    const findOta = await otaModel.findOne({ "otaId.otaId": otaId },{$set:{isConfig:"true"}});
     console.log(findOta )
     if (!findOta) {
       return res.status(404).json({ message: "User not found", statuscode: 404 });

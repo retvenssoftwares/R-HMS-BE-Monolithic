@@ -39,7 +39,7 @@ const removeOldBookings = async () => {
 
     const getTimestamp15MinutesAgo = () => {
       const currentTimestamp = new Date();
-      const fifteenMinutesAgo = new Date(currentTimestamp.getTime() - 15 * 60 * 1000); // Subtract 15 minutes in milliseconds
+      const fifteenMinutesAgo = new Date(currentTimestamp.getTime() - 1 * 60 * 1000); // Subtract 15 minutes in milliseconds
       // console.log(fifteenMinutesAgo)
       return fifteenMinutesAgo.toISOString(); // Convert to UTC format
     };
@@ -67,11 +67,11 @@ const removeOldBookings = async () => {
   }
 };
 // Schedule the job for running every 10 mins
-const deleteBookingJob = cron.schedule('*/1 * * * *', removeOldBookings);
+const deleteBookingJob = cron.schedule('*/2 * * * *', removeOldBookings);
 
 
 // Start the cron job
-let startVar = deleteBookingJob.start();
+//let startVar = deleteBookingJob.start();
 // if (startVar) { console.log("ok") }
 
 export default removeOldBookings;

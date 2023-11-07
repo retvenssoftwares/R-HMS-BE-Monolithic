@@ -42,6 +42,7 @@ app.use(booking)
 app.use(bulkUpdateRoutes)
 app.use(superAdminRoutes)
 
+
 app.get("/",(req,res)=>{
   return res.status(200).send("welcome to HMS backend services")
 })

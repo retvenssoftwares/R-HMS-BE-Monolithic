@@ -1,8 +1,16 @@
 import bookingsModel from "../../models/bookings.js";
 import randomString from "randomstring";
-import guestCollections from "../../models/guestDetails.js"
-import { generateFourDigitRandomNumber, getCurrentUTCTimestamp } from "../../helpers/helper.js";
+import guestCollections from "../../models/guestDetails.js";
+import {
+  generateFourDigitRandomNumber,
+  getCurrentLocalTimestamp,
+  getCurrentUTCTimestamp,
+} from "../../helpers/helper.js";
 import verifiedUser from "../../models/verifiedUsers.js";
+import holdData from "../../models/holdBooking.js";
+import axios from "axios";
+// import guestModel from "../../models/guestDetails.js"
+import nodeCorn from "node-cron"
 
 export const createResrvation = async (req, res) => {
   const {
@@ -19,7 +27,7 @@ export const createResrvation = async (req, res) => {
     reservationSummary,
     applyDiscount,
     paymentDetails,
-    guestInfo
+    guestInfo,
   } = req.body;
 
   let guestIdArray = [];
@@ -45,90 +53,108 @@ export const createResrvation = async (req, res) => {
   // Validate the date format
   const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
   if (!dateFormatRegex.test(checkIn) || !dateFormatRegex.test(checkOut)) {
-      return res.status(400).json({ message: "Please enter the date in the correct format (yyyy-mm-dd)", statuscode: 400 });
+    return res
+      .status(400)
+      .json({
+        message: "Please enter the date in the correct format (yyyy-mm-dd)",
+        statuscode: 400,
+      });
   }
 
-const startDateObj = new Date(checkIn)
-const checkInDateISO = startDateObj.toISOString()
-const endDateObj = new Date(checkOut)
-const checkOutDateISO = endDateObj.toISOString()
+  const startDateObj = new Date(checkIn);
+  const checkInDateISO = startDateObj.toISOString();
+  const endDateObj = new Date(checkOut);
+  const checkOutDateISO = endDateObj.toISOString();
 
- let userRole = findUser.role[0].role;
-
+  let userRole = findUser.role[0].role;
 
   for (let i = 0; i < guestInfo.length; i++) {
-    if(guestInfo[i].guestId !== ""){
-      guestIdArray.push({ guestId: guestInfo[i].guestId});
-
-    }else if(guestInfo[i].guestId === ""){
+    if (guestInfo[i].guestId !== "") {
+      guestIdArray.push({ guestId: guestInfo[i].guestId });
+    } else if (guestInfo[i].guestId === "") {
       const guestDetails = new guestCollections({
-        
-        guestId : randomString.generate(10),
-  
-        salutation :[{
-          salutation :guestInfo[i].salutation,
-          logId : randomString.generate(10)
-        }],
-  
-        guestName : [{
-          guestName : guestInfo[i].guestName,
-          logId : randomString.generate(10)
-        }], 
-  
-        phoneNumber :[{
-          phoneNumber :guestInfo[i].phoneNumber,
-          logId :  randomString.generate(10)
-        }],
-  
-        emailAddress :[{
-          emailAddress : guestInfo[i].emailAddress,
-          logId  : randomString.generate(10)
-        }],
-  
-        addressLine1 :[{
-          addressLine1 :guestInfo[i].addressLine1,
-          logId  : randomString.generate(10)
-        }],
-  
-        addressLine2 :[{
-          addressLine2 :guestInfo[i].addressLine2,
-          logId  : randomString.generate(10)
-        }],
-  
-        country :[{
-          country : guestInfo[i].country,
-          logId : randomString.generate(10)
-        }], 
-  
-        state :[{
-          state : guestInfo[i].state,
-          logId : randomString.generate(10)
-        }],
-  
-        city :[{
-          city : guestInfo[i].city,
-          logId : randomString.generate(10)
-        }],
-  
-        pinCode :[{
-          pinCode  : guestInfo[i].pinCode,
-          logId : randomString.generate(10)
-        }]
-      })
-  
-      const guest = await guestDetails.save()
-       
+        guestId: randomString.generate(10),
+
+        salutation: [
+          {
+            salutation: guestInfo[i].salutation,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        guestName: [
+          {
+            guestName: guestInfo[i].guestName,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        phoneNumber: [
+          {
+            phoneNumber: guestInfo[i].phoneNumber,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        emailAddress: [
+          {
+            emailAddress: guestInfo[i].emailAddress,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        addressLine1: [
+          {
+            addressLine1: guestInfo[i].addressLine1,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        addressLine2: [
+          {
+            addressLine2: guestInfo[i].addressLine2,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        country: [
+          {
+            country: guestInfo[i].country,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        state: [
+          {
+            state: guestInfo[i].state,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        city: [
+          {
+            city: guestInfo[i].city,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        pinCode: [
+          {
+            pinCode: guestInfo[i].pinCode,
+            logId: randomString.generate(10),
+          },
+        ],
+      });
+
+      const guest = await guestDetails.save();
+
       // booking details
-      guestIdArray.push({ guestId: guest.guestId});  
-
-
+      guestIdArray.push({ guestId: guest.guestId });
     }
-
-
   }
 
-   // create reservation
-   const createBooking = new bookingsModel({
+  // create reservation
+  const createBooking = new bookingsModel({
     guestId: guestIdArray,
     bookingId: bookingId,
     propertyId: propertyId,
@@ -193,7 +219,6 @@ const checkOutDateISO = endDateObj.toISOString()
         logId: randomString.generate(10),
       })),
     })),
-
 
     roomDetails: roomDetails.map((item) => ({
       roomTypeId: item.roomTypeId.map((type) => ({
@@ -272,7 +297,6 @@ const checkOutDateISO = endDateObj.toISOString()
       },
     ],
 
-
     paymentDetails: paymentDetails.map((item) => ({
       billTo: item.billTo.map((b) => ({
         billTo: b.billTo,
@@ -285,20 +309,120 @@ const checkOutDateISO = endDateObj.toISOString()
       })),
     })),
 
-    reservationNumber : await generateFourDigitRandomNumber()
+    reservationNumber: await generateFourDigitRandomNumber(),
   });
 
   const details = await createBooking.save();
- 
-  const data = details.roomDetails
+
+  console.log(details);
+
+  const data = details.roomDetails;
 
   //add reservation ids
-  for(let i = 0 ; i < data.length ; i++){
-    const add = details.reservationNumber
-    var rsv = add +"-"+ (i+1)
-    details.reservationIds.push(rsv)
-    await details.save()
+  for (let i = 0; i < data.length; i++) {
+    const add = details.reservationNumber;
+    var rsv = add + "-" + (i + 1);
+    details.reservationIds.push(rsv);
+    await details.save();
   }
+
+  // hold inventory
+
+
+  
+
+  const headersData = req.body.headersData;
+
+  const apiUrl = `https://api.hotelratna.com/api/getRoomAvailability?userId=${req.body.userId}&propertyId=${req.body.propertyId}&checkInDate=${checkIn}&checkOutDate=${checkOut}`;
+
+  const config = {
+    headers: {
+      authcode: headersData,
+    },
+  };
+
+  
+  const booking = await bookingsModel.findOne({ bookingId: details.bookingId });
+  // console.log(booking)
+  const roomDetail = booking.roomDetails;
+
+
+  const dictionary = {};
+  for (const item of roomDetail) {
+    const roomTypeId = item.roomTypeId[0].roomTypeId;
+    if (!dictionary[roomTypeId]) {
+      dictionary[roomTypeId] = 1;
+    } else {
+      dictionary[roomTypeId] += 1;
+    }
+  }
+
+  axios
+  .get(apiUrl, { headers: config.headers })
+  .then(async (response) => {
+    if (response && response.data) {
+      const array = response.data.data;
+      const result = {};
+      for (const item of array) {
+        let minInventory = Infinity;
+        for (let i = 0; i < item.calculatedInventoryData.length; i++) {
+          if (item.calculatedInventoryData[i].inventory < minInventory) {
+            minInventory = item.calculatedInventoryData[i].inventory;
+          }
+        }
+        result[item.roomTypeId] = minInventory;
+      }
+      for (let i = 0; i < roomDetail.length; i++) {
+        if (result[roomDetail[i].roomTypeId[0].roomTypeId] === 0) {
+          return res.status(500).json({ message: "No Room Left for Reservation", statusCode: 500 });
+        } else if (
+          dictionary[roomDetail[i].roomTypeId[0].roomTypeId] &&
+          dictionary[roomDetail[i].roomTypeId[0].roomTypeId] <= result[roomDetail[i].roomTypeId[0].roomTypeId]
+        ) {
+          if (booking.guestId.length === 1) {
+            const hold = new holdData({
+              bookingId: booking.bookingId,
+              reservationId: booking.reservationIds[i],
+              propertyId: booking.propertyId,
+              roomTypeId: roomDetail[i].roomTypeId[0].roomTypeId,
+              guestId: booking.guestId[0].guestId,
+              bookingTime: await getCurrentUTCTimestamp(),
+              checkInDate: booking.checkIn[0].checkIn,
+              checkOutDate: booking.checkOut[0].checkOut,
+              inventory: dictionary[roomDetail[i].roomTypeId[0].roomTypeId].toString(),
+            });
+
+            await hold.save();
+          } else {
+         
+
+            const hold = new holdData({
+              bookingId: booking.bookingId,
+              reservationId: booking.reservationIds[i],
+              roomTypeId: roomDetail[i].roomTypeId[0].roomTypeId,
+              propertyId: booking.propertyId,
+              guestId: booking.guestId[i].guestId,
+              bookingTime: await getCurrentUTCTimestamp(),
+              checkInDate: booking.checkIn[0].checkIn,
+              checkOutDate: booking.checkOut[0].checkOut,
+              inventory: dictionary[roomDetail[i].roomTypeId[0].roomTypeId].toString(),
+            });
+
+            await hold.save();
+            
+          }
+        }
+      }
+
+      return res.status(200).json({ message: "booking created successfully", statusCode: 200 });
+    } else {
+      console.error("No data found in the response");
+    }
+  })
+  .catch((error) => {
+    console.error("Error fetching data:", error);
+  });
+
 
   return res
     .status(200)

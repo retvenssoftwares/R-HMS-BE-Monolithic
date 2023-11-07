@@ -141,13 +141,12 @@ const manageRates = async (req, res, io) => {
 
                     // Emit the response to connected clients via Socket.io
                     io.emit("inventoryUpdated", getInventoryResponse.data);
-                    console.log(getInventoryResponse.data);
+                    // console.log(getInventoryResponse.data);
                 } catch (error) {
                     console.error(error);
                 }
             };
 
-            // Use the asynchronous function to emit data
             emitData();
             return res.status(200).json({ message: "Rates updated successfully", statuscode: 200 });
 

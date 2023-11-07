@@ -7,6 +7,7 @@ const otaSources = mongoose.Schema({
         otaName: { type: String, default: '' },
         logId: { type: String, default: '' }
     }],
+    propertyId : {type : String, default: ''},
    
 })
 

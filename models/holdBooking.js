@@ -7,6 +7,11 @@ const holdDetails = new mongoose.Schema({
         default:""
     },
 
+    reservationId:{
+        type:String,
+        default:""
+    },
+
     propertyId:{
         type:String,
         default:""

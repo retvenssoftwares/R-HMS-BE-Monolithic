@@ -11,7 +11,7 @@ import {
 
 const addCompany = async (req, res) => {
   try {
-    const { userId } = req.query
+    const { userId } = req.body
     const findUser = await verifiedUser.findOne({ userId });
     if (!findUser || !userId) {
       return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 });

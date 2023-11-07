@@ -15,6 +15,7 @@ import patchInclusions from '../../controllers/Rooms/patchInclusion.js';
 
 import { companyRatePlan, updateCompanyRatePlan } from '../../controllers/Rooms/companyRatePlan.js';
 import BarRatePlan from '../../controllers/Rooms/postBarRatePlan.controller.js'
+import fetchBarRatePlan from '../../controllers/Rooms/getBarRatePlan.js'
 import updateBarRatePlan from '../../controllers/Rooms/patchBarRatePlan.controller.js'
 import { packageRatePlan, updatePackageRatePlan } from '../../controllers/Rooms/package.js';
 
@@ -65,6 +66,9 @@ router.post('/api/barRatePlan', BarRatePlan)
 
 //update barRatePlan
 router.patch('/api/updateBarRatePlan/:barRatePlanId', updateBarRatePlan)
+
+//get barRatePlan
+router.get('/api/getBarRatePlans',fetchBarRatePlan)
 
 //add package 
 router.post("/api/addPackage", packageRatePlan)

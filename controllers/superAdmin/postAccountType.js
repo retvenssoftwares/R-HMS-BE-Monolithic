@@ -14,8 +14,7 @@ const postAccountType = async (req , res) =>{
 
          const newAccount = new accountTypeModel({
                accountTypeId : Randomstring.generate(8),
-               accountType, 
-
+               accountType,
          });
 
          await newAccount.save();

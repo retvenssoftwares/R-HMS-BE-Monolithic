@@ -1,5 +1,5 @@
 import ratesAndRestrictions from '../../models/manageRatesAndRestrictions.js'
-import axios from 'axios'; // Import Axios
+import checkRate from './checkAvailableRates.js';
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const manageRates = async (req, res, io) => {
@@ -131,23 +131,25 @@ const manageRates = async (req, res, io) => {
             // // Emit the response to connected clients via Socket.io
             // // const socket = io("https://api.hotelratna.com"); // Replace YOUR_PORT wit
             // io.emit("ratesUpdated", getRatesResponse.data);
-            const emitData = async () => {
-                try {
-                    const getInventoryResponse = await axios.get(`https://api.hotelratna.com/api/getInventory?userId=${userId}&propertyId=${propertyId}&checkInDate=${startDate}&checkOutDate=${endDate}`, {
-                        headers: {
-                            'authcode': authCodeValue
-                        }
-                    });
-
-                    // Emit the response to connected clients via Socket.io
-                    io.emit("inventoryUpdated", getInventoryResponse.data);
-                    // console.log(getInventoryResponse.data);
-                } catch (error) {
-                    console.error(error);
+            const availableRates = await checkRate({
+                query: {
+                    userId,
+                    propertyId,
+                    startDate: startDate,
+                    endDate: endDate,
+                    status: true
+                },
+                headers: {
+                    authcode: authCodeValue
                 }
-            };
 
-            emitData();
+            }, res); // Pass the `res` object to the function
+
+            // You can now access the response data from the getInventory function
+            // console.log(availableRates, "getRatesResponse");
+
+            io.emit("ratesUpdated", availableRates);
+
             return res.status(200).json({ message: "Rates updated successfully", statuscode: 200 });
 
         } else {

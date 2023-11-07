@@ -207,7 +207,148 @@ const guestDetails = new mongoose.Schema({
             type:String,
             default:""
         }
-    }]
+    }],
+    
+    c_form: [
+        {
+          address: [
+            {
+              address: {
+                type: String,
+                default: "",
+              },
+              state: {
+                type: String,
+                default: "",
+              },
+              city: {
+                type: String,
+                default: "",
+              },
+              pinCode: {
+                type: String,
+                default: "",
+              },
+            },
+          ],
+          arrival: [
+            {
+              arrivedFrom: {
+                type: String,
+                default: "",
+              },
+              dateOfArrival: {
+                type: String,
+                default: "",
+              },
+            },
+          ],
+          passportDetails: [
+            {
+              passportNo: {
+                type: String,
+                default: "",
+              },
+              placeOfIssue: {
+                type: String,
+                default: "",
+              },
+              issueDate: {
+                type: String,
+                default: "",
+              },
+              expiryDate: {
+                type: String,
+                default: "",
+              },
+            },
+          ],
+    
+          visaDetails: [
+            {
+              visaNo: {
+                type: String,
+                default: "",
+              },
+              visaType: {
+                type: String,
+                default: "",
+              },
+              placeOfIssue: {
+                type: String,
+                default: "",
+              },
+              issueDate: {
+                type: String,
+                default: "",
+              },
+              expiryDate: {
+                type: String,
+                default: "",
+              },
+            },
+          ],
+          whetherEmployedInIndia: {
+            type: String,
+            default: "",
+          },
+          otherDetails: [
+            {
+              guardianName: {
+                type: String,
+                default: "",
+              },
+              age: {
+                type: String,
+                default: "",
+              },
+              purposeOfVisit: {
+                type: String,
+                default: "",
+              },
+              nextDestinationPlace: {
+                type: String,
+                default: "",
+              },
+              nextDestinationState: {
+                type: String,
+                default: "",
+              },
+              nextDestinationcity: {
+                type: String,
+                default: "",
+              },
+              contactNo: {
+                type: String,
+                default: "",
+              },
+              parmanentResidentContactNo: {
+                type: String,
+                default: "",
+              },
+              mobileNo: {
+                type: String,
+                default: "",
+              },
+              parmanentResidentMobileNo: {
+                type: String,
+                default: "",
+              },
+            },
+          ],
+          remark: {
+            type: String,
+            default: "",
+          },
+          logId: {
+            type: String,
+            default: "",
+          },
+        },
+      ],
+    
+
+
 })
 
 

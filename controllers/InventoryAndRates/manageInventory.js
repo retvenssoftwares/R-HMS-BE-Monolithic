@@ -3,7 +3,7 @@ import manageInventoryModel from "../../models/manageInventory.js";
 import roomType from "../../models/roomType.js";
 import axios from 'axios'; // Import Axios
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
-import getInventory from "./getInventory.js";
+import getInventory from "../InventoryAndRates/getInventory.js";
 
 
 const manageInventory = async (req, res, io) => {
@@ -175,23 +175,23 @@ const manageInventory = async (req, res, io) => {
         //   }
         // };
         let payload = {
-          userId: userId,
+           userId: userId,
           propertyId: propertyId,
           checkInDate: startDate,
           checkOutDate: endDate
         }
 
-        // console.log(payload, "payloadpayloadpayloadpayload")
-        // let inventoryData = await getInventory(payload)
-        // console.log(inventoryData, "inventoryData")
-        // io.emit("inventoryUpdated", inventoryData);
+        console.log(payload, "payloadpayloadpayloadpayload")
+        let inventoryData = await getInventory(payload)
+        console.log(inventoryData, "inventoryData")
+        io.emit("inventoryUpdated", inventoryData);
 
 
 
 
 
-        // Use the asynchronous function to emit data
-        // emitData();
+       // Use the asynchronous function to emit data
+        emitData();
 
       }
 

@@ -57,7 +57,7 @@ const getInventory = async (req, res) => {
 
             const availableRooms = [];
             // let holdBookingsCount = 0;
-            console.log("Before loop:");
+        //    console.log("Before loop:");
             for (const roomType of roomTypes) {
 
                 const roomTypeId = roomType.roomTypeId;
@@ -409,7 +409,7 @@ const getInventory = async (req, res) => {
                 }
             }
 
-            console.log("Outside loop:");
+            // console.log("Outside loop:");
 
             return res.status(200).json({ data: availableRooms, statuscode: 200 });
         } catch (error) {
@@ -421,4 +421,4 @@ const getInventory = async (req, res) => {
     }
 };
 
-export default getInventory;
+export default getInventory

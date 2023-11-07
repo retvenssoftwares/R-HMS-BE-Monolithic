@@ -103,4 +103,6 @@ router.get("/api/getAmenity",getAmenity)
 router.post("/api/postRateType",postRateType)
 router.get("/api/getRateTypeName",getRateType)
 
+
+
 export default router;

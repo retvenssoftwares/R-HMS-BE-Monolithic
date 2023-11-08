@@ -62,13 +62,13 @@ const getInventory = async (req, res) => {
 
                 const roomTypeId = roomType.roomTypeId;
                 const roomTypeName = roomType.roomTypeName;
-                // console.log(roomTypeId)
+                console.log(roomTypeId)
                 // console.log("Inside loop:", holdBookingsCount);
                 const reservations = await bookingModel.find({
                     propertyId,
                     checkInDate: { $gte: checkInDateISO, $lt: checkOutDateISO },
                     roomTypeId: roomTypeId
-                }).lean();
+                });
                 // console.log("1", reservations)
 
                 // Find the corresponding hold booking for this room type
@@ -80,7 +80,7 @@ const getInventory = async (req, res) => {
                 //     // console.log(typeof inventoryValues[0]);
                 // }
                 const reducedCount = reservations.length
-                // console.log(holdD)
+                console.log(reducedCount, "reducedCount")
 
                 // console.log(holdBookingsCount)
 
@@ -174,13 +174,15 @@ const getInventory = async (req, res) => {
                 // console.log("inv vals", inventoryValues)
                 // Iterate through the date range, and add missing dates with numberOfRooms value
                 let currentDate = new Date(checkInDate);
-                let holdBookingsCount = 0;
-                if (inventoryValues.length > 0) {
-                    holdBookingsCount = inventoryValues[0]
-                    // console.log(holdBookingsCount, "bhbhj")
-                }
+
                 if (reservations.length !== 0) {
-                    // console.log(123)
+
+                    let holdBookingsCount = 0;
+                    if (inventoryValues.length > 0) {
+                        holdBookingsCount = inventoryValues[0]
+                        console.log(holdBookingsCount, "holdBookingsCount")
+                    }
+                    console.log(123)
                     // const reducedCount = reservations.filter(reservation => reservation.roomDetails.some(detail => detail.roomTypeId[0].roomTypeId === roomTypeId)).length;
                     // const roomTypeCount = roomType.numberOfRooms - reducedCount;
 
@@ -209,9 +211,9 @@ const getInventory = async (req, res) => {
                             const blockedItem = item.manageInventory.blockedInventory.find(blocked => blocked.date === dateISO);
                             return total + (blockedItem ? blockedItem.blockedInventory : 0);
                         }, 0);
-                        // console.log(holdBookingsCount)
+                        console.log(holdBookingsCount)
                         const roomTypeInventory = roomType.numberOfRooms - reducedCount - blockedInventoryTotal - holdBookingsCount;
-                        // console.log(roomTypeInventory, "roominvent")
+                        console.log(roomTypeInventory, "roominvent")
 
                         if (!allDates.includes(dateISO)) {
                             // console.log("helo")
@@ -297,6 +299,7 @@ const getInventory = async (req, res) => {
                     }
                 } else {
                     // Filter and collect unique dates within the specified date range
+                    console.log(258)
                     const addedInventoryDates = [...new Set(
                         manageInventoryData.flatMap(item => item.manageInventory.addedInventory
                             .filter(added => added.date >= checkInDate && added.date <= checkOutDate)
@@ -318,14 +321,19 @@ const getInventory = async (req, res) => {
                     // Iterate through the date range, and add missing dates with numberOfRooms value
                     let currentDate = new Date(checkInDate);
                     let holdBookingsCount = 0;
+                    if (inventoryValues.length > 0) {
+                        holdBookingsCount = inventoryValues[0]
+                        console.log(holdBookingsCount, "holdBookingsCount")
+                    }
                     while (currentDate <= endDateObj) {
                         const dateISO = currentDate.toISOString().split("T")[0];
                         const blockedInventoryTotal = manageInventoryData.reduce((total, item) => {
                             const blockedItem = item.manageInventory.blockedInventory.find(blocked => blocked.date === dateISO);
                             return total + (blockedItem ? blockedItem.blockedInventory : 0);
                         }, 0);
-                        const roomTypeInventory = roomType.numberOfRooms - reducedCount - blockedInventoryTotal - holdBookingsCount;
-                        // console.log(holdBookingsCount)
+                        const roomTypeInventory = roomType.numberOfRooms - blockedInventoryTotal - holdBookingsCount;
+                        console.log(holdBookingsCount, "holdBookingsCount")
+                        console.log(roomTypeInventory, "rti")
                         if (!allDates.includes(dateISO)) {
                             calculatedInventoryData.push({
                                 date: dateISO,
@@ -339,7 +347,7 @@ const getInventory = async (req, res) => {
 
                             calculatedInventoryData.push({
                                 date: dateISO,
-                                inventory: Math.abs(roomTypeInventory + addedInventoryTotal - blockedInventoryTotal - reducedCount - holdBookingsCount)
+                                inventory: Math.abs(addedInventoryTotal - blockedInventoryTotal - holdBookingsCount)
                             });
                         }
 

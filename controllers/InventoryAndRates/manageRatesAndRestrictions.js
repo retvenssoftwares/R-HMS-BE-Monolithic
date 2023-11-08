@@ -145,7 +145,6 @@ const manageRates = async (req, res, io) => {
 
             }, res); // Pass the `res` object to the function
 
-            // You can now access the response data from the getInventory function
             // console.log(availableRates, "getRatesResponse");
 
             io.emit("ratesUpdated", availableRates);

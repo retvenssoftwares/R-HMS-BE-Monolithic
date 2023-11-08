@@ -115,8 +115,8 @@ router.post(
 router.get("/api/getAmenityIcon", getAmenityIcon);
 
 //AmenityIcon
-router.post("/api/createAmenity", postAmenity);
-router.get("/api/getAmenity", getAmenity);
+router.post("/api/createAmenity",upload.fields([{ name: "amenityIcon", maxCount: 1 }]) ,postAmenity)
+router.get("/api/getAmenity",getAmenity)
 
 //rateType
 router.post("/api/postRateType", postRateType);

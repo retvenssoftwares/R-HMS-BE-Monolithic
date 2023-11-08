@@ -3,7 +3,7 @@ import manageInventoryModel from "../../models/manageInventory.js";
 import roomType from "../../models/roomType.js";
 import axios from 'axios'; // Import Axios
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
-import getInventory from "./getInventory.js";
+import getInventory from "../InventoryAndRates/getInventory.js";
 
 
 const manageInventory = async (req, res, io) => {

@@ -425,4 +425,4 @@ const getInventory = async (req, res) => {
     }
 };
 
-export default getInventory;
+export default getInventory

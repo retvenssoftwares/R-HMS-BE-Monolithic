@@ -2,15 +2,16 @@ import otaModel from "../../models/superAdmin/otaModel.js";
 
 const getOta = async (req, res) => {
         try{
-            const { otaId } = req.query;
-        const otaData = await otaModel.find({ "otaId.otaId":otaId }).lean();
+           
+        const otaData = await otaModel.find({}).lean();
         if (otaData.length > 0) {
             const otaDetails = otaData.map(otas => {
                 return {
                     ...otas._doc,
-                    otaId: otas.otaId[0] || '',
-                    otaName: otas.otaName[0] || '',
-                    otaLogo: otas.otaLogo[0] || '',
+                    otaId: otas.otaId[0].otaId || '',
+                    otaName: otas.otaName[0].otaName || '',
+                    otaLogo: otas.otaLogo[0].otaLogo || '',
+                    isConfig:otas.isConfig
                 };
 
             });

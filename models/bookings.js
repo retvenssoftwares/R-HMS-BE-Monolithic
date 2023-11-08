@@ -270,6 +270,19 @@ const booking = new mongoose.Schema({
                 default:""
             }
         }],
+
+
+        // this fileds could be used in quick reservation 
+        rate:[{
+            rate:{
+                type:String,
+                default:""
+            },
+            logId:{
+                type:String,
+                default:""
+            }
+        }],
         
 
         extraInclusion:[{
@@ -312,6 +325,33 @@ const booking = new mongoose.Schema({
             }
         }]
         
+    }],
+
+    //quickRemark
+    quickRemark :[{
+        quickRemark:{
+            type:String,
+            default:""
+        },
+
+        logId:{
+            type:String,
+            default:""
+        }
+
+    }],
+
+    //Internal note for quickReservation
+    quickInternalNote:[{
+        quickInternalNote:{
+            type:String,
+            default:""
+        },
+
+        logId:{
+            type:String,
+            default:""
+        }
     }],
 
     //name will be changed to reservationRate
@@ -440,11 +480,20 @@ const booking = new mongoose.Schema({
     },
 
     reservationIds:[{
-        
          type:String,
          default:""
-        
-    }]
+    }],
+
+    
+   isQuickReseration : {
+        type:String,
+        default:"false"
+    },
+
+    isGroupBooking :{
+        type:String,
+        default:"false"
+    },
 },
 
 {

@@ -319,7 +319,7 @@ const postRoom = async (req, res) => {
       await addRoomLogs.save();
 
 
-      return res.status(200).json({ message: "New room added successfully", statuscode: 200 });
+      return res.status(200).json({ message: "New room added successfully", statuscode: 200, roomTypeId: savedRoom.roomTypeId });
     }
     else {
       return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

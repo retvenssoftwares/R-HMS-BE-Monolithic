@@ -1,5 +1,5 @@
 import otaModel from "../../models/superAdmin/otaModel.js";
-import {getCurrentUTCTimestamp, findUserByUserIdAndToken,uploadImageToS3,} from "../../helpers/helper.js";
+import {getCurrentUTCTimestamp,uploadImageToS3,} from "../../helpers/helper.js";
 
 export const newOta = async (req, res) => {
   try {
@@ -32,6 +32,6 @@ export const newOta = async (req, res) => {
 
   } catch (error) {
     console.log(error);
-    res.status(400).json({ error: "Failed to create OTA" });
+    res.status(500).json({ message: "Internal server error",statusCode:500 });
   }
 };

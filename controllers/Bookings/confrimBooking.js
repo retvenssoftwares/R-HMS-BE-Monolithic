@@ -1,4 +1,4 @@
-import bookingModel from "../../models/bookings.js";
+import bookingModel from "../../models/reservationModel.js";
 import axios from "axios"
 import bookingDetails from "../../models/confirmBooking.js";
 import guestModel from "../../models/guestDetails.js"

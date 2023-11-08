@@ -1,4 +1,4 @@
-import bookingModel from "../../models/bookings.js"
+import bookingModel from "../../models/reservationModel.js"
 import roomTypeModel from "../../models/roomType.js";
 import verifiedUser from "../../models/verifiedUsers.js";
 import manageInventory from '../../models/manageInventory.js'

@@ -1,4 +1,4 @@
-import bookingsModel from "../../models/bookings.js";
+import bookingsModel from "../../models/reservationModel.js";
 import randomString from "randomstring";
 import guestCollections from "../../models/guestDetails.js";
 import {

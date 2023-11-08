@@ -174,26 +174,55 @@ const manageInventory = async (req, res, io) => {
         //     console.error(error);
         //   }
         // };
-        let payload = {
-           userId: userId,
-          propertyId: propertyId,
-          checkInDate: startDate,
-          checkOutDate: endDate
-        }
+        // let payload = {
+        //   userId: userId,
+        //   propertyId: propertyId,
+        //   checkInDate: startDate,
+        //   checkOutDate: endDate
+        // }
+        // Call the getInventory API
+        // const getInventoryResponse = await getInventory({
+        //   query: {
+        //     userId: userId,
+        //     propertyId: propertyId,
+        //     checkInDate: startDate,
+        //     checkOutDate: endDate,
+        //   },
+        //   headers: {
+        //     authcode: authCodeValue,
+        //   },
+        // });
+        // After inventory updates are done, call the getInventory function
 
-        console.log(payload, "payloadpayloadpayloadpayload")
-        let inventoryData = await getInventory(payload)
-        console.log(inventoryData, "inventoryData")
-        io.emit("inventoryUpdated", inventoryData);
-
-
-
-
-
-       // Use the asynchronous function to emit data
-        emitData();
+        // let inventoryData = await getInventory(payload)
+        // console.log(inventoryData, "inventoryData")
+        // io.emit("inventoryUpdated", inventoryData);
+        // Use the asynchronous function to emit data
+        // emitData();
 
       }
+
+      const availableRooms = await getInventory({
+        query: {
+          userId,
+          propertyId,
+          checkInDate: startDate,
+          checkOutDate: endDate,
+          status: true
+        },
+        headers: {
+          authcode: authCodeValue
+        }
+
+      }, res); // Pass the `res` object to the function
+
+      // You can now access the response data from the getInventory function
+      // console.log(availableRooms, "getInventoryResponse");
+
+      io.emit("inventoryUpdated", availableRooms);
+
+      // const resData =  getInventoryResponse.data.availableRooms
+      // console.log(resData, "payloadpayloadpayloadpayload")
 
       return res
         .status(200)

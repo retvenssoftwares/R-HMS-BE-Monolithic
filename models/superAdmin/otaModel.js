@@ -24,12 +24,10 @@ const otaModel = new mongoose.Schema({
         type: String,
         default: "",
       },
-      isConfig:[{
         isConfig:{
           type: String,
           default: "false",
         }
-      }]
  
 });
 const ota = db1.model("ota", otaModel);

@@ -475,11 +475,14 @@ export const createResrvation = async (req, res) => {
 
 
   try {
+    //console.log(new Date().getSeconds())
     const response = await axios.get(apiUrl, { headers: config.headers });
   
+   
     if (response && response.data) {
       const array = response.data.data;
       // console.log(array);
+    //  console.log(new Date().getSeconds())
       const result = {};
   
       for (const item of array) {

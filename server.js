@@ -22,6 +22,7 @@ import amenityRoutes from "./routers/Amenities/amenity.routes.js"
 import booking from "./routers/Booking/booking.js"
 import superAdminRoutes from "./routers/superAdmin/admin.routes.js"
 import testR from './routers/test.router.js'
+import mmtRoutes from './routers/OTA/addMMT.router.js'
 import bulkUpdateRoutes from './routers/InventoryAndRates/manageInventoryRates.routes.js'
 // import { oldBooking } from "./helpers/deletOldBooking.js";
 
@@ -40,6 +41,7 @@ app.use(amenityRoutes)
 app.use(companyRoutes)
 app.use(booking)
 app.use(bulkUpdateRoutes)
+app.use(mmtRoutes)
 app.use(superAdminRoutes)
 
 

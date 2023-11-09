@@ -10,10 +10,15 @@ const propertySchema = new Schema({
         default: "",
         type: String
     },
-    createdOn:{
-        type:String,
-        default:""
+    createdOn: {
+        type: String,
+        default: ""
     },
+
+    OTAs: [{
+        otaId: { type: String, default: '' },
+        activatedOn: { type: String, default: '' }
+    }],
 
     country: {
         default: "",

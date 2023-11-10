@@ -1,4 +1,4 @@
-import { version } from "chai";
+
 import mongoose from "mongoose";
 import db1 from "../db/conn.js";
 import { generateFourDigitRandomNumber } from "../helpers/helper.js";
@@ -15,7 +15,6 @@ const floor = new mongoose.Schema({
         default:""
     },
   
-
     floorInHotel : [{
 
         floorDetails :[{
@@ -44,33 +43,6 @@ const floor = new mongoose.Schema({
             }],
 
          
-
-            // roomDetails : [{
-            //     room : [{
-            //         roomNumber : {
-            //             type:String,
-            //             default:""
-            //         },
-
-            //         roomTypeId : {
-            //             type:String,
-            //             default:""
-            //         },
-
-            //         roomId : {
-            //             type:String,
-            //             default:""
-            //         },
-
-
-            //     }],
-
-            //     logId :{
-            //         type:String,
-            //         default:""
-            //     }
-
-            // }],
 
             roomNumberPrefix :[{
 

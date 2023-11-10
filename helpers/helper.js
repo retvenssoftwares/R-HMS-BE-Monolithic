@@ -213,6 +213,26 @@ function generateFourDigitRandomNumber() {
 }
 
 
+/// random string
+function generateString() {
+  return new Promise((resolve, reject) => {
+    try {
+      const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      let randomString = '';
+
+      for (let i = 0; i < 4; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        randomString += characters.charAt(randomIndex);
+      }
+
+      resolve(randomString);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+
 const verifyUser = async (userId, authCodeValue) => {
   try {
     const findUser = await verifiedUser.findOne({ userId });
@@ -238,4 +258,4 @@ const verifyUser = async (userId, authCodeValue) => {
 };
 
 
-export { getCurrentUTCTimestamp, getDatesBetweenDates, convertToISODate, findUserByUserIdAndToken, verifyUser, uploadImageToS3, convertTimestampToCustomFormat, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt, generateFourDigitRandomNumber};
+export { getCurrentUTCTimestamp, getDatesBetweenDates, convertToISODate, findUserByUserIdAndToken, verifyUser, uploadImageToS3, convertTimestampToCustomFormat, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt, generateFourDigitRandomNumber,generateString};

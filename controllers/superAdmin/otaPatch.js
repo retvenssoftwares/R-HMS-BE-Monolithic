@@ -2,6 +2,7 @@ import otaModel from "../../models/superAdmin/otaModel.js";
 
 const otaPatch = async (req, res) => {
   try {
+    const {otaId}=req.query;
     const findOta = await otaModel.findOneAndUpdate({ "otaId.otaId": otaId },{$set:{isConfig:"true"}},{new:true});
   
     if (!findOta) {
@@ -12,9 +13,7 @@ const otaPatch = async (req, res) => {
     }
   } catch (error) {
     return res
-      .status(500)
-
-      .json({ message: "Internal Server Error", statuscode: 500 });
+      .status(500).json({ message: "Internal Server Error", statuscode: 500 });
   }
 };
 

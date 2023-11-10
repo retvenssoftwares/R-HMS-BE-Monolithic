@@ -1,4 +1,4 @@
-import bookingModel from "../../models/bookings.js";
+import bookingModel from "../../models/reservationModel.js";
 import axios from "axios"
 import bookingDetails from "../../models/confirmBooking.js";
 import guestModel from "../../models/guestDetails.js"
@@ -43,28 +43,7 @@ export const addConfirmBooking = async (req, res) => {
     });
 
     const deleteData = await holdData.deleteMany({reservationNumber: reservationNumber})
-
- 
-    // for(let i = 0 ; i < data.length; i++){
-    //       const guestBookingDetails = new bookingDetails({
-    //           guestName: guest.guestName[0].guestName,
-    //           salutation: guest.salutation[0].salutation,
-    //           phoneNumber: guest.phoneNumber[0].phoneNumber,
-    //           emailAddress: guest.emailAddress[0].emailAddress,
-    //           propertyId : guestData.propertyId,
-    //           checkInDate :guestData.checkInDate,
-    //           checkOutDate : guestData.checkOutDate,
-    //           guestId : guestData.guestId,
-    //           reservationNo: reservationNumber[i],
-    //           roomTypeId: guestData.roomTypeId,
-    //         });
-            
-    //         await guestBookingDetails.save();
-
   
-
-      
-    // }
 
     return res.status(200).json({message:"Booking created successfully" ,reservationNumber : reservationNumber, reservationIds})
 

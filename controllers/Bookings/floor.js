@@ -1,7 +1,7 @@
 import mongoose, { model, mongo } from "mongoose"
 import floor from "../../models/floor.js"
 import Randomstring from "randomstring"
-
+import roomFloorData from "../../models/roomInFloor.js"
 
 export const addRoomInfloor = async(req,res)=>{
 
@@ -9,9 +9,7 @@ export const addRoomInfloor = async(req,res)=>{
 
     const {floorDetails ,propertyId}  = req.body
 
-
     for(let i = 0 ; i < floorDetails.length ; i++){
-
       var floorData = new floor({
         propertyId : propertyId,
         floorInHotel : [{
@@ -38,4 +36,34 @@ export const addRoomInfloor = async(req,res)=>{
  
 
 
+}
+
+
+
+export const roomDetails = async(req,res)=>{
+  try {
+    const {propertyId , room , floorId} = req.body
+  
+    for(let i = 0 ; i < room.length ; i++){
+    
+      var data = new roomFloorData({
+
+        propertyId : propertyId, 
+        floorId : floorId,
+
+        roomDetails : [{
+          room : room,
+          logId : Randomstring.generate(10)
+        }]
+
+      })
+    }
+
+    await data.save()
+
+    res.send("room added ")
+  }catch(err){
+    console.log(err)
+   return res.send(err)
+  }
 }

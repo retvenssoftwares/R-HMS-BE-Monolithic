@@ -7,7 +7,7 @@ const getRoom = async (req, res) => {
 
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
     if (result.success) {
-      const findRoom = await roomTypeModel.find({ propertyId: propertyId }).select("roomTypeName.roomTypeName propertyId roomTypeId").lean();
+      const findRoom = await roomTypeModel.find({ propertyId: propertyId }).select("roomTypeName.roomTypeName propertyId roomTypeId baseAdult.baseAdult baseChild.baseChild ").lean();
 
       if (findRoom.length > 0) {
         const foundRoomData = findRoom.map((roomData) => {
@@ -15,7 +15,9 @@ const getRoom = async (req, res) => {
             ...roomData._doc,
             propertyId: roomData.propertyId || "",
             roomTypeId: roomData.roomTypeId || '',
-            roomTypeName: roomData.roomTypeName[0].roomTypeName || ''
+            roomTypeName: roomData.roomTypeName[0].roomTypeName || '',
+            baseAdult: roomData.baseAdult[0].baseAdult || '',
+            baseChild: roomData.baseChild[0].baseChild || ''
           }
         })
         return res.status(200).json({ data: foundRoomData, statuscode: 200 });

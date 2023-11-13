@@ -1,12 +1,13 @@
 import barRateModel from "../../models/barRatePlan.js";
 import rateModel from "../../models/manageRatesAndRestrictions.js";
 import otaModel from "../../models/manageOTARates.js"
+import otaAdmin from "../../models/superAdmin/otaModel.js"
 import restrictionModel from "../../models/manageRestrictions.js";
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
 import verifiedUser from "../../models/verifiedUsers.js";
 
 const checkRate = async (req, res) => {
-  const { userId, propertyId, startDate, endDate } = req.query;
+  const { userId, roomTypeId, startDate, endDate } = req.query;
   const authCodeValue = req.headers["authcode"];
 
   const findUser = await verifiedUser.findOne({ userId });
@@ -43,7 +44,7 @@ const checkRate = async (req, res) => {
       const ratePlanTotalResult = await barRateModel.aggregate([
         // Match documents with the specified propertyId
         {
-          $match: { propertyId: propertyId },
+          $match: { "roomType.roomTypeId": roomTypeId },
         },
         // Project to extract the ratePlanTotal and roomTypeId fields
         {
@@ -76,20 +77,24 @@ const checkRate = async (req, res) => {
         const barRatePlanId = result.barRatePlanId;
         //console.log(barRatePlanId)
         const restrictionDocument = await restrictionModel.findOne({
-          propertyId,
+         // propertyId,
           roomTypeId,
           ratePlanId: barRatePlanId,
         });
-        console.log(restrictionDocument)
+        //console.log(restrictionDocument)
 
         const otaDocuments = await otaModel.find({
-          propertyId,
+         // propertyId,
           roomTypeId,
           ratePlanId: barRatePlanId,
         },
         { otaId: 1, source: 1,manageOTARates: 1 } // Include otaId and source in the projection
         )
 
+
+       
+
+       
 
         // const otaIds = otaDocuments.map((otaDoc) => ({
         //   otaId: otaDoc.otaId,
@@ -122,23 +127,24 @@ const checkRate = async (req, res) => {
 
 
         //ota rates
-        const otaIds = otaDocuments.map((otaDoc) => {
+        const otaIds = await Promise.all(otaDocuments.map(async (otaDoc) => {
           const OTARates = [];
           const startDateObj = new Date(startDate);
           const endDateObj = new Date(endDate);
-  
+        
           while (startDateObj <= endDateObj) {
             const formattedDate = startDateObj.toISOString().slice(0, 10);
-  
-            const rate = otaDoc.manageOTARates.baseRate
-              .find((rate) => rate.date === formattedDate);
-  
-            const extraAdultRate = otaDoc.manageOTARates.extraAdultRate
-              .find((extra) => extra.date === formattedDate)?.extraAdultRate || result.extraAdultRate;
-  
-            const extraChildRate = otaDoc.manageOTARates.extraChildRate
-              .find((extra) => extra.date === formattedDate)?.extraChildRate || result.extraChildRate;
-  
+        
+            const rate = otaDoc.manageOTARates.baseRate.find((rate) => rate.date === formattedDate);
+        
+            const extraAdultRate =
+              otaDoc.manageOTARates.extraAdultRate.find((extra) => extra.date === formattedDate)?.extraAdultRate ||
+              result.extraAdultRate;
+        
+            const extraChildRate =
+              otaDoc.manageOTARates.extraChildRate.find((extra) => extra.date === formattedDate)?.extraChildRate ||
+              result.extraChildRate;
+        
             OTARates.push({
               baseRate: rate ? rate.baseRate : result.ratePlanTotal,
               extraAdultRate,
@@ -146,26 +152,35 @@ const checkRate = async (req, res) => {
               date: formattedDate,
               //_id: rate ? rate._id : "false", // Assuming a default value for _id when date is missing
             });
-  
+        
             startDateObj.setDate(startDateObj.getDate() + 1);
           }
-  
+        
+          const otaData = await otaAdmin.findOne({ "otaId.otaId": otaDoc.otaId });
+          const data = {
+           // otaLogo: otaData.otaLogo[0].otaLogo,
+           // otaName: otaData.otaName[0].otaName 
+           otaLogo: otaData?.otaLogo?.[0]?.otaLogo ?? "DefaultLogo",
+           otaName: otaData?.otaName?.[0]?.otaName ?? "DefaultName"
+          };
+        
           return {
             otaId: otaDoc.otaId,
-            source: otaDoc.source,
+            otalogo : data.otaLogo,
+            otaName : data.otaName,
+            //source: otaDoc.source,
             OTARates,
           };
-        });
-
+        }));
         
-
-      
-     
+    //    console.log(otaIds);
+        
+        
   
       
         if (restrictionDocument) {
           const rateDocument = await rateModel.findOne({
-            propertyId,
+           // propertyId,
             roomTypeId,
             ratePlanId: barRatePlanId,
           });
@@ -241,7 +256,7 @@ const checkRate = async (req, res) => {
           // console.log(baseRate)
           const filteredBaseRate = Array.isArray(baseRate)
             ? sortAndFilterByDate(baseRate, startDate, endDate)
-            : baseRate;
+            : [baseRate];
 
           ///filteredBaseRate
           filteredBaseRate.forEach((item) => {
@@ -266,7 +281,7 @@ const checkRate = async (req, res) => {
           //  console.log(extraAdultRate)
           const filteredextraAdultRate = Array.isArray(extraAdultRate)
             ? sortAndFilterByDate(extraAdultRate, startDate, endDate)
-            : extraAdultRate;
+            : [extraAdultRate];
 
           ///filteredExtraAdultRate
           filteredextraAdultRate.forEach((item) => {
@@ -291,7 +306,7 @@ const checkRate = async (req, res) => {
           //  console.log(extraAdultRate)
           const filteredextraChildRate = Array.isArray(extraChildRate)
             ? sortAndFilterByDate(extraChildRate, startDate, endDate)
-            : extraChildRate;
+            : [extraChildRate];
 
           ///filteredExtraChildRate
           filteredextraChildRate.forEach((item) => {
@@ -313,13 +328,13 @@ const checkRate = async (req, res) => {
           response.push({
             ...result,
             baseRates,
-            OTA: otaIds.length > 0 ? otaIds: [{ otaId: "false",source:"false", ratePlanId: "false" }],
+            OTA: otaIds.length > 0 ? otaIds: [{ otaId: "false",otaName:"false", otaLogo : "false", ratePlanId: "false" }],
             
           });
  
         } else if (!restrictionDocument) {
           const rateDocument = await rateModel.findOne({
-            propertyId,
+           // propertyId,
             roomTypeId,
             ratePlanId: barRatePlanId,
           });
@@ -385,7 +400,7 @@ const checkRate = async (req, res) => {
           response.push({
             ...result,
             baseRates,
-            OTA: otaIds.length > 0 ? otaIds: [{ otaId: "false",source:"false", ratePlanId: "false" }],
+            OTA: otaIds.length > 0 ? otaIds: [{ otaId: "false", otaName:"false", otaLogo : "false", ratePlanId: "false" }],
           });
 
         }

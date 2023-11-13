@@ -52,21 +52,14 @@ import getAmenity from "../../controllers/superAdmin/getAmenity.js";
 import postRateType from "../../controllers/superAdmin/postRateTypeName.js";
 import getRateType from "../../controllers/superAdmin/getRateTypeName.js";
 
-// new ota
+// OTA
 import { newOta } from "../../controllers/superAdmin/otaPost.js";
-router.post(
-  "/api/newOta",
-  upload.fields([{ name: "otaLogo", maxCount: 1 }]),
-  newOta
-);
-
-// get ota
 import getOta from "../../controllers/superAdmin/otaGet.js";
-router.get("/api/getOta", getOta);
-
-// patch ota
 import otaPatch from "../../controllers/superAdmin/otaPatch.js";
-router.patch("/api/patchOta",otaPatch);
+import fetchActiveOta from "../../controllers/superAdmin/getActiveOta.js"
+
+
+
 
 
 ////////////////////////////////////////////////////
@@ -121,5 +114,13 @@ router.get("/api/getAmenity",getAmenity)
 //rateType
 router.post("/api/postRateType", postRateType);
 router.get("/api/getRateTypeName", getRateType);
+
+
+
+//OTA
+router.post("/api/newOta",upload.fields([{ name: "otaLogo", maxCount: 1 }]),newOta);
+router.get("/api/getUpComingOta", getOta);
+router.patch("/api/patchOta",otaPatch);
+router.get("/api/getActiveOta",fetchActiveOta)
 
 export default router;

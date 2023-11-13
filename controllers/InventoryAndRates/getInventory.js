@@ -218,25 +218,25 @@ const getInventory = async (req, res) => {
                     const matchingDates = calculatedInventoryData.map((item) => item.date);
 
 
-                    const matchedCOA = matchingDates.map((date) => {
-                        const COAEntry = sortedCOA.find((entry) => entry.date === date);
-                        return COAEntry ? COAEntry.COA : "false";
-                    });
+                    // const matchedCOA = matchingDates.map((date) => {
+                    //     const COAEntry = sortedCOA.find((entry) => entry.date === date);
+                    //     return COAEntry ? COAEntry.COA : "false";
+                    // });
 
-                    const matchedCOD = matchingDates.map((date) => {
-                        const CODEntry = sortedCOD.find((entry) => entry.date === date);
-                        return CODEntry ? CODEntry.COD : "false";
-                    });
+                    // const matchedCOD = matchingDates.map((date) => {
+                    //     const CODEntry = sortedCOD.find((entry) => entry.date === date);
+                    //     return CODEntry ? CODEntry.COD : "false";
+                    // });
 
 
-                    calculatedInventoryData = calculatedInventoryData.map((item) => ({
-                        ...item,
-                        // stopSell: matchedStopSell[matchingDates.indexOf(item.date)],
-                        COA: matchedCOA[matchingDates.indexOf(item.date)],
-                        COD: matchedCOD[matchingDates.indexOf(item.date)],
-                        // minimumLOS: matchedMinimumLOS[matchingDates.indexOf(item.date)],
-                        // maximumLOS: matchedMaximumLOS[matchingDates.indexOf(item.date)],
-                    }));
+                    // calculatedInventoryData = calculatedInventoryData.map((item) => ({
+                    //     ...item,
+                    //     // stopSell: matchedStopSell[matchingDates.indexOf(item.date)],
+                    //     COA: matchedCOA[matchingDates.indexOf(item.date)],
+                    //     COD: matchedCOD[matchingDates.indexOf(item.date)],
+                    //     // minimumLOS: matchedMinimumLOS[matchingDates.indexOf(item.date)],
+                    //     // maximumLOS: matchedMaximumLOS[matchingDates.indexOf(item.date)],
+                    // }));
 
 
                     if (calculatedInventoryData.length === 0) {
@@ -323,26 +323,26 @@ const getInventory = async (req, res) => {
 
                     const matchingDates = calculatedInventoryData.map((item) => item.date);
 
-                    const matchedCOA = matchingDates.map((date) => {
-                        const COAEntry = sortedCOA.find((entry) => entry.date === date);
-                        return COAEntry ? COAEntry.COA : "false";
-                    });
+                    // const matchedCOA = matchingDates.map((date) => {
+                    //     const COAEntry = sortedCOA.find((entry) => entry.date === date);
+                    //     return COAEntry ? COAEntry.COA : "false";
+                    // });
 
-                    const matchedCOD = matchingDates.map((date) => {
-                        const CODEntry = sortedCOD.find((entry) => entry.date === date);
-                        return CODEntry ? CODEntry.COD : "false";
-                    });
+                    // const matchedCOD = matchingDates.map((date) => {
+                    //     const CODEntry = sortedCOD.find((entry) => entry.date === date);
+                    //     return CODEntry ? CODEntry.COD : "false";
+                    // });
 
                     // Then, update the calculatedInventoryData array with the matched values:
 
-                    calculatedInventoryData = calculatedInventoryData.map((item) => ({
-                        ...item,
-                        // stopSell: matchedStopSell[matchingDates.indexOf(item.date)],
-                        COA: matchedCOA[matchingDates.indexOf(item.date)],
-                        COD: matchedCOD[matchingDates.indexOf(item.date)],
-                        // minimumLOS: matchedMinimumLOS[matchingDates.indexOf(item.date)],
-                        // maximumLOS: matchedMaximumLOS[matchingDates.indexOf(item.date)],
-                    }));
+                    // calculatedInventoryData = calculatedInventoryData.map((item) => ({
+                    //     ...item,
+                    //     // stopSell: matchedStopSell[matchingDates.indexOf(item.date)],
+                    //     COA: matchedCOA[matchingDates.indexOf(item.date)],
+                    //     COD: matchedCOD[matchingDates.indexOf(item.date)],
+                    //     // minimumLOS: matchedMinimumLOS[matchingDates.indexOf(item.date)],
+                    //     // maximumLOS: matchedMaximumLOS[matchingDates.indexOf(item.date)],
+                    // }));
                     // console.log(modifiedRes)
                     if (calculatedInventoryData.length === 0) {
                         availableRooms.push({

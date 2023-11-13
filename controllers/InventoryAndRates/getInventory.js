@@ -58,6 +58,7 @@ const getInventory = async (req, res) => {
             const availableRooms = [];
             // let holdBookingsCount = 0;
             // console.log("Before loop:");
+            // console.log(new Date().getSeconds())
             for (const roomType of roomTypes) {
 
                 const roomTypeId = roomType.roomTypeId;
@@ -71,14 +72,6 @@ const getInventory = async (req, res) => {
                 });
                 // console.log("1", reservations)
 
-                // Find the corresponding hold booking for this room type
-
-
-
-                // if (holdBookings && inventoryValues) {
-                //     holdBookingsCount = inventoryValues.inventory
-                //     // console.log(typeof inventoryValues[0]);
-                // }
                 const reducedCount = reservations.length
                 // console.log(reducedCount, "reducedCount")
 
@@ -141,16 +134,9 @@ const getInventory = async (req, res) => {
                 // let sortedStopSell = [];
                 let sortedCOA = [];
                 let sortedCOD = [];
-                // let sortedMinimumLOS = [];
-                // let sortedMaximumLOS = [];
-                const stopSell = manageRestrictions.stopSell || [];
                 const COA = manageRestrictions.COA || [];
                 const COD = manageRestrictions.COD || [];
-                const minimumLOS = manageRestrictions.minimumLOS || [];
-                const maximumLOS = manageRestrictions.maximumLOS || [];
-                // sortedStopSell = stopSell.length === 0
-                //     ? []
-                //     : stopSell.sort((a, b) => (a.date > b.date) ? 1 : -1);
+
 
                 sortedCOA = COA.length === 0
                     ? []
@@ -159,14 +145,6 @@ const getInventory = async (req, res) => {
                 sortedCOD = COD.length === 0
                     ? []
                     : COD.sort((a, b) => (a.date > b.date) ? 1 : -1);
-
-                // sortedMinimumLOS = minimumLOS.length === 0
-                //     ? []
-                //     : minimumLOS.sort((a, b) => (a.date > b.date) ? 1 : -1);
-
-                // sortedMaximumLOS = maximumLOS.length === 0
-                //     ? []
-                //     : maximumLOS.sort((a, b) => (a.date > b.date) ? 1 : -1);
 
                 const holdBookings = await holdData.find({ propertyId: propertyId, roomTypeId: roomTypeId });
                 const inventoryValues = holdBookings.map(booking => booking.inventory);
@@ -183,8 +161,7 @@ const getInventory = async (req, res) => {
                         // console.log(holdBookingsCount, "holdBookingsCount")
                     }
                     // console.log(123)
-                    // const reducedCount = reservations.filter(reservation => reservation.roomDetails.some(detail => detail.roomTypeId[0].roomTypeId === roomTypeId)).length;
-                    // const roomTypeCount = roomType.numberOfRooms - reducedCount;
+
 
                     const addedInventoryDates = [...new Set(
                         manageInventoryData.flatMap(item => item.manageInventory.addedInventory
@@ -240,10 +217,6 @@ const getInventory = async (req, res) => {
 
                     const matchingDates = calculatedInventoryData.map((item) => item.date);
 
-                    // const matchedStopSell = matchingDates.map((date) => {
-                    //     const stopSellEntry = sortedStopSell.find((entry) => entry.date === date);
-                    //     return stopSellEntry ? stopSellEntry.stopSell : "false";
-                    // });
 
                     const matchedCOA = matchingDates.map((date) => {
                         const COAEntry = sortedCOA.find((entry) => entry.date === date);
@@ -255,17 +228,6 @@ const getInventory = async (req, res) => {
                         return CODEntry ? CODEntry.COD : "false";
                     });
 
-                    // const matchedMinimumLOS = matchingDates.map((date) => {
-                    //     const minimumLOSEntry = sortedMinimumLOS.find((entry) => entry.date === date);
-                    //     return minimumLOSEntry ? minimumLOSEntry.minimumLOS : "false";
-                    // });
-
-                    // const matchedMaximumLOS = matchingDates.map((date) => {
-                    //     const maximumLOSEntry = sortedMaximumLOS.find((entry) => entry.date === date);
-                    //     return maximumLOSEntry ? maximumLOSEntry.maximumLOS : "false";
-                    // });
-
-                    // Then, update the calculatedInventoryData array with the matched values:
 
                     calculatedInventoryData = calculatedInventoryData.map((item) => ({
                         ...item,
@@ -325,6 +287,7 @@ const getInventory = async (req, res) => {
                         holdBookingsCount = inventoryValues[0]
                         // console.log(holdBookingsCount, "holdBookingsCount")
                     }
+                    // console.log(new Date().getSeconds())
                     while (currentDate <= endDateObj) {
                         const dateISO = currentDate.toISOString().split("T")[0];
                         const blockedInventoryTotal = manageInventoryData.reduce((total, item) => {
@@ -353,16 +316,12 @@ const getInventory = async (req, res) => {
 
                         currentDate.setDate(currentDate.getDate() + 1); // Move to the next date
                     }
+                    // console.log(new Date().getSeconds())
                     // console.log(calculatedInventoryData)
                     // Sort the calculated inventory data by date in ascending order
                     calculatedInventoryData.sort((a, b) => (a.date > b.date) ? 1 : -1);
 
                     const matchingDates = calculatedInventoryData.map((item) => item.date);
-
-                    // const matchedStopSell = matchingDates.map((date) => {
-                    //     const stopSellEntry = sortedStopSell.find((entry) => entry.date === date);
-                    //     return stopSellEntry ? stopSellEntry.stopSell : "false";
-                    // });
 
                     const matchedCOA = matchingDates.map((date) => {
                         const COAEntry = sortedCOA.find((entry) => entry.date === date);
@@ -373,16 +332,6 @@ const getInventory = async (req, res) => {
                         const CODEntry = sortedCOD.find((entry) => entry.date === date);
                         return CODEntry ? CODEntry.COD : "false";
                     });
-
-                    // const matchedMinimumLOS = matchingDates.map((date) => {
-                    //     const minimumLOSEntry = sortedMinimumLOS.find((entry) => entry.date === date);
-                    //     return minimumLOSEntry ? minimumLOSEntry.minimumLOS : "false";
-                    // });
-
-                    // const matchedMaximumLOS = matchingDates.map((date) => {
-                    //     const maximumLOSEntry = sortedMaximumLOS.find((entry) => entry.date === date);
-                    //     return maximumLOSEntry ? maximumLOSEntry.maximumLOS : "false";
-                    // });
 
                     // Then, update the calculatedInventoryData array with the matched values:
 
@@ -416,6 +365,8 @@ const getInventory = async (req, res) => {
                     }
                 }
             }
+        
+
 
             if (req.query.status) {
                 return availableRooms;

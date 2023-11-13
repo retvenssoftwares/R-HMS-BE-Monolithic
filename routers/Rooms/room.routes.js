@@ -17,6 +17,7 @@ import { companyRatePlan, updateCompanyRatePlan } from '../../controllers/Rooms/
 import BarRatePlan from '../../controllers/Rooms/postBarRatePlan.controller.js'
 import fetchBarRatePlan from '../../controllers/Rooms/getBarRatePlan.js'
 import updateBarRatePlan from '../../controllers/Rooms/patchBarRatePlan.controller.js'
+import getFloors from '../../controllers/Rooms/getPropertyFloors.js';
 import { packageRatePlan, updatePackageRatePlan } from '../../controllers/Rooms/package.js';
 
 //check room availabilty
@@ -76,9 +77,9 @@ router.post("/api/addPackage", packageRatePlan)
 //update PackageRatePlan
 router.patch("/api/updatePackageRatePlan", updatePackageRatePlan)
 
+//floors
+router.get("/api/getPropertyFloors", getFloors)
 
-
-//
 router.get("/api/getRoomList",getRoom);
 
 export default router;

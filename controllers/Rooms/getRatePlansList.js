@@ -16,6 +16,9 @@ const getRatePlansList = async (req, res) => {
                         propertyId: rateData.propertyId || "",
                         roomTypeId: roomTypeId || '',
                         barRatePlanId: rateData.barRatePlanId || "",
+                        ratePlanTotal : rateData.ratePlanTotal || "",
+                        extraChildRate : rateData.extraChildRate || "",
+                        extraAdultRate : rateData.extraAdultRate || "",
                         ratePlanName: rateData.ratePlanName[0].ratePlanName || ''
                     }
                 })

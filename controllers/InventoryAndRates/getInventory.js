@@ -3,7 +3,7 @@ import holdData from "../../models/holdBooking.js";
 import roomTypeModel from "../../models/roomType.js";
 import verifiedUser from "../../models/verifiedUsers.js";
 import manageInventory from '../../models/manageInventory.js'
-import restrictions from '../../models/manageRestrictions.js'
+// import restrictions from '../../models/manageRestrictions.js'
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const getInventory = async (req, res) => {
@@ -86,65 +86,65 @@ const getInventory = async (req, res) => {
                     }
                 ]);
 
-                const manageRestrictionsData = await restrictions.aggregate([
-                    {
-                        $match: {
-                            propertyId: propertyId,
-                            roomTypeId: roomTypeId
-                        }
-                    },
-                    {
-                        $unwind: "$manageRestrictions" // Unwind to access each restriction entry
-                    },
-                    {
-                        $match: {
-                            $or: [
-                                {
-                                    "manageRestrictions.stopSell.date": { $gte: checkInDate, $lte: checkOutDate }
-                                },
-                                {
-                                    "manageRestrictions.COA.date": { $gte: checkInDate, $lte: checkOutDate }
-                                },
-                                {
-                                    "manageRestrictions.COD.date": { $gte: checkInDate, $lte: checkOutDate }
-                                },
-                                {
-                                    "manageRestrictions.minimumLOS.date": { $gte: checkInDate, $lte: checkOutDate }
-                                },
-                                {
-                                    "manageRestrictions.maximumLOS.date": { $gte: checkInDate, $lte: checkOutDate }
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        $project: {
-                            _id: 0,
-                            "manageRestrictions.stopSell": 1,
-                            "manageRestrictions.COA": 1,
-                            "manageRestrictions.COD": 1,
-                            "manageRestrictions.minimumLOS": 1,
-                            "manageRestrictions.maximumLOS": 1
-                        }
-                    }
-                ]);
+                // const manageRestrictionsData = await restrictions.aggregate([
+                //     {
+                //         $match: {
+                //             propertyId: propertyId,
+                //             roomTypeId: roomTypeId
+                //         }
+                //     },
+                //     {
+                //         $unwind: "$manageRestrictions" // Unwind to access each restriction entry
+                //     },
+                //     {
+                //         $match: {
+                //             $or: [
+                //                 // {
+                //                 //     "manageRestrictions.stopSell.date": { $gte: checkInDate, $lte: checkOutDate }
+                //                 // },
+                //                 // {
+                //                 //     "manageRestrictions.COA.date": { $gte: checkInDate, $lte: checkOutDate }
+                //                 // },
+                //                 // {
+                //                 //     "manageRestrictions.COD.date": { $gte: checkInDate, $lte: checkOutDate }
+                //                 // },
+                //                 {
+                //                     "manageRestrictions.minimumLOS.date": { $gte: checkInDate, $lte: checkOutDate }
+                //                 },
+                //                 {
+                //                     "manageRestrictions.maximumLOS.date": { $gte: checkInDate, $lte: checkOutDate }
+                //                 }
+                //             ]
+                //         }
+                //     },
+                //     {
+                //         $project: {
+                //             _id: 0,
+                //             "manageRestrictions.stopSell": 1,
+                //             "manageRestrictions.COA": 1,
+                //             "manageRestrictions.COD": 1,
+                //             "manageRestrictions.minimumLOS": 1,
+                //             "manageRestrictions.maximumLOS": 1
+                //         }
+                //     }
+                // ]);
 
-                const manageRestrictions = manageRestrictionsData[0] ? manageRestrictionsData[0].manageRestrictions : [];
-                // Initialize these variables as empty arrays by default
-                // let sortedStopSell = [];
-                let sortedCOA = [];
-                let sortedCOD = [];
-                const COA = manageRestrictions.COA || [];
-                const COD = manageRestrictions.COD || [];
+                // const manageRestrictions = manageRestrictionsData[0] ? manageRestrictionsData[0].manageRestrictions : [];
+                // // Initialize these variables as empty arrays by default
+                // // let sortedStopSell = [];
+                // let sortedCOA = [];
+                // let sortedCOD = [];
+                // const COA = manageRestrictions.COA || [];
+                // const COD = manageRestrictions.COD || [];
 
 
-                sortedCOA = COA.length === 0
-                    ? []
-                    : COA.sort((a, b) => (a.date > b.date) ? 1 : -1);
+                // sortedCOA = COA.length === 0
+                //     ? []
+                //     : COA.sort((a, b) => (a.date > b.date) ? 1 : -1);
 
-                sortedCOD = COD.length === 0
-                    ? []
-                    : COD.sort((a, b) => (a.date > b.date) ? 1 : -1);
+                // sortedCOD = COD.length === 0
+                //     ? []
+                //     : COD.sort((a, b) => (a.date > b.date) ? 1 : -1);
 
                 const holdBookings = await holdData.find({ propertyId: propertyId, roomTypeId: roomTypeId });
                 const inventoryValues = holdBookings.map(booking => booking.inventory);
@@ -215,7 +215,7 @@ const getInventory = async (req, res) => {
                     // Sort the calculated inventory data by date in ascending order
                     calculatedInventoryData.sort((a, b) => (a.date > b.date) ? 1 : -1);
 
-                    const matchingDates = calculatedInventoryData.map((item) => item.date);
+                    // const matchingDates = calculatedInventoryData.map((item) => item.date);
 
 
                     // const matchedCOA = matchingDates.map((date) => {
@@ -321,7 +321,7 @@ const getInventory = async (req, res) => {
                     // Sort the calculated inventory data by date in ascending order
                     calculatedInventoryData.sort((a, b) => (a.date > b.date) ? 1 : -1);
 
-                    const matchingDates = calculatedInventoryData.map((item) => item.date);
+                    // const matchingDates = calculatedInventoryData.map((item) => item.date);
 
                     // const matchedCOA = matchingDates.map((date) => {
                     //     const COAEntry = sortedCOA.find((entry) => entry.date === date);

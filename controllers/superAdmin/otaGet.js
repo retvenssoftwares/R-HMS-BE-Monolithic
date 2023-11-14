@@ -14,7 +14,7 @@ const getOta = async (req, res) => {
         };
       });
 
-      return res.status(200).json({ data: otaDetails, statuscode: 200 });
+      return res.status(200).json({ upComing: otaDetails, statuscode: 200 });
     } else {
       return res.status(404).json({ message: "No ota found", statuscode: 404 });
     }

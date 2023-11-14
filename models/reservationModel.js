@@ -14,8 +14,8 @@ const booking = new mongoose.Schema({
         }
     }],
 
-    checkIn :[{
-       checkIn:{
+    checkInDate :[{
+       checkInDate:{
         type:String,
         default:""
        },
@@ -27,8 +27,8 @@ const booking = new mongoose.Schema({
 
     }],
 
-    checkOut:[{
-        checkOut :{
+    checkOutDate:[{
+        checkOutDate :{
             type:String,
             default:""
         },
@@ -499,10 +499,8 @@ const booking = new mongoose.Schema({
 {
     versionKey : false
 }
-
-
 )
 
-const bookingModel = db1.model("bookingDetails",booking)
+const bookingModel = db1.model("reservationDetails",booking)
 
 export default bookingModel

@@ -11,7 +11,7 @@ const addCompany = async (req, res) => {
         if (result.success) {
             var imageUrl = ""
             var contractLink = ""
-           
+
             if (req.files['companyLogo']) {
                 imageUrl = await uploadImageToS3(req.files['companyLogo'][0]);
             }
@@ -114,7 +114,7 @@ const addCompany = async (req, res) => {
 
     } catch (err) {
         console.log(err)
-        return res.status(500).json({ message: "Internal Server Error" })
+        return res.status(500).json({ message: "Internal Server Error", statuscode: 500 })
     }
 
 }

@@ -1,7 +1,7 @@
 import floorData from "../../models/floor.js";
 import roomTypeModel from "../../models/roomType.js";
 import roomFloorDetails from "../../models/roomInFloor.js";
-import { findUserByUserIdAndToken } from "../../helpers/helper.js";
+import { findUserByUserIdAndToken, validateHotelCode } from "../../helpers/helper.js";
 
 const getFloors = async (req, res) => {
     try {
@@ -10,6 +10,14 @@ const getFloors = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
+            if (!propertyId) {
+                return res.status(400).json({ message: "Please enter propertyId", statuscode: 400 })
+            }
+
+            const result = await validateHotelCode(userId, propertyId)
+            if (!result.success) {
+                return res.status(result.statuscode).json({ message: "Invalid propertyId entered", statuscode: result.statuscode })
+            }
             const getAllFloors = await floorData.find({ propertyId: propertyId }, '-_id');
             if (getAllFloors) {
                 const floorIds = [];
@@ -47,7 +55,7 @@ const getFloors = async (req, res) => {
 
                 return res.status(200).json({ data: flattenedFloorsArray, statuscode: 200 });
             } else {
-                return res.status(404).json({ message: "No floors found", statuscode: 404 });
+                return res.status(200).json({ message: "No floors found", statuscode: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

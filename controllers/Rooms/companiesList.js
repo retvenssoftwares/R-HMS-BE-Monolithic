@@ -1,4 +1,5 @@
 import companyModel from "../../models/company.js";
+// import propertyModel from "../../";
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const companyNames = async (req, res) => {

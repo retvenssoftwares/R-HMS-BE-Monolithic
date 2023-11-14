@@ -21,8 +21,10 @@ const getInventory = async (req, res) => {
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
     if (result.success) {
         if (checkInDate === checkOutDate) {
+            console.log(checkInDate,checkOutDate)
             return res.status(400).json({ message: "Check-in date cannot be equal to check-out date", statuscode: 400 });
-        } else if (checkInDate > checkOutDate) {
+        } 
+        if (checkInDate > checkOutDate) {
             return res.status(400).json({ message: "Check-in date cannot be greater than check-out date", statuscode: 400 });
         }
 

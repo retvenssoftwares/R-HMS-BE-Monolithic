@@ -43,6 +43,10 @@ const postUser = async (req, res) => {
         })
         const userData = await newData.save()
 
+        const newUserName = await generateUserName(newData.firstName , newData.phoneNumber);
+
+        await userData.updateOne({ userId: newData.userId }, { $set: { userName: newUserName } });        
+
         return res.status(200).json({ message: "User successfully added", userId: userData.userId, authcode: userData.authCode, statuscode: 200 })
 
     } catch (err) {

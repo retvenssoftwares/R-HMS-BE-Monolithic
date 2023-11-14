@@ -4,6 +4,9 @@ import guestCollections from "../../models/guestDetails.js";
 import {
   findUserByUserIdAndToken,
   generateFourDigitRandomNumber,
+
+
+  
   getCurrentLocalTimestamp,
   getCurrentUTCTimestamp,
 } from "../../helpers/helper.js";
@@ -12,13 +15,14 @@ import holdData from "../../models/holdBooking.js";
 import axios from "axios";
 // import guestModel from "../../models/guestDetails.js"
 import nodeCorn from "node-cron"
+import getInventory from "../InventoryAndRates/getInventory.js";
 
 export const createResrvation = async (req, res) => {
   const {
     userId,
     propertyId,
-    checkIn,
-    checkOut,
+    checkInDate,
+    checkOutDate,
     nightCount,
     rateTypeId,
     companyId,
@@ -61,7 +65,7 @@ export const createResrvation = async (req, res) => {
 
   // Validate the date format
   const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
-  if (!dateFormatRegex.test(checkIn) || !dateFormatRegex.test(checkOut)) {
+  if (!dateFormatRegex.test(checkInDate) || !dateFormatRegex.test(checkOutDate)) {
     return res
       .status(400)
       .json({
@@ -70,9 +74,9 @@ export const createResrvation = async (req, res) => {
       });
   }
 
-  const startDateObj = new Date(checkIn);
+  const startDateObj = new Date(checkInDate);
   const checkInDateISO = startDateObj.toISOString();
-  const endDateObj = new Date(checkOut);
+  const endDateObj = new Date(checkOutDate);
   const checkOutDateISO = endDateObj.toISOString();
 
   let userRole = findUser.role[0].role;
@@ -169,15 +173,15 @@ export const createResrvation = async (req, res) => {
     guestId: guestIdArray,
     bookingId: bookingId,
     propertyId: propertyId,
-    checkIn: [
+    checkInDate: [
       {
-        checkIn: checkInDateISO,
+        checkInDate: checkInDateISO,
         logId: randomString.generate(10),
       },
     ],
-    checkOut: [
+    checkOutDate: [
       {
-        checkOut: checkOutDateISO,
+        checkOutDate: checkOutDateISO,
         logId: randomString.generate(10),
       },
     ],
@@ -352,7 +356,7 @@ export const createResrvation = async (req, res) => {
 
   // hold inventory
 
-  const apiUrl = `https://api.hotelratna.com/api/getInventory?userId=${userId}&propertyId=${propertyId}&checkInDate=${checkIn}&checkOutDate=${checkOut}`;
+  const apiUrl = `https://api.hotelratna.com/api/getInventory?userId=${userId}&propertyId=${propertyId}&checkInDate=${checkInDate}&checkOutDate=${checkOutDate}`;
 
   const booking = await bookingsModel.findOne({ bookingId: details.bookingId });
   // console.log(booking)
@@ -371,15 +375,16 @@ export const createResrvation = async (req, res) => {
 
   try {
     //console.log(new Date().getSeconds())
+   //console.log(new Date().getMilliseconds())
     const response = await axios.get(apiUrl, {
       headers: {
         authcode: req.headers["authcode"]
       }
     });
 
-
     if (response && response.data) {
       const array = response.data.data;
+    
       // console.log(array);
       //  console.log(new Date().getSeconds())
       const result = {};
@@ -388,11 +393,6 @@ export const createResrvation = async (req, res) => {
         const minInventory = Math.min(...item.calculatedInventoryData.map(data => data.inventory));
         result[item.roomTypeId] = minInventory;
       });
-
-
-      // console.log(result);
-
-      // Assuming these functions are defined elsewhere in your code
 
       // Function to get guest details by guestId
       async function getGuestDetails(guestId) {
@@ -412,9 +412,9 @@ export const createResrvation = async (req, res) => {
           phoneNumber: guestDetails.phoneNumber && guestDetails.phoneNumber[0] && guestDetails.phoneNumber[0].phoneNumber || "",
           emailAddress: guestDetails.emailAddress && guestDetails.emailAddress[0] && guestDetails.emailAddress[0].emailAddress || "",
           bookingTime: await getCurrentUTCTimestamp(),
-          checkInDate: booking.checkIn && booking.checkIn[0] && booking.checkIn[0].checkIn || "",
+          checkInDate: booking.checkInDate && booking.checkInDate[0] && booking.checkInDate[0].checkInDate || "",
           reservationNumber: booking.reservationNumber || "",
-          checkOutDate: booking.checkOut && booking.checkOut[0] && booking.checkOut[0].checkOut || "",
+          checkOutDate: booking.checkOutDate && booking.checkOutDate[0] && booking.checkOutDate[0].checkOutDate || "",
           inventory: dictionary[roomDetail.roomTypeId && roomDetail.roomTypeId[0] && roomDetail.roomTypeId[0].roomTypeId] ? dictionary[roomDetail.roomTypeId[0].roomTypeId].toString() : ""
         });
 

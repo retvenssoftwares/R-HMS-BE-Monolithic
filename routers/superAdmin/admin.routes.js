@@ -68,6 +68,13 @@ router.get("/api/getOta", getOta);
 import otaPatch from "../../controllers/superAdmin/otaPatch.js";
 router.patch("/api/patchOta",otaPatch);
 
+//ratesAndRestrictions
+import rate from "../../controllers/superAdmin/ratesAndRestrictions.js";
+router.post("/api/rateAndRestrictions",rate);
+
+// get rate name
+import rateName from "../../controllers/superAdmin/getRateAndRestrictions.js";
+router.get("/api/rateName", rateName);
 
 ////////////////////////////////////////////////////
 //bedType

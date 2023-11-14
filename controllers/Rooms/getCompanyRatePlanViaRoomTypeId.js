@@ -3,7 +3,7 @@ import companyRatePlane from "../../models/companyRatePlane.js";
 const getCompanyRatePlan = async (req, res) => {
         try{
             const roomTypeId=req.query;
-           
+            
         const companyRateData = await companyRatePlane.find(roomTypeId).lean();
         if (companyRateData.length > 0) {
             const rateDetails = companyRateData.map(rates => {

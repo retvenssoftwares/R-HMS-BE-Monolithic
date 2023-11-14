@@ -1,4 +1,5 @@
 import barRatePlan from "../../models/barRatePlan.js"
+import roomTypeModel from "../../models/roomType.js";
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
 const getRatePlansList = async (req, res) => {
     try {
@@ -10,15 +11,22 @@ const getRatePlansList = async (req, res) => {
             const findRatePlans = await barRatePlan.find({ "roomType.roomTypeId": roomTypeId }).select("ratePlanName propertyId barRatePlanId roomType").lean();
 
             if (findRatePlans.length > 0) {
-                const foundRateData = findRatePlans.map((rateData) => {
+                const foundRateData = await Promise.all(findRatePlans.map(async (rateData) => {
+                    const roomTypeName = await roomTypeModel.findOne({ roomTypeId: roomTypeId }).select('roomTypeName');
+                    // console.log(roomTypeName.roomTypeName[0].roomTypeName);
+
                     return {
                         ...rateData._doc,
                         propertyId: rateData.propertyId || "",
                         roomTypeId: roomTypeId || '',
+                        roomTypeName: roomTypeName.roomTypeName[0].roomTypeName || '',
                         barRatePlanId: rateData.barRatePlanId || "",
+                        ratePlanTotal : rateData.ratePlanTotal || "",
+                        extraChildRate : rateData.extraChildRate || "",
+                        extraAdultRate : rateData.extraAdultRate || "",
                         ratePlanName: rateData.ratePlanName[0].ratePlanName || ''
-                    }
-                })
+                    };
+                }));
                 return res.status(200).json({ data: foundRateData, statuscode: 200 });
 
             } else {

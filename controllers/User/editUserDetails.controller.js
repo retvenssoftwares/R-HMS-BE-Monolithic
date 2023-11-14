@@ -6,12 +6,12 @@ import {
 } from "../../helpers/helper.js";
 
 const editUserOnboarding = async (req, res) => {
-    const propertyId = randomstring.generate(8);
+    const propertyId = randomstring.generate({charset: 'numeric',length:6});
     const { userId, propertyTypeSOC } = req.body;
     var findRecord = await userModel.findOne({ userId });
     // Find the specific array element you want to update
     if (!findRecord) {
-        return res.status(404).json({ message: "Record not found" })
+        return res.status(404).json({ message: "user not found" })
     }
     try {
         if (propertyTypeSOC === 'Single') {

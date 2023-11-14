@@ -50,7 +50,7 @@ const getInclusion = async (req, res) => {
                 return res.status(404).json({ message: "No inclusion found", statuscode: 404 });
             }
         } else {
-            return res.status(result.statuscode).json({ message: result.message });
+            return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
     
         }
             

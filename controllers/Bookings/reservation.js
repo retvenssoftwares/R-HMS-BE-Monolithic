@@ -2,7 +2,11 @@ import bookingsModel from "../../models/reservationModel.js";
 import randomString from "randomstring";
 import guestCollections from "../../models/guestDetails.js";
 import {
+  findUserByUserIdAndToken,
   generateFourDigitRandomNumber,
+
+
+  
   getCurrentLocalTimestamp,
   getCurrentUTCTimestamp,
 } from "../../helpers/helper.js";
@@ -11,13 +15,14 @@ import holdData from "../../models/holdBooking.js";
 import axios from "axios";
 // import guestModel from "../../models/guestDetails.js"
 import nodeCorn from "node-cron"
+import getInventory from "../InventoryAndRates/getInventory.js";
 
 export const createResrvation = async (req, res) => {
   const {
     userId,
     propertyId,
-    checkIn,
-    checkOut,
+    checkInDate,
+    checkOutDate,
     nightCount,
     rateTypeId,
     companyId,
@@ -32,32 +37,35 @@ export const createResrvation = async (req, res) => {
     isQuickReseration,
     isGroupBooking,
   } = req.body
-  
-      
+
+
 
   let guestIdArray = [];
 
   const bookingId = randomString.generate(10);
 
   const findUser = await verifiedUser.findOne({ userId: userId });
+
   if (!findUser) {
     return res
       .status(404)
       .json({ message: "User not found or invalid userid", statuscode: 404 });
   }
-  const userToken = findUser.authCode;
-
   const authCodeValue = req.headers["authcode"];
 
-  if (authCodeValue !== userToken) {
+  const result = await findUserByUserIdAndToken(userId, authCodeValue);
+
+  if (result.success === false) {
     return res
       .status(400)
       .json({ message: "Invalid authentication token", statuscode: 400 });
   }
 
+
+
   // Validate the date format
   const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
-  if (!dateFormatRegex.test(checkIn) || !dateFormatRegex.test(checkOut)) {
+  if (!dateFormatRegex.test(checkInDate) || !dateFormatRegex.test(checkOutDate)) {
     return res
       .status(400)
       .json({
@@ -66,9 +74,9 @@ export const createResrvation = async (req, res) => {
       });
   }
 
-  const startDateObj = new Date(checkIn);
+  const startDateObj = new Date(checkInDate);
   const checkInDateISO = startDateObj.toISOString();
-  const endDateObj = new Date(checkOut);
+  const endDateObj = new Date(checkOutDate);
   const checkOutDateISO = endDateObj.toISOString();
 
   let userRole = findUser.role[0].role;
@@ -150,7 +158,7 @@ export const createResrvation = async (req, res) => {
           },
         ],
 
-       
+
       });
 
       const guest = await guestDetails.save();
@@ -165,15 +173,15 @@ export const createResrvation = async (req, res) => {
     guestId: guestIdArray,
     bookingId: bookingId,
     propertyId: propertyId,
-    checkIn: [
+    checkInDate: [
       {
-        checkIn: checkInDateISO,
+        checkInDate: checkInDateISO,
         logId: randomString.generate(10),
       },
     ],
-    checkOut: [
+    checkOutDate: [
       {
-        checkOut: checkOutDateISO,
+        checkOutDate: checkOutDateISO,
         logId: randomString.generate(10),
       },
     ],
@@ -196,10 +204,10 @@ export const createResrvation = async (req, res) => {
       },
     ],
 
-    isQuickReseration : isQuickReseration,
-        
-    isGroupBooking : isGroupBooking,
-    
+    isQuickReseration: isQuickReseration,
+
+    isGroupBooking: isGroupBooking,
+
 
     rateType: [
       {
@@ -214,8 +222,8 @@ export const createResrvation = async (req, res) => {
       },
     ],
 
-    barRateReservation : [{
-      bookingTypeId : bookingTypeId,
+    barRateReservation: [{
+      bookingTypeId: bookingTypeId,
       logId: randomString.generate(10),
     }],
 
@@ -268,7 +276,7 @@ export const createResrvation = async (req, res) => {
         logId: randomString.generate(10),
       })),
 
-    
+
     })),
 
     remark: remark.map((item) => ({
@@ -348,20 +356,8 @@ export const createResrvation = async (req, res) => {
 
   // hold inventory
 
+  const apiUrl = `https://api.hotelratna.com/api/getInventory?userId=${userId}&propertyId=${propertyId}&checkInDate=${checkInDate}&checkOutDate=${checkOutDate}`;
 
-  
-
-  const headersData = req.body.headersData;
-
-  const apiUrl = `https://api.hotelratna.com/api/getInventory?userId=${req.body.userId}&propertyId=${req.body.propertyId}&checkInDate=${checkIn}&checkOutDate=${checkOut}`;
-
-  const config = {
-    headers: {
-      authcode: headersData,
-    },
-  };
-
-  
   const booking = await bookingsModel.findOne({ bookingId: details.bookingId });
   // console.log(booking)
   const roomDetail = booking.roomDetails;
@@ -377,194 +373,81 @@ export const createResrvation = async (req, res) => {
     }
   }
 
-  // axios
-  // .get(apiUrl, { headers: config.headers })
-  // .then(async (response) => {
-  //   if (response && response.data) {
-  //     const array = response.data.data;
-  //     console.log(array)
-  //     const result = {};
-  //     for (const item of array) {
-  //       let minInventory = Infinity;
-  //       for (let i = 0; i < item.calculatedInventoryData.length; i++) {
-  //         console.log(item.calculatedInventoryData[i])
-  //         // if(item.calculatedInventoryData[i] === 0){
-  //         //   return res.status(500).json({ message: "No Room Left for Reservation", statusCode: 500 });
-  //         // }
-  //         if (item.calculatedInventoryData[i].inventory < minInventory) {
-  //           minInventory = item.calculatedInventoryData[i].inventory;
-  //         }
-  //       }
-  //       result[item.roomTypeId] = minInventory;
-  //     }
-  //     console.log(result)
-
-
-
-  //     for (let i = 0; i < roomDetail.length; i++) {
-  //       console.log(dictionary[roomDetail[i].roomTypeId[0].roomTypeId] , result[roomDetail[i].roomTypeId[0].roomTypeId])
-  //       if (result[roomDetail[i].roomTypeId[0].roomTypeId] === 0) {
-  //         console.log("gfcghjbkn")
-  //        // res.status(500).json({ message: "No Room Left for Reservation", statusCode: 500 });
-  //         break
-  //       }
-  //       if (
-  //         dictionary[roomDetail[i].roomTypeId[0].roomTypeId] &&
-  //         dictionary[roomDetail[i].roomTypeId[0].roomTypeId] <= result[roomDetail[i].roomTypeId[0].roomTypeId]
-  //       ) {
-  //         if (booking.guestId.length === 1) {
-  //           // console.log([roomDetail[i].roomTypeId[0].roomTypeId])
-  //           const guestDetails = await guestCollections.findOne({guestId : booking.guestId[0].guestId})
-  //           //console.log("nmnm",guestDetails.guestName[0].guestName)
-  //           const hold = new holdData({
-  //             bookingId: booking.bookingId || "",
-  //               reservationId: booking.reservationIds && booking.reservationIds[i] || "",
-  //               propertyId: booking.propertyId || "",
-  //               roomTypeId: roomDetail[i].roomTypeId && roomDetail[i].roomTypeId[0] && roomDetail[i].roomTypeId[0].roomTypeId || "",
-  //               guestId: booking.guestId && booking.guestId[0] && booking.guestId[0].guestId || "",
-  //               guestName: guestDetails.guestName && guestDetails.guestName[0] && guestDetails.guestName[0].guestName || "",
-  //               salutation: guestDetails.salutation && guestDetails.salutation[0] && guestDetails.salutation[0].salutation || "",
-  //               phoneNumber: guestDetails.phoneNumber && guestDetails.phoneNumber[0] && guestDetails.phoneNumber[0].phoneNumber || "",
-  //               emailAddress: guestDetails.emailAddress && guestDetails.emailAddress[0] && guestDetails.emailAddress[0].emailAddress || "",
-  //               bookingTime: await getCurrentUTCTimestamp(),
-  //               checkInDate: booking.checkIn && booking.checkIn[0] && booking.checkIn[0].checkIn || "",
-  //               reservationNumber: booking.reservationNumber || "",
-  //               checkOutDate: booking.checkOut && booking.checkOut[0] && booking.checkOut[0].checkOut || "",
-  //               inventory: dictionary[roomDetail[i].roomTypeId && roomDetail[i].roomTypeId[0] && roomDetail[i].roomTypeId[0].roomTypeId] ? dictionary[roomDetail[i].roomTypeId[0].roomTypeId].toString() : ""
-  //               ,
-  //           });
-
-  //           await hold.save();
-  //         } else {
-         
-  //           const hold = new holdData({
-  //             bookingId: booking.bookingId || "",
-  //             reservationId: booking.reservationIds && booking.reservationIds[i] || "",
-  //             propertyId: booking.propertyId || "",
-  //             roomTypeId: roomDetail[i].roomTypeId && roomDetail[i].roomTypeId[0] && roomDetail[i].roomTypeId[0].roomTypeId || "",
-  //             guestId: booking.guestId && booking.guestId[i] && booking.guestId[i].guestId || "",
-  //             guestName: booking.guestName && booking.guestName[0] && booking.guestName[0].guestName || "",
-  //             salutation: booking.salutation && booking.salutation[0] && booking.salutation[0].salutation || "",
-  //             phoneNumber: booking.phoneNumber && booking.phoneNumber[0] && booking.phoneNumber[0].phoneNumber || "",
-  //             emailAddress: booking.emailAdddress && booking.emailAdddress[0] && booking.emailAdddress[0].emailAdddress || "",
-  //             bookingTime: await getCurrentUTCTimestamp(),
-  //             checkInDate: booking.checkIn && booking.checkIn[0] && booking.checkIn[0].checkIn || "",
-  //             reservationNumber: booking.reservationNumber || "",
-  //             checkOutDate: booking.checkOut && booking.checkOut[0] && booking.checkOut[0].checkOut || "",
-  //             inventory: dictionary[roomDetail[i].roomTypeId && roomDetail[i].roomTypeId[0] && roomDetail[i].roomTypeId[0].roomTypeId] ? dictionary[roomDetail[i].roomTypeId[0].roomTypeId].toString() : ""
-              
-  //           });
-
-  //           await hold.save();
-            
-  //           console.log("j")
-            
-  //         }
-  //       }
-  //     }
-
-  //     //console.log(result)
-
-  //   } else {
-  //     console.error("No data found in the response");
-  //   }
-  // })
-  // .catch((error) => {
-  //   console.error("Error fetching data:", error);
-  // });
-
-
   try {
     //console.log(new Date().getSeconds())
-    const response = await axios.get(apiUrl, { headers: config.headers });
-  
-   
+   //console.log(new Date().getMilliseconds())
+    const response = await axios.get(apiUrl, {
+      headers: {
+        authcode: req.headers["authcode"]
+      }
+    });
+
     if (response && response.data) {
       const array = response.data.data;
+    
       // console.log(array);
-    //  console.log(new Date().getSeconds())
+      //  console.log(new Date().getSeconds())
       const result = {};
-  
-      for (const item of array) {
-        let minInventory = Infinity;
-        for (let i = 0; i < item.calculatedInventoryData.length; i++) {
-          console.log(item.calculatedInventoryData[i]);
-  
-          if (item.calculatedInventoryData[i].inventory < minInventory) {
-            minInventory = item.calculatedInventoryData[i].inventory;
-          }
-        }
+
+      array.forEach((item) => {
+        const minInventory = Math.min(...item.calculatedInventoryData.map(data => data.inventory));
         result[item.roomTypeId] = minInventory;
+      });
+
+      // Function to get guest details by guestId
+      async function getGuestDetails(guestId) {
+        return await guestCollections.findOne({ guestId });
       }
-      // console.log(result);
-  
+
+      // Function to create and save hold data
+      async function createAndSaveHoldData(booking, roomDetail, index, guestDetails) {
+        const hold = new holdData({
+          bookingId: booking.bookingId || "",
+          reservationId: booking.reservationIds && booking.reservationIds[index] || "",
+          propertyId: booking.propertyId || "",
+          roomTypeId: roomDetail.roomTypeId && roomDetail.roomTypeId[0] && roomDetail.roomTypeId[0].roomTypeId || "",
+          guestId: booking.guestId && booking.guestId[index] && booking.guestId[index].guestId || "",
+          guestName: guestDetails.guestName && guestDetails.guestName[0] && guestDetails.guestName[0].guestName || "",
+          salutation: guestDetails.salutation && guestDetails.salutation[0] && guestDetails.salutation[0].salutation || "",
+          phoneNumber: guestDetails.phoneNumber && guestDetails.phoneNumber[0] && guestDetails.phoneNumber[0].phoneNumber || "",
+          emailAddress: guestDetails.emailAddress && guestDetails.emailAddress[0] && guestDetails.emailAddress[0].emailAddress || "",
+          bookingTime: await getCurrentUTCTimestamp(),
+          checkInDate: booking.checkInDate && booking.checkInDate[0] && booking.checkInDate[0].checkInDate || "",
+          reservationNumber: booking.reservationNumber || "",
+          checkOutDate: booking.checkOutDate && booking.checkOutDate[0] && booking.checkOutDate[0].checkOutDate || "",
+          inventory: dictionary[roomDetail.roomTypeId && roomDetail.roomTypeId[0] && roomDetail.roomTypeId[0].roomTypeId] ? dictionary[roomDetail.roomTypeId[0].roomTypeId].toString() : ""
+        });
+
+        await hold.save();
+      }
+
+      // Your optimized loop
       for (let i = 0; i < roomDetail.length; i++) {
-        console.log(dictionary[roomDetail[i].roomTypeId[0].roomTypeId] , result[roomDetail[i].roomTypeId[0].roomTypeId])
-        if (result[roomDetail[i].roomTypeId[0].roomTypeId] === 0) {
-           return res.status(200).json({ message: "No Room Left for Reservation", statusCode: 200});
+        const roomTypeId = roomDetail[i].roomTypeId[0].roomTypeId;
+        const guestId = booking.guestId.length === 1 ? booking.guestId[0].guestId : booking.guestId[i].guestId;
+
+        if (result[roomTypeId] === 0) {9
+          return res.status(200).json({ message: "No Room Left for Reservation", statusCode: 200 });
         }
+
         if (
-          dictionary[roomDetail[i].roomTypeId[0].roomTypeId] &&
-          dictionary[roomDetail[i].roomTypeId[0].roomTypeId] <= result[roomDetail[i].roomTypeId[0].roomTypeId]
+          dictionary[roomTypeId] &&
+          dictionary[roomTypeId] <= result[roomTypeId]
         ) {
-          if (booking.guestId.length === 1) {
-            // console.log([roomDetail[i].roomTypeId[0].roomTypeId])
-            const guestDetails = await guestCollections.findOne({guestId : booking.guestId[0].guestId})
-            //console.log("nmnm",guestDetails.guestName[0].guestName)
-            const hold = new holdData({
-              bookingId: booking.bookingId || "",
-                reservationId: booking.reservationIds && booking.reservationIds[i] || "",
-                propertyId: booking.propertyId || "",
-                roomTypeId: roomDetail[i].roomTypeId && roomDetail[i].roomTypeId[0] && roomDetail[i].roomTypeId[0].roomTypeId || "",
-                guestId: booking.guestId && booking.guestId[0] && booking.guestId[0].guestId || "",
-                guestName: guestDetails.guestName && guestDetails.guestName[0] && guestDetails.guestName[0].guestName || "",
-                salutation: guestDetails.salutation && guestDetails.salutation[0] && guestDetails.salutation[0].salutation || "",
-                phoneNumber: guestDetails.phoneNumber && guestDetails.phoneNumber[0] && guestDetails.phoneNumber[0].phoneNumber || "",
-                emailAddress: guestDetails.emailAddress && guestDetails.emailAddress[0] && guestDetails.emailAddress[0].emailAddress || "",
-                bookingTime: await getCurrentUTCTimestamp(),
-                checkInDate: booking.checkIn && booking.checkIn[0] && booking.checkIn[0].checkIn || "",
-                reservationNumber: booking.reservationNumber || "",
-                checkOutDate: booking.checkOut && booking.checkOut[0] && booking.checkOut[0].checkOut || "",
-                inventory: dictionary[roomDetail[i].roomTypeId && roomDetail[i].roomTypeId[0] && roomDetail[i].roomTypeId[0].roomTypeId] ? dictionary[roomDetail[i].roomTypeId[0].roomTypeId].toString() : ""
-                ,
-            });
-
-            await hold.save();
-          } else {
-         
-            const hold = new holdData({
-              bookingId: booking.bookingId || "",
-              reservationId: booking.reservationIds && booking.reservationIds[i] || "",
-              propertyId: booking.propertyId || "",
-              roomTypeId: roomDetail[i].roomTypeId && roomDetail[i].roomTypeId[0] && roomDetail[i].roomTypeId[0].roomTypeId || "",
-              guestId: booking.guestId && booking.guestId[i] && booking.guestId[i].guestId || "",
-              guestName: booking.guestName && booking.guestName[0] && booking.guestName[0].guestName || "",
-              salutation: booking.salutation && booking.salutation[0] && booking.salutation[0].salutation || "",
-              phoneNumber: booking.phoneNumber && booking.phoneNumber[0] && booking.phoneNumber[0].phoneNumber || "",
-              emailAddress: booking.emailAdddress && booking.emailAdddress[0] && booking.emailAdddress[0].emailAdddress || "",
-              bookingTime: await getCurrentUTCTimestamp(),
-              checkInDate: booking.checkIn && booking.checkIn[0] && booking.checkIn[0].checkIn || "",
-              reservationNumber: booking.reservationNumber || "",
-              checkOutDate: booking.checkOut && booking.checkOut[0] && booking.checkOut[0].checkOut || "",
-              inventory: dictionary[roomDetail[i].roomTypeId && roomDetail[i].roomTypeId[0] && roomDetail[i].roomTypeId[0].roomTypeId] ? dictionary[roomDetail[i].roomTypeId[0].roomTypeId].toString() : ""
-              
-            });
-
-            await hold.save();
-          
-            
-          }
+          const guestDetails = await getGuestDetails(guestId);
+          await createAndSaveHoldData(booking, roomDetail[i], i, guestDetails);
         }
       }
+
     } else {
       console.error("No data found in the response");
     }
+
+    return res
+      .status(200)
+      .json({ message: "booking created successfully", statusCode: 200 });
   } catch (error) {
     console.error("Error fetching data:", error);
   }
-  
 
-  return res
-    .status(200)
-    .json({ message: "booking created successfully", statusCode: 200 });
 };

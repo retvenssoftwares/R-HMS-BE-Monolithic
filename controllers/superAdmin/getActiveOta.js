@@ -1,8 +1,8 @@
 import otaModel from "../../models/superAdmin/otaModel.js";
 
-const getOta = async (req, res) => {
+const getActiveOta = async (req, res) => {
   try {
-    const otaData = await otaModel.find({ isConfig: "false" }).lean();
+    const otaData = await otaModel.find({ isConfig: "true" }).lean();
 
     if (otaData.length > 0) {
       const otaDetails = otaData.map((otas) => {
@@ -14,7 +14,7 @@ const getOta = async (req, res) => {
         };
       });
 
-      return res.status(200).json({ upComing: otaDetails, statuscode: 200 });
+      return res.status(200).json({ data: otaDetails, statuscode: 200 });
     } else {
       return res.status(404).json({ message: "No ota found", statuscode: 404 });
     }
@@ -24,4 +24,4 @@ const getOta = async (req, res) => {
   }
 };
 
-export default getOta;
+export default getActiveOta;

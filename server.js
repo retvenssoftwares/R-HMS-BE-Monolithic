@@ -29,7 +29,10 @@ import bulkUpdateRoutes from './routers/InventoryAndRates/manageInventoryRates.r
 app.use(cors({
   origin: '*'
 }));
-
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(testR)
@@ -45,7 +48,7 @@ app.use(mmtRoutes)
 app.use(superAdminRoutes)
 
 
-app.get("/",(req,res)=>{
+app.get("/", (req, res) => {
   return res.status(200).send("welcome to HMS backend services")
 })
 
@@ -59,5 +62,5 @@ app.listen(process.env.PORT || 3000, () => {
   console.log(`Server started on port ${process.env.PORT}`);
 });
 
-export {io}
+export { io }
 

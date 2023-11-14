@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import randomstring from 'randomstring'
 import userModel from '../../models/user.js'
-import { jwtsign, getCurrentUTCTimestamp, encrypt } from "../../helpers/helper.js"
+import { jwtsign, getCurrentUTCTimestamp, encrypt, generateUserName } from "../../helpers/helper.js"
 const postUser = async (req, res) => {
     try {
 
@@ -26,7 +26,6 @@ const postUser = async (req, res) => {
             phoneNumber: [{ phoneNumber: req.body.phoneNumber, modifiedDate: modifiedDate }],
             email: email,
             password: [{ password: encryptedPass, modifiedDate: modifiedDate }],
-            username: [{ username: req.body.username || 'Admin', modifiedDate: modifiedDate }],
             role: [{
                 role: req.body.role || 'Admin',
                 modifiedDate: modifiedDate
@@ -43,6 +42,12 @@ const postUser = async (req, res) => {
         })
         const userData = await newData.save()
 
+        const newUserName = await generateUserName(newData.firstName , newData.phoneNumber[0].phoneNumber);
+        await userModel.updateOne(
+            { userId: newData.userId },
+            { $set: { username: [{ username: newUserName, modifiedDate: await getCurrentUTCTimestamp() }] } }
+          );
+          
         return res.status(200).json({ message: "User successfully added", userId: userData.userId, authcode: userData.authCode, statuscode: 200 })
 
     } catch (err) {

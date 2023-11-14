@@ -49,6 +49,7 @@ const postProperty = async (req, res) => {
     if (result.success) {
       let imageUrl = '';
       const amenityIds = req.body.amenityIds;
+
       const amenityIdsArray = amenityIds.split(',');
 
       const currentUTCTime = await getCurrentUTCTimestamp();
@@ -70,7 +71,7 @@ const postProperty = async (req, res) => {
         userId,
         country,
         createdOn:currentUTCTime,
-        propertyId: randomstring.generate(8),
+       propertyId : randomstring.generate({charset: 'numeric',length:6}),
         propertyAddress1: [
           {
             propertyAddress1,

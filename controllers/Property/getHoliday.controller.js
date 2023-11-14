@@ -1,12 +1,12 @@
 import holiday from '../../models/holidays.js';
 import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from '../../helpers/helper.js';
-
+import properties from '../../models/property.js'
 const getHoliday = async (req, res) => {
     try {
         const { targetTimeZone, propertyId, userId } = req.query;
         const authCodeValue = req.headers['authcode']
-
-        if (!propertyId) {
+        const findProperty = await properties.findOne({ propertyId });
+        if (!findProperty) {
             return res.status(404).json({ message: "Please enter valid propertyId", statuscode: 404 })
         }
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
@@ -42,7 +42,7 @@ const getHoliday = async (req, res) => {
 
                 return res.status(200).json({ data: convertedHoliday, statuscode: 200 });
             } else {
-                return res.status(404).json({ message: "No holidays found", statuscode: 404 });
+                return res.status(200).json({ message: "No holidays found", statuscode: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

@@ -123,9 +123,9 @@ const verifyUserProperty = async (req, res) => {
             })
 
             await propertChain.save();
-            await userModel.deleteOne({ userId: userId })
-            return res.status(200).json({ message: "User successfully verified", statuscode: 200 })
         }
+        await userModel.deleteOne({ userId: userId })
+        return res.status(200).json({ message: "User successfully verified", statuscode: 200 })
 
     } catch (error) {
         console.log(error);

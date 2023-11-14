@@ -49,6 +49,7 @@ const postProperty = async (req, res) => {
     if (result.success) {
       let imageUrl = '';
       const amenityIds = req.body.amenityIds;
+
       const amenityIdsArray = amenityIds.split(',');
 
       const currentUTCTime = await getCurrentUTCTimestamp();

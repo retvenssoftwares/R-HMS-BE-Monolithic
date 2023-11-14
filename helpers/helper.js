@@ -219,7 +219,7 @@ function generateUserName(firstName , phoneNumber) {
     try {
       const data = firstName.split(",")
       const phone = phoneNumber.split(",")
-      const randomNumber = data[0,3] + phone[-1 , -3];
+      const randomNumber = data[0].slice(0, 3) + phone[phone.length - 1].slice(-3);
       resolve(randomNumber);
     } catch (error) {
       reject(error);

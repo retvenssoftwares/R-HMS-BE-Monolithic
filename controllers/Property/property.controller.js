@@ -70,7 +70,7 @@ const postProperty = async (req, res) => {
         userId,
         country,
         createdOn:currentUTCTime,
-        propertyId: randomstring.generate(8),
+       propertyId : randomstring.generate({charset: 'numeric',length:6}),
         propertyAddress1: [
           {
             propertyAddress1,

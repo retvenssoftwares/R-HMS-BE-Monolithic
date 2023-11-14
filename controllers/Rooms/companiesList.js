@@ -1,6 +1,6 @@
 import companyModel from "../../models/company.js";
 // import propertyModel from "../../";
-import { findUserByUserIdAndToken } from "../../helpers/helper.js";
+import { findUserByUserIdAndToken, validateHotelCode } from "../../helpers/helper.js";
 
 const companyNames = async (req, res) => {
   try {
@@ -9,6 +9,14 @@ const companyNames = async (req, res) => {
     const authCodeValue = req.headers['authcode']
     const result = await findUserByUserIdAndToken(userId, authCodeValue)
     if (result.success) {
+      if(!propertyId){
+        return res.status(400).json({message: "Please enter propertyId", statuscode: 400})
+      }
+
+      const result = await validateHotelCode(userId, propertyId)
+      if (!result.success) {
+        return res.status(result.statuscode).json({ message: "Invalid propertyId entered", statuscode: result.statuscode })
+      }
       const findCompanyName = await companyModel.find({ propertyId }).select('companyName companyId').lean();
 
       if (findCompanyName.length > 0) {
@@ -22,7 +30,7 @@ const companyNames = async (req, res) => {
         return res.status(200).json({ data: foundData, statuscode: 200 });
 
       } else {
-        return res.status(404).json({ message: "No companies found", status: 404 });
+        return res.status(200).json({ message: "No companies found", status: 200 });
       }
     } else {
       return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

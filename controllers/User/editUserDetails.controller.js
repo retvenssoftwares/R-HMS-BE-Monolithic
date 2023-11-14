@@ -11,8 +11,9 @@ const editUserOnboarding = async (req, res) => {
     var findRecord = await userModel.findOne({ userId });
     // Find the specific array element you want to update
     if (!findRecord) {
-        return res.status(404).json({ message: "user not found" })
+        return res.status(404).json({ message: "user not found",statuscode:404 })
     }
+    const hotelRCode = findRecord.hotelRcode;
     try {
         if (propertyTypeSOC === 'Single') {
             const { propertyAddress1, propertyName, propertyType, propertyTypeName, postCode, country, state, city, starCategory, ratePercent, baseCurrency, websiteUrl, roomsInProperty, taxName, registrationNumber } = req.body
@@ -81,6 +82,7 @@ const editUserOnboarding = async (req, res) => {
             elementToUpdate.baseCurrency = baseCurrency
             elementToUpdate.websiteUrl = websiteUrl
             elementToUpdate.country = country
+            elementToUpdate.hotelRCode =hotelRCode
             elementToUpdate.propertyId = propertyId
             findRecord.propertyTypeSOC = propertyTypeSOC
             await findRecord.save();
@@ -122,6 +124,7 @@ const editUserOnboarding = async (req, res) => {
 
             elementToUpdate.baseCurrency = baseCurrency
             elementToUpdate.propertyType = propertyType
+            elementToUpdate.hotelRCode = hotelRCode
             elementToUpdate.websiteUrl = websiteUrl
             findRecord.propertyTypeSOC = "Multiple"
             await findRecord.save();

@@ -20,6 +20,7 @@ const postUser = async (req, res) => {
         const userId = randomstring.generate(8)
         const newData = new userModel({
             userId,
+            hotelRcode: randomstring.generate({charset: 'numeric',length:6}),
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             designation: [{ designation: req.body.designation, modifiedDate: modifiedDate }],

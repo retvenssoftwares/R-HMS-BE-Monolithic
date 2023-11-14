@@ -34,7 +34,7 @@ const verifyUserProperty = async (req, res) => {
                 password: user.password,
                 propertyTypeSOC: user.propertyTypeSOC,
                 verificationStatus: user.verificationStatus,
-
+                hotelCode:[{hotelCode:singleProperty.propertyId}]
             })
 
             await verifyUserDetails.save()
@@ -79,8 +79,6 @@ const verifyUserProperty = async (req, res) => {
                 ratePercent: singleProperty.ratePercent,
                 propertyRating: singleProperty.propertyRating,
                 propertyDescription: singleProperty.propertyDescription,
-
-
             })
 
             await property.save()
@@ -125,9 +123,9 @@ const verifyUserProperty = async (req, res) => {
             })
 
             await propertChain.save();
-            await userModel.deleteOne({ userId: userId })
-            return res.status(200).json({ message: "User successfully verified", statuscode: 200 })
         }
+        await userModel.deleteOne({ userId: userId })
+        return res.status(200).json({ message: "User successfully verified", statuscode: 200 })
 
     } catch (error) {
         console.log(error);

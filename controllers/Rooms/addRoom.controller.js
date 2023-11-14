@@ -1,5 +1,5 @@
 import Randomstring from "randomstring";
-import requestIp from "request-ip"
+// import requestIp from "request-ip"
 import * as dotenv from "dotenv";
 dotenv.config();
 import roomModel from "../../models/roomType.js";
@@ -8,8 +8,6 @@ import roomImageModel from "../../models/roomTypeImages.js";
 import userModel from "../../models/verifiedUsers.js";
 import {
   getCurrentUTCTimestamp,
-  getCurrentLocalTimestamp,
-  uploadMultipleImagesToS3,
   findUserByUserIdAndToken
 } from "../../helpers/helper.js";
 
@@ -18,7 +16,6 @@ const postRoom = async (req, res) => {
   try {
     const {
       userId,
-      roomTypeId,
       propertyId,
       baseAdult,
       baseChild,
@@ -29,6 +26,8 @@ const postRoom = async (req, res) => {
       maxChild,
       maxOccupancy,
       baseRate,
+      amenityIds,
+      bedTypeIds,
       minimumRate,
       maximumRate,
       extraAdultRate,
@@ -46,26 +45,30 @@ const postRoom = async (req, res) => {
     let userRole = user.role[0].role;
 
     const result = await findUserByUserIdAndToken(userId, authCodeValue)
+    const currentUTCTime = await getCurrentUTCTimestamp();
 
     //amenities
-    const amenityIds = req.body.amenityIds;
-    const amenityIdsArray = amenityIds.split(',');
-    const currentUTCTime = await getCurrentUTCTimestamp();
-    const amenityObjects = amenityIdsArray.map((amenityId) => {
-      return {
-        amenityId,
-        addedDate: currentUTCTime,
-      };
-    });
+    let amenityIdsArray, amenityObjects;
+    if (req.body.amenityIds) {
+      amenityIdsArray = amenityIds.split(',');
+      amenityObjects = amenityIdsArray.map((amenityId) => {
+        return {
+          amenityId,
+          addedDate: currentUTCTime,
+        };
+      });
+    }
 
     //bedType
-    const bedTypeIds = req.body.bedTypeIds;
-    const bedTypeIdsArray = bedTypeIds.split(',');
-    const bedTypeObjects = bedTypeIdsArray.map((bedTypeId) => {
-      return {
-        bedTypeId,
-      };
-    });
+    let bedTypeIdsArray, bedTypeObjects;
+    if (req.body.bedTypeIds) {
+      bedTypeIdsArray = bedTypeIds.split(',');
+      bedTypeObjects = bedTypeIdsArray.map((bedTypeId) => {
+        return {
+          bedTypeId,
+        };
+      });
+    }
 
     if (result.success) {
       const roomId = Randomstring.generate(8)
@@ -173,11 +176,8 @@ const postRoom = async (req, res) => {
             logId: Randomstring.generate(10),
           },
         ],
-        dateUTC: currentUTCTime,
-        dateLocal: getCurrentLocalTimestamp(),
         createdBy: userRole,
         createdOn: currentUTCTime
-
       });
 
 

@@ -15,13 +15,6 @@ const roomType = new mongoose.Schema({
         default: "",
     },
 
-    dateUTC: {
-        type: String
-    },
-    dateLocal: {
-        type: String
-    },
-
     createdBy: {
         type: String,
         default: ""

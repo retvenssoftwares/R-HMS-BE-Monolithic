@@ -21,7 +21,7 @@ const userLogin = async (req, res) => {
 
         const decryptedPass = decrypt(findPassword)
 
-        //add fields validation
+        ///add fields validation
         if (username !== findUsername || hotelRcode !== findRCode || password !== decryptedPass) {
             return res.status(400).json({ message: "Invalid credentials", statuscode: 400 })
         } else {

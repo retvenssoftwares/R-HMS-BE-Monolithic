@@ -121,15 +121,30 @@ const booking = new mongoose.Schema({
 
 // bar reservation
     barRateReservation :[{
-        bookingTypeId:{
+        bookingTypeId:[{
+            bookingTypeId : {
                 type:String,
                 default:""
-        },
+            },
 
-        logId:{
-            type:String,
-            default:""
-        }
+            logId:{
+                type:String,
+                default:""
+            }
+        }],
+
+        bookingSourceId:[{
+            bookingSourceId :{
+                type:String,
+                default:""
+            },
+
+            logId:{
+                type:String,
+                default:""
+            }
+        }]
+
         
     }],
 
@@ -494,6 +509,74 @@ const booking = new mongoose.Schema({
         type:String,
         default:"false"
     },
+
+    cardDetails : [{
+        cardDetails :[{
+            nameOnCard : {
+                type:String,
+                default:""
+            },
+            cardNumber : {
+                type:String,
+                 default:""
+            },
+    
+            cvv : {
+                type:String,
+                default:""
+            },
+    
+            expiryDate : {
+                type:String,
+                default:""
+            }
+        }],
+
+        logId:{
+            type:String,
+            default:""
+        }
+    }],
+
+
+    createTask : [{
+            taskTitle :[{
+               taskTitle : {
+                type:String,
+                default:""
+               },
+
+               logId : {
+                type:String,
+                default:""
+               }
+            }] ,
+
+            schedule :[{
+                schedule : {
+                    type:String,
+                    default:""
+                },
+
+                logId : {
+                    type:String,
+                    default:""
+                }
+            }],
+
+            description : [{
+                description :  {
+                    type:String,
+                    default:""
+                },
+
+                logId : {
+                    type:String,
+                    default:""
+                }
+            }]
+       
+    }]
 },
 
 {

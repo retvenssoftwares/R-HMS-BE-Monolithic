@@ -25,7 +25,7 @@ const userProperty = async (req, res) => {
                 // Map and modify each room object to only include the first element of the arrays
                 const convertedProperties = rooms.map(room => {
                     // Convert the dateUTC to the user's time zone
-                    const convertedDateUTC = convertTimestampToCustomFormat(room.dateUTC, targetTimeZone);
+                    const convertedDateUTC = convertTimestampToCustomFormat(room.createdOn, targetTimeZone);
 
                     // Access the first element of each array
                     const firstRoomDescription = room.roomDescription[0].roomDescription;

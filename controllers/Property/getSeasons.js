@@ -1,10 +1,16 @@
 import season from '../../models/season.js';
 import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from '../../helpers/helper.js';
+import properties from '../../models/property.js'
 
 const getSeasons = async (req, res) => {
     try {
         const { targetTimeZone, propertyId, userId } = req.query;
         const authCodeValue = req.headers['authcode']
+
+        const findProperty = await properties.findOne({ propertyId });
+        if (!findProperty) {
+            return res.status(404).json({ message: "Please enter valid propertyId", statuscode: 404 })
+        }
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
@@ -39,7 +45,7 @@ const getSeasons = async (req, res) => {
 
                 return res.status(200).json({ data: convertedSeasons, statuscode: 200 });
             } else {
-                return res.status(404).json({ message: "No seasons found", statuscode: 404 });
+                return res.status(200).json({ message: "No seasons found", statuscode: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

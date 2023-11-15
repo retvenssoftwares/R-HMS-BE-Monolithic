@@ -34,18 +34,19 @@ roomType:[{
     }
 }],
 //
-mealPlan:[{
+
   mealPlan:[{
   mealPlanId: {
    type:String,
    default:"",
    },
-  }],
    logId: {
-       type: String,
-       default: ""
-   }
-}],
+    type: String,
+    default: ""
+}
+  }],
+ 
+
 
 ratePlanName:[{
     ratePlanName:{

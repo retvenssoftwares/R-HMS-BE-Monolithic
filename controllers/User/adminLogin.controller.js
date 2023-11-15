@@ -38,14 +38,19 @@ const adminLogin = async (req, res) => {
 
             ///destruture propertyId propertyName
             const propertyDetails = await propertyModel.find({ propertyId: hotelCodes });
-            const propertyData = propertyDetails.map(property => {
-                return {
-                    propertyId: property.propertyId,
-                    propertyName: property.propertyName[0].propertyName || '',
-                   // hotelLogo: property.hotelLogo[0].hotelLogo || '' // Assuming hotelLogo is stored in an array as well
-                  
-                };
-            });
+            let propertyData = [];
+            if (propertyDetails.length > 0) {
+                propertyData = propertyDetails.map(property => {
+                    return {
+                        propertyId: property.propertyId,
+                        propertyName: property.propertyName[0].propertyName || '',
+                        // hotelLogo: property.hotelLogo[0].hotelLogo || ''
+                    };
+                });
+            } else {
+                // If propertyData is not available, construct response with hotelCode and propertyName as false
+                propertyData.push({ propertyId: "false", propertyName: "false" });
+            }
 
             return res.status(200).json({ message: "Login successful", statuscode: 200, data: { userId: findProfile.userId,propertyData: propertyData, token: authObj.token }})
         }

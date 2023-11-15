@@ -36,7 +36,7 @@ const getRatePlansList = async (req, res) => {
                 return res.status(200).json({ data: foundRateData, statuscode: 200 });
 
             } else {
-                return res.status(404).json({ message: "No rooms found", status: 404 });
+                return res.status(200).json({ message: "No rateplans found", status: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

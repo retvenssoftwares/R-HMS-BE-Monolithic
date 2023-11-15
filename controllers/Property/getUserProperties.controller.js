@@ -18,9 +18,15 @@ const userProperty = async (req, res) => {
             if (userProperties.length > 0) {
                 const convertedPropertiesPromises = userProperties.map(async (property) => {
                     const convertedDateUTC = convertTimestampToCustomFormat(property.createdOn, targetTimeZone);
-                    const amenitiesCount = property.amenities[0].amenities
+                    const amenitiesCount = (property.amenities && property.amenities[0] && property.amenities[0].amenities) || 0;
+
                     // console.log(amenitiesCount.length)
                     const propertyRoomsCount = await roomTypeModel.find({ propertyId: property.propertyId }).select('roomTypeId').countDocuments();
+                    
+                    let amenitiesLength = 0;
+                    if (amenitiesCount !== 0) {
+                        amenitiesLength = amenitiesCount.length;
+                    }
                     return {
                         ...property._doc,
                         createdOn: convertedDateUTC,
@@ -30,7 +36,7 @@ const userProperty = async (req, res) => {
                         country: property.country || '',
                         propertyId: property.propertyId,
                         totalRooms: propertyRoomsCount,
-                        amenities: amenitiesCount.length
+                        amenities: amenitiesLength
                     };
                 });
 

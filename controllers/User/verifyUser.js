@@ -2,6 +2,7 @@ import userModel from "../../models/user.js"
 import verifyUserModel from "../../models/verifiedUsers.js"
 import propertyModel from "../../models/property.js"
 import propertyChain from "../../models/propertychain.js"
+import { getCurrentUTCTimestamp } from "../../helpers/helper.js"
 
 const verifyUserProperty = async (req, res) => {
     try {
@@ -34,7 +35,7 @@ const verifyUserProperty = async (req, res) => {
                 password: user.password,
                 propertyTypeSOC: user.propertyTypeSOC,
                 verificationStatus: user.verificationStatus,
-                hotelCode:[{hotelCode:singleProperty.propertyId}]
+                hotelCode: [{ hotelCode: singleProperty.propertyId }]
             })
 
             await verifyUserDetails.save()
@@ -79,6 +80,7 @@ const verifyUserProperty = async (req, res) => {
                 ratePercent: singleProperty.ratePercent,
                 propertyRating: singleProperty.propertyRating,
                 propertyDescription: singleProperty.propertyDescription,
+                createdOn: await getCurrentUTCTimestamp()
             })
 
             await property.save()

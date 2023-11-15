@@ -9,9 +9,9 @@ const identityType = async (req, res) => {
     try {
         const { targetTimeZone, propertyId, userId } = req.query;
 
-        const findProperty = await properties.findOne({ propertyId });
+        const findProperty = await properties.findOne({ propertyId:propertyId, userId: userId });
         if (!findProperty) {
-            return res.status(404).json({ message: "Please enter valid propertyId", statuscode: 404 })
+            return res.status(404).json({ message: "Please enter valid propertyId and userId", statuscode: 404 })
         }
         const findUser = await verifying.findOne({ userId: userId })
 
@@ -50,7 +50,6 @@ const identityType = async (req, res) => {
                     };
 
                 });
-console.log("converted",convertedIdentity);
                 return res.status(200).json({ data: convertedIdentity, statuscode: 200 });
             } else {
                 return res.status(200).json({ message: "No identities found", statuscode: 200 });

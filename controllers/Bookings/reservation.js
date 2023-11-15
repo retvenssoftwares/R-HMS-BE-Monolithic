@@ -6,7 +6,7 @@ import {
   generateFourDigitRandomNumber,
 
 
-  
+
   getCurrentLocalTimestamp,
   getCurrentUTCTimestamp,
 } from "../../helpers/helper.js";
@@ -32,10 +32,12 @@ export const createResrvation = async (req, res) => {
     reservationSummary,
     applyDiscount,
     paymentDetails,
-    bookingTypeId,
+    barRateReservation,
     guestInfo,
     isQuickReseration,
     isGroupBooking,
+    cardDetails,
+    createTask
   } = req.body
 
 
@@ -162,6 +164,7 @@ export const createResrvation = async (req, res) => {
       });
 
       const guest = await guestDetails.save();
+    //  console.log(guest)
 
       // booking details
       guestIdArray.push({ guestId: guest.guestId });
@@ -222,29 +225,38 @@ export const createResrvation = async (req, res) => {
       },
     ],
 
-    barRateReservation: [{
-      bookingTypeId: bookingTypeId,
-      logId: randomString.generate(10),
-    }],
-
-    discountReservation: discountReservation.map((item) => ({
-      bookingType: item.bookingType.map((booking) => ({
-        bookingTypeId: booking.bookingTypeId,
+    barRateReservation: (barRateReservation || []).map((item) => ({
+      bookingTypeId: (item?.bookingTypeId || []).map((bkId) => ({
+        bookingTypeId: bkId?.bookingTypeId ?? '',
         logId: randomString.generate(10),
       })),
-      discountPlan: item.discountPlan.map((plan) => ({
-        discountPlanId: plan.discountPlanId,
-        logId: randomString.generate(10),
-      })),
-      discountType: item.discountType.map((type) => ({
-        discountTypeId: type.discountTypeId,
-        logId: randomString.generate(10),
-      })),
-      discountAmount: item.discountAmount.map((amount) => ({
-        discountAmount: amount.discountAmount,
+      bookingSourceId: (item?.bookingSourceId || []).map((bkSrc) => ({
+        bookingSourceId: bkSrc?.bookingSourceId ?? '',
         logId: randomString.generate(10),
       })),
     })),
+    
+
+    discountReservation: (discountReservation || []).map((item) => ({
+      bookingType: (item?.bookingType || []).map((booking) => ({
+        bookingTypeId: booking?.bookingTypeId,
+        logId: randomString.generate(10),
+      })),
+      discountPlan: (item?.discountPlan || []).map((plan) => ({
+        discountPlanId: plan?.discountPlanId,
+        logId: randomString.generate(10),
+      })),
+      discountType: (item?.discountType || []).map((type) => ({
+        discountTypeId: type?.discountTypeId,
+        logId: randomString.generate(10),
+      })),
+      discountAmount: (item?.discountAmount || []).map((amount) => ({
+        discountAmount: amount?.discountAmount,
+        logId: randomString.generate(10),
+      })),
+    })),
+    
+    
 
     roomDetails: roomDetails.map((item) => ({
       roomTypeId: item.roomTypeId.map((type) => ({
@@ -271,6 +283,10 @@ export const createResrvation = async (req, res) => {
         extraAdult: extra.extraAdult,
         logId: randomString.generate(10),
       })),
+      extraChild: item.extraChild.map((extraCh) => ({
+        extraChild: extraCh.extraChild,
+        logId: randomString.generate(10),
+      })),
       extraInclusion: item.extraInclusion.map((inclusion) => ({
         extraInclusionId: inclusion.extraInclusionId,
         logId: randomString.generate(10),
@@ -279,44 +295,48 @@ export const createResrvation = async (req, res) => {
 
     })),
 
-    remark: remark.map((item) => ({
-      specialRemark: item.specialRemark.map((remark) => ({
-        specialRemark: remark.specialRemark,
+
+
+    remark: (remark || []).map((item) => ({
+      specialRemark: (item?.specialRemark || []).map((remark) => ({
+        specialRemark: remark?.specialRemark,
         logId: randomString.generate(10),
       })),
-
-      internalNote: item.internalNote.map((note) => ({
-        internalNote: note.internalNote,
+      internalNote: (item?.internalNote || []).map((note) => ({
+        internalNote: note?.internalNote,
         logId: randomString.generate(10),
       })),
     })),
 
-    reservationSummary: reservationSummary.map((item) => ({
-      roomCharges: item.roomCharges.map((charge) => ({
-        roomCharges: charge.roomCharges,
+
+    
+    reservationSummary: (reservationSummary || []).map((item) => ({
+      roomCharges: (item?.roomCharges || []).map((charge) => ({
+        roomCharges: charge?.roomCharges,
         logId: randomString.generate(10),
       })),
-      extras: item.extras.map((extra) => ({
-        extras: extra.extras,
+      extras: (item?.extras || []).map((extra) => ({
+        extras: extra?.extras,
         logId: randomString.generate(10),
       })),
-      taxes: item.taxes.map((tax) => ({
-        taxes: tax.taxes,
+      taxes: (item?.taxes || []).map((tax) => ({
+        taxes: tax?.taxes,
         logId: randomString.generate(10),
       })),
-      from: item.from.map((from) => ({
-        from: from.from,
+      from: (item?.from || []).map((from) => ({
+        from: from?.from,
         logId: randomString.generate(10),
       })),
-      to: item.to.map((to) => ({
-        to: to.to,
+      to: (item?.to || []).map((to) => ({
+        to: to?.to,
         logId: randomString.generate(10),
       })),
-      grandTotal: item.grandTotal.map((total) => ({
-        grandTotal: total.grandTotal,
+      grandTotal: (item?.grandTotal || []).map((total) => ({
+        grandTotal: total?.grandTotal,
         logId: randomString.generate(10),
       })),
     })),
+    
 
     applyDiscount: [
       {
@@ -325,24 +345,47 @@ export const createResrvation = async (req, res) => {
       },
     ],
 
-    paymentDetails: paymentDetails.map((item) => ({
-      billTo: item.billTo.map((b) => ({
-        billTo: b.billTo,
+    paymentDetails: (paymentDetails || []).map((item) => ({
+      billTo: (item?.billTo || []).map((b) => ({
+        billTo: b?.billTo,
         logId: randomString.generate(10),
       })),
-
-      paymentNote: item.paymentNote.map((note) => ({
-        paymentNote: note.paymentNote,
+      paymentNote: (item?.paymentNote || []).map((note) => ({
+        paymentNote: note?.paymentNote,
         logId: randomString.generate(10),
       })),
     })),
+    
 
     reservationNumber: await generateFourDigitRandomNumber(),
+
+
+    cardDetails : [{
+      cardDetails : cardDetails,
+      logId : randomString.generate(10)
+    }],
+
+    createTask: (createTask || []).map((item) => ({
+      taskTitle: (item?.taskTitle || []).map((task) => ({
+        taskTitle: task?.taskTitle ?? '',
+        logId: randomString.generate(10),
+      })),
+      schedule: (item?.schedule || []).map((sche) => ({
+        schedule: sche?.schedule ?? '',
+        logId: randomString.generate(10),
+      })),
+      description: (item?.description || []).map((desc) => ({
+        description: desc?.description ?? '',
+        logId: randomString.generate(10),
+      })),
+    })),
+    
+
   });
 
   const details = await createBooking.save();
 
-  // console.log(details);
+  //console.log(details);
 
   const data = details.roomDetails;
 
@@ -417,6 +460,8 @@ export const createResrvation = async (req, res) => {
           checkOutDate: booking.checkOutDate && booking.checkOutDate[0] && booking.checkOutDate[0].checkOutDate || "",
           inventory: dictionary[roomDetail.roomTypeId && roomDetail.roomTypeId[0] && roomDetail.roomTypeId[0].roomTypeId] ? dictionary[roomDetail.roomTypeId[0].roomTypeId].toString() : ""
         });
+
+      
 
         await hold.save();
       }

@@ -18,21 +18,13 @@ const companyRatePlan = new mongoose.Schema(
       type: String,
       default: "",
     },
-    
-    mealPlan:[{
-      mealPlanId: [{
+        
         mealPlanId:{
           type:String,
           default:""
         },
-      }],
-      logId: {
-        type: String,
-        default: ""
-      }
-    }],
     
-    companyName:{
+    companyId:{
       type: String,
       default: "",
     },

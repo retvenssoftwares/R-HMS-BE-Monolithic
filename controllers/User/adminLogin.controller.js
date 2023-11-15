@@ -14,47 +14,19 @@ const adminLogin = async (req, res) => {
         const findProfile = await userModel.findOne({ hotelRcode: hotelRcode });
 
         if (!findProfile) {
-            return res.status(404).json({ message: "Profile not found", statuscode: 404 })
+            return res.status(404).json({ message: "invalid hotelRcode", statuscode: 404 })
         }
         const findPassword = findProfile.password[0].password
         const findUsername = findProfile.username[0].username
         const findCode = findProfile.hotelCode
-      
-       console.log(findCode)
+     
+        const hotelCodes = findCode.map(item => item.hotelCode);
+       //console.log(hotelCodes);
 
-        const property = await propertyModel.find({userId:userId})
-
-      // Check if property exists for the user, if not, return an empty propertyId array
-    //   if (!property || property.length === 0) {
-    //     const authObj = {
-    //         token: crypto.randomBytes(64).toString("hex"),
-    //         deviceType: deviceType
-    //     }
-    //     findProfile.token.unshift(authObj)
-    //     await findProfile.save()
-        
-    //     // Validate credentials even if no properties are found
-    //     if (username !== findUsername || hotelRcode !== findRCode || password !== decrypt(findPassword)) {
-    //         return res.status(400).json({ message: "Invalid credentials", statuscode: 400 })
-    //     }
-
-    //     return res.status(200).json({message: "Login successful but no properties found",statuscode: 200,
-    //         data: {
-    //             userId: findProfile.userId,
-    //             propertyType: findProfile.propertyTypeSOC,
-    //             token: authObj.token,
-    //             propertyId: ["false"]
-    //         }
-    //     })
-    // }
-
-    ///if propertyId
-        const propertyIds = property.map((properties)=>properties.propertyId)
-       // console.log(propertyIds)
         const decryptedPass = decrypt(findPassword)
 
         ///add fields validation
-        if (username !== findUsername || hotelRcode !== findRCode || password !== decryptedPass) {
+        if (username !== findUsername  || password !== decryptedPass) {
             return res.status(400).json({ message: "Invalid credentials", statuscode: 400 })
         } else {
             let authObj = {
@@ -63,7 +35,19 @@ const adminLogin = async (req, res) => {
             }
             findProfile.token.unshift(authObj)
             await findProfile.save()
-            return res.status(200).json({ message: "Login successful", statuscode: 200, data: { userId: findProfile.userId,propertyType:findProfile.propertyTypeSOC,propertyId:propertyIds, token: authObj.token }})
+
+            ///destruture propertyId propertyName
+            const propertyDetails = await propertyModel.find({ propertyId: hotelCodes });
+            const propertyData = propertyDetails.map(property => {
+                return {
+                    propertyId: property.propertyId,
+                    propertyName: property.propertyName[0].propertyName || '',
+                   // hotelLogo: property.hotelLogo[0].hotelLogo || '' // Assuming hotelLogo is stored in an array as well
+                  
+                };
+            });
+
+            return res.status(200).json({ message: "Login successful", statuscode: 200, data: { userId: findProfile.userId,propertyData: propertyData, token: authObj.token }})
         }
     } catch (err) {
         console.log(err)
@@ -72,4 +56,4 @@ const adminLogin = async (req, res) => {
 
 }
 
-export default adminLogin
+export default adminLogin;

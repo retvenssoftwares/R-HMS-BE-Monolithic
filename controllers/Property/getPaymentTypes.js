@@ -1,15 +1,21 @@
 import paymentTypeModel from '../../models/paymentTypes.js';
 import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from '../../helpers/helper.js';
+import properties from '../../models/property.js'
 
 const getPaymentTypes = async (req, res) => {
     try {
         const { targetTimeZone, propertyId, userId } = req.query;
         const authCodeValue = req.headers['authcode']
-        const findAllPaymentTypes = await paymentTypeModel.find({ propertyId }).lean();
+        
+        const findProperty = await properties.findOne({ propertyId });
+        if (!findProperty) {
+            return res.status(404).json({ message: "Please enter valid propertyId", statuscode: 404 })
+        }
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
+            const findAllPaymentTypes = await paymentTypeModel.find({ propertyId }).lean();
             if (findAllPaymentTypes.length > 0) {
                 const convertedPaymentTypes = findAllPaymentTypes.map(paymentType => {
                     const convertedDateUTC = convertTimestampToCustomFormat(paymentType.createdOn, targetTimeZone);
@@ -38,7 +44,7 @@ const getPaymentTypes = async (req, res) => {
                 return res.status(200).json({ data: convertedPaymentTypes, statuscode: 200 });
             }
             else {
-                return res.status(404).json({ message: "No payment types found", statuscode: 404 });
+                return res.status(200).json({ message: "No payment types found", statuscode: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

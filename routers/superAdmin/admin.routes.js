@@ -61,6 +61,13 @@ import fetchActiveOta from "../../controllers/superAdmin/getActiveOta.js"
 
 
 
+//ratesAndRestrictions
+import rate from "../../controllers/superAdmin/ratesAndRestrictions.js";
+router.post("/api/rateAndRestrictions",rate);
+
+// get rate name
+import rateName from "../../controllers/superAdmin/getRateAndRestrictions.js";
+router.get("/api/rateName", rateName);
 
 ////////////////////////////////////////////////////
 //bedType

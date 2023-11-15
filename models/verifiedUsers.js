@@ -52,6 +52,13 @@ const verifiedUsersSchema = new mongoose.Schema({
     required: false,
     default: ''
   },
+  hotelCode:[{
+    hotelCode:{
+      type:String,
+      default:''
+    }
+  }],
+  
   authCode: {
     type: String,
     default: ''

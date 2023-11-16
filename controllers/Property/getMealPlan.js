@@ -1,10 +1,16 @@
 import mealPlan from '../../models/mealPlan.js';
 import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from '../../helpers/helper.js';
+import properties from '../../models/property.js'
 
 const getMealPlan = async (req, res) => {
     try {
         const { targetTimeZone, propertyId, userId } = req.query;
         const authCodeValue = req.headers['authcode']
+
+        const findProperty = await properties.findOne({ propertyId:propertyId, userId: userId });
+        if (!findProperty) {
+            return res.status(404).json({ message: "Please enter valid propertyId and userId", statuscode: 404 })
+        }
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
@@ -37,7 +43,7 @@ const getMealPlan = async (req, res) => {
 
                 return res.status(200).json({ data: convertedMealPlan, statuscode: 200 });
             } else {
-                return res.status(404).json({ message: "No meal found", statuscode: 404 });
+                return res.status(200).json({ message: "No meal found", statuscode: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

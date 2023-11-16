@@ -5,6 +5,7 @@ import * as crypto from 'crypto';
 import s3 from "../utils/url.js"
 import jwt from "jsonwebtoken";
 import verifiedUser from "../models/verifiedUsers.js";
+import property from "../models/property.js";
 
 //function to upload single image ot s3 spaces
 const bucket = process.env.bucket;
@@ -45,6 +46,25 @@ async function findUserByUserIdAndToken(userId, token) {
     }
   } catch (error) {
     // Handle errors here
+    console.error('Error finding user:', error);
+    throw error;
+  }
+}
+
+//function to validte propertyId
+async function validateHotelCode(userId, hotelCode) {
+  try {
+    const findUser = await verifiedUser.findOne({ userId: userId });
+    if (!findUser) {
+      return { success: false, message: "User not found or invalid userId", statuscode: 400 };
+    }
+    const hotelCodeExists = findUser.hotelCode.some((hotelcode) => hotelcode.hotelCode === hotelCode);
+    if (hotelCodeExists) {
+      return { success: true, user: findUser };
+    } else {
+      return { success: false, message: "Invalid hotel code", statuscode: 400 };
+    }
+  } catch (error) {
     console.error('Error finding user:', error);
     throw error;
   }
@@ -204,8 +224,44 @@ function generateFourDigitRandomNumber() {
   return new Promise((resolve, reject) => {
     try {
       const randomNumber = Math.floor(1000 + Math.random() * 9000);
-      
+
       resolve(randomNumber);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+
+// generate username
+function generateUserName(firstName, phoneNumber) {
+  return new Promise((resolve, reject) => {
+    try {
+      const data = firstName.split(",")
+      const phone = phoneNumber.split(",")
+      const randomNumber = data[0].slice(0, 3) + phone[phone.length - 1].slice(-3);
+      resolve(randomNumber);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+
+
+/// random string
+function generateString() {
+  return new Promise((resolve, reject) => {
+    try {
+      const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      let randomString = '';
+
+      for (let i = 0; i < 4; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        randomString += characters.charAt(randomIndex);
+      }
+
+      resolve(randomString);
     } catch (error) {
       reject(error);
     }
@@ -234,8 +290,8 @@ const verifyUser = async (userId, authCodeValue) => {
   }
 
 
-  
+
 };
 
 
-export { getCurrentUTCTimestamp, getDatesBetweenDates, convertToISODate, findUserByUserIdAndToken, verifyUser, uploadImageToS3, convertTimestampToCustomFormat, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt, generateFourDigitRandomNumber};
+export { getCurrentUTCTimestamp, getDatesBetweenDates, validateHotelCode, convertToISODate, findUserByUserIdAndToken, verifyUser, uploadImageToS3, convertTimestampToCustomFormat, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt, generateFourDigitRandomNumber, generateString, generateUserName };

@@ -7,8 +7,15 @@ const booking = new mongoose.Schema({
         default: ""
     },
 
-    checkIn: [{
-        checkIn: {
+    guestId: [{
+        guestId: {
+            type: String,
+            default: ""
+        }
+    }],
+
+    checkInDate: [{
+        checkInDate: {
             type: String,
             default: ""
         },
@@ -20,15 +27,17 @@ const booking = new mongoose.Schema({
 
     }],
 
-    checkOut: [{
-        checkOut: {
+    checkOutDate: [{
+        checkOutDate: {
             type: String,
             default: ""
         },
 
         logId: {
+
             type: String,
             default: ""
+
         }
     }],
 
@@ -80,7 +89,8 @@ const booking = new mongoose.Schema({
     }],
 
     rateType: [{
-        rateType: {
+        //change to rateTypeId
+        rateTypeId: {
             type: String,
             default: ""
         },
@@ -94,8 +104,9 @@ const booking = new mongoose.Schema({
 
 
     // company Reservation
+    // change to companyId
     companyReservation: [{
-        companyName: {
+        companyId: {
             type: String,
             default: ""
         },
@@ -110,7 +121,170 @@ const booking = new mongoose.Schema({
 
     // bar reservation
     barRateReservation: [{
-        bookingType: {
+        barRateReservation: [{
+            bookingTypeId: {
+                type: String,
+                default: ""
+            },
+
+            bookingSourceId: {
+                type: String,
+                default: ""
+            },
+
+        }],
+
+        logId: {
+            type: String,
+            default: ""
+        }
+    }],
+
+
+    // discount reservation
+    discountReservation: [{
+        // cahnge to id
+        discountReservation: [{
+            bookingTypeId: {
+                type: String,
+                default: ""
+            },
+
+            // changed to discountPlanId
+
+            discountPlanId: {
+                type: String,
+                default: ""
+            },
+
+            // changr to id
+            discountTypeId: {
+                type: String,
+                default: ""
+            },
+
+            discountAmount: {
+                type: String,
+                default: ""
+            },
+
+
+        }],
+
+        logId: {
+            type: String,
+            default: ""
+        }
+
+    }],
+
+
+
+    roomDetails: [{
+
+        roomDetails: [{
+
+            roomTypeId: {
+                type: String,
+                default: ""
+            },
+
+
+            // change to id
+            ratePlanId: {
+                type: String,
+                default: ""
+            },
+
+
+
+
+            adults: {
+                type: String,
+                default: ""
+            },
+
+
+
+
+            childs: {
+                type: String,
+                default: ""
+            },
+
+
+
+
+            charge: {
+                type: String,
+                default: ""
+            },
+
+
+
+
+            extraAdult: {
+                type: String,
+                default: ""
+            },
+
+
+
+            // this fileds could be used in quick reservation 
+
+            rate: {
+                type: String,
+                default: ""
+            },
+
+
+            //change to id
+            extraInclusionId: {
+                type: String,
+                default: ""
+            },
+
+        }],
+
+        logId: {
+            type: String,
+            default: ""
+        }
+
+
+    }],
+
+
+
+    remark: [{
+        remark: [{
+            specialRemark: {
+                type: String,
+                default: ""
+            },
+
+       
+            internalNote: {
+                type: String,
+                default: ""
+            },
+
+        }],
+
+        logId: {
+            type: String,
+            default: ""
+        }
+
+
+    }],
+
+
+
+
+    //quickRemark
+    quickRemark: [{
+        quickRemark: {
             type: String,
             default: ""
         },
@@ -122,259 +296,64 @@ const booking = new mongoose.Schema({
 
     }],
 
+    //Internal note for quickReservation
+    quickInternalNote: [{
+        quickInternalNote: {
+            type: String,
+            default: ""
+        },
 
-    // discount reservation
-    discountReservation: [{
-        bookingType: [{
-            bookingType: {
-                type: String,
-                default: ""
-            },
-
-            logId: {
-                type: String,
-                default: ""
-            }
-        }],
-
-
-        discountPlan: [{
-            discountPlan: {
-                type: String,
-                default: ""
-            },
-
-            logId: {
-                type: String,
-                default: ""
-            }
-
-        }],
-
-
-        discountType: [{
-            discountType: {
-                type: String,
-                default: ""
-            },
-
-            logId: {
-                type: String,
-                default: ""
-            }
-        }],
-
-
-        discountAmount: [{
-            discountAmount: {
-                type: String,
-                default: ""
-            },
-
-            logId: {
-                type: String,
-                default: ""
-            }
-        }]
-
-
+        logId: {
+            type: String,
+            default: ""
+        }
     }],
 
-
-    roomDetails: [{
-        roomTypeId: [{
-            roomTypeId: {
-                type: String,
-                default: ""
-            },
-
-            logId: {
-                type: String,
-                default: ""
-            }
-        }],
-
-        ratePlan: [{
-            ratePlan: {
-                type: String,
-                default: ""
-            },
-
-            logId: {
-                type: String,
-                default: ""
-            }
-        }],
-
-
-        adults: [{
-            adults: {
-                type: String,
-                default: ""
-            },
-
-            logId: {
-                type: String,
-                default: ""
-            }
-        }],
-
-        child: [{
-            child: {
-                type: String,
-                default: ""
-            },
-
-            logId: {
-                type: String,
-                default: ""
-            }
-        }],
-
-        charge: [{
-            charge: {
-                type: String,
-                default: ""
-            },
-
-            logId: {
-                type: String,
-                default: ""
-            }
-
-        }],
-
-        extraAdult: [{
-            extraAdult: {
-                type: String,
-                default: ""
-            },
-
-            logId: {
-                type: String,
-                default: ""
-            }
-        }],
-
-
-        extraInclusion: [{
-            extraInclusion: {
-                type: String,
-                default: ""
-            },
-
-            logId: {
-                type: String,
-                default: ""
-            }
-        }],
-
-    }],
-
-    remark: [{
-        specialRemark: [{
-            specialRemark: {
-                type: String,
-                default: ""
-            },
-
-            logId: {
-                type: String,
-                default: ""
-            }
-        }],
-
-        internalNote: [{
-            internalNote: {
-                type: String,
-                default: ""
-            },
-
-            logId: {
-                type: String,
-                default: ""
-            }
-        }]
-
-    }],
-
-    reservationSummary: [{
+    //name will be changed to reservationRate
+    reservationRate: [{
         roomCharges: [{
             roomCharges: {
                 type: String,
                 default: ""
             },
 
-            logId: {
-                type: String,
-                default: ""
-            }
-
-        }],
-
-
-        extras: [{
             extras: {
                 type: String,
                 default: ""
             },
 
-            logId: {
-                type: String,
-                default: ""
-            }
-        }],
-
-        taxes: [{
+    
             taxes: {
                 type: String,
                 default: ""
             },
-
-            logId: {
-                type: String,
-                default: ""
-            }
-        }],
-
-        from: [{
+     
             from: {
                 type: String,
                 default: ""
             },
 
-            logId: {
-                type: String,
-                default: ""
-            }
-        }],
-
-
-        to: [{
+  
             to: {
                 type: String,
                 default: ""
             },
 
-            logId: {
-                type: String,
-                default: ""
-            }
-        }],
-
-        grandTotal: [{
             grandTotal: {
                 type: String,
                 default: ""
             },
 
-            logId: {
-                type: String,
-                default: ""
-            }
-        }]
+        }],
+
+        logId: {
+            type: String,
+            default: ""
+        }
 
     }],
+
+
 
     applyDiscount: [{
         applyDiscount: {
@@ -391,40 +370,115 @@ const booking = new mongoose.Schema({
 
 
     paymentDetails: [{
-        billTo: [{
+        paymentDetails: [{
             billTo: {
                 type: String,
                 default: ""
             },
+     
 
-            logId: {
+            paymentNote: {
+                type: String,
+                default: ""
+            },
+        }],
+
+
+        logId: {
+            type: String,
+            default: ""
+        }
+
+
+    }],
+
+    reservationNumber: {
+        type: String,
+        default: ""
+    },
+
+    reservationIds: [{
+        type: String,
+        default: ""
+    }],
+
+
+    isQuickReseration: {
+        type: String,
+        default: "false"
+    },
+
+    isGroupBooking: {
+        type: String,
+        default: "false"
+    },
+
+    cardDetails: [{
+        cardDetails: [{
+            nameOnCard: {
+                type: String,
+                default: ""
+            },
+            cardNumber: {
+                type: String,
+                default: ""
+            },
+
+            cvv: {
+                type: String,
+                default: ""
+            },
+
+            expiryDate: {
                 type: String,
                 default: ""
             }
         }],
 
-        paymentNote: [{
-            paymentNote: {
+        logId: {
+            type: String,
+            default: ""
+        }
+    }],
+
+
+    createTask: [{
+        createTask: [{
+            taskTitle: {
                 type: String,
                 default: ""
             },
 
-            logId: {
+          
+    
+            schedule: {
                 type: String,
                 default: ""
-            }
-        }]
+            },
+
+        
+
+            description: {
+                type: String,
+                default: ""
+            },
+
+           
+        }],
+
+        logId: {
+            type: String,
+            default: ""
+        }
 
     }]
-
 },
 
     {
         versionKey: false
     }
-
 )
 
-const bookingModel = db1.model("reservations", booking)
+const bookingModel = db1.model("reservationDetails", booking)
 
 export default bookingModel

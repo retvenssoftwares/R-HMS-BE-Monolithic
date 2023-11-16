@@ -49,6 +49,7 @@ const postProperty = async (req, res) => {
     if (result.success) {
       let imageUrl = '';
       const amenityIds = req.body.amenityIds;
+
       const amenityIdsArray = amenityIds.split(',');
 
       const currentUTCTime = await getCurrentUTCTimestamp();
@@ -70,7 +71,7 @@ const postProperty = async (req, res) => {
         userId,
         country,
         createdOn:currentUTCTime,
-        propertyId: randomstring.generate(8),
+       propertyId : randomstring.generate({charset: 'numeric',length:6}),
         propertyAddress1: [
           {
             propertyAddress1,
@@ -161,8 +162,18 @@ const postProperty = async (req, res) => {
       const add = new logsModel({
         propertyId: savedProperty.propertyId
       })
-
       await add.save()
+
+   
+       
+    // Push propertyId in the hotelCode array of findUser model
+           findUser.hotelCode.push({
+             hotelCode: savedProperty.propertyId
+           });
+
+           // Save the updated findUser
+            await findUser.save();
+
 
       return res.status(200).json({ message: "New property added successfully",propertyId:savedProperty.propertyId, statuscode: 200 });
 

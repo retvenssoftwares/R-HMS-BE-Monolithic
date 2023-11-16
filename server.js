@@ -10,7 +10,7 @@ const server = http.createServer(app); // Create an HTTP server using the Expres
 const io = new Server(server);
 
 
-
+// import "./helpers/deletOldBooking.js"
 import "./db/conn.js"
 import "./db/conn2.js"
 import propertyRoutes from "./routers/Property/property.routes.js"
@@ -22,13 +22,17 @@ import amenityRoutes from "./routers/Amenities/amenity.routes.js"
 import booking from "./routers/Booking/booking.js"
 import superAdminRoutes from "./routers/superAdmin/admin.routes.js"
 import testR from './routers/test.router.js'
+import mmtRoutes from './routers/OTA/addMMT.router.js'
 import bulkUpdateRoutes from './routers/InventoryAndRates/manageInventoryRates.routes.js'
-
+// import { oldBooking } from "./helpers/deletOldBooking.js";
 
 app.use(cors({
   origin: '*'
 }));
-
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(testR)
@@ -40,9 +44,11 @@ app.use(amenityRoutes)
 app.use(companyRoutes)
 app.use(booking)
 app.use(bulkUpdateRoutes)
+app.use(mmtRoutes)
 app.use(superAdminRoutes)
 
-app.get("/",(req,res)=>{
+
+app.get("/", (req, res) => {
   return res.status(200).send("welcome to HMS backend services")
 })
 
@@ -56,5 +62,5 @@ app.listen(process.env.PORT || 3000, () => {
   console.log(`Server started on port ${process.env.PORT}`);
 });
 
-export {io}
+export { io }
 

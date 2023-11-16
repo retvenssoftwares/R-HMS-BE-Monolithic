@@ -3,14 +3,16 @@ dotenv.config();
 import verifying from "../../models/verifiedUsers.js";
 import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from "../../helpers/helper.js";
 import identityModel from "../../models/identityTypes.js";
+import properties from '../../models/property.js'
 
 const identityType = async (req, res) => {
     try {
         const { targetTimeZone, propertyId, userId } = req.query;
-        if (!propertyId) {
-            return res.status(404).json({ message: "Please enter valid propertyId", statuscode: 404 })
-        }
 
+        const findProperty = await properties.findOne({ propertyId:propertyId, userId: userId });
+        if (!findProperty) {
+            return res.status(404).json({ message: "Please enter valid propertyId and userId", statuscode: 404 })
+        }
         const findUser = await verifying.findOne({ userId: userId })
 
         if (!findUser) {
@@ -20,10 +22,10 @@ const identityType = async (req, res) => {
         const authCodeDetails = req.headers["authcode"]
         const result = await findUserByUserIdAndToken(userId, authCodeDetails)
 
-        const userIdentity = await identityModel.find({ propertyId }).lean();
 
         if (result.success) {
-            if (userIdentity.length > 0) {
+            const userIdentity = await identityModel.find({ propertyId }).lean();
+            if (userIdentity) {
                 // Assuming userTimeZone holds the user's specified time zone
                 const convertedIdentity = userIdentity.map(identity => {
                     // Convert the dateUTC to the user's time zone
@@ -48,10 +50,9 @@ const identityType = async (req, res) => {
                     };
 
                 });
-
                 return res.status(200).json({ data: convertedIdentity, statuscode: 200 });
             } else {
-                return res.status(404).json({ message: "No identities found", statuscode: 404 });
+                return res.status(200).json({ message: "No identities found", statuscode: 200 });
             }
 
         } else {

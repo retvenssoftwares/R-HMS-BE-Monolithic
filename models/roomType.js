@@ -2,7 +2,6 @@ import mongoose, { Schema, model } from "mongoose";
 import db1 from "../db/conn.js"
 const roomType = new mongoose.Schema({
 
-
     userId: {
         type: String,
         default: "",
@@ -14,13 +13,6 @@ const roomType = new mongoose.Schema({
     propertyId: {
         type: String,
         default: "",
-    },
-
-    dateUTC: {
-        type: String
-    },
-    dateLocal: {
-        type: String
     },
 
     createdBy: {
@@ -159,7 +151,6 @@ const roomType = new mongoose.Schema({
             default: ""
         }
     }],
-
 
 
 

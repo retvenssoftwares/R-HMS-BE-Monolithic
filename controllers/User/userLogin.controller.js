@@ -4,25 +4,26 @@ import userModel from '../../models/verifiedUsers.js'
 
 const userLogin = async (req, res) => {
     try {
-        const { username, hotelRcode, password, deviceType } = req.body;
+        const { username, hotelCode, password, deviceType } = req.body;
 
         //get required fields
-        if (!username && !hotelRcode && !password) {
-            return res.status(400).json({ message: "username, hotelRcode, password are required", statuscode: 400 })
+        if (!username && !hotelCode && !password) {
+            return res.status(400).json({ message: "username, hotelcode, password are required", statuscode: 400 })
         }
-        const findProfile = await userModel.findOne({ hotelRcode: hotelRcode });
+        const findProfile = await userModel.findOne({ "hotelCode.hotelCode": hotelCode });
 
         if (!findProfile) {
-            return res.status(404).json({ message: "Profile not found", statuscode: 404 })
+            return res.status(404).json({ message: "invalid hotelcode", statuscode: 404 })
         }
         const findPassword = findProfile.password[0].password
         const findUsername = findProfile.username[0].username
-        const findRCode = findProfile.hotelRcode
+       // const findCode = findProfile.hotelRcode
 
         const decryptedPass = decrypt(findPassword)
+        // console.log(decryptedPass)
 
         //add fields validation
-        if (username !== findUsername || hotelRcode !== findRCode || password !== decryptedPass) {
+        if (username !== findUsername || password !== decryptedPass) {
             return res.status(400).json({ message: "Invalid credentials", statuscode: 400 })
         } else {
             let authObj = {
@@ -41,3 +42,6 @@ const userLogin = async (req, res) => {
 }
 
 export default userLogin
+
+
+

@@ -47,102 +47,20 @@ const confirmBookingDetails = new mongoose.Schema({
         default:""
     },
 
-    reservationNo :{
+    reservationNumber :{
         type:String,
         default:""
     },
 
-    roomDetails :[{
-        roomTypeId :[{
-            roomTypeId:{
-                type:String,
-                default:""
-            },
+    reservationId :{
+        type:String,
+        default:""
+    },
 
-            logId:{
-                type:String,
-                default:""
-            }
-        }],
-        
-        ratePlan:[{
-            // change to id
-            ratePlanId :{
-                type:String,
-                default:""
-            },
-
-            logId:{
-                type:String,
-                default:""
-            }
-        }],
-        
-
-        adults:[{
-            adults :{
-                type:String,
-                default:""
-            },
-
-            logId:{
-                type:String,
-                default:""
-            }
-        }],
-
-        childs:[{
-            childs :{
-                type:String,
-                default:""
-            },
-
-            logId:{
-                type:String,
-                default:""
-            }
-        }],
-    
-        charge :[{
-            charge:{
-                type:String,
-                default:""
-            },
-
-            logId:{
-                type:String,
-                default:""
-            }            
-
-        }],
-
-        extraAdult:[{
-            extraAdult :{
-                type:String,
-                default:""
-            },
-
-            logId:{
-                type:String,
-                default:""
-            }
-        }],
-        
-
-        extraInclusion:[{
-            //change to id
-            extraInclusionId :{
-                type:String,
-                default:""
-            },
-
-            logId:{
-                type:String,
-                default:""
-            }
-        }],
-       
-    }],
+    roomTypeId :{
+        type:String,
+        default:""
+    }
 
 })
 

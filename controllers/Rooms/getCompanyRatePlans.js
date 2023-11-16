@@ -1,5 +1,5 @@
 import companyRatePlanModel from '../../models/companyRatePlane.js'
-import { findUserByUserIdAndToken } from '../../helpers/helper.js';
+import { findUserByUserIdAndToken, validateHotelCode } from '../../helpers/helper.js';
 const getCompanyRatePlans = async (req, res) => {
     try {
         const { userId, propertyId } = req.query
@@ -7,7 +7,15 @@ const getCompanyRatePlans = async (req, res) => {
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
         if (result.success) {
-            const findCompanyRatePlans = await companyRatePlanModel.find({ propertyId }, 'propertyId companyRatePlanId roomTypeId mealPlan companyName inclusionTotal ratePlanInclusion ratePlanName shortCode').lean();
+            if (!propertyId) {
+                return res.status(400).json({ message: "Please enter propertyId", statuscode: 400 })
+            }
+
+            const result = await validateHotelCode(userId, propertyId)
+            if (!result.success) {
+                return res.status(result.statuscode).json({ message: "Invalid propertyId entered", statuscode: result.statuscode })
+            }
+            const findCompanyRatePlans = await companyRatePlanModel.find({ propertyId }, 'propertyId companyRatePlanId roomTypeId mealPlanId companyId inclusionTotal ratePlanInclusion ratePlanName shortCode').lean();
 
             if (findCompanyRatePlans.length > 0) {
                 const mappedCompanyRatePlans = findCompanyRatePlans.map((plan) => {
@@ -16,7 +24,8 @@ const getCompanyRatePlans = async (req, res) => {
                         propertyId: plan.propertyId || '',
                         companyRatePlanId: plan.companyRatePlanId || '',
                         roomTypeId: plan.roomTypeId || '',
-                        mealPlan: plan.mealPlan[0].mealPlanId || '',
+                        mealPlanId: plan.mealPlanId || '',
+                        companyId:plan.companyId || ' ',
                         ratePlanInclusion: plan.ratePlanInclusion[0].ratePlanInclusion || '',
                         ratePlanName: plan.ratePlanName[0].ratePlanName || '',
                         shortCode: plan.shortCode[0].shortCode || '',

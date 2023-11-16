@@ -2,14 +2,17 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import { convertTimestampToCustomFormat } from "../../helpers/helper.js";
 import companyModel from "../../models/company.js";
-
+import properties from '../../models/property.js'
 
 const companyType = async (req, res) => {
         try{
             const { targetTimeZone, propertyId } = req.query;
-
-        const userCompany = await companyModel.find({ propertyId }).select('propertyId companyId companyName contactPerson expiration').lean();
-        if (userCompany.length > 0) {
+            const findProperty = await properties.findOne({ propertyId });
+            if (!findProperty) {
+                return res.status(404).json({ message: "Please enter valid propertyId", statuscode: 404 })
+            }
+        if (findProperty) {
+            const userCompany = await companyModel.find({ propertyId }).select('propertyId companyId companyName contactPerson expiration').lean();
             const convertedCompany = userCompany.map(company => {
                 // Convert the dateUTC to the user's time zone
                 // const convertedDateUTC = convertTimestampToCustomFormat(company.createdOn, targetTimeZone);
@@ -27,14 +30,14 @@ const companyType = async (req, res) => {
 
             });
 
-            return res.status(200).json({ userCompany: convertedCompany, statuscode: 200 });
+            return res.status(200).json({ data: convertedCompany, statuscode: 200 });
         } else {
-            return res.status(404).json({ message: "No company found", statuscode: 404 });
+            return res.status(200).json({ message: "No company found", statuscode: 200 });
         }
 
         }catch (error) {
             console.log(error);
-        return res.status(500).json({ message: error.message, statusCode: 500 });
+        return res.status(500).json({ message: "Internal server error", statusCode: 500 });
     }
 };
 

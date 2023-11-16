@@ -15,7 +15,7 @@ import holdData from "../../models/holdBooking.js";
 import axios from "axios";
 // import guestModel from "../../models/guestDetails.js"
 import nodeCorn from "node-cron"
-import getInventory from "../InventoryAndRates/getInventory.js";
+import checkRoomAvailability from "../../controllers/InventoryAndRates/checkRoomAvailability.js"
 
 export const createResrvation = async (req, res) => {
   const {
@@ -164,7 +164,7 @@ export const createResrvation = async (req, res) => {
       });
 
       const guest = await guestDetails.save();
-    //  console.log(guest)
+      //  console.log(guest)
 
       // booking details
       guestIdArray.push({ guestId: guest.guestId });
@@ -225,30 +225,30 @@ export const createResrvation = async (req, res) => {
       },
     ],
 
-    barRateReservation : [{
-      barRateReservation : barRateReservation,
+    barRateReservation: [{
+      barRateReservation: barRateReservation,
       logId: randomString.generate(10),
     }],
 
 
-    discountReservation : [{
-      discountReservation : discountReservation,
-      logId: randomString.generate(10),
-    }],
-    
-
-    roomDetails:[{
-      roomDetails:roomDetails,
+    discountReservation: [{
+      discountReservation: discountReservation,
       logId: randomString.generate(10),
     }],
 
-    
- 
-    reservationSummary:[{
-      reservationSummary:reservationSummary,
+
+    roomDetails: [{
+      roomDetails: roomDetails,
       logId: randomString.generate(10),
     }],
-    
+
+
+
+    reservationSummary: [{
+      reservationSummary: reservationSummary,
+      logId: randomString.generate(10),
+    }],
+
 
     applyDiscount: [
       {
@@ -257,30 +257,30 @@ export const createResrvation = async (req, res) => {
       },
     ],
 
-   paymentDetails : [{
-    paymentDetails : paymentDetails,
-    logId: randomString.generate(10),
-   }],
+    paymentDetails: [{
+      paymentDetails: paymentDetails,
+      logId: randomString.generate(10),
+    }],
 
-   remark : [{
-    remark:remark,
-    logId: randomString.generate(10),
-   }],  
-    
+    remark: [{
+      remark: remark,
+      logId: randomString.generate(10),
+    }],
+
 
     reservationNumber: await generateFourDigitRandomNumber(),
 
 
-    cardDetails : [{
-      cardDetails : cardDetails,
-      logId : randomString.generate(10)
+    cardDetails: [{
+      cardDetails: cardDetails,
+      logId: randomString.generate(10)
     }],
 
-   createTask:[{
-    createTask:createTask,
-    logId: randomString.generate(10),
-   }],
-    
+    createTask: [{
+      createTask: createTask,
+      logId: randomString.generate(10),
+    }],
+
 
   });
 
@@ -300,7 +300,10 @@ export const createResrvation = async (req, res) => {
 
   // hold inventory
 
-  const apiUrl = `https://api.hotelratna.com/api/getInventory?userId=${userId}&propertyId=${propertyId}&checkInDate=${checkInDate}&checkOutDate=${checkOutDate}`;
+  //const apiUrl = `https://api.hotelratna.com/api/getInventory?userId=${userId}&propertyId=${propertyId}&checkInDate=${checkInDate}&checkOutDate=${checkOutDate}`;
+
+
+  //console.log("hoih",availableRooms)
 
   const booking = await bookingsModel.findOne({ bookingId: details.bookingId });
   // console.log(booking)
@@ -309,38 +312,46 @@ export const createResrvation = async (req, res) => {
 
   const dictionary = {};
 
-  for (const roomDetail of roomDetailArray) { 
+  for (const roomDetail of roomDetailArray) {
     //console.log(roomDetail)
     const roomTypeId = roomDetail.roomTypeId;
     // console.log(roomTypeId)
     if (!dictionary[roomTypeId]) {
-        dictionary[roomTypeId] = 1;
+      dictionary[roomTypeId] = 1;
     } else {
-        dictionary[roomTypeId] += 1;
+      dictionary[roomTypeId] += 1;
     }
-}
+  }
 
   //console.log(dictionary)
 
   try {
-    const response = await axios.get(apiUrl, {
+    // const response = await axios.get(apiUrl, {
+    //   headers: {
+    //     authcode: authCodeValue
+    //   }
+    // });
+
+    const availableRooms = await checkRoomAvailability({
+      query: {
+        userId,
+        propertyId,
+        checkInDate,
+        checkOutDate,
+        status: true
+      },
       headers: {
-        authcode: req.headers["authcode"]
+        authcode: authCodeValue
       }
-    });
 
-    if (response && response.data) {
-      const array = response.data.data;
-    
-      // console.log(array);
-      //  console.log(new Date().getSeconds())
+    }, res);
+
+    if (availableRooms) {
       const result = {};
-
-      array.forEach((item) => {
-        const minInventory = Math.min(...item.calculatedInventoryData.map(data => data.inventory));
-        result[item.roomTypeId] = minInventory;
-      });
-
+      for (const room of availableRooms) {
+        result[room.roomTypeId] = room.minimumInventory;
+      }
+      console.log(result)
 
       // Function to get guest details by guestId
       async function getGuestDetails(guestId) {
@@ -388,7 +399,7 @@ export const createResrvation = async (req, res) => {
       }
 
     } else {
-      console.error("No data found in the response");
+      return res.status(404).json({message : "somthing wrong" , statusCode : 404})
     }
 
     return res

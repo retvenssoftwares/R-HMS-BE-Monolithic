@@ -225,117 +225,29 @@ export const createResrvation = async (req, res) => {
       },
     ],
 
-    barRateReservation: (barRateReservation || []).map((item) => ({
-      bookingTypeId: (item?.bookingTypeId || []).map((bkId) => ({
-        bookingTypeId: bkId?.bookingTypeId ?? '',
-        logId: randomString.generate(10),
-      })),
-      bookingSourceId: (item?.bookingSourceId || []).map((bkSrc) => ({
-        bookingSourceId: bkSrc?.bookingSourceId ?? '',
-        logId: randomString.generate(10),
-      })),
-    })),
+    barRateReservation : [{
+      barRateReservation : barRateReservation,
+      logId: randomString.generate(10),
+    }],
+
+
+    discountReservation : [{
+      discountReservation : discountReservation,
+      logId: randomString.generate(10),
+    }],
     
 
-    discountReservation: (discountReservation || []).map((item) => ({
-      bookingType: (item?.bookingType || []).map((booking) => ({
-        bookingTypeId: booking?.bookingTypeId,
-        logId: randomString.generate(10),
-      })),
-      discountPlan: (item?.discountPlan || []).map((plan) => ({
-        discountPlanId: plan?.discountPlanId,
-        logId: randomString.generate(10),
-      })),
-      discountType: (item?.discountType || []).map((type) => ({
-        discountTypeId: type?.discountTypeId,
-        logId: randomString.generate(10),
-      })),
-      discountAmount: (item?.discountAmount || []).map((amount) => ({
-        discountAmount: amount?.discountAmount,
-        logId: randomString.generate(10),
-      })),
-    })),
-    
-    
-
-    roomDetails: roomDetails.map((item) => ({
-      roomTypeId: item.roomTypeId.map((type) => ({
-        roomTypeId: type.roomTypeId,
-        logId: randomString.generate(10),
-      })),
-      ratePlan: item.ratePlan.map((plan) => ({
-        ratePlanId: plan.ratePlanId,
-        logId: randomString.generate(10),
-      })),
-      adults: item.adults.map((adult) => ({
-        adults: adult.adults,
-        logId: randomString.generate(10),
-      })),
-      childs: item.childs.map((child) => ({
-        childs: child.childs,
-        logId: randomString.generate(10),
-      })),
-      charge: item.charge.map((charge) => ({
-        charge: charge.charge,
-        logId: randomString.generate(10),
-      })),
-      extraAdult: item.extraAdult.map((extra) => ({
-        extraAdult: extra.extraAdult,
-        logId: randomString.generate(10),
-      })),
-      extraChild: item.extraChild.map((extraCh) => ({
-        extraChild: extraCh.extraChild,
-        logId: randomString.generate(10),
-      })),
-      extraInclusion: item.extraInclusion.map((inclusion) => ({
-        extraInclusionId: inclusion.extraInclusionId,
-        logId: randomString.generate(10),
-      })),
-
-
-    })),
-
-
-
-    remark: (remark || []).map((item) => ({
-      specialRemark: (item?.specialRemark || []).map((remark) => ({
-        specialRemark: remark?.specialRemark,
-        logId: randomString.generate(10),
-      })),
-      internalNote: (item?.internalNote || []).map((note) => ({
-        internalNote: note?.internalNote,
-        logId: randomString.generate(10),
-      })),
-    })),
-
+    roomDetails:[{
+      roomDetails:roomDetails,
+      logId: randomString.generate(10),
+    }],
 
     
-    reservationSummary: (reservationSummary || []).map((item) => ({
-      roomCharges: (item?.roomCharges || []).map((charge) => ({
-        roomCharges: charge?.roomCharges,
-        logId: randomString.generate(10),
-      })),
-      extras: (item?.extras || []).map((extra) => ({
-        extras: extra?.extras,
-        logId: randomString.generate(10),
-      })),
-      taxes: (item?.taxes || []).map((tax) => ({
-        taxes: tax?.taxes,
-        logId: randomString.generate(10),
-      })),
-      from: (item?.from || []).map((from) => ({
-        from: from?.from,
-        logId: randomString.generate(10),
-      })),
-      to: (item?.to || []).map((to) => ({
-        to: to?.to,
-        logId: randomString.generate(10),
-      })),
-      grandTotal: (item?.grandTotal || []).map((total) => ({
-        grandTotal: total?.grandTotal,
-        logId: randomString.generate(10),
-      })),
-    })),
+ 
+    reservationSummary:[{
+      reservationSummary:reservationSummary,
+      logId: randomString.generate(10),
+    }],
     
 
     applyDiscount: [
@@ -345,16 +257,15 @@ export const createResrvation = async (req, res) => {
       },
     ],
 
-    paymentDetails: (paymentDetails || []).map((item) => ({
-      billTo: (item?.billTo || []).map((b) => ({
-        billTo: b?.billTo,
-        logId: randomString.generate(10),
-      })),
-      paymentNote: (item?.paymentNote || []).map((note) => ({
-        paymentNote: note?.paymentNote,
-        logId: randomString.generate(10),
-      })),
-    })),
+   paymentDetails : [{
+    paymentDetails : paymentDetails,
+    logId: randomString.generate(10),
+   }],
+
+   remark : [{
+    remark:remark,
+    logId: randomString.generate(10),
+   }],  
     
 
     reservationNumber: await generateFourDigitRandomNumber(),
@@ -365,20 +276,10 @@ export const createResrvation = async (req, res) => {
       logId : randomString.generate(10)
     }],
 
-    createTask: (createTask || []).map((item) => ({
-      taskTitle: (item?.taskTitle || []).map((task) => ({
-        taskTitle: task?.taskTitle ?? '',
-        logId: randomString.generate(10),
-      })),
-      schedule: (item?.schedule || []).map((sche) => ({
-        schedule: sche?.schedule ?? '',
-        logId: randomString.generate(10),
-      })),
-      description: (item?.description || []).map((desc) => ({
-        description: desc?.description ?? '',
-        logId: randomString.generate(10),
-      })),
-    })),
+   createTask:[{
+    createTask:createTask,
+    logId: randomString.generate(10),
+   }],
     
 
   });
@@ -387,7 +288,7 @@ export const createResrvation = async (req, res) => {
 
   //console.log(details);
 
-  const data = details.roomDetails;
+  const data = details.roomDetails[0].roomDetails;
 
   //add reservation ids
   for (let i = 0; i < data.length; i++) {
@@ -403,22 +304,25 @@ export const createResrvation = async (req, res) => {
 
   const booking = await bookingsModel.findOne({ bookingId: details.bookingId });
   // console.log(booking)
-  const roomDetail = booking.roomDetails;
-
+  const roomDetailArray = booking.roomDetails[0].roomDetails;
+  //console.log(roomDetailArray)
 
   const dictionary = {};
-  for (const item of roomDetail) {
-    const roomTypeId = item.roomTypeId[0].roomTypeId;
+
+  for (const roomDetail of roomDetailArray) { 
+    //console.log(roomDetail)
+    const roomTypeId = roomDetail.roomTypeId;
+    // console.log(roomTypeId)
     if (!dictionary[roomTypeId]) {
-      dictionary[roomTypeId] = 1;
+        dictionary[roomTypeId] = 1;
     } else {
-      dictionary[roomTypeId] += 1;
+        dictionary[roomTypeId] += 1;
     }
-  }
+}
+
+  //console.log(dictionary)
 
   try {
-    //console.log(new Date().getSeconds())
-   //console.log(new Date().getMilliseconds())
     const response = await axios.get(apiUrl, {
       headers: {
         authcode: req.headers["authcode"]
@@ -437,18 +341,19 @@ export const createResrvation = async (req, res) => {
         result[item.roomTypeId] = minInventory;
       });
 
+
       // Function to get guest details by guestId
       async function getGuestDetails(guestId) {
         return await guestCollections.findOne({ guestId });
       }
 
       // Function to create and save hold data
-      async function createAndSaveHoldData(booking, roomDetail, index, guestDetails) {
+      async function createAndSaveHoldData(booking, roomTypeId, index, guestDetails) {
         const hold = new holdData({
           bookingId: booking.bookingId || "",
           reservationId: booking.reservationIds && booking.reservationIds[index] || "",
           propertyId: booking.propertyId || "",
-          roomTypeId: roomDetail.roomTypeId && roomDetail.roomTypeId[0] && roomDetail.roomTypeId[0].roomTypeId || "",
+          roomTypeId: roomTypeId || "",
           guestId: booking.guestId && booking.guestId[index] && booking.guestId[index].guestId || "",
           guestName: guestDetails.guestName && guestDetails.guestName[0] && guestDetails.guestName[0].guestName || "",
           salutation: guestDetails.salutation && guestDetails.salutation[0] && guestDetails.salutation[0].salutation || "",
@@ -458,20 +363,18 @@ export const createResrvation = async (req, res) => {
           checkInDate: booking.checkInDate && booking.checkInDate[0] && booking.checkInDate[0].checkInDate || "",
           reservationNumber: booking.reservationNumber || "",
           checkOutDate: booking.checkOutDate && booking.checkOutDate[0] && booking.checkOutDate[0].checkOutDate || "",
-          inventory: dictionary[roomDetail.roomTypeId && roomDetail.roomTypeId[0] && roomDetail.roomTypeId[0].roomTypeId] ? dictionary[roomDetail.roomTypeId[0].roomTypeId].toString() : ""
+          inventory: dictionary[roomTypeId] ? dictionary[roomTypeId].toString() : ""
         });
-
-      
 
         await hold.save();
       }
 
       // Your optimized loop
-      for (let i = 0; i < roomDetail.length; i++) {
-        const roomTypeId = roomDetail[i].roomTypeId[0].roomTypeId;
+      for (let i = 0; i < roomDetailArray.length; i++) {
+        const roomTypeId = roomDetailArray[i].roomTypeId;
         const guestId = booking.guestId.length === 1 ? booking.guestId[0].guestId : booking.guestId[i].guestId;
 
-        if (result[roomTypeId] === 0) {9
+        if (result[roomTypeId] === 0) {
           return res.status(200).json({ message: "No Room Left for Reservation", statusCode: 200 });
         }
 
@@ -480,7 +383,7 @@ export const createResrvation = async (req, res) => {
           dictionary[roomTypeId] <= result[roomTypeId]
         ) {
           const guestDetails = await getGuestDetails(guestId);
-          await createAndSaveHoldData(booking, roomDetail[i], i, guestDetails);
+          await createAndSaveHoldData(booking, roomTypeId, i, guestDetails);
         }
       }
 

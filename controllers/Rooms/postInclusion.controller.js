@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import verifiedUser from "../../models/verifiedUsers.js";
 import inclusionModel from "../../models/inclusion.js";
-import { getCurrentUTCTimestamp,findUserByUserIdAndToken } from "../../helpers/helper.js";
+import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const postInclusion = async (req, res) => {
   try {
@@ -28,46 +28,46 @@ const postInclusion = async (req, res) => {
 
     let userRole = findUser.role[0].role
 
-        if(result.success){
-    const newSeason = new inclusionModel({
+    if (result.success) {
+      const newSeason = new inclusionModel({
 
-      propertyId,
-      inclusionId: Randomstring.generate(8),
-      shortCode:[{
-        shortCode:shortCode
-      }] ,
-      charge: [{
-        charge: charge
-      }],
-      inclusionName: [{
-        inclusionName: inclusionName
-      }],
-      inclusionType: [{
-        inclusionType: inclusionType
-      }],
-      chargeRule: [{
-        chargeRule: chargeRule
-      }],
-      postingRule: [{
-        postingRule: postingRule
-      }],
-      createdBy: userRole,
+        propertyId,
+        inclusionId: Randomstring.generate(8),
+        shortCode: [{
+          shortCode: shortCode
+        }],
+        charge: [{
+          charge: charge
+        }],
+        inclusionName: [{
+          inclusionName: inclusionName
+        }],
+        inclusionType: [{
+          inclusionType: inclusionType
+        }],
+        chargeRule: [{
+          chargeRule: chargeRule
+        }],
+        postingRule: [{
+          postingRule: postingRule
+        }],
+        createdBy: userRole,
 
-      createdOn: await getCurrentUTCTimestamp(),
+        createdOn: await getCurrentUTCTimestamp(),
 
-      modifiedBy: [],
-      modifiedOn: [],
-      days: [],
+        modifiedBy: [],
+        modifiedOn: [],
+        days: [],
 
-    });
-    await newSeason.save();
-    return res.status(200).json({ message: "New Inclusion added successfully", statuscode: 200 });
+      });
+      await newSeason.save();
+      return res.status(200).json({ message: "New Inclusion added successfully", statuscode: 200 });
 
-  }else {
-      return res.status(result.statuscode).json({ message: result.message,statuscode: result.statuscode });
+    } else {
+      return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
 
+    }
   }
-  } 
   catch (err) {
     // console.log(err);
     res.status(500).json({ message: "Internal Server Error", statuscode: 500 });

@@ -81,6 +81,9 @@ const patchAmenity = async (req, res) => {
 
             const updatedAmenity = await findAmenity.save();
 
+
+            
+
             if (updatedAmenity) {
                 return res.status(200).json({ message: "Amenity successfully updated", statuscode: 200 });
 

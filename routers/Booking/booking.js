@@ -9,6 +9,7 @@ import { creatQuickReservation } from '../../controllers/Bookings/quickBooking.j
 import { addRoomInfloor } from '../../controllers/Bookings/floor.js';
 import {roomDetails} from '../../controllers/Bookings/roomInFloor.js';
 import {getRoomByFloorId} from "../../controllers/Bookings/getRoomByFloorId.js"
+import { testingReservation } from '../../controllers/Bookings/testing.js';
 
 router.post("/api/createBooking", createResrvation);
 
@@ -25,5 +26,7 @@ router.post("/api/addFloor",addRoomInfloor)
 router.post("/api/addRoomInFloor",roomDetails)
 
 router.get("/api/getRoomDetailsByFloorId",getRoomByFloorId)
+
+router.get("/api/testing",testingReservation)
 
 export default router;

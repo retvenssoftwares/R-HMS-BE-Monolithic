@@ -2,7 +2,9 @@ import userModel from "../../models/user.js"
 import verifyUserModel from "../../models/verifiedUsers.js"
 import propertyModel from "../../models/property.js"
 import propertyChain from "../../models/propertychain.js"
+import propertyImageModel from "../../models/propertyImages.js"
 import { getCurrentUTCTimestamp } from "../../helpers/helper.js"
+import logsModel from "../../models/logsModel.js"
 
 const verifyUserProperty = async (req, res) => {
     try {
@@ -38,7 +40,8 @@ const verifyUserProperty = async (req, res) => {
                 hotelCode: [{ hotelCode: singleProperty.propertyId }]
             })
 
-            await verifyUserDetails.save()
+            const savedVerifiedUserData = await verifyUserDetails.save()
+
             //console.log({amenities : singleProperty.amenities})
 
             const property = new propertyModel({
@@ -85,6 +88,21 @@ const verifyUserProperty = async (req, res) => {
 
             await property.save()
 
+            // Create a propertyImages record and associate it with the property
+            const propertyImages = new propertyImageModel({
+                propertyId: singleProperty.propertyId, // Use the propertyId from the saved property record
+                propertyImages: [],
+                deletedPropertyImages: []
+            });
+
+            // Save the propertyImages record
+            await propertyImages.save();
+
+            // create the log model
+            const add = new logsModel({
+                propertyId: singleProperty.propertyId
+            })
+            await add.save()
 
         } else {
             const multipleProperty = user.multipleData[0]
@@ -133,7 +151,6 @@ const verifyUserProperty = async (req, res) => {
         console.log(error);
         return res.status(500).json({ message: "Internal Server Error", statuscode: 500 })
     }
-
 
 }
 

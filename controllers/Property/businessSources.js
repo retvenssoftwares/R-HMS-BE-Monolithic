@@ -28,6 +28,7 @@ export const addBusinessSources = async (req, res) => {
                     sourceName: req.body.sourceName,
                     logId: randomString.generate(10)
                 }],
+                displayStatus: [{ displayStatus: "1", logId: randomString.generate(10) }],
                 createdBy: userRole,
                 createdOn: await getCurrentUTCTimestamp(),
                 modifiedOn: [],
@@ -64,7 +65,7 @@ export const updateBusinessSources = async (req, res) => {
         const userRole = findUser.role[0].role
         const authCodeDetails = req.headers["authcode"]
         const result = await findUserByUserIdAndToken(userId, authCodeDetails)
-        const { shortCode, sourceName } = req.body
+        const { shortCode, sourceName, displayStatus } = req.body
         if (result.success) {
             if (shortCode) {
                 const logId1 = randomString.generate(10)
@@ -103,7 +104,27 @@ export const updateBusinessSources = async (req, res) => {
                 });
 
             }
+            if (displayStatus) {
+                const logId1 = randomString.generate(10)
+                const update1 = {
+                    $push: {
+                        displayStatus: {
+                            $each: [{
+                                displayStatus: displayStatus,
+                                logId: logId1
+                            }],
+                            $position: 0
+                        }
+                    }
+                };
+                const updatedDisplayStatus = await businessSourcesModel.findOneAndUpdate({ sourceId: sourceId }, update1, {
+                    new: true
+                });
 
+            }
+            
+
+           
             const logId2 = randomString.generate(10)
             const logId3 = randomString.generate(10)
             const update1 = {
@@ -151,7 +172,7 @@ export const getBusinessSources = async (req, res) => {
             return res.status(400).json({ message: "Please enter valid propertyId", statuscode: 400 })
         }
 
-        const businessSourcesFetch = await businessSourcesModel.find({ propertyId: propertyId }).lean();
+        const businessSourcesFetch = await businessSourcesModel.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1" }).lean();
 
         const authCodeDetails = req.headers["authcode"]
         const result = await findUserByUserIdAndToken(userId, authCodeDetails)

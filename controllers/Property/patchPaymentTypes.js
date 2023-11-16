@@ -6,7 +6,7 @@ import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/
 const patchPaymentType = async (req, res) => {
     try {
         const { userId } = req.query;
-        const { shortCode, paymentMethodName, receivedTo } = req.body;
+        const { shortCode, paymentMethodName, receivedTo, displayStatus} = req.body;
         const paymentTypeId = req.query.paymentTypeId;
         const authCodeValue = req.headers['authcode'];
 
@@ -48,6 +48,14 @@ const patchPaymentType = async (req, res) => {
                     logId: randomString.generate(10)
                 };
                 findPaymentType.receivedTo.unshift(receivedToObject);
+            }
+
+            if (displayStatus) {
+                const displayStatusObject = {
+                    displayStatus: displayStatus,
+                    logId: Randomstring.generate(10)
+                };
+                findPaymentType.displayStatus.unshift(displayStatusObject);
             }
 
             const modifiedByObject = {

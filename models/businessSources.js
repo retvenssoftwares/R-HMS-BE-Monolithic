@@ -1,6 +1,8 @@
 import mongoose, { Mongoose, Schema, model } from "mongoose";
 import db1 from "../db/conn.js"
 const businessSources = new mongoose.Schema({
+
+    displayStatus: [{ displayStatus: { type: String, default: '1', enum: ['0', '1'], }, logId: { type: String, default: "" } }],    
     sourceId: {
         type: String,
         default: ""

@@ -7,7 +7,7 @@ const patchIdentityType = async (req, res) => {
 
     try {
         const { userId } = req.query
-        const { shortCode, identityType } = req.body;
+        const { shortCode, identityType, displayStatus } = req.body;
         const identityTypeId = req.query.identityTypeId;
         const authCodeValue = req.headers['authcode'];
         const findUser = await verifiedUser.findOne({ userId });
@@ -41,6 +41,15 @@ const patchIdentityType = async (req, res) => {
                 };
                 findIdentityType.identityType.unshift(identityTypeObject);
             }
+
+            if (displayStatus) {
+                const displayStatusObject = {
+                    displayStatus: displayStatus,
+                    logId: Randomstring.generate(10)
+                };
+                findIdentityType.displayStatus.unshift(displayStatusObject);
+            }
+
 
             const modifiedByObject = {
                 modifiedBy: userRole,

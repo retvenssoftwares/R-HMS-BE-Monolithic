@@ -88,19 +88,19 @@ const booking = new mongoose.Schema({
 
     }],
 
-    rateType: [{
-        //change to rateTypeId
-        rateTypeId: {
-            type: String,
-            default: ""
-        },
+    // rateType: [{
+    //     //change to rateTypeId
+    //     rateTypeId: {
+    //         type: String,
+    //         default: ""
+    //     },
 
-        logId: {
-            type: String,
-            default: ""
-        }
+    //     logId: {
+    //         type: String,
+    //         default: ""
+    //     }
 
-    }],
+    // }],
 
 
     // company Reservation

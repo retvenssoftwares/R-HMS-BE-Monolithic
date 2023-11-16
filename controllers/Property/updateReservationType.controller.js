@@ -6,7 +6,7 @@ import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/
 const patchReservation = async (req, res) => {
     try {
         const { userId } = req.query
-        const { reservationName, status } = req.body;
+        const { reservationName, status, displayStatus } = req.body;
         const reservationTypeId = req.query.reservationTypeId;
         const authCodeValue = req.headers['authcode'];
         const findUser = await verifiedUser.findOne({ userId });
@@ -22,7 +22,7 @@ const patchReservation = async (req, res) => {
             const findReservation = await reservation.findOne({ reservationTypeId: reservationTypeId });
 
             if (!findReservation) {
-                return res.status(404).json({ message: "reservation not found", statuscode: 404 });
+                return res.status(404).json({ message: "Reservation type not found", statuscode: 404 });
             }
 
             const currentUTCTime = await getCurrentUTCTimestamp();
@@ -41,6 +41,13 @@ const patchReservation = async (req, res) => {
                     logId: Randomstring.generate(10)
                 };
                 findReservation.status.unshift(statusObject);
+            }
+            if (displayStatus) {
+                const displayStatusObject = {
+                    displayStatus: displayStatus,
+                    logId: Randomstring.generate(10)
+                };
+                findReservation.displayStatus.unshift(displayStatusObject);
             }
 
             const modifiedByObject = {

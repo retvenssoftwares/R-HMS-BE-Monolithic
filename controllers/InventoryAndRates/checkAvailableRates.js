@@ -201,6 +201,9 @@ const checkRate = async (req, res) => {
             endDate
           );
 
+          const filteredCOA =fillMissingDatesAndSort(  restrictionDocument.manageRestrictions.COA,startDate,endDate);
+          const filteredCOD =fillMissingDatesAndSort(  restrictionDocument.manageRestrictions.COD,startDate,endDate);
+
           // Include restrictions and rates
           const baseRates = [];
           //stopSell
@@ -248,6 +251,42 @@ const checkRate = async (req, res) => {
               baseRates.push(baseRateEntry);
             }
           });
+
+          //COA
+          filteredCOA.forEach((item) => {
+            const existingBaseRate = baseRates.find(
+              (entry) => entry.date === item.date
+            );
+            if (existingBaseRate) {
+              existingBaseRate.COA = item.COA;
+            } else {
+              const baseRateEntry = {
+                // baseRate: result.ratePlanTotal,
+                COA: item.COA,
+                date: item.date,
+              };
+              baseRates.push(baseRateEntry);
+            }
+          });
+
+          //COD
+          filteredCOD.forEach((item) => {
+            const existingBaseRate = baseRates.find(
+              (entry) => entry.date === item.date
+            );
+            if (existingBaseRate) {
+              existingBaseRate.COD= item.COD;
+            } else {
+              const baseRateEntry = {
+                // baseRate: result.ratePlanTotal,
+                COD: item.COD,
+                date: item.date,
+              };
+              baseRates.push(baseRateEntry);
+            }
+          });
+
+
 
           // Filter and sort the baseRate array, and replace empty array with false
           const baseRate = rateDocument
@@ -347,6 +386,8 @@ const checkRate = async (req, res) => {
             const baseRateEntry = {
               date: formattedDate,
               stopSell: "false",
+              COA:"false",
+              COD:"false",
               minimumLOS: 0,
               maximumLOS: 0,
             };
@@ -407,12 +448,7 @@ const checkRate = async (req, res) => {
       
        
         }
-      
     
-        
-        
-
-
       if (req.query.status) {
         return response;
       } else {
@@ -471,27 +507,21 @@ function fillMissingDatesAndSort(
       if (!dateSet.has(formattedDate)) {
         if (formattedDate >= startDate) {
           // Check if the date is within the specified range
-          const matchingStopSell = stopSell
-            ? stopSell.find((item) => item.date === formattedDate)
-            : undefined;
-          const matchingMinimumLOS = minimumLOS
-            ? minimumLOS.find((item) => item.date === formattedDate)
-            : undefined;
-          const matchingMaximumLOS = maximumLOS
-            ? maximumLOS.find((item) => item.date === formattedDate)
-            : undefined;
+          const matchingStopSell = stopSell ? stopSell.find((item) => item.date === formattedDate) : undefined;
+          const matchingMinimumLOS = minimumLOS ? minimumLOS.find((item) => item.date === formattedDate) : undefined;
+          const matchingMaximumLOS = maximumLOS ? maximumLOS.find((item) => item.date === formattedDate) : undefined;
+          const matchingCOA = COA ? COA.find((item) => item.date === formattedDate) : undefined;
+          const matchingCOD = COD ? COD.find((item) => item.date === formattedDate) : undefined;
 
-          if (matchingStopSell || matchingMinimumLOS || matchingMaximumLOS) {
+          if (matchingStopSell || matchingMinimumLOS || matchingMaximumLOS || matchingCOA || matchingCOD) {
             array.push({
               baseRate: ratePlanTotal,
               extraAdultRate: extraAdultRate,
               stopSell: matchingStopSell ? matchingStopSell.stopSell : "false",
-              minimumLOS: matchingMinimumLOS
-                ? matchingMinimumLOS.minimumLOS
-                : "false",
-              maximumLOS: matchingMaximumLOS
-                ? matchingMaximumLOS.maximumLOS
-                : "false",
+              minimumLOS: matchingMinimumLOS ? matchingMinimumLOS.minimumLOS : "false",
+              maximumLOS: matchingMaximumLOS ? matchingMaximumLOS.maximumLOS: "false",
+              COA: matchingCOA ? matchingCOA.COA: "false",
+              COD: matchingCOD ? matchingCOD.COD: "false",
               date: formattedDate,
             });
           } else {

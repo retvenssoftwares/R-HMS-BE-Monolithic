@@ -84,9 +84,9 @@ export const createResrvation = async (req, res) => {
   let userRole = findUser.role[0].role;
 
   for (let i = 0; i < guestInfo.length; i++) {
-    if (guestInfo[i].guestId !== "") {
+    if (guestInfo[i].guestId) {
       guestIdArray.push({ guestId: guestInfo[i].guestId });
-    } else if (guestInfo[i].guestId === "") {
+    } else{
       const guestDetails = new guestCollections({
         guestId: randomString.generate(10),
 
@@ -351,7 +351,7 @@ export const createResrvation = async (req, res) => {
       for (const room of availableRooms) {
         result[room.roomTypeId] = room.minimumInventory;
       }
-      console.log(result)
+    // console.log(result)
 
       // Function to get guest details by guestId
       async function getGuestDetails(guestId) {
@@ -398,9 +398,13 @@ export const createResrvation = async (req, res) => {
         }
       }
 
+      // console.log(result)
+
     } else {
       return res.status(404).json({message : "somthing wrong" , statusCode : 404})
     }
+
+    
 
     return res
       .status(200)

@@ -1,20 +1,22 @@
 import barRatePlanModel from '../../models/barRatePlan.js'
-import { findUserByUserIdAndToken } from '../../helpers/helper.js';
+import {convertTimestampToCustomFormat, findUserByUserIdAndToken } from '../../helpers/helper.js';
 const getBarRatePlans = async (req, res) => {
     try{
-        const { userId, propertyId } = req.query
+        const {targetTimeZone, userId, propertyId } = req.query
         const authCodeValue = req.headers['authcode']
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
         if (result.success) {
-        const findBarRatePlans = await barRatePlanModel.find({ propertyId }, 'propertyId barRatePlanId rateType roomType mealPlan ratePlanName inclusion barRates mealCharge inclusionCharge roundUp extraAdultRate extraChildRate ratePlanTotal shortCode createdBy').lean();
+        const findBarRatePlans = await barRatePlanModel.find({ propertyId }, 'propertyId createdOn barRatePlanId rateType roomType mealPlan ratePlanName inclusion barRates mealCharge inclusionCharge roundUp extraAdultRate extraChildRate ratePlanTotal shortCode createdBy').lean();
         
         if (findBarRatePlans.length > 0) {
             const mappedBarRatePlans = findBarRatePlans.map((plan) => {
+                const convertedDateUTC = convertTimestampToCustomFormat(plan.createdOn, targetTimeZone);
                 return {
                     ...plan._doc,
                     propertyId: plan.propertyId || '',
                     barRatePlanId: plan.barRatePlanId || '',
+                    createdOn: convertedDateUTC,
                     createdBy: plan.createdBy || '',
                     rateType : plan.rateType || '',
                     roomType: plan.roomType[0].roomTypeId || '',
@@ -44,4 +46,4 @@ const getBarRatePlans = async (req, res) => {
         return res.status(500).json({ message: "Internal server error", statuscode: 500 });
     }
 }
-export default getBarRatePlans;
+export default getBarRatePlans; 

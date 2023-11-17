@@ -3,6 +3,7 @@ dotenv.config();
 import roomModel from "../../models/roomType.js";
 import bedType from "../../models/superAdmin/bedType.js"
 import roomImage from "../../models/roomTypeImages.js"
+import barRatePlan from "../../models/barRatePlan.js"
 import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const fetchRoom = async (req, res) => {
@@ -15,6 +16,7 @@ const fetchRoom = async (req, res) => {
         if (result.success) {
           
             const roomImages = await roomImage.find({ roomTypeId: roomTypeId });
+            const barrate = await barRatePlan.find({ roomTypeId: roomTypeId });
            // console.log(roomImages)
             const rooms = await roomModel.find({ roomTypeId: roomTypeId });
             if (!rooms) {
@@ -61,20 +63,17 @@ const fetchRoom = async (req, res) => {
                     
                    
                 const filteredRoomImages = roomImages.filter(img => img.roomTypeId === roomTypeId);
-//console.log(filteredRoomImages)
+                
                 // Extract necessary data from roomImages
                 const imagesData = filteredRoomImages.map(img => ({
-                    imageId: img.imageId,
-                    image: img.image,
+                    image: img.roomImages[0].image,
                     
                 }));
-               // console.log(imagesData)
+       
 
                 // Include fetched roomImages in the property object
                
                     return {
-                       
-                    
                         shortCode: shortCode,
                         roomDescription: firstRoomDescription,
                         roomTypeName: firstRoomTypeName,

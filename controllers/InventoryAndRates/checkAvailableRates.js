@@ -948,7 +948,7 @@ function extractFilteredAndSortedArray(stopSell, minimumLOS, maximumLOS, COA, CO
 
     const baseRateEntry = {
       date,
-      baseRate: stopSellEntry ? ratePlanTotal : baseRate ? baseRate.find((item) => item.date === date)?.baseRate : ratePlanTotal,
+      baseRate:  baseRate ? baseRate.find((item) => item.date === date)?.baseRate || ratePlanTotal:ratePlanTotal,
       extraAdultRate: extraAdultRate ? extraAdultRate.find((item) => item.date === date)?.extraAdultRate || extraAdultRateVal : extraAdultRateVal,
       extraChildRate: extraChildRate ? extraChildRate.find((item) => item.date === date)?.extraChildRate || extraChildRateVal : extraChildRateVal,
     };
@@ -983,15 +983,11 @@ function extractBaseRatesForNoRestrictions(baseRate, extraAdultRate, extraChildR
   while (currentDate <= new Date(endDate)) {
     const formattedDate = currentDate.toISOString().slice(0, 10);
 
-    // Check if baseRate exists for the current date, otherwise use ratePlanTotal
-    const foundBaseRate = baseRate ? baseRate.find((item) => item.date === formattedDate) : undefined;
-    const baseRateValue = foundBaseRate ? foundBaseRate.baseRate : ratePlanTotal;
-
     const baseRateEntry = {
       date: formattedDate,
-      baseRate: baseRateValue,
-      extraAdultRate: extraAdultRate ? (extraAdultRate.find((item) => item.date === formattedDate)?.extraAdultRate || extraAdultRateVal) : extraAdultRateVal,
-      extraChildRate: extraChildRate ? (extraChildRate.find((item) => item.date === formattedDate)?.extraChildRate || extraChildRateVal) : extraChildRateVal,
+      baseRate: baseRate ? baseRate.find((item) => item.date === formattedDate)?.baseRate || ratePlanTotal : ratePlanTotal,
+      extraAdultRate: extraAdultRate ? extraAdultRate.find((item) => item.date === formattedDate)?.extraAdultRate || extraAdultRateVal : extraAdultRateVal,
+      extraChildRate: extraChildRate ? extraChildRate.find((item) => item.date === formattedDate)?.extraChildRate || extraChildRateVal : extraChildRateVal,
       stopSell: "false", // Default value for stopSell
       COA: "false", // Default value for COA
       COD: "false", // Default value for COD
@@ -1005,7 +1001,6 @@ function extractBaseRatesForNoRestrictions(baseRate, extraAdultRate, extraChildR
 
   return baseRates;
 }
-
 
 
 export default checkRate;

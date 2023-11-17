@@ -17,7 +17,7 @@ const patchIdentityType = async (req, res) => {
         if (!findUser) {
             return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 });
         }
-
+        let userRole = findUser.role[0].role;
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
         if (result.success) {
 

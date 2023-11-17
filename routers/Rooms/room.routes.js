@@ -6,6 +6,7 @@ const upload = multer({ storage: storage });
 import postRoom from '../../controllers/Rooms/addRoom.controller.js'
 import patchRoom from '../../controllers/Rooms/updateRoomDetails.controller.js'
 import fetchRoom from '../../controllers/Rooms/getRoom.controller.js'
+import getRoomByRoomType from '../../controllers/Rooms/fetchRoomByRoomTypeId.js'
 import uploadRoomImage from '../../controllers/Rooms/uploadRoomImage.controller.js'
 import updateRoomImage from '../../controllers/Rooms/updateRoomImage.controller.js'
 import changeIndex from '../../controllers/Rooms/uploadPatchRoomImage.controller.js'
@@ -27,6 +28,9 @@ const router = express.Router();
 
 //addroom
 router.post('/api/createRoom', postRoom);
+
+//
+router.get('/api/fetchRoom',getRoomByRoomType)
 
 //update Room
 router.patch('/api/updateRoom/:roomTypeId', patchRoom)

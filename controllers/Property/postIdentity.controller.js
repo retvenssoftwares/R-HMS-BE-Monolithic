@@ -60,6 +60,7 @@ const userIdentity = async (req, res) => {
                         shortCode: savedIdentity.shortCode[0].shortCode,
                         userId: userId,
                         deviceType: deviceType,
+                        ipAddress:ipAddress,
                         modifiedOn: currentUTCTime,                 
                        }],
                        identityType: [{
@@ -67,6 +68,7 @@ const userIdentity = async (req, res) => {
                         identityType: savedIdentity.identityType[0].identityType,
                         userId: userId,
                         deviceType: deviceType,
+                        ipAddress:ipAddress,
                         modifiedOn: currentUTCTime,   
                     }],
                     

@@ -89,51 +89,7 @@ const mealPlanLogModel = new mongoose.Schema({
     default: "",
   },
 
-  modifiedBy: [
-    {
-      modifiedBy: {
-        type: String,
-        default: "",
-      },
-      logId: {
-        type: String,
-        default: "",
-      },
-      modifiedOn:{
-        type: String,
-        default: ""
-    },
-    userId:{
-        type: String,
-        default: ""
-    },
-    ipAddress: { type: String, default: "" },
-    deviceType: { type: String, default: "" },
-    },
-  ],
 
-  modifiedOn: [
-    {
-      modifiedOn: {
-        type: String,
-        default: "",
-      },
-      logId: {
-        type: String,
-        default: "",
-      },
-      modifiedOn:{
-        type: String,
-        default: ""
-    },
-    userId:{
-        type: String,
-        default: ""
-    },
-    ipAddress: { type: String, default: "" },
-    deviceType: { type: String, default: "" },
-    },
-  ],
 });
 const mealPLanLog = db2.model("mealPlanLogModel", mealPlanLogModel);
 export default mealPLanLog;

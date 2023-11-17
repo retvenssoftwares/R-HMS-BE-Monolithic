@@ -20,6 +20,7 @@ const postAmenity = async (req, res) => {
       amenityIcon,
       amenityIconLink,
       deviceType,
+      ipAddress
     } = req.body;
     const authCodeValue = req.headers["authcode"];
     const findUser = await verifiedUser.findOne({ userId: userId });
@@ -88,6 +89,7 @@ const postAmenity = async (req, res) => {
             shortCode: savedAminity.shortCode[0].shortCode,
             userId: userId,
             deviceType: deviceType,
+            ipAddress:ipAddress,
             modifiedOn:currentUTCTime,
           },
         ],
@@ -97,6 +99,7 @@ const postAmenity = async (req, res) => {
             amenityName: savedAminity.amenityName[0].amenityName,
             userId: userId,
             deviceType: deviceType,
+            ipAddress:ipAddress,
             modifiedOn:currentUTCTime,
           },
         ],
@@ -106,6 +109,7 @@ const postAmenity = async (req, res) => {
             amenityType: savedAminity.amenityType[0].amenityType,
             userId: userId,
             deviceType: deviceType,
+            ipAddress:ipAddress,
             modifiedOn:currentUTCTime,
           },
         ],
@@ -115,6 +119,7 @@ const postAmenity = async (req, res) => {
             amenityIcon: savedAminity.amenityIcon[0].amenityIcon,
             userId: userId,
             deviceType: deviceType,
+            ipAddress:ipAddress,
             modifiedOn:currentUTCTime,
           },
         ],
@@ -124,6 +129,7 @@ const postAmenity = async (req, res) => {
             amenityIconLink: savedAminity.amenityIconLink[0].amenityIconLink,
             userId: userId,
             deviceType: deviceType,
+            ipAddress:ipAddress,
             modifiedOn:currentUTCTime,
           },
         ],

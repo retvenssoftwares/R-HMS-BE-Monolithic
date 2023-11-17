@@ -71,6 +71,7 @@ const postBookingSource = async (req, res) => {
             shortCode: savedBookingSourecs.shortCode[0].shortCode,
             userId: userId,
             deviceType: deviceType,
+            ipAddress:ipAddress,
             modifiedOn:currentUTCTime,
           },
         ],
@@ -80,6 +81,7 @@ const postBookingSource = async (req, res) => {
             bookingSource: savedBookingSourecs.bookingSource[0].bookingSource,
             userId: userId,
             deviceType: deviceType,
+            
             modifiedOn:currentUTCTime,
           },
         ],

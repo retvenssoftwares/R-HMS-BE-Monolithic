@@ -2,16 +2,18 @@ import randomString from 'randomstring'
 import paymentTypeModel from '../../models/paymentTypes.js'
 import verifiedUser from '../../models/verifiedUsers.js'
 import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/helper.js'
+import paymentLog from '../../models/LogModels/paymentLogs.js'
 
 const patchPaymentType = async (req, res) => {
     try {
         const { userId } = req.query;
-        const { shortCode, paymentMethodName, receivedTo } = req.body;
+        const { shortCode, paymentMethodName, receivedTo,deviceType,ipAddress } = req.body;
         const paymentTypeId = req.query.paymentTypeId;
         const authCodeValue = req.headers['authcode'];
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
         const findUser = await verifiedUser.findOne({ userId });
+        const userid=findUser.userId;
         if (!findUser) {
             return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 })
         }
@@ -49,7 +51,6 @@ const patchPaymentType = async (req, res) => {
                 };
                 findPaymentType.receivedTo.unshift(receivedToObject);
             }
-
             const modifiedByObject = {
                 modifiedBy: userRole,
                 logId: randomString.generate(10)
@@ -57,10 +58,52 @@ const patchPaymentType = async (req, res) => {
 
             findPaymentType.modifiedBy.unshift(modifiedByObject);
             findPaymentType.modifiedOn.unshift({ modifiedOn: currentUTCTime, logId: randomString.generate(10) });
-
             const updatedPaymentType = await findPaymentType.save();
 
             if (updatedPaymentType) {
+
+                //save data in logs
+
+                const findPaymentLog = await paymentLog.findOne({paymentTypeId });
+
+                if (findPaymentLog){
+                if (shortCode) {
+                    const shortCodeObject = {
+                        shortCode:updatedPaymentType.shortCode[0].shortCode,
+                        logId:updatedPaymentType.shortCode[0].logId,
+                        userId:userid,
+                        deviceType:deviceType,
+                        ipAddress:ipAddress,
+                        modifiedOn:currentUTCTime,
+                    };
+                    findPaymentLog.shortCode.unshift(shortCodeObject);
+                }
+
+                if (paymentMethodName) {
+                    const paymentMethodNameObject = {
+                        paymentMethodName:updatedPaymentType.paymentMethodName[0].paymentMethodName,
+                        logId:updatedPaymentType.paymentMethodName[0].logId,
+                        userId:userid,
+                        deviceType:deviceType,
+                        ipAddress:ipAddress,
+                        modifiedOn:currentUTCTime,
+                    };
+                    findPaymentLog.paymentMethodName.unshift(paymentMethodNameObject);
+                }
+                if (receivedTo) {
+                    const receivedToObject = {
+                        receivedTo:updatedPaymentType.receivedTo[0].receivedTo,
+                        logId:updatedPaymentType.receivedTo[0].logId,
+                        userId:userid,
+                        deviceType:deviceType,
+                        ipAddress:ipAddress,
+                        modifiedOn:currentUTCTime,
+                    };
+                    findPaymentLog.receivedTo.unshift(receivedToObject);
+                }
+            }
+            await findPaymentLog.save();
+
                 return res.status(200).json({ message: "Payment type successfully updated", statuscode: 200 });
             }
 

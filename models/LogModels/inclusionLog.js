@@ -1,22 +1,63 @@
 import mongoose from "mongoose";
 import db2 from "../../db/conn2.js";
-const amenitiesLogModel = new mongoose.Schema(
+const inclusionLogModel = new mongoose.Schema(
   {
     propertyId: {
       type: String,
       default: "",
     },
-
+    inclusionId: {
+      type: String,
+      default: "",
+    },
     createdBy: {
       type: String,
       default: "",
     },
-
     createdOn: {
       type: String,
       default: "",
     },
 
+    modifiedBy: [
+      {
+        modifiedBy: {
+          type: String,
+          default: "",
+        },
+        logId: { type: String, default: "" },
+        modifiedOn: {
+          type: String,
+          default: "",
+        },
+        userId: {
+          type: String,
+          default: "",
+        },
+        ipAddress: { type: String, default: "" },
+        deviceType: { type: String, default: "" },
+      },
+    ],
+
+    modifiedOn: [
+      {
+        modifiedOn: {
+          type: String,
+          default: "",
+        },
+        logId: { type: String, default: "" },
+        modifiedOn: {
+          type: String,
+          default: "",
+        },
+        userId: {
+          type: String,
+          default: "",
+        },
+        ipAddress: { type: String, default: "" },
+        deviceType: { type: String, default: "" },
+      },
+    ],
 
     shortCode: [
       {
@@ -24,44 +65,7 @@ const amenitiesLogModel = new mongoose.Schema(
           type: String,
           default: "",
         },
-        logId: {
-          type: String,
-          default: "",
-        },
-        modifiedOn: {
-          type: String,
-          default: "",
-        },
-        userId: {
-          type: String,
-          default: "",
-        },
-        ipAddress: {
-          type: String,
-          default: "",
-        },
-        deviceType: {
-          type: String,
-          default: "",
-        },
-      },
-    ],
-
-    amenityId: {
-      type: String,
-      default: "",
-    },
-
-    amenityName: [
-      {
-        amenityName: {
-          type: String,
-          default: "",
-        },
-        logId: {
-          type: String,
-          default: "",
-        },
+        logId: { type: String, default: "" },
         modifiedOn: {
           type: String,
           default: "",
@@ -75,16 +79,13 @@ const amenitiesLogModel = new mongoose.Schema(
       },
     ],
 
-    amenityType: [
+    chargeRule: [
       {
-        amenityType: {
+        chargeRule: {
           type: String,
           default: "",
         },
-        logId: {
-          type: String,
-          default: "",
-        },
+        logId: { type: String, default: "" },
         modifiedOn: {
           type: String,
           default: "",
@@ -98,16 +99,13 @@ const amenitiesLogModel = new mongoose.Schema(
       },
     ],
 
-    amenityIcon: [
+    postingRule: [
       {
-        amenityIcon: {
+        postingRule: {
           type: String,
           default: "",
         },
-        logId: {
-          type: String,
-          default: "",
-        },
+        logId: { type: String, default: "" },
         modifiedOn: {
           type: String,
           default: "",
@@ -121,16 +119,52 @@ const amenitiesLogModel = new mongoose.Schema(
       },
     ],
 
-    amenityIconLink: [
+    charge: [
       {
-        amenityIconLink: {
+        charge: {
           type: String,
           default: "",
         },
-        logId: {
+        logId: { type: String, default: "" },
+        modifiedOn: {
           type: String,
           default: "",
         },
+        userId: {
+          type: String,
+          default: "",
+        },
+        ipAddress: { type: String, default: "" },
+        deviceType: { type: String, default: "" },
+      },
+    ],
+
+    inclusionName: [
+      {
+        inclusionName: {
+          type: String,
+          default: "",
+        },
+        logId: { type: String, default: "" },
+        modifiedOn: {
+          type: String,
+          default: "",
+        },
+        userId: {
+          type: String,
+          default: "",
+        },
+        ipAddress: { type: String, default: "" },
+        deviceType: { type: String, default: "" },
+      },
+    ],
+    inclusionType: [
+      {
+        inclusionType: {
+          type: String,
+          default: "",
+        },
+        logId: { type: String, default: "" },
         modifiedOn: {
           type: String,
           default: "",
@@ -149,5 +183,5 @@ const amenitiesLogModel = new mongoose.Schema(
   }
 );
 
-const amenitiesLog = db2.model("amenitiesLogModel", amenitiesLogModel);
-export default amenitiesLog;
+const inclusionLog = db2.model("inclusionLogModel", inclusionLogModel);
+export default inclusionLog;

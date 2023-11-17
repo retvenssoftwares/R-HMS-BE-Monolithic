@@ -1,83 +1,121 @@
-import mongoose from 'mongoose';
-import db1 from "../db/conn.js"
-const amenitySchema = new mongoose.Schema({
-
-  
-
+import mongoose from "mongoose";
+import db1 from "../db/conn.js";
+const amenitySchema = new mongoose.Schema(
+  {
     propertyId: {
-        type: String,
-        default: ''
+      type: String,
+      default: "",
     },
 
     createdBy: {
-        type: String,
-        default: ''
+      type: String,
+      default: "",
     },
 
     createdOn: {
-        type: String,
-        default: ''
+      type: String,
+      default: "",
     },
 
-    modifiedBy: [{
+    modifiedBy: [
+      {
         modifiedBy: {
-            type: String,
-            default: ''
-        }
-    }],
+          type: String,
+          default: "",
+        },
+        logId: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
 
-    shortCode:[{
-    shortCode: {
-        type: String,
-        default: ''
-    },
-}],
+    shortCode: [
+      {
+        shortCode: {
+          type: String,
+          default: "",
+        },
+        logId: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
 
-    modifiedOn: [{
+    modifiedOn: [
+      {
         modifiedOn: {
-            type: String,
-            default: ''
-        }
-    }],
+          type: String,
+          default: "",
+        },
+        logId: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
 
     amenityId: {
-        type: String,
-        default: ''
+      type: String,
+      default: "",
     },
 
-    amenityName: [{
+    amenityName: [
+      {
         amenityName: {
-            type: String,
-            default: ''
-        }
-    }],
+          type: String,
+          default: "",
+        },
+        logId: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
 
-
-    amenityType: [{
+    amenityType: [
+      {
         amenityType: {
-            type: String,
-            default: ''
-        }
-    }],
+          type: String,
+          default: "",
+        },
+        logId: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
 
-    amenityIcon: [{
+    amenityIcon: [
+      {
         amenityIcon: {
-            type: String,
-            default: ''
-        }
-    }],
+          type: String,
+          default: "",
+        },
+        logId: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
 
-    amenityIconLink: [{
+    amenityIconLink: [
+      {
         amenityIconLink: {
-            type: String,
-            default: ''
-        }
-    }],
-
-},
-    {
-        versionKey: false
-    }
+          type: String,
+          default: "",
+        },
+        logId: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
+  },
+  {
+    versionKey: false,
+  }
 );
-const amenity = db1.model('amenity', amenitySchema);
+const amenity = db1.model("amenity", amenitySchema);
 export default amenity;

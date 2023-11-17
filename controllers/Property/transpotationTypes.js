@@ -2,10 +2,11 @@ import transportation from "../../models/transportationTypes.js"
 import verifying from "../../models/verifiedUsers.js"
 import randomString from "randomstring"
 import { convertTimestampToCustomFormat, getCurrentUTCTimestamp, findUserByUserIdAndToken } from "../../helpers/helper.js"
+import transportationLog from "../../models/LogModels/transportationLog.js"
 
 //post 
 export const transportationAdd = async (req, res) => {
-    const { userId } = req.body;
+    const { userId ,deviceType,transportationModeName,shortCode,ipAddress} = req.body;
 
     try {
         const UserauthCode = await verifying.findOne({ userId: userId });
@@ -16,26 +17,55 @@ export const transportationAdd = async (req, res) => {
         const authCodeDetails = req.headers["authcode"];
         const userRole = UserauthCode.role[0].role || ""
         const result = await findUserByUserIdAndToken(userId, authCodeDetails);
+        const currentUTCTime= await getCurrentUTCTimestamp();
 
         if (result.success) {
             const data = transportation({
                 transportationId: randomString.generate(8),
                 shortCode: [{
-                    shortCode: req.body.shortCode,
+                    shortCode: shortCode,
                     logId: randomString.generate(10)
                 }],
                 propertyId: req.body.propertyId,
                 transportationModeName: [{
-                    transportationModeName: req.body.transportationModeName,
+                    transportationModeName: transportationModeName,
                     logId: randomString.generate(10)
                 }],
                 createdBy: userRole,
-                createdOn: await getCurrentUTCTimestamp(),
+                createdOn: currentUTCTime,
                 modifiedBy: [],
                 modifiedOn: []
             });
 
-            await data.save();
+           const savedTranportation=  await data.save();
+
+            //save data in logs
+
+            const addTransportationLog=new transportationLog({
+                userId:savedTranportation.userId,
+                propertyId:savedTranportation.propertyId,
+                createdOn:savedTranportation.createdOn,
+                createdBy:savedTranportation.createdBy,
+                transportationId:savedTranportation.transportationId,
+                shortCode: [
+                    {
+                      shortCode: savedTranportation.shortCode[0].shortCode,
+                      logId: savedTranportation.shortCode[0].logId,
+                      userId: userId,
+                      deviceType: deviceType,
+                      modifiedOn: currentUTCTime,
+                    },
+                  ],
+                  transportationModeName: [{
+                    transportationModeName: savedTranportation.transportationModeName[0].transportationModeName,
+                    logId: savedTranportation.transportationModeName[0].logId,
+                    userId: userId,
+                    deviceType: deviceType,
+                    modifiedOn: currentUTCTime,
+                }],
+            })
+
+            await addTransportationLog.save();
             return res.status(200).json({ message: "Transportation added successfully", statuscode: 200 });
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

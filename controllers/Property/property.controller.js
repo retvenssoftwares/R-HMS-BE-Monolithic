@@ -70,8 +70,8 @@ const postProperty = async (req, res) => {
       const newProperty = new propertyModel({
         userId,
         country,
-        createdOn:currentUTCTime,
-       propertyId : randomstring.generate({charset: 'numeric',length:6}),
+        createdOn: currentUTCTime,
+        propertyId: randomstring.generate({ charset: 'numeric', length: 6 }),
         propertyAddress1: [
           {
             propertyAddress1,
@@ -152,7 +152,8 @@ const postProperty = async (req, res) => {
       // Create a propertyImages record and associate it with the property
       const propertyImages = new propertyImageModel({
         propertyId: savedProperty.propertyId, // Use the propertyId from the saved property record
-        propertyImages: []
+        propertyImages: [],
+        deletedPropertyImages: []
       });
 
       // Save the propertyImages record
@@ -164,18 +165,18 @@ const postProperty = async (req, res) => {
       })
       await add.save()
 
-   
-       
-    // Push propertyId in the hotelCode array of findUser model
-           findUser.hotelCode.push({
-             hotelCode: savedProperty.propertyId
-           });
 
-           // Save the updated findUser
-            await findUser.save();
+      // Push propertyId in the hotelCode array of findUser model
+      findUser.hotelCode.push({
+        hotelCode: savedProperty.propertyId
+      });
+
+      // Save the updated findUser
+      await findUser.save();
 
 
-      return res.status(200).json({ message: "New property added successfully",propertyId:savedProperty.propertyId, statuscode: 200 });
+      return res.status(200).json({ message: "New property added successfully", propertyId: savedProperty.propertyId, statuscode: 200 });
+
 
     } else {
       return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

@@ -72,7 +72,7 @@ const getRoomAvailability = async (req, res) => {
                     { $match: { propertyId: propertyId, roomTypeId: roomTypeId } }
                 ]);
 
-                const holdBookings = await holdData.find({ propertyId: propertyId, roomTypeId: roomTypeId });
+                const holdBookings = await holdData.find({ propertyId: propertyId, roomTypeId: roomTypeId, checkInDate: { $gte: checkInDateISO, $lt: checkOutDateISO }, });
                 const inventoryValues = holdBookings.map(booking => booking.inventory);
 
                 let currentDate = new Date(checkInDate);
@@ -91,12 +91,12 @@ const getRoomAvailability = async (req, res) => {
                         )
                     );
 
-                    const blockedInventoryDates = new Set(
-                        manageInventoryData.flatMap(item => item.manageInventory.blockedInventory
-                            .filter(blocked => blocked.date >= checkInDate && blocked.date <= checkOutDate)
-                            .map(blocked => blocked.date)
-                        )
-                    );
+                    // const blockedInventoryDates = new Set(
+                    //     manageInventoryData.flatMap(item => item.manageInventory.blockedInventory
+                    //         .filter(blocked => blocked.date >= checkInDate && blocked.date <= checkOutDate)
+                    //         .map(blocked => blocked.date)
+                    //     )
+                    // );
 
                     let calculatedInventoryData = [];
 

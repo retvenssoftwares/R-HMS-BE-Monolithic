@@ -2,11 +2,12 @@ import Randomstring from 'randomstring'
 import season from '../../models/season.js'
 import verifiedUser from '../../models/verifiedUsers.js'
 import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/helper.js'
+import seasonsLog from '../../models/LogModels/seasonsLog.js'
 
 const patchSeason = async (req, res) => {
     try {
         const { userId } = req.query
-        const { shortCode, seasonName, startDate, endDate, days } = req.body;
+        const { shortCode, seasonName, startDate, endDate, days,deviceType,ipAddress } = req.body;
         const seasonId = req.query.seasonId;
         const authCodeValue = req.headers['authcode'];
         const findUser = await verifiedUser.findOne({ userId });
@@ -16,8 +17,9 @@ const patchSeason = async (req, res) => {
         }
 
         let userRole = findUser.role[0].role;
+        const userid =findUser.userId;
 
-        const result = await findUserByUserIdAndToken(userId, authCodeValue)
+        const result = await findUserByUserIdAndToken(userid, authCodeValue)
 
         if (result.success) {
             const findSeason = await season.findOne({ seasonId });
@@ -29,7 +31,7 @@ const patchSeason = async (req, res) => {
             if (shortCode) {
                 const shortCodeObject = {
                     shortCode: shortCode,
-                    logId: Randomstring.generate(10)
+                    logId: Randomstring.generate(10),
                 };
                 findSeason.shortCode.unshift(shortCodeObject);
             }
@@ -77,7 +79,82 @@ const patchSeason = async (req, res) => {
             const updatedSeason = await findSeason.save();
 
             if (updatedSeason) {
-                return res.status(200).json({ message: "Season successfully updated", statuscode: 200 });
+
+                // save data in logs
+                const findSeasonLog = await seasonsLog.findOne({ seasonId });
+
+                if (findSeasonLog){
+                if (shortCode) {
+                    const shortCodeObject = {
+                        shortCode:updatedSeason.shortCode[0].shortCode,
+                        logId:updatedSeason.shortCode[0].logId,
+                        userId:userid,
+                        deviceType:deviceType,
+                        ipAddress:ipAddress,
+                        modifiedOn:currentUTCTime,
+                    };
+                    findSeasonLog.shortCode.unshift(shortCodeObject);
+                }
+
+                if (seasonName) {
+                    const seasonNameObject = {
+                        seasonName:updatedSeason.seasonName[0].seasonName,
+                        logId:updatedSeason.seasonName[0].logId,
+                        userId:userid,
+                        deviceType:deviceType,
+                        ipAddress:ipAddress,
+                        modifiedOn:currentUTCTime,
+                    };
+                    findSeasonLog.seasonName.unshift(seasonNameObject);
+                }
+    
+                if (startDate) {
+                    const startDateObject = {
+                        startDate:updatedSeason.startDate[0].startDate,
+                        logId:updatedSeason.startDate[0].logId,
+                        userId:userid,
+                        deviceType:deviceType,
+                        ipAddress:ipAddress,
+                        modifiedOn:currentUTCTime,
+                    };
+                    findSeasonLog.startDate.unshift(startDateObject);
+                }
+    
+                if (endDate) {
+                    const endDateObject = {
+                        endDate:updatedSeason.endDate[0].endDate,
+                        logId:updatedSeason.endDate[0].logId,
+                        userId:userid,
+                        deviceType:deviceType,
+                        ipAddress:ipAddress,
+                        modifiedOn:currentUTCTime,
+                    };
+                    findSeasonLog.endDate.unshift(endDateObject);
+                }
+    
+                if (days) {
+                    const daysObject = { 
+                        endDate:updatedSeason.days[0].days,
+                        logId:updatedSeason.days[0].logId,
+                        userId:userid,
+                        deviceType:deviceType,
+                        ipAddress:ipAddress,
+                        modifiedOn:currentUTCTime,
+                      }
+                    findSeasonLog.days.unshift(daysObject);
+                }
+            }
+            await findSeasonLog.save();
+    
+                // const modifiedByObject = {
+                //     modifiedBy: userRole,
+                //     logId: Randomstring.generate(10)
+                // };
+    
+                // findSeasonLog.modifiedBy.unshift(modifiedByObject);
+                // findSeasonLog.modifiedOn.unshift({ modifiedOn: currentUTCTime, logId: Randomstring.generate(10) });
+
+                return res.status(200).json({ message: "Season updated successfully ", statuscode: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

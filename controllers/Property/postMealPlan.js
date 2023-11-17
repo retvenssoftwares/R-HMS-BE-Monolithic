@@ -70,6 +70,7 @@ const postMealPlan = async (req, res) => {
           logId: savedMealPlan.shortCode[0].logId,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn:currentUTCTime,
       }],
       mealPlanName: [{
@@ -77,6 +78,7 @@ const postMealPlan = async (req, res) => {
         logId: savedMealPlan.mealPlanName[0].logId,
         userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn:currentUTCTime,
         }],
         chargesPerOccupancy: [{
@@ -84,6 +86,7 @@ const postMealPlan = async (req, res) => {
               logId: savedMealPlan.chargesPerOccupancy[0].logId,
               userId: userId,
               deviceType: deviceType,
+              ipAddress:ipAddress,
               modifiedOn:currentUTCTime,
             }],
       })

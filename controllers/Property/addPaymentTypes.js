@@ -56,6 +56,7 @@ const addPaymentType = async (req, res) => {
                       shortCode: savedPaymentType.shortCode[0].shortCode,
                       userId: userId,
                       deviceType: deviceType,
+                      ipAddress:ipAddress,
                       modifiedOn:currentUTCTime,
                     },
                   ],
@@ -64,6 +65,7 @@ const addPaymentType = async (req, res) => {
                     paymentMethodName: savedPaymentType.paymentMethodName[0].paymentMethodName,
                     userId: userId,
                     deviceType: deviceType,
+                    ipAddress:ipAddress,
                     modifiedOn:currentUTCTime,
                 }],
                 receivedTo: [{
@@ -71,6 +73,7 @@ const addPaymentType = async (req, res) => {
                     receivedTo: savedPaymentType.receivedTo[0].receivedTo,
                     userId: userId,
                     deviceType: deviceType,
+                    ipAddress:ipAddress,
                     modifiedOn:currentUTCTime,
                 }],
             })

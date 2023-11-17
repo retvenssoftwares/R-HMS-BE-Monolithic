@@ -133,60 +133,6 @@ const seasonLogModel = new mongoose.Schema({
     default: "",
   },
 
-  modifiedBy: [
-    {
-      modifiedBy: {
-        type: String,
-        default: "",
-      },
-      logId: {
-        type: String,
-        default: "",
-      },
-      modifiedOn: {
-        type: String,
-        default: "",
-      },
-      userId: {
-        type: String,
-        default: "",
-      },
-      ipAddress: {
-        type: String,
-        default: "",
-      },
-      deviceType: {
-        type: String,
-        default: "",
-      },
-    },
-  ],
-
-  modifiedOn: [
-    {
-      modifiedOn: {
-        type: String,
-        default: "",
-      },
-      logId: {
-        type: String,
-        default: "",
-      },
-      userId: {
-        type: String,
-        default: "",
-      },
-      ipAddress: {
-        type: String,
-        default: "",
-      },
-      deviceType: {
-        type: String,
-        default: "",
-      },
-    },
-  ],
-
   days: [
     {
       days: [

@@ -82,6 +82,25 @@ const reservationLogModel = new mongoose.Schema({
     deviceType: { type: String, default: "" },
     },
   ],
+  displayStatus: [
+    {
+      displayStatus: {
+        type: String,
+        default: "",
+      },
+      logId: { type: String, default: "" },
+      modifiedOn:{
+        type: String,
+        default: ""
+    },
+    userId:{
+        type: String,
+        default: ""
+    },
+    ipAddress: { type: String, default: "" },
+    deviceType: { type: String, default: "" },
+    },
+  ],
 });
 
 const reservationLog = db2.model("reservationLogModel", reservationLogModel);

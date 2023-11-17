@@ -95,8 +95,6 @@ router.patch("/api/updatePropertyImage",updatePropertyImage)
 
 router.patch("/api/editProperty", editProperty);
 
-//patch Identity
-
 //company
 // router.post("/api/addCompany", upload.fields([{ name: "companyLogo", maxCount: 1 }, { name: "contractPdf", maxCount: 3 }]), addCompany)
 

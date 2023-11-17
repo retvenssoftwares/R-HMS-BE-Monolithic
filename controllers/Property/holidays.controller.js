@@ -4,6 +4,7 @@ dotenv.config();
 import verifiedUser from "../../models/verifiedUsers.js";
 import holidayModel from "../../models/holidays.js";
 import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from "../../helpers/helper.js";
+import holidayLog from "../../models/LogModels/holidayLog.js";
 
 const postHoliday = async (req, res) => {
   try {
@@ -14,6 +15,8 @@ const postHoliday = async (req, res) => {
       holidayName,
       startDate,
       endDate,
+      deviceType,
+      ipAddress
     } = req.body;
 
     const authCodeValue = req.headers['authcode']
@@ -23,6 +26,7 @@ const postHoliday = async (req, res) => {
     }
 
     const result = await findUserByUserIdAndToken(userId, authCodeValue)
+    const currentUTCTime= await getCurrentUTCTimestamp();
     if (result.success) {
       let userRole = findUser.role[0].role
 
@@ -48,14 +52,62 @@ const postHoliday = async (req, res) => {
         }],
         createdBy: userRole,
 
-        createdOn: await getCurrentUTCTimestamp(),
+        createdOn: currentUTCTime,
 
         modifiedBy: [],
         modifiedOn: [],
        
 
       });
-      await newHoliday.save();
+      const savedHoliday= await newHoliday.save();
+
+      //save data in logs
+
+      const addHolidayLog= new holidayLog({
+        userId:savedHoliday.userId,
+        holidayId:savedHoliday.holidayId,
+        createdBy:savedHoliday.createdBy,
+        createdOn:savedHoliday.createdOn,
+        propertyId:savedHoliday.propertyId,
+        shortCode: [
+          {
+            logId: savedHoliday.shortCode[0].logId,
+            shortCode: savedHoliday.shortCode[0].shortCode,
+            userId: userId,
+            deviceType: deviceType,
+            modifiedOn:currentUTCTime,
+          },
+        ],
+        holidayName: [
+          {
+            holidayName: savedHoliday.holidayName[0].holidayName,
+            logId: savedHoliday.holidayName[0].logId,
+            userId: userId,
+            deviceType: deviceType,
+            modifiedOn: currentUTCTime,
+          },
+        ],
+        startDate: [
+          {
+            startDate: savedHoliday.startDate[0].startDate,
+            logId: savedHoliday.startDate[0].logId,
+            userId: userId,
+            deviceType: deviceType,
+            modifiedOn: currentUTCTime,
+          },
+        ],
+        endDate: [
+          {
+            endDate: savedHoliday.endDate[0].endDate,
+            logId: savedHoliday.endDate[0].logId,
+            userId: userId,
+            deviceType: deviceType,
+            modifiedOn: currentUTCTime,
+          },
+        ],
+      })
+      await addHolidayLog.save();
+
       return res.status(200).json({ message: "New holiday added successfully", statuscode: 200 });
     } else {
       return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

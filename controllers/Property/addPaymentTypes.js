@@ -2,10 +2,11 @@ import randomstring from 'randomstring'
 import paymentTypeModel from '../../models/paymentTypes.js'
 import verifiedUser from '../../models/verifiedUsers.js'
 import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/helper.js'
+import paymentLog from '../../models/LogModels/paymentLogs.js'
 
 const addPaymentType = async (req, res) => {
     try {
-        const {userId, shortCode, paymentMethodName, propertyId, receivedTo } = req.body
+        const {userId, shortCode, paymentMethodName, propertyId, receivedTo,deviceType,ipAddress } = req.body
         const authCodeValue = req.headers['authcode']
 
         const findUser = await verifiedUser.findOne({ userId })
@@ -15,6 +16,7 @@ const addPaymentType = async (req, res) => {
         }
         let userRole = findUser.role[0].role
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
+        const currentUTCTime=await getCurrentUTCTimestamp()
 
         if (result.success) {
             const createPaymentType = new paymentTypeModel({
@@ -34,11 +36,46 @@ const addPaymentType = async (req, res) => {
                     logId: randomstring.generate(10)
                 }],
                 createdBy: userRole,
-                createdOn: await getCurrentUTCTimestamp(),
+                createdOn: currentUTCTime,
                 modifiedBy: [],
                 modifiedOn: []
             });
-            await createPaymentType.save();
+            const savedPaymentType= await createPaymentType.save();
+
+            //save data in logs
+
+            const addPaymentLogs = new paymentLog({
+                userId:savedPaymentType.userId,
+                createdBy:savedPaymentType.createdBy,
+                createdOn:savedPaymentType.createdOn,
+                propertyId:savedPaymentType.propertyId,
+                paymentTypeId:savedPaymentType.paymentTypeId,
+                shortCode: [
+                    {
+                      logId: savedPaymentType.shortCode[0].logId,
+                      shortCode: savedPaymentType.shortCode[0].shortCode,
+                      userId: userId,
+                      deviceType: deviceType,
+                      modifiedOn:currentUTCTime,
+                    },
+                  ],
+                  paymentMethodName: [{
+                    logId: savedPaymentType.paymentMethodName[0].logId,
+                    paymentMethodName: savedPaymentType.paymentMethodName[0].paymentMethodName,
+                    userId: userId,
+                    deviceType: deviceType,
+                    modifiedOn:currentUTCTime,
+                }],
+                receivedTo: [{
+                    logId: savedPaymentType.receivedTo[0].logId,
+                    receivedTo: savedPaymentType.receivedTo[0].receivedTo,
+                    userId: userId,
+                    deviceType: deviceType,
+                    modifiedOn:currentUTCTime,
+                }],
+            })
+
+            await addPaymentLogs.save();
             return res.status(200).json({ message: "Payment type successfully added", statuscode: 200 })
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

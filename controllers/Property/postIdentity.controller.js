@@ -4,6 +4,7 @@ dotenv.config();
 import identityModel from "../../models/identityTypes.js";
 import verifiedUser from "../../models/verifiedUsers.js";
 import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/helper.js'
+import identityLog from "../../models/LogModels/identityLogs.js";
 
 const userIdentity = async (req, res) => {
     try {
@@ -12,12 +13,15 @@ const userIdentity = async (req, res) => {
             shortCode,
             identityType,
             propertyId,
+            deviceType,
+            ipAddress
         } = req.body;
 
         const authCodeValue = req.headers['authcode']
         const findUser = await verifiedUser.findOne({ userId })
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
+        const currentUTCTime= await getCurrentUTCTimestamp();
 
         if (result.success) {
             if (findUser) {
@@ -30,7 +34,7 @@ const userIdentity = async (req, res) => {
                         logId: Randomstring.generate(10)
                     }],
                     createdBy: userRole,
-                    createdOn: await getCurrentUTCTimestamp(),
+                    createdOn: currentUTCTime,
                     modifiedBy: [],
                     modifiedOn: [],
                     identityType: [{
@@ -42,7 +46,34 @@ const userIdentity = async (req, res) => {
 
                     identityTypeId: Randomstring.generate(8)
                 });
-                await newIdentity.save();
+                const savedIdentity= await newIdentity.save();
+                
+                // save data in logs
+                const addidentityLog =new identityLog({
+                    userId:savedIdentity.userId,
+                    propertyId:savedIdentity.propertyId,
+                    identityTypeId:savedIdentity.identityTypeId,
+                    createdBy:savedIdentity.createdBy,
+                    createdOn:savedIdentity.createdOn,
+                    shortCode: [{
+                        logId:savedIdentity.shortCode[0].logId,
+                        shortCode: savedIdentity.shortCode[0].shortCode,
+                        userId: userId,
+                        deviceType: deviceType,
+                        modifiedOn: currentUTCTime,                 
+                       }],
+                       identityType: [{
+                        logId:savedIdentity.identityType[0].logId,
+                        identityType: savedIdentity.identityType[0].identityType,
+                        userId: userId,
+                        deviceType: deviceType,
+                        modifiedOn: currentUTCTime,   
+                    }],
+                    
+                })
+
+                await addidentityLog.save()
+
                 return res.status(200).json({ message: "New identity added successfully", statuscode: 200 });
             } else {
                 return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 });

@@ -11,7 +11,9 @@ const postReservationType = async (req, res) => {
       userId,
       propertyId,
       reservationName,
-      status
+      status,
+      deviceType,
+      ipAddress,
     } = req.body;
 
     const authCodeValue = req.headers['authcode']
@@ -22,6 +24,7 @@ const postReservationType = async (req, res) => {
 
     let userRole = findUser.role[0].role
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
+    const currentUTCTime=await getCurrentUTCTimestamp();
     if (result.success) {
       const newReservation = new reservationModel({
 

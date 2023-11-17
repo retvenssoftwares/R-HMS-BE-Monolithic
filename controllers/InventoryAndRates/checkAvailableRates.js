@@ -76,26 +76,39 @@ const checkRate = async (req, res) => {
         const roomTypeId = result.roomTypeId;
         const barRatePlanId = result.barRatePlanId;
         //console.log(barRatePlanId)
-        const restrictionDocument = await restrictionModel.findOne({
-         // propertyId,
-          roomTypeId,
-          ratePlanId: barRatePlanId,
-        });
-        //console.log(restrictionDocument)
+        // const restrictionDocument = await restrictionModel.findOne({
+        //  // propertyId,
+        //   roomTypeId,
+        //   ratePlanId: barRatePlanId,
+        // });
+        // //console.log(restrictionDocument)
 
-        const otaDocuments = await otaModel.find({
-         // propertyId,
-          roomTypeId,
-          ratePlanId: barRatePlanId,
-        },
-        { otaId: 1, source: 1,manageOTARates: 1 } // Include otaId and source in the projection
-        )
+        // const otaDocuments = await otaModel.find({
+        //  // propertyId,
+        //   roomTypeId,
+        //   ratePlanId: barRatePlanId,
+        // },
+        // { otaId: 1, source: 1,manageOTARates: 1 } // Include otaId and source in the projection
+        // )
+
+        
+ // Fetch restriction document
+ const restrictionDocumentPromise = restrictionModel.findOne({
+  roomTypeId,
+  ratePlanId: barRatePlanId,
+});
+
+// Fetch OTA documents
+const otaDocumentsPromise = otaModel.find({
+  roomTypeId,
+  ratePlanId: barRatePlanId,
+}, { otaId: 1, source: 1, manageOTARates: 1 });
+
+// Execute both promises concurrently
+const [restrictionDocument, otaDocuments] = await Promise.all([restrictionDocumentPromise, otaDocumentsPromise]);
 
 
-       
-
-       
-
+      
         // const otaIds = otaDocuments.map((otaDoc) => ({
         //   otaId: otaDoc.otaId,
         //   source: otaDoc.source,

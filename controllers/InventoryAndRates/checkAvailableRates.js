@@ -1,7 +1,7 @@
 import barRateModel from "../../models/barRatePlan.js";
 import rateModel from "../../models/manageRatesAndRestrictions.js";
-import otaModel from "../../models/manageOTARates.js"
-import otaAdmin from "../../models/superAdmin/otaModel.js"
+import otaModel from "../../models/manageOTARates.js";
+import otaAdmin from "../../models/superAdmin/otaModel.js";
 import restrictionModel from "../../models/manageRestrictions.js";
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
 import verifiedUser from "../../models/verifiedUsers.js";
@@ -70,11 +70,10 @@ const checkRate = async (req, res) => {
         },
       ]);
 
-      const response = [];
+      //const response = [];
       const OTA = [];
-      for (const result of ratePlanTotalResult) {
-        const roomTypeId = result.roomTypeId;
-        const barRatePlanId = result.barRatePlanId;
+      const response = await Promise.all(ratePlanTotalResult.map(async (result) => {
+        const { roomTypeId, barRatePlanId } = result;
         //console.log(barRatePlanId)
         // const restrictionDocument = await restrictionModel.findOne({
         //  // propertyId,
@@ -91,24 +90,11 @@ const checkRate = async (req, res) => {
         // { otaId: 1, source: 1,manageOTARates: 1 } // Include otaId and source in the projection
         // )
 
-        
- // Fetch restriction document
- const restrictionDocumentPromise = restrictionModel.findOne({
-  roomTypeId,
-  ratePlanId: barRatePlanId,
-});
-
-// Fetch OTA documents
-const otaDocumentsPromise = otaModel.find({
-  roomTypeId,
-  ratePlanId: barRatePlanId,
-}, { otaId: 1, source: 1, manageOTARates: 1 });
-
-// Execute both promises concurrently
-const [restrictionDocument, otaDocuments] = await Promise.all([restrictionDocumentPromise, otaDocumentsPromise]);
-
-
-      
+        // Fetch restriction document
+        const [restrictionDocument, otaDocuments] = await Promise.all([
+          restrictionModel.findOne({ roomTypeId, ratePlanId: barRatePlanId }),
+          otaModel.find({ roomTypeId, ratePlanId: barRatePlanId }, { otaId: 1, source: 1, manageOTARates: 1 }),
+        ]);
         // const otaIds = otaDocuments.map((otaDoc) => ({
         //   otaId: otaDoc.otaId,
         //   source: otaDoc.source,
@@ -116,7 +102,6 @@ const [restrictionDocument, otaDocuments] = await Promise.all([restrictionDocume
         //     rate.date >= startDate && rate.date <= endDate
         //   )),
         // }));
-
 
         // const otaIds = otaDocuments.map((otaDoc) => {
         //   const OTARates = otaDoc.manageOTARates.baseRate
@@ -130,7 +115,7 @@ const [restrictionDocument, otaDocuments] = await Promise.all([restrictionDocume
         //       date: rate.date,
         //       _id: rate._id,
         //     }));
-  
+
         //   return {
         //     otaId: otaDoc.otaId,
         //     source: otaDoc.source,
@@ -138,62 +123,66 @@ const [restrictionDocument, otaDocuments] = await Promise.all([restrictionDocume
         //   };
         // });
 
-
         //ota rates
-        const otaIds = await Promise.all(otaDocuments.map(async (otaDoc) => {
-          const OTARates = [];
-          const startDateObj = new Date(startDate);
-          const endDateObj = new Date(endDate);
-        
-          while (startDateObj <= endDateObj) {
-            const formattedDate = startDateObj.toISOString().slice(0, 10);
-        
-            const rate = otaDoc.manageOTARates.baseRate.find((rate) => rate.date === formattedDate);
-        
-            const extraAdultRate =
-              otaDoc.manageOTARates.extraAdultRate.find((extra) => extra.date === formattedDate)?.extraAdultRate ||
-              result.extraAdultRate;
-        
-            const extraChildRate =
-              otaDoc.manageOTARates.extraChildRate.find((extra) => extra.date === formattedDate)?.extraChildRate ||
-              result.extraChildRate;
-        
-            OTARates.push({
-              baseRate: rate ? rate.baseRate : result.ratePlanTotal,
-              extraAdultRate,
-              extraChildRate,
-              date: formattedDate,
-              //_id: rate ? rate._id : "false", // Assuming a default value for _id when date is missing
+        const otaIds = await Promise.all(
+          otaDocuments.map(async (otaDoc) => {
+            const OTARates = [];
+            const startDateObj = new Date(startDate);
+            const endDateObj = new Date(endDate);
+
+            while (startDateObj <= endDateObj) {
+              const formattedDate = startDateObj.toISOString().slice(0, 10);
+
+              const rate = otaDoc.manageOTARates.baseRate.find(
+                (rate) => rate.date === formattedDate
+              );
+
+              const extraAdultRate =
+                otaDoc.manageOTARates.extraAdultRate.find(
+                  (extra) => extra.date === formattedDate
+                )?.extraAdultRate || result.extraAdultRate;
+
+              const extraChildRate =
+                otaDoc.manageOTARates.extraChildRate.find(
+                  (extra) => extra.date === formattedDate
+                )?.extraChildRate || result.extraChildRate;
+
+              OTARates.push({
+                baseRate: rate ? rate.baseRate : result.ratePlanTotal,
+                extraAdultRate,
+                extraChildRate,
+                date: formattedDate,
+                //_id: rate ? rate._id : "false", // Assuming a default value for _id when date is missing
+              });
+
+              startDateObj.setDate(startDateObj.getDate() + 1);
+            }
+
+            const otaData = await otaAdmin.findOne({
+              "otaId.otaId": otaDoc.otaId,
             });
-        
-            startDateObj.setDate(startDateObj.getDate() + 1);
-          }
-        
-          const otaData = await otaAdmin.findOne({ "otaId.otaId": otaDoc.otaId });
-          const data = {
-           // otaLogo: otaData.otaLogo[0].otaLogo,
-           // otaName: otaData.otaName[0].otaName 
-           otaLogo: otaData?.otaLogo?.[0]?.otaLogo ?? "DefaultLogo",
-           otaName: otaData?.otaName?.[0]?.otaName ?? "DefaultName"
-          };
-        
-          return {
-            otaId: otaDoc.otaId,
-            otalogo : data.otaLogo,
-            otaName : data.otaName,
-            //source: otaDoc.source,
-            OTARates,
-          };
-        }));
-        
-    //    console.log(otaIds);
-        
-        
-  
-      
+            const data = {
+              // otaLogo: otaData.otaLogo[0].otaLogo,
+              // otaName: otaData.otaName[0].otaName
+              otaLogo: otaData?.otaLogo?.[0]?.otaLogo ?? "DefaultLogo",
+              otaName: otaData?.otaName?.[0]?.otaName ?? "DefaultName",
+            };
+
+            return {
+              otaId: otaDoc.otaId,
+              otalogo: data.otaLogo,
+              otaName: data.otaName,
+              //source: otaDoc.source,
+              OTARates,
+            };
+          })
+        );
+
+        //    console.log(otaIds);
+
         if (restrictionDocument) {
           const rateDocument = await rateModel.findOne({
-           // propertyId,
+            // propertyId,
             roomTypeId,
             ratePlanId: barRatePlanId,
           });
@@ -214,8 +203,16 @@ const [restrictionDocument, otaDocuments] = await Promise.all([restrictionDocume
             endDate
           );
 
-          const filteredCOA =fillMissingDatesAndSort(  restrictionDocument.manageRestrictions.COA,startDate,endDate);
-          const filteredCOD =fillMissingDatesAndSort(  restrictionDocument.manageRestrictions.COD,startDate,endDate);
+          const filteredCOA = fillMissingDatesAndSort(
+            restrictionDocument.manageRestrictions.COA,
+            startDate,
+            endDate
+          );
+          const filteredCOD = fillMissingDatesAndSort(
+            restrictionDocument.manageRestrictions.COD,
+            startDate,
+            endDate
+          );
 
           // Include restrictions and rates
           const baseRates = [];
@@ -288,7 +285,7 @@ const [restrictionDocument, otaDocuments] = await Promise.all([restrictionDocume
               (entry) => entry.date === item.date
             );
             if (existingBaseRate) {
-              existingBaseRate.COD= item.COD;
+              existingBaseRate.COD = item.COD;
             } else {
               const baseRateEntry = {
                 // baseRate: result.ratePlanTotal,
@@ -298,8 +295,6 @@ const [restrictionDocument, otaDocuments] = await Promise.all([restrictionDocume
               baseRates.push(baseRateEntry);
             }
           });
-
-
 
           // Filter and sort the baseRate array, and replace empty array with false
           const baseRate = rateDocument
@@ -377,20 +372,28 @@ const [restrictionDocument, otaDocuments] = await Promise.all([restrictionDocume
           });
 
           // Include restrictions and rates
-          response.push({
+          return {
             ...result,
             baseRates,
-            OTA: otaIds.length > 0 ? otaIds: [{ otaId: "false",otaName:"false", otaLogo : "false", ratePlanId: "false" }],
-            
-          });
- 
+            OTA:
+              otaIds.length > 0
+                ? otaIds
+                : [
+                    {
+                      otaId: "false",
+                      otaName: "false",
+                      otaLogo: "false",
+                      ratePlanId: "false",
+                    },
+                  ],
+          };
         } else if (!restrictionDocument) {
           const rateDocument = await rateModel.findOne({
-           // propertyId,
+            // propertyId,
             roomTypeId,
             ratePlanId: barRatePlanId,
           });
-        
+
           // Include rates, but no restrictions
           const baseRates = [];
           const currentDate = new Date(startDate);
@@ -399,17 +402,20 @@ const [restrictionDocument, otaDocuments] = await Promise.all([restrictionDocume
             const baseRateEntry = {
               date: formattedDate,
               stopSell: "false",
-              COA:"false",
-              COD:"false",
+              COA: "false",
+              COD: "false",
               minimumLOS: 0,
               maximumLOS: 0,
             };
-        
-            if (rateDocument && Array.isArray(rateDocument.manageRates.baseRate)) {
+
+            if (
+              rateDocument &&
+              Array.isArray(rateDocument.manageRates.baseRate)
+            ) {
               const matchingRate = rateDocument.manageRates.baseRate.find(
                 (item) => item.date === formattedDate
               );
-        
+
               if (matchingRate) {
                 baseRateEntry.baseRate = matchingRate.baseRate;
               } else {
@@ -418,50 +424,67 @@ const [restrictionDocument, otaDocuments] = await Promise.all([restrictionDocume
             } else {
               baseRateEntry.baseRate = result.ratePlanTotal;
             }
-        
-            if (rateDocument && Array.isArray(rateDocument.manageRates.extraAdultRate)) {
-              const matchingExtraAdultRate = rateDocument.manageRates.extraAdultRate.find(
-                (item) => item.date === formattedDate
-              );
-        
+
+            if (
+              rateDocument &&
+              Array.isArray(rateDocument.manageRates.extraAdultRate)
+            ) {
+              const matchingExtraAdultRate =
+                rateDocument.manageRates.extraAdultRate.find(
+                  (item) => item.date === formattedDate
+                );
+
               if (matchingExtraAdultRate) {
-                baseRateEntry.extraAdultRate = matchingExtraAdultRate.extraAdultRate;
+                baseRateEntry.extraAdultRate =
+                  matchingExtraAdultRate.extraAdultRate;
               } else {
                 baseRateEntry.extraAdultRate = result.extraAdultRate;
               }
             } else {
               baseRateEntry.extraAdultRate = result.extraAdultRate;
             }
-        
-            if (rateDocument && Array.isArray(rateDocument.manageRates.extraChildRate)) {
-              const matchingExtraChildRate = rateDocument.manageRates.extraChildRate.find(
-                (item) => item.date === formattedDate
-              );
-        
+
+            if (
+              rateDocument &&
+              Array.isArray(rateDocument.manageRates.extraChildRate)
+            ) {
+              const matchingExtraChildRate =
+                rateDocument.manageRates.extraChildRate.find(
+                  (item) => item.date === formattedDate
+                );
+
               if (matchingExtraChildRate) {
-                baseRateEntry.extraChildRate = matchingExtraChildRate.extraChildRate;
+                baseRateEntry.extraChildRate =
+                  matchingExtraChildRate.extraChildRate;
               } else {
                 baseRateEntry.extraChildRate = result.extraChildRate;
               }
             } else {
               baseRateEntry.extraChildRate = result.extraChildRate;
             }
-        
+
             baseRates.push(baseRateEntry);
             currentDate.setDate(currentDate.getDate() + 1);
           }
-        
-          response.push({
+
+          return {
             ...result,
             baseRates,
-            OTA: otaIds.length > 0 ? otaIds: [{ otaId: "false", otaName:"false", otaLogo : "false", ratePlanId: "false" }],
-          });
+            OTA:
+              otaIds.length > 0
+                ? otaIds
+                : [
+                    {
+                      otaId: "false",
+                      otaName: "false",
+                      otaLogo: "false",
+                      ratePlanId: "false",
+                    },
+                  ],
+          };
+        }
+      }));
 
-        }
-      
-       
-        }
-    
       if (req.query.status) {
         return response;
       } else {
@@ -520,21 +543,41 @@ function fillMissingDatesAndSort(
       if (!dateSet.has(formattedDate)) {
         if (formattedDate >= startDate) {
           // Check if the date is within the specified range
-          const matchingStopSell = stopSell ? stopSell.find((item) => item.date === formattedDate) : undefined;
-          const matchingMinimumLOS = minimumLOS ? minimumLOS.find((item) => item.date === formattedDate) : undefined;
-          const matchingMaximumLOS = maximumLOS ? maximumLOS.find((item) => item.date === formattedDate) : undefined;
-          const matchingCOA = COA ? COA.find((item) => item.date === formattedDate) : undefined;
-          const matchingCOD = COD ? COD.find((item) => item.date === formattedDate) : undefined;
+          const matchingStopSell = stopSell
+            ? stopSell.find((item) => item.date === formattedDate)
+            : undefined;
+          const matchingMinimumLOS = minimumLOS
+            ? minimumLOS.find((item) => item.date === formattedDate)
+            : undefined;
+          const matchingMaximumLOS = maximumLOS
+            ? maximumLOS.find((item) => item.date === formattedDate)
+            : undefined;
+          const matchingCOA = COA
+            ? COA.find((item) => item.date === formattedDate)
+            : undefined;
+          const matchingCOD = COD
+            ? COD.find((item) => item.date === formattedDate)
+            : undefined;
 
-          if (matchingStopSell || matchingMinimumLOS || matchingMaximumLOS || matchingCOA || matchingCOD) {
+          if (
+            matchingStopSell ||
+            matchingMinimumLOS ||
+            matchingMaximumLOS ||
+            matchingCOA ||
+            matchingCOD
+          ) {
             array.push({
               baseRate: ratePlanTotal,
               extraAdultRate: extraAdultRate,
               stopSell: matchingStopSell ? matchingStopSell.stopSell : "false",
-              minimumLOS: matchingMinimumLOS ? matchingMinimumLOS.minimumLOS : "false",
-              maximumLOS: matchingMaximumLOS ? matchingMaximumLOS.maximumLOS: "false",
-              COA: matchingCOA ? matchingCOA.COA: "false",
-              COD: matchingCOD ? matchingCOD.COD: "false",
+              minimumLOS: matchingMinimumLOS
+                ? matchingMinimumLOS.minimumLOS
+                : "false",
+              maximumLOS: matchingMaximumLOS
+                ? matchingMaximumLOS.maximumLOS
+                : "false",
+              COA: matchingCOA ? matchingCOA.COA : "false",
+              COD: matchingCOD ? matchingCOD.COD : "false",
               date: formattedDate,
             });
           } else {

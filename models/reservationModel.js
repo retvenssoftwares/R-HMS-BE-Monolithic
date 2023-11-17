@@ -263,7 +263,7 @@ const booking = new mongoose.Schema({
                 default: ""
             },
 
-       
+
             internalNote: {
                 type: String,
                 default: ""
@@ -322,18 +322,18 @@ const booking = new mongoose.Schema({
                 default: ""
             },
 
-    
+
             taxes: {
                 type: String,
                 default: ""
             },
-     
+
             from: {
                 type: String,
                 default: ""
             },
 
-  
+
             to: {
                 type: String,
                 default: ""
@@ -375,7 +375,7 @@ const booking = new mongoose.Schema({
                 type: String,
                 default: ""
             },
-     
+
 
             paymentNote: {
                 type: String,
@@ -449,21 +449,21 @@ const booking = new mongoose.Schema({
                 default: ""
             },
 
-          
-    
+
+
             schedule: {
                 type: String,
                 default: ""
             },
 
-        
+
 
             description: {
                 type: String,
                 default: ""
             },
 
-           
+
         }],
 
         logId: {

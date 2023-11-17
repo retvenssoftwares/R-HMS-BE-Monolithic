@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
-import db1 from "../db/conn.js";
-
-const guestDetails = new mongoose.Schema({
+import db2 from "../../db/conn2.js";
+const guestLogModel = new mongoose.Schema({
   guestId: {
     type: String,
     default: "",
@@ -18,6 +17,16 @@ const guestDetails = new mongoose.Schema({
         type: String,
         default: "",
       },
+      modifiedOn: {
+        type: String,
+        default: "",
+      },
+      userId: {
+        type: String,
+        default: "",
+      },
+      ipAddress: { type: String, default: "" },
+      deviceType: { type: String, default: "" },
     },
   ],
 
@@ -32,6 +41,16 @@ const guestDetails = new mongoose.Schema({
         type: String,
         default: "",
       },
+      modifiedOn: {
+        type: String,
+        default: "",
+      },
+      userId: {
+        type: String,
+        default: "",
+      },
+      ipAddress: { type: String, default: "" },
+      deviceType: { type: String, default: "" },
     },
   ],
 
@@ -46,6 +65,16 @@ const guestDetails = new mongoose.Schema({
         type: String,
         default: "",
       },
+      modifiedOn: {
+        type: String,
+        default: "",
+      },
+      userId: {
+        type: String,
+        default: "",
+      },
+      ipAddress: { type: String, default: "" },
+      deviceType: { type: String, default: "" },
     },
   ],
 
@@ -60,6 +89,16 @@ const guestDetails = new mongoose.Schema({
         type: String,
         default: "",
       },
+      modifiedOn: {
+        type: String,
+        default: "",
+      },
+      userId: {
+        type: String,
+        default: "",
+      },
+      ipAddress: { type: String, default: "" },
+      deviceType: { type: String, default: "" },
     },
   ],
 
@@ -74,6 +113,16 @@ const guestDetails = new mongoose.Schema({
         type: String,
         default: "",
       },
+      modifiedOn: {
+        type: String,
+        default: "",
+      },
+      userId: {
+        type: String,
+        default: "",
+      },
+      ipAddress: { type: String, default: "" },
+      deviceType: { type: String, default: "" },
     },
   ],
 
@@ -88,6 +137,16 @@ const guestDetails = new mongoose.Schema({
         type: String,
         default: "",
       },
+      modifiedOn: {
+        type: String,
+        default: "",
+      },
+      userId: {
+        type: String,
+        default: "",
+      },
+      ipAddress: { type: String, default: "" },
+      deviceType: { type: String, default: "" },
     },
   ],
 
@@ -102,6 +161,16 @@ const guestDetails = new mongoose.Schema({
         type: String,
         default: "",
       },
+      modifiedOn: {
+        type: String,
+        default: "",
+      },
+      userId: {
+        type: String,
+        default: "",
+      },
+      ipAddress: { type: String, default: "" },
+      deviceType: { type: String, default: "" },
     },
   ],
 
@@ -116,6 +185,16 @@ const guestDetails = new mongoose.Schema({
         type: String,
         default: "",
       },
+      modifiedOn: {
+        type: String,
+        default: "",
+      },
+      userId: {
+        type: String,
+        default: "",
+      },
+      ipAddress: { type: String, default: "" },
+      deviceType: { type: String, default: "" },
     },
   ],
 
@@ -130,6 +209,16 @@ const guestDetails = new mongoose.Schema({
         type: String,
         default: "",
       },
+      modifiedOn: {
+        type: String,
+        default: "",
+      },
+      userId: {
+        type: String,
+        default: "",
+      },
+      ipAddress: { type: String, default: "" },
+      deviceType: { type: String, default: "" },
     },
   ],
 
@@ -144,6 +233,16 @@ const guestDetails = new mongoose.Schema({
         type: String,
         default: "",
       },
+      modifiedOn: {
+        type: String,
+        default: "",
+      },
+      userId: {
+        type: String,
+        default: "",
+      },
+      ipAddress: { type: String, default: "" },
+      deviceType: { type: String, default: "" },
     },
   ],
 
@@ -158,6 +257,16 @@ const guestDetails = new mongoose.Schema({
         type: String,
         default: "",
       },
+      modifiedOn: {
+        type: String,
+        default: "",
+      },
+      userId: {
+        type: String,
+        default: "",
+      },
+      ipAddress: { type: String, default: "" },
+      deviceType: { type: String, default: "" },
     },
   ],
 
@@ -227,6 +336,16 @@ const guestDetails = new mongoose.Schema({
         type: String,
         default: "",
       },
+      modifiedOn: {
+        type: String,
+        default: "",
+      },
+      userId: {
+        type: String,
+        default: "",
+      },
+      ipAddress: { type: String, default: "" },
+      deviceType: { type: String, default: "" },
     },
   ],
 
@@ -348,9 +467,19 @@ const guestDetails = new mongoose.Schema({
         type: String,
         default: "",
       },
+      modifiedOn: {
+        type: String,
+        default: "",
+      },
+      userId: {
+        type: String,
+        default: "",
+      },
+      ipAddress: { type: String, default: "" },
+      deviceType: { type: String, default: "" },
     },
   ],
 });
 
-const guestCollections = db1.model("guestData", guestDetails);
-export default guestCollections;
+const guestLogs = db2.model("guestLogsModel", guestLogModel);
+export default guestLogs;

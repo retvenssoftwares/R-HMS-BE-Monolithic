@@ -73,10 +73,13 @@ const blockedRooms = async (req, res) => {
                         (entry) => entry.date === dateString
                     );
                 let addedInventory = 0;
+                let blockedInventory = 0;
+                if (existingEntryIndex !== -1) {
+                    blockedInventory = findInventory.manageInventory.blockedInventory[existingEntryIndex].blockedInventory
+                }
                 if (existingEntryIndexAdded !== -1) {
                     addedInventory = findInventory.manageInventory.addedInventory[existingEntryIndexAdded].addedInventory
                 }
-                let blockedInventory = findInventory.manageInventory.blockedInventory[existingEntryIndex].blockedInventory
 
                 const availableInventory = baseInventory + addedInventory - blockedInventory
                 console.log(availableInventory, "ai")
@@ -148,10 +151,13 @@ const blockedRooms = async (req, res) => {
                         (entry) => entry.date === dateString
                     );
                 let addedInventory = 0;
+                let blockedInventory = 0;
                 if (existingEntryIndexAdded !== -1) {
                     addedInventory = findInventory.manageInventory.addedInventory[existingEntryIndexAdded].addedInventory
                 }
-                let blockedInventory = findInventory.manageInventory.blockedInventory[existingEntryIndex].blockedInventory
+                if (existingEntryIndex !== -1) {
+                    blockedInventory = findInventory.manageInventory.blockedInventory[existingEntryIndex].blockedInventory
+                }
 
                 const availableInventory = baseInventory + addedInventory - blockedInventory
                 console.log(availableInventory, "ai")

@@ -20,6 +20,7 @@ const userLogin = async (req, res) => {
        // const findCode = findProfile.hotelRcode
 
         const decryptedPass = decrypt(findPassword)
+        // console.log(decryptedPass)
 
         //add fields validation
         if (username !== findUsername || password !== decryptedPass) {

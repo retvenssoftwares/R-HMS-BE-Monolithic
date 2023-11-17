@@ -1,589 +1,484 @@
-import mongoose  from "mongoose";
+import mongoose from "mongoose";
 import db1 from "../db/conn.js"
 const booking = new mongoose.Schema({
-    
-    propertyId:{
-        type:String,
-        default:""
+
+    propertyId: {
+        type: String,
+        default: ""
     },
 
-    guestId :[{
-        guestId:{
-            type:String,
-            default:""
+    guestId: [{
+        guestId: {
+            type: String,
+            default: ""
         }
     }],
 
-    checkInDate :[{
-       checkInDate:{
-        type:String,
-        default:""
-       },
-
-       logId:{
-        type:String,
-        default:""
-       }
-
-    }],
-
-    checkOutDate:[{
-        checkOutDate :{
-            type:String,
-            default:""
+    checkInDate: [{
+        checkInDate: {
+            type: String,
+            default: ""
         },
 
-        logId:{
-            
-                type:String,
-                default:""
-            
-        }
-    }],
-    
-
-    nightCount:[{
-        nightCount :{
-            type:String,
-            default:""
-        },
-
-        logId:{
-            type:String,
-            default:""
-        }
-    }],
-
-   
-        bookingId :{
-            type:String,
-            default:""
-        },
-
-        
-
-    createdBy:[{
-        createdBy:{
-            type:String,
-            default:""
-        },
-        logId:{
-            type:String,
-            default:""
-        }
-
-    }],
-   
-
-    createdOn:[{
-        createdOn:{
-            type:String,
-            default:""
-        },
-
-        logId:{
-            type:String,
-            default:""
+        logId: {
+            type: String,
+            default: ""
         }
 
     }],
 
-    rateType:[{
-        //change to rateTypeId
-        rateTypeId : {
-            type:String,
-            default:""
+    checkOutDate: [{
+        checkOutDate: {
+            type: String,
+            default: ""
         },
 
-        logId:{
-            type:String,
-            default:""
+        logId: {
+
+            type: String,
+            default: ""
+
         }
-        
     }],
-    
 
-// company Reservation
-// change to companyId
-    companyReservation :[{
-        companyId:{
-            type:String,
-            default:""
+
+    nightCount: [{
+        nightCount: {
+            type: String,
+            default: ""
         },
 
-        logId:{
-            type:String,
-            default:""
+        logId: {
+            type: String,
+            default: ""
+        }
+    }],
+
+
+    bookingId: {
+        type: String,
+        default: ""
+    },
+
+
+
+    createdBy: [{
+        createdBy: {
+            type: String,
+            default: ""
+        },
+        logId: {
+            type: String,
+            default: ""
         }
 
     }],
 
 
-// bar reservation
-    barRateReservation :[{
-        bookingTypeId:[{
-            bookingTypeId : {
-                type:String,
-                default:""
+    createdOn: [{
+        createdOn: {
+            type: String,
+            default: ""
+        },
+
+        logId: {
+            type: String,
+            default: ""
+        }
+
+    }],
+
+    // rateType: [{
+    //     //change to rateTypeId
+    //     rateTypeId: {
+    //         type: String,
+    //         default: ""
+    //     },
+
+    //     logId: {
+    //         type: String,
+    //         default: ""
+    //     }
+
+    // }],
+
+
+    // company Reservation
+    // change to companyId
+    companyReservation: [{
+        companyId: {
+            type: String,
+            default: ""
+        },
+
+        logId: {
+            type: String,
+            default: ""
+        }
+
+    }],
+
+
+    // bar reservation
+    barRateReservation: [{
+        barRateReservation: [{
+            bookingTypeId: {
+                type: String,
+                default: ""
             },
 
-            logId:{
-                type:String,
-                default:""
-            }
+            bookingSourceId: {
+                type: String,
+                default: ""
+            },
+
         }],
 
-        bookingSourceId:[{
-            bookingSourceId :{
-                type:String,
-                default:""
-            },
-
-            logId:{
-                type:String,
-                default:""
-            }
-        }]
-
-        
+        logId: {
+            type: String,
+            default: ""
+        }
     }],
 
 
-// discount reservation
-    discountReservation :[{
+    // discount reservation
+    discountReservation: [{
         // cahnge to id
-        bookingType:[{
-            bookingTypeId:{
-                type:String,
-                default:""
+        discountReservation: [{
+            bookingTypeId: {
+                type: String,
+                default: ""
             },
 
-            logId:{
-                type:String,
-                default:""
-            }
-        }],
-        
-// changed to discountPlanId
-        discountPlan:[{
-            //change to id
-            discountPlanId :{
-                type:String,
-                default:""
+            // changed to discountPlanId
+
+            discountPlanId: {
+                type: String,
+                default: ""
             },
 
-            logId:{
-                type:String,
-                default:""
-            }
-
-        }],
-        
-
-        discountType:[{
             // changr to id
-            discountTypeId :{
-                type:String,
-                default:""
+            discountTypeId: {
+                type: String,
+                default: ""
             },
 
-            logId:{
-                type:String,
-                default:""
-            }
+            discountAmount: {
+                type: String,
+                default: ""
+            },
+
+
         }],
-        
 
-        discountAmount:[{
-            discountAmount :{
-                type:String,
-                default:""
+        logId: {
+            type: String,
+            default: ""
+        }
+
+    }],
+
+
+
+    roomDetails: [{
+
+        roomDetails: [{
+
+            roomTypeId: {
+                type: String,
+                default: ""
             },
 
-            logId:{
-                type:String,
-                default:""
-            }
-        }]
-        
-}],
 
-
-
-    roomDetails :[{
-        roomTypeId :[{
-            roomTypeId:{
-                type:String,
-                default:""
-            },
-
-            logId:{
-                type:String,
-                default:""
-            }
-        }],
-        
-        ratePlan:[{
             // change to id
-            ratePlanId :{
-                type:String,
-                default:""
+            ratePlanId: {
+                type: String,
+                default: ""
             },
 
-            logId:{
-                type:String,
-                default:""
-            }
-        }],
-        
 
-        adults:[{
-            adults :{
-                type:String,
-                default:""
+
+
+            adults: {
+                type: String,
+                default: ""
             },
 
-            logId:{
-                type:String,
-                default:""
-            }
-        }],
 
-        childs:[{
-            childs :{
-                type:String,
-                default:""
+
+
+            childs: {
+                type: String,
+                default: ""
             },
 
-            logId:{
-                type:String,
-                default:""
-            }
-        }],
-    
-        charge :[{
-            charge:{
-                type:String,
-                default:""
+
+
+
+            charge: {
+                type: String,
+                default: ""
             },
 
-            logId:{
-                type:String,
-                default:""
-            }            
 
-        }],
 
-        extraAdult:[{
-            extraAdult :{
-                type:String,
-                default:""
+
+            extraAdult: {
+                type: String,
+                default: ""
             },
 
-            logId:{
-                type:String,
-                default:""
-            }
-        }],
 
 
-        // this fileds could be used in quick reservation 
-        rate:[{
-            rate:{
-                type:String,
-                default:""
+            // this fileds could be used in quick reservation 
+
+            rate: {
+                type: String,
+                default: ""
             },
-            logId:{
-                type:String,
-                default:""
-            }
-        }],
-        
 
-        extraInclusion:[{
+
             //change to id
-            extraInclusionId :{
-                type:String,
-                default:""
+            extraInclusionId: {
+                type: String,
+                default: ""
             },
 
-            logId:{
-                type:String,
-                default:""
-            }
         }],
+
+        logId: {
+            type: String,
+            default: ""
+        }
+
+
+    }],
+
+
+
+    remark: [{
+        remark: [{
+            specialRemark: {
+                type: String,
+                default: ""
+            },
+
        
-    }],
-
-    remark :[{
-        specialRemark:[{
-            specialRemark:{
-                type:String,
-                default:""
+            internalNote: {
+                type: String,
+                default: ""
             },
 
-            logId:{
-                type:String,
-                default:""
-            }
         }],
-        
-        internalNote:[{
-            internalNote :{
-                type:String,
-                default:""
-            },
 
-            logId:{
-                type:String,
-                default:""
-            }
-        }]
-        
+        logId: {
+            type: String,
+            default: ""
+        }
+
+
     }],
+
+
+
 
     //quickRemark
-    quickRemark :[{
-        quickRemark:{
-            type:String,
-            default:""
+    quickRemark: [{
+        quickRemark: {
+            type: String,
+            default: ""
         },
 
-        logId:{
-            type:String,
-            default:""
+        logId: {
+            type: String,
+            default: ""
         }
 
     }],
 
     //Internal note for quickReservation
-    quickInternalNote:[{
-        quickInternalNote:{
-            type:String,
-            default:""
+    quickInternalNote: [{
+        quickInternalNote: {
+            type: String,
+            default: ""
         },
 
-        logId:{
-            type:String,
-            default:""
+        logId: {
+            type: String,
+            default: ""
         }
     }],
 
     //name will be changed to reservationRate
-    reservationRate:[{
-        roomCharges:[{
-            roomCharges:{
-                type:String,
-                default:""
+    reservationRate: [{
+        roomCharges: [{
+            roomCharges: {
+                type: String,
+                default: ""
             },
 
-            logId:{
-                type:String,
-                default:""
-            }
+            extras: {
+                type: String,
+                default: ""
+            },
+
     
-        }],
-
-
-        extras:[{
-            extras:{
-                type:String,
-                default:""
+            taxes: {
+                type: String,
+                default: ""
+            },
+     
+            from: {
+                type: String,
+                default: ""
             },
 
-            logId:{
-                type:String,
-                default:""
-            }
-        }],
-       
-        taxes:[{
-            taxes:{
-                type:String,
-                default:""
+  
+            to: {
+                type: String,
+                default: ""
             },
 
-            logId:{
-                type:String,
-                default:""
-            }
-        }],
-       
-        from:[{
-            from:{
-                type:String,
-                default:""
+            grandTotal: {
+                type: String,
+                default: ""
             },
 
-            logId:{
-                type:String,
-                default:""
-            }
         }],
-        
 
-        to:[{
-            to:{
-                type:String,
-                default:""
-            },
-
-            logId:{
-                type:String,
-                default:""
-            }
-        }],
-        
-        grandTotal:[{
-            grandTotal:{
-                type:String,
-                default:""
-            },
-
-            logId:{
-                type:String,
-                default:""
-            }
-        }]
+        logId: {
+            type: String,
+            default: ""
+        }
 
     }],
 
-    applyDiscount:[{
-        applyDiscount:{
-            type:String,
-            default:""
+
+
+    applyDiscount: [{
+        applyDiscount: {
+            type: String,
+            default: ""
         },
 
-        logId:{
-            type:String,
-            default:""
+        logId: {
+            type: String,
+            default: ""
         }
-    
+
     }],
 
-    
-    paymentDetails:[{
-        billTo:[{
-            billTo:{
-                type:String,
-                default:""
-            },
 
-            logId:{
-                type:String,
-                default:""
-            }
+    paymentDetails: [{
+        paymentDetails: [{
+            billTo: {
+                type: String,
+                default: ""
+            },
+     
+
+            paymentNote: {
+                type: String,
+                default: ""
+            },
         }],
-        
-        paymentNote:[{
-            paymentNote:{
-                type:String,
-                default:""
-            },
 
-            logId:{
-                type:String,
-                default:""
-            }
-        }]
-        
+
+        logId: {
+            type: String,
+            default: ""
+        }
+
+
     }],
 
-    reservationNumber:{
-        type:String,
-        default:""
+    reservationNumber: {
+        type: String,
+        default: ""
     },
 
-    reservationIds:[{
-         type:String,
-         default:""
+    reservationIds: [{
+        type: String,
+        default: ""
     }],
 
-    
-   isQuickReseration : {
-        type:String,
-        default:"false"
+
+    isQuickReseration: {
+        type: String,
+        default: "false"
     },
 
-    isGroupBooking :{
-        type:String,
-        default:"false"
+    isGroupBooking: {
+        type: String,
+        default: "false"
     },
 
-    cardDetails : [{
-        cardDetails :[{
-            nameOnCard : {
-                type:String,
-                default:""
+    cardDetails: [{
+        cardDetails: [{
+            nameOnCard: {
+                type: String,
+                default: ""
             },
-            cardNumber : {
-                type:String,
-                 default:""
+            cardNumber: {
+                type: String,
+                default: ""
             },
-    
-            cvv : {
-                type:String,
-                default:""
+
+            cvv: {
+                type: String,
+                default: ""
             },
-    
-            expiryDate : {
-                type:String,
-                default:""
+
+            expiryDate: {
+                type: String,
+                default: ""
             }
         }],
 
-        logId:{
-            type:String,
-            default:""
+        logId: {
+            type: String,
+            default: ""
         }
     }],
 
 
-    createTask : [{
-            taskTitle :[{
-               taskTitle : {
-                type:String,
-                default:""
-               },
+    createTask: [{
+        createTask: [{
+            taskTitle: {
+                type: String,
+                default: ""
+            },
 
-               logId : {
-                type:String,
-                default:""
-               }
-            }] ,
+          
+    
+            schedule: {
+                type: String,
+                default: ""
+            },
 
-            schedule :[{
-                schedule : {
-                    type:String,
-                    default:""
-                },
+        
 
-                logId : {
-                    type:String,
-                    default:""
-                }
-            }],
+            description: {
+                type: String,
+                default: ""
+            },
 
-            description : [{
-                description :  {
-                    type:String,
-                    default:""
-                },
+           
+        }],
 
-                logId : {
-                    type:String,
-                    default:""
-                }
-            }]
-       
+        logId: {
+            type: String,
+            default: ""
+        }
+
     }]
 },
 
-{
-    versionKey : false
-}
+    {
+        versionKey: false
+    }
 )
 
-const bookingModel = db1.model("reservationDetails",booking)
+const bookingModel = db1.model("reservationDetails", booking)
 
 export default bookingModel

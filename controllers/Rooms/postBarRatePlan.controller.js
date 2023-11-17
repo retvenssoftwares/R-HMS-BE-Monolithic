@@ -14,7 +14,7 @@ const postBarRatePlan = async (req, res) => {
       propertyId,
       rateType,
       roomTypeId,
-      mealPlan,
+      mealPlanId,
       ratePlanName,
       inclusionPlan,
       roomBaseRate,
@@ -57,7 +57,7 @@ const postBarRatePlan = async (req, res) => {
       ],
       mealPlan: [
         {
-          mealPlan: mealPlan,
+          mealPlanId: mealPlanId,
           logId: Randomstring.generate(10),
         },
       ],

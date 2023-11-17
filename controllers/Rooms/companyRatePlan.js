@@ -8,7 +8,7 @@ import companyLogs from "../../models/LogModels/compnayRatePlanLogs.js"
 export const companyRatePlan = async (req, res) => {
     try {
   
-      const {userId,propertyId, rateType , companyName ,createdBy , roomTypeId ,  shortCode , ratePlanInclusion ,ratePlanName, inclusionTotal ,ratePlanTotal , ipAddress, deviceType,roomBaseRate,mealCharge,inclusionCharge,roundUp,extraAdultRate,extraChildRate,mealPlanId} = req.body
+      const {userId,propertyId, rateType  ,createdBy , roomTypeId ,companyId,  shortCode , ratePlanInclusion ,ratePlanName, inclusionTotal ,ratePlanTotal , ipAddress, deviceType,roomBaseRate,mealCharge,inclusionCharge,roundUp,extraAdultRate,extraChildRate,mealPlanId} = req.body
       const authCodeValue = req.headers["authcode"]
       const findUser = await verifiedUser.findOne({ userId:userId});
   
@@ -30,10 +30,10 @@ export const companyRatePlan = async (req, res) => {
         companyRatePlanId :  companyRatePlanId,
 
         rateType : rateType,
-       
-        companyName : companyName,
 
+        companyId:companyId,
         roomTypeId: roomTypeId,
+        mealPlanId:mealPlanId,
 
         createdBy:  userRole,
 
@@ -57,11 +57,6 @@ export const companyRatePlan = async (req, res) => {
 
         ratePlanInclusion :[{
           ratePlanInclusion : ratePlanInclusion,
-          logId: Randomstring.generate(10),
-        }],
-
-        mealPlan :[{
-          mealPlanId : mealPlanId,
           logId: Randomstring.generate(10),
         }],
 
@@ -155,7 +150,7 @@ export const companyRatePlan = async (req, res) => {
       // console.log('Successfully updated:', result);
       return res.status(200).json({ message: 'company Rate Plan Successfully added' , statusCode : 200 });
     }else {
-      return res.status(result.statuscode).json({ message: "company Rate Plan not found", statusCode: result.statuscode });
+      return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode  });
   } 
     } catch (error) {
       console.error('Error occurred while aading:', error);

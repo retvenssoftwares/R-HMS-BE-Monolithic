@@ -53,6 +53,7 @@ export const transportationAdd = async (req, res) => {
                       logId: savedTranportation.shortCode[0].logId,
                       userId: userId,
                       deviceType: deviceType,
+                      ipAddress:ipAddress,
                       modifiedOn: currentUTCTime,
                     },
                   ],
@@ -61,6 +62,7 @@ export const transportationAdd = async (req, res) => {
                     logId: savedTranportation.transportationModeName[0].logId,
                     userId: userId,
                     deviceType: deviceType,
+                    ipAddress:ipAddress,
                     modifiedOn: currentUTCTime,
                 }],
             })
@@ -80,12 +82,12 @@ export const transportationAdd = async (req, res) => {
 export const updateTransportation = async (req, res) => {
     try {
         const { userId, transportationId } = req.query
-        const { shortCode, transportationModeName } = req.body
+        const { shortCode, transportationModeName,deviceType,ipAddress } = req.body
         const UserauthCode = await verifying.findOne({ userId: userId });
+        const userid= UserauthCode.userId
         if (!UserauthCode) {
             return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 });
         }
-        const userRole = UserauthCode.role[0].role || ""
         const findTransportationRecord = await transportation.findOne({ transportationId })
         if (!findTransportationRecord) {
             return res.status(404).json({ message: "Transportation type not found", statuscode: 404 });
@@ -93,6 +95,7 @@ export const updateTransportation = async (req, res) => {
         const authCodeDetails = req.headers["authcode"];
 
         const result = await findUserByUserIdAndToken(userId, authCodeDetails);
+        const currentUTCTime= await getCurrentUTCTimestamp();
 
         if (result.success) {
             if (shortCode) {
@@ -121,7 +124,38 @@ export const updateTransportation = async (req, res) => {
             findTransportationRecord.modifiedBy.unshift(modifiedByObj)
             findTransportationRecord.modifiedOn.unshift(modifiedOnObj);
 
-            await findTransportationRecord.save();
+            const savedTranportation= await findTransportationRecord.save();
+
+            //save data in logs
+
+            const findTransportationLog = await transportationLog.findOne({transportationId });
+
+                if (findTransportationLog){
+                if (shortCode) {
+                    const shortCodeObject = {
+                        shortCode: savedTranportation.shortCode[0].shortCode,
+                        logId: savedTranportation.shortCode[0].logId,
+                        userId: userid,
+                        deviceType: deviceType,
+                        ipAddress:ipAddress,
+                        modifiedOn: currentUTCTime,
+                    };
+                    findTransportationLog.shortCode.unshift(shortCodeObject);
+                }
+                if(transportationModeName){
+                    const transportationModeNameObject={
+                    transportationModeName: savedTranportation.transportationModeName[0].transportationModeName,
+                    logId: savedTranportation.transportationModeName[0].logId,
+                    userId: userid,
+                    deviceType: deviceType,
+                    ipAddress:ipAddress,
+                    modifiedOn: currentUTCTime,
+                }
+                findTransportationLog.transportationModeName.unshift(transportationModeNameObject);
+                }
+            }
+            await findTransportationLog.save();
+
             return res.status(200).json({ message: "Transportation Updated successfully", statuscode: 200 });
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

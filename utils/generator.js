@@ -1,17 +1,23 @@
-import { xml2json } from 'xml-js';
-var xmldata = '<?xml version="1.0" encoding="UTF-8"?>' +
-    '<Student>' +
-    '<PersonalInformation>' +
-    '<FirstName>Sravan</FirstName>' +
-    '<LastName>Kumar</LastName>' +
-    '<Gender>Male</Gender>' +
-    '</PersonalInformation>' +
-    '<PersonalInformation>' +
-    '<FirstName>Sudheer</FirstName>' +
-    '<LastName>Bandlamudi</LastName>' +
-    '<Gender>Male</Gender>' +
-    '</PersonalInformation>' +
-    '</Student>';
-var result1 = xml2json(xmldata, { compact: true, spaces: 4 });
-// var result2 = xml2json(xmldata, {compact: false, spaces: 4});
-console.log('\n', result1);
+// using Twilio SendGrid's v3 Node.js Library
+// https://github.com/sendgrid/sendgrid-nodejs
+// javascript
+import * as dotenv from "dotenv";
+dotenv.config();
+import sgMail from '@sendgrid/mail';
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+const msg = {
+    to: 'preetp@sjcem.edu.in', // Change to your recipient
+    from: 'retvenssoftwares@gmail.com', // Change to your verified sender
+    subject: 'Sending with SendGrid is Fun',
+    text: 'and easy to do anywhere, even with Node.js and ReactJs',
+    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+}
+sgMail
+    .send(msg)
+    .then(() => {
+        console.log('Email sent')
+    })
+    .catch((error) => {
+        console.error(error)
+    })

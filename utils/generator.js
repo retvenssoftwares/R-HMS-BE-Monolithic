@@ -3,13 +3,12 @@
 // javascript
 import * as dotenv from "dotenv";
 dotenv.config();
-import sgMail from '@sendgrid/mail';
 
 const key = process.env.SENDGRID_API_KEY
 sgMail.setApiKey(key)
 // console.log(key)
 const msg = {
-    to: 'preetp@sjcem.edu.in', // Change to your recipient
+    to: 'singhshubham67867@gmail.com', // Change to your recipient
     from: 'retvenssoftwares@gmail.com', // Change to your verified sender
     // subject: 'Sending with SendGrid is Fun',
     // text: 'and easy to do anywhere, even with Node.js and ReactJs',

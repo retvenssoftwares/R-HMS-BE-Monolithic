@@ -16,8 +16,9 @@ const fetchRoom = async (req, res) => {
         if (result.success) {
           
             const roomImages = await roomImage.find({ roomTypeId: roomTypeId });
-            const barrate = await barRatePlan.find({ roomTypeId: roomTypeId });
-           // console.log(roomImages)
+            const barrate = await barRatePlan.find({ 'roomType.roomTypeId': roomTypeId });
+           //console.log(barrate)
+
             const rooms = await roomModel.find({ roomTypeId: roomTypeId });
             if (!rooms) {
                 return res.status(400).json({ message: "Please enter roomTypeId", statuscode: 400 })
@@ -66,9 +67,25 @@ const fetchRoom = async (req, res) => {
                 
                 // Extract necessary data from roomImages
                 const imagesData = filteredRoomImages.map(img => ({
-                    image: img.roomImages[0].image,
+                    image: img.roomImages[0].image || '',
                     
                 }));
+
+                //extract data from barrate
+                const bardata = barrate.map(bar=>({
+                    rateType:bar.rateType,
+                    ratePlanName:bar.ratePlanName[0].ratePlanName || '',
+                    shortCode:bar.shortCode[0].shortCode || '',
+                    roomBaseRate:bar.barRates.roomBaseRate[0].roomBaseRate || '',
+                    mealCharge:bar.barRates.mealCharge[0].mealCharge || '',
+                    inclusionCharge:bar.barRates.inclusionCharge[0].inclusionCharge || '',
+                    roundUp:bar.barRates.roundUp[0].roundUp || '',
+                    extraAdultRate:bar.barRates.extraAdultRate[0].extraAdultRate || '',
+                    extraChildRate:bar.barRates.extraChildRate[0].extraChildRate || '',
+                    ratePlanTotal:bar.barRates.ratePlanTotal[0].ratePlanTotal || '',
+                    inclusion:bar.inclusion[0].inclusionPlan || ''
+
+                }))
        
 
                 // Include fetched roomImages in the property object
@@ -93,7 +110,8 @@ const fetchRoom = async (req, res) => {
                         amenities: amenitiesCount,
                         roomTypeId: roomTypeId,
                         roomImages: imagesData,
-                        roomTypeId: roomTypeId
+                        roomTypeId: roomTypeId,
+                        ratePlan:bardata
                     };
 
                     

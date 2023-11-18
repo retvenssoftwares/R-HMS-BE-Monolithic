@@ -16,19 +16,15 @@ const discountPlanGet = async (req, res) => {
         // Fetch the 0th object for array fields
         const planData = {
             ...findPlan,
-            mealPlanId: findPlan.mealPlan.length > 0 ? findPlan.mealPlan[0].mealPlanId : "",
-            ratePlanName: findPlan.ratePlanName.length > 0 ? findPlan.ratePlanName[0].ratePlanName : "",
+            blackOutDates: findPlan.blackOutDates.length > 0 ? findPlan.blackOutDates[0].blackOutDates : "",
+            applicableOn: findPlan.applicableOn.length > 0 ? findPlan.applicableOn[0].applicableOn : "",
             shortCode: findPlan.shortCode.length > 0 ? findPlan.shortCode[0].shortCode : "",
-            inclusion: findPlan.inclusion.length > 0 ? findPlan.inclusion[0].inclusionPlan[0] : "",
-            barRates: {
-                roomBaseRate: findPlan.barRates.roomBaseRate.length > 0 ? findPlan.barRates.roomBaseRate[0].roomBaseRate : "",
-                mealCharge: findPlan.barRates.mealCharge.length > 0 ? findPlan.barRates.mealCharge[0].mealCharge : "",
-                inclusionCharge: findPlan.barRates.inclusionCharge.length > 0 ? findPlan.barRates.inclusionCharge[0].inclusionCharge : "",
-                roundUp: findPlan.barRates.roundUp.length > 0 ? findPlan.barRates.roundUp[0].roundUp : "",
-                extraAdultRate: findPlan.barRates.extraAdultRate.length > 0 ? findPlan.barRates.extraAdultRate[0].extraAdultRate : "",
-                extraChildRate: findPlan.barRates.extraChildRate.length > 0 ? findPlan.barRates.extraChildRate[0].extraChildRate : "",
-                ratePlanTotal: findPlan.barRates.ratePlanTotal.length > 0 ? findPlan.barRates.ratePlanTotal[0].ratePlanTotal : "",
-            },
+            validityPeriodFrom: findPlan.validityPeriodFrom.length > 0 ? findPlan.validityPeriodFrom[0].validityPeriodFrom : "",
+            validityPeriodTo: findPlan.validityPeriodTo.length > 0 ? findPlan.validityPeriodTo[0].validityPeriodTo : "",
+            discountType: findPlan.discountType.length > 0 ? findPlan.discountType[0].discountType : '',
+            discountName: findPlan.discountName.length > 0 ? findPlan.discountName[0].discountName : '',
+            discountPercent: findPlan.discountPercent.length > 0 ? findPlan.discountPercent[0].discountPercent : '',
+            discountPrice: findPlan.discountPrice.length > 0 ? findPlan.discountPrice[0].discountPrice : ''
         };
 
         return res.status(200).json({ data: planData, statuscode: 200 });

@@ -40,7 +40,7 @@ const manageRates = async (req, res, io) => {
             }
 
             //update mmt rates
-            if (req.body.source === "mmt") {
+            if (req.body.otaId) {
                 // console.log("mmt")
                 // Find the rate document for the specified roomTypeId
                 let findOTA = await OTARates.findOne({ roomTypeId: roomTypeId, propertyId: propertyId, ratePlanId: ratePlanId, otaId: otaId });

@@ -8,6 +8,7 @@ const getReservation = async (req, res) => {
         const authCodeValue = req.headers['authcode']
 
         const findProperty = await properties.findOne({ propertyId: propertyId, userId: userId });
+        console.log(findProperty)
         if (!findProperty) {
             return res.status(404).json({ message: "Please enter valid propertyId and userId", statuscode: 404 })
         }

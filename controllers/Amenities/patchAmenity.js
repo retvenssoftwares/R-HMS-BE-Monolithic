@@ -1,12 +1,13 @@
 import amenity from '../../models/amenity.js'
 import verifiedUser from '../../models/verifiedUsers.js'
 import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/helper.js'
+import randomString from "randomstring"
 
 const patchAmenity = async (req, res) => {
 
     try {
         const { userId,amenityId} = req.query
-        const { shortCode, amenityName, amenityType, amenityIcon, amenityIconLink } = req.body;
+        const { shortCode, amenityName, amenityType, amenityIcon, amenityIconLink, displayStatus } = req.body;
 
         const authCodeValue = req.headers['authcode'];
 
@@ -44,6 +45,13 @@ const patchAmenity = async (req, res) => {
                     amenityType: amenityType
                 };
                 findAmenity.amenityType.unshift(amenityTypeObject);
+            }
+            if (displayStatus) {
+                const displayStatusObject = {
+                    displayStatus: displayStatus,
+                    logId: randomString.generate(10)
+                };
+                findAmenity.displayStatus.unshift(displayStatusObject);
             }
 
             var amenityIconObject;

@@ -7,7 +7,8 @@ import paymentLog from '../../models/LogModels/paymentLogs.js'
 const patchPaymentType = async (req, res) => {
     try {
         const { userId } = req.query;
-        const { shortCode, paymentMethodName, receivedTo,deviceType,ipAddress } = req.body;
+     
+        const { shortCode, paymentMethodName, receivedTo,deviceType,ipAddress,displayStatus } = req.body;
         const paymentTypeId = req.query.paymentTypeId;
         const authCodeValue = req.headers['authcode'];
 
@@ -51,6 +52,15 @@ const patchPaymentType = async (req, res) => {
                 };
                 findPaymentType.receivedTo.unshift(receivedToObject);
             }
+
+            if (displayStatus) {
+                const displayStatusObject = {
+                    displayStatus: displayStatus,
+                    logId: randomString.generate(10)
+                };
+                findPaymentType.displayStatus.unshift(displayStatusObject);
+            }
+
             const modifiedByObject = {
                 modifiedBy: userRole,
                 logId: randomString.generate(10)

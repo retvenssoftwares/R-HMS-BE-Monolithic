@@ -1,11 +1,15 @@
-import mongoose from "mongoose";
-import db1 from "../db/conn.js";
+import mongoose from 'mongoose';
+import db1 from "../db/conn.js"
+
+
+  
 const amenitySchema = new mongoose.Schema(
   {
     propertyId: {
       type: String,
       default: "",
     },
+    displayStatus: [{ displayStatus: { type: String, default: '1', enum: ['0', '1'], }, logId: { type: String, default: "" } }],
 
     createdBy: {
       type: String,

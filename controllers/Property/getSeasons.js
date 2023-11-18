@@ -15,7 +15,7 @@ const getSeasons = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
-            const findAllSeasons = await season.find({ propertyId });
+            const findAllSeasons = await season.find({ propertyId, "displayStatus.0.displayStatus": "1" });
 
             if (findAllSeasons.length > 0) {
                 const convertedSeasons = findAllSeasons.map(seasons => {
@@ -30,8 +30,10 @@ const getSeasons = async (req, res) => {
                     const modifiedBy = seasons.modifiedBy.length > 0 ? seasons.modifiedBy[0].modifiedBy : "";
 
                     return {
-                        ...seasons._doc,
+                        
                         createdOn: convertedDateUTC,
+                        createdBy:seasons.createdBy,
+                        propertyId:seasons.propertyId,
                         shortCode: seasons.shortCode[0].shortCode || '',
                         seasonName: seasons.seasonName[0].seasonName || '',
                         modifiedBy: modifiedBy,

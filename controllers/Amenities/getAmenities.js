@@ -9,7 +9,7 @@ const getAmenities = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
-            const findAllAmenities = await amenity.find({ propertyId }).lean();
+            const findAllAmenities = await amenity.find({ propertyId, "displayStatus.0.displayStatus": "1"  }).lean();
 
             if (findAllAmenities.length > 0) {
                 const convertedAmenity = findAllAmenities.map(amenities => {

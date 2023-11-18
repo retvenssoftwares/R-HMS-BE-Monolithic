@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/retvenssoftwares/R-HMS-BE-Monolithic#readme",
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
     "async": "^3.2.4",
     "aws-sdk": "^2.1343.0",
     "axios": "^1.6.0",

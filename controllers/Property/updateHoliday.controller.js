@@ -6,7 +6,7 @@ import holidayLog from '../../models/LogModels/holidayLog.js'
 
 const patchHoliday = async (req, res) => {
     try {
-        const { shortCode, holidayName, startDate, endDate,deviceType,ipAddress } = req.body;
+        const { shortCode, holidayName, startDate, endDate,deviceType,ipAddress,displayStatus } = req.body;
         const { holidayId, userId } = req.query;
         const findUser = await verifiedUser.findOne({ userId });
         const userid = findUser.userId;
@@ -58,6 +58,14 @@ const patchHoliday = async (req, res) => {
                     logId: randomstring.generate(10)
                 };
                 findHoliday.endDate.unshift(endDateObject);
+            }
+
+            if (displayStatus) {
+                const displayStatusObject = {
+                    displayStatus: displayStatus,
+                    logId: randomstring.generate(10)
+                };
+                findHoliday.displayStatus.unshift(displayStatusObject);
             }
 
             const modifiedByObject = {

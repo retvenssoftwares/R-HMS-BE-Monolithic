@@ -11,7 +11,7 @@ const updateBookingSource = async (req, res) => {
     try {
         const bookingSourceId = req.query.bookingSourceId;
         const userId = req.query.userId
-        const { bookingSource, shortCode,ipAddress,deviceType } = req.body;
+        const { bookingSource, shortCode,ipAddress,deviceType,displayStatus } = req.body;
         const authCodeValue = req.headers['authcode'];
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
@@ -115,6 +115,27 @@ const updateBookingSource = async (req, res) => {
                 });
 
             }
+            
+            if (displayStatus) {
+                const logId1 = Randomstring.generate(10)
+                const update1 = {
+                    $push: {
+                        displayStatus: {
+                            $each: [{
+                                displayStatus: displayStatus,
+                                logId: logId1
+                            }],
+                            $position: 0
+                        }
+                    }
+                };
+                const updateddisplayStatus = await bookingSourceModel.findOneAndUpdate({ bookingSourceId: bookingSourceId }, update1, {
+                    new: true
+                });
+
+            }
+
+            
             const logId2 = Randomstring.generate(10)
             const logId3 = Randomstring.generate(10)
             const update1 = {

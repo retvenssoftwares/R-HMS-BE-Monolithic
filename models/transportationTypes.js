@@ -1,6 +1,9 @@
 import mongoose, { Schema, model } from "mongoose";
 import db1 from "../db/conn.js"
 const transportation = new Schema({
+
+    displayStatus: [{ displayStatus: { type: String, default: '1', enum: ['0', '1'], }, logId: { type: String, default: "" } }],
+
     transportationId: {
         type: String,
         default: ""

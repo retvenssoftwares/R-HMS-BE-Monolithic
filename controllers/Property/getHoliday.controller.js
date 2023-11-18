@@ -12,7 +12,7 @@ const getHoliday = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
-            const findAllHoliday = await holiday.find({ propertyId });
+            const findAllHoliday = await holiday.find({ propertyId, "displayStatus.0.displayStatus": "1"  });
 
             if (findAllHoliday.length > 0) {
                 const convertedHoliday = findAllHoliday.map(holidays => {
@@ -27,10 +27,11 @@ const getHoliday = async (req, res) => {
                     const modifiedBy = holidays.modifiedBy.length > 0 ? holidays.modifiedBy[0].modifiedBy : "";
 
                     return {
-                        ...holidays._doc,
+                        
                         shortCode: holidays.shortCode[0].shortCode || '',
-
+                         propertyId:holidays.propertyId,
                         createdOn: convertedDateUTC,
+                        createdBy:holidays.createdBy,
                         holidayName: holidays.holidayName[0].holidayName || '',
                         modifiedBy: modifiedBy,
                         holidayId: holidays.holidayId || '',

@@ -1,17 +1,20 @@
 import randomstring from 'randomstring'
 import userModel from '../../models/user.js'
+import * as dotenv from "dotenv";
+dotenv.config();
+import sgMail from '@sendgrid/mail';
 import {
     getCurrentUTCTimestamp,
     uploadImageToS3,
 } from "../../helpers/helper.js";
 
 const editUserOnboarding = async (req, res) => {
-    const propertyId = randomstring.generate({charset: 'numeric',length:6});
+    const propertyId = randomstring.generate({ charset: 'numeric', length: 6 });
     const { userId, propertyTypeSOC } = req.body;
     var findRecord = await userModel.findOne({ userId });
     // Find the specific array element you want to update
     if (!findRecord) {
-        return res.status(404).json({ message: "user not found",statuscode:404 })
+        return res.status(404).json({ message: "user not found", statuscode: 404 })
     }
     const hotelRCode = findRecord.hotelRcode;
     try {
@@ -82,15 +85,40 @@ const editUserOnboarding = async (req, res) => {
             elementToUpdate.baseCurrency = baseCurrency
             elementToUpdate.websiteUrl = websiteUrl
             elementToUpdate.country = country
-            elementToUpdate.hotelRCode =hotelRCode
+            elementToUpdate.hotelRCode = hotelRCode
             elementToUpdate.propertyId = propertyId
             findRecord.propertyTypeSOC = propertyTypeSOC
             await findRecord.save();
+
+            //send mail for single property
+            sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
+            const msg = {
+                to: findRecord.email, // Change to your recipient
+                from: process.env.senderEmail, // Change to your verified sender
+                // subject: 'Sending with SendGrid is Fun',
+                // text: 'and easy to do anywhere, even with Node.js and ReactJs',
+                // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+                templateId: process.env.template_ID,
+                dynamicTemplateData: {
+                    username: findRecord.username[0].username || '',
+                    text_here: `Congratulations! You have successfully registered your Hotel '${propertyName}' with us.We just need to check a few things first, we will let you know when your one stop hotel solution is ready to go.`,
+                }
+            }
+            sgMail
+                .send(msg)
+                .then(() => {
+                    console.log('Email sent')
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
         } else {
             const { userId, propertyChainName, numberOfProperties, propertyType, baseCurrency, websiteUrl } = req.body
             var findRecord = await userModel.findOne({ userId });
             //console.log(findRecord)
-
+            var email = findRecord.email
+            // console.log(email)
             const elementToUpdate = findRecord.multipleData[0];
             let imageUrl = ''
             if (req.file) {
@@ -128,6 +156,30 @@ const editUserOnboarding = async (req, res) => {
             elementToUpdate.websiteUrl = websiteUrl
             findRecord.propertyTypeSOC = "Multiple"
             await findRecord.save();
+
+            //send mail for single property
+            sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
+            const msg = {
+                to: email, // Change to your recipient
+                from: process.env.senderEmail, // Change to your verified sender
+                // subject: 'Sending with SendGrid is Fun',
+                // text: 'and easy to do anywhere, even with Node.js and ReactJs',
+                // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+                templateId: process.env.template_ID,
+                dynamicTemplateData: {
+                    username: findRecord.username[0].username || '',
+                    text_here: `Congratulations! You have successfully registered your Hotel Chain '${propertyChainName}' with us.We just need to check a few things first, we will let you know when your one stop hotel solution is ready to go.`,
+                }
+            }
+            sgMail
+                .send(msg)
+                .then(() => {
+                    console.log('Email sent')
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
         }
         return res.status(200).json({ message: "User updated successfully", statuscode: 200 })
     }

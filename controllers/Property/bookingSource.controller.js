@@ -41,6 +41,8 @@ const postBookingSource = async (req, res) => {
           logId: Randomstring.generate(10)
         }],
         bookingSourceId: Randomstring.generate(8),
+        displayStatus: [{ displayStatus: "1", logId: Randomstring.generate(10) }],
+        dateUTC: currentUTCTime,
         createdBy: userRole,
         createdOn: currentUTCTime,
         modifiedBy: [],

@@ -37,7 +37,8 @@ export const createResrvation = async (req, res) => {
     isQuickReseration,
     isGroupBooking,
     cardDetails,
-    createTask
+    createTask,
+    c_from
   } = req.body
 
 
@@ -161,6 +162,12 @@ export const createResrvation = async (req, res) => {
         ],
 
 
+        c_from:[{
+          c_from: guestInfo[i].c_from,
+          logId: randomString.generate(10),
+        }]
+
+
       });
 
       const guest = await guestDetails.save();
@@ -268,7 +275,7 @@ export const createResrvation = async (req, res) => {
     }],
 
 
-    reservationNumber: await generateFourDigitRandomNumber(),
+    reservationNumber: randomString.generate({charset: 'numeric',length:4}),
 
 
     cardDetails: [{
@@ -323,8 +330,6 @@ export const createResrvation = async (req, res) => {
     }
   }
 
-  //console.log(dictionary)
-
   try {
     // const response = await axios.get(apiUrl, {
     //   headers: {
@@ -332,6 +337,7 @@ export const createResrvation = async (req, res) => {
     //   }
     // });
 
+    //console.log(new Date().getSeconds())
     const availableRooms = await checkRoomAvailability({
       query: {
         userId,
@@ -345,13 +351,17 @@ export const createResrvation = async (req, res) => {
       }
 
     }, res);
+    //console.log(new Date().getSeconds())
 
     if (availableRooms) {
       const result = {};
       for (const room of availableRooms) {
+        if(dictionary[room.roomTypeId] === 0){
+          // console.log(dictionary[room.roomTypeId])
+          return res.status(200).json({ message: "No Room Left for Reservation", statusCode: 200 });
+        }
         result[room.roomTypeId] = room.minimumInventory;
       }
-    // console.log(result)
 
       // Function to get guest details by guestId
       async function getGuestDetails(guestId) {
@@ -385,9 +395,9 @@ export const createResrvation = async (req, res) => {
         const roomTypeId = roomDetailArray[i].roomTypeId;
         const guestId = booking.guestId.length === 1 ? booking.guestId[0].guestId : booking.guestId[i].guestId;
 
-        if (result[roomTypeId] === 0) {
-          return res.status(200).json({ message: "No Room Left for Reservation", statusCode: 200 });
-        }
+        // if (result[roomTypeId] === 0) {
+        //   return res.status(200).json({ message: "No Room Left for Reservation", statusCode: 200 });
+        // }
 
         if (
           dictionary[roomTypeId] &&

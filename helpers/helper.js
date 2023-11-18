@@ -6,6 +6,8 @@ import s3 from "../utils/url.js"
 import jwt from "jsonwebtoken";
 import verifiedUser from "../models/verifiedUsers.js";
 import property from "../models/property.js";
+import sgMail from '@sendgrid/mail';
+
 
 //function to upload single image ot s3 spaces
 const bucket = process.env.bucket;
@@ -233,6 +235,8 @@ function generateFourDigitRandomNumber() {
 }
 
 
+
+
 // generate username
 function generateUserName(firstName, phoneNumber) {
   return new Promise((resolve, reject) => {
@@ -294,4 +298,67 @@ const verifyUser = async (userId, authCodeValue) => {
 };
 
 
-export { getCurrentUTCTimestamp, getDatesBetweenDates, validateHotelCode, convertToISODate, findUserByUserIdAndToken, verifyUser, uploadImageToS3, convertTimestampToCustomFormat, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt, generateFourDigitRandomNumber, generateString, generateUserName };
+
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+const sendEmail = async (username, hotelcode, hotelRcode, email) => {
+  let msg;
+
+  if (hotelRcode) {
+    msg = {
+      to: `${email}`, // Change to your recipient
+      from: 'retvenssoftwares@gmail.com', // Change to your verified sender
+      templateId: process.env.template_ID2,
+      dynamicTemplateData: {
+        username: username,
+        text_here_2: hotelRcode,
+      },
+    };
+  }
+ 
+
+  if (hotelRcode && hotelcode !== "") {
+    console.log("fgvhjbjknk")
+    msg = {
+      to: `${email}`, // Change to your recipient
+      from: 'retvenssoftwares@gmail.com', // Change to your verified sender
+      templateId: process.env.template_ID3,
+      dynamicTemplateData: {
+        username: username,
+        text_here_1: hotelcode,
+        text_here_2: hotelRcode,
+      },
+    };
+  }
+
+  try {
+    await sgMail.send(msg);
+    console.log('Email sent');
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+// otp verification
+
+const otpVerification = async (email, otp) => {
+  const msg = {
+    to: email,
+    from: 'retvenssoftwares@gmail.com', // Replace with your verified sender email
+    subject: 'OTP Verification',
+    text: `Your OTP for verification is: ${otp}`,
+    html: `<p>Your OTP for verification is: <strong>${otp}</strong></p>`,
+  };
+
+  try {
+    await sgMail.send(msg);
+    console.log('OTP Verification Email sent successfully');
+  } catch (error) {
+    console.error('Error sending OTP Verification Email:', error.response.body);
+  }
+};
+
+
+export { getCurrentUTCTimestamp, getDatesBetweenDates, validateHotelCode, convertToISODate, findUserByUserIdAndToken, verifyUser, uploadImageToS3, convertTimestampToCustomFormat, jwtTokenVerify, jwtsign, uploadMultipleImagesToS3, getCurrentLocalTimestamp, decrypt, encrypt, generateFourDigitRandomNumber, generateString, generateUserName, sendEmail , otpVerification };

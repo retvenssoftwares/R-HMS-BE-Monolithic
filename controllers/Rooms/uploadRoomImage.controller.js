@@ -12,7 +12,7 @@ dotenv.config();
 
 const RoomImage = async (req, res) => {
   try {
-    const roomTypeId = req.params.roomTypeId; // Assuming you get the roomTypeId from the request parameters
+    const roomTypeId = req.query.roomTypeId; // Assuming you get the roomTypeId from the request parameters
     const {userId}=req.query
     const {imageTags}=req.body
     const authCodeValue = req.headers["authcode"]

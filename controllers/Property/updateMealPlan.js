@@ -5,7 +5,7 @@ import { findUserByUserIdAndToken, getCurrentUTCTimestamp } from '../../helpers/
 
 const patchMealPlan = async (req, res) => {
     try {
-        const { shortCode ,mealPlanName,chargesPerOccupancy } = req.body;
+        const { shortCode ,mealPlanName,chargesPerOccupancy, displayStatus } = req.body;
         const { mealPlanId, userId } = req.query;
         const findUser = await verifiedUser.findOne({ userId: userId});
 
@@ -48,6 +48,13 @@ const patchMealPlan = async (req, res) => {
                     logId: randomstring.generate(10)
                 };
                 findMealPlan.chargesPerOccupancy.unshift(chargesPerOccupancyObject);
+            }
+            if (displayStatus) {
+                const displayStatusObject = {
+                    displayStatus: displayStatus,
+                    logId: randomstring.generate(10)
+                };
+                findMealPlan.displayStatus.unshift(displayStatusObject);
             }
 
             const modifiedByObject = {

@@ -9,7 +9,8 @@ const patchIdentityType = async (req, res) => {
 
     try {
         const { userId } = req.query
-        const { shortCode, identityType,deviceType,ipAddress } = req.body;
+       
+        const { shortCode, identityType,deviceType,ipAddress,displayStatus } = req.body;
         const identityTypeId = req.query.identityTypeId;
         const authCodeValue = req.headers['authcode'];
         const findUser = await verifiedUser.findOne({ userId });
@@ -17,7 +18,7 @@ const patchIdentityType = async (req, res) => {
         if (!findUser) {
             return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 });
         }
-
+        let userRole = findUser.role[0].role;
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
         if (result.success) {
 
@@ -43,6 +44,16 @@ const patchIdentityType = async (req, res) => {
                 };
                 findIdentityType.identityType.unshift(identityTypeObject);
             }
+
+            if (displayStatus) {
+                const displayStatusObject = {
+                    displayStatus: displayStatus,
+                    logId: randomString.generate(10)
+                };
+                findIdentityType.displayStatus.unshift(displayStatusObject);
+            }
+
+
             const modifiedByObject = {
                 modifiedBy: userRole,
                 logId: randomString.generate(10)

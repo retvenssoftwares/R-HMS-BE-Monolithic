@@ -32,6 +32,8 @@ export const transportationAdd = async (req, res) => {
                     logId: randomString.generate(10)
                 }],
                 createdBy: userRole,
+                createdOn: await getCurrentUTCTimestamp(),
+                displayStatus: [{ displayStatus: "1", logId: randomString.generate(10) }],
                 createdOn: currentUTCTime,
                 modifiedBy: [],
                 modifiedOn: []
@@ -82,7 +84,8 @@ export const transportationAdd = async (req, res) => {
 export const updateTransportation = async (req, res) => {
     try {
         const { userId, transportationId } = req.query
-        const { shortCode, transportationModeName,deviceType,ipAddress } = req.body
+       
+        const { shortCode, transportationModeName,deviceType,ipAddress,displayStatus } = req.body
         const UserauthCode = await verifying.findOne({ userId: userId });
         const userid= UserauthCode.userId
         if (!UserauthCode) {
@@ -112,10 +115,19 @@ export const updateTransportation = async (req, res) => {
                 };
                 findTransportationRecord.transportationModeName.unshift(transportationModeNameObject);
             }
+
+            if (displayStatus) {
+                const displayStatusObject = {
+                    displayStatus: displayStatus,
+                    logId: randomString.generate(10)
+                };
+                findTransportationRecord.displayStatus.unshift(displayStatusObject);
+            }
             const modifiedByObj = {
                 modifiedBy: userRole,
                 logId: randomString.generate(10)
             }
+            
             const modifiedOnObj = {
                 modifiedOn: await getCurrentUTCTimestamp(),
                 logId: randomString.generate(10)
@@ -180,7 +192,7 @@ export const getTransportation = async (req, res) => {
 
         const authCodeDetails = req.headers["authcode"];
 
-        const getDetails = await transportation.find({ propertyId: req.query.propertyId }).lean();
+        const getDetails = await transportation.find({ propertyId: req.query.propertyId, "displayStatus.0.displayStatus": "1" }).lean();
 
         if (!getDetails) {
             return res.status(404).json({ message: "No transportation types found", statuscode: 404 });

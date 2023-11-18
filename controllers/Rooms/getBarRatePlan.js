@@ -52,4 +52,4 @@ const getBarRatePlans = async (req, res) => {
         return res.status(500).json({ message: "Internal server error", statuscode: 500 });
     }
 }
-export default getBarRatePlans;
+export default getBarRatePlans; 

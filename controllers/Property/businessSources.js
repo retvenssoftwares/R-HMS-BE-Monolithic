@@ -2,10 +2,11 @@ import { convertTimestampToCustomFormat, getCurrentUTCTimestamp, findUserByUserI
 import businessSourcesModel from "../../models/businessSources.js";
 import verifying from "../../models/verifiedUsers.js"
 import randomString from "randomstring"
+import businessSourcesLog from "../../models/LogModels/businessSourcesLog.js";
 //post
 export const addBusinessSources = async (req, res) => {
     try {
-        const userId = req.body.userId
+        const {userId,deviceType,ipAddress} = req.body
         const findUser = await verifying.findOne({ userId: userId })
 
         if (!findUser) {
@@ -15,6 +16,7 @@ export const addBusinessSources = async (req, res) => {
         const userRole = findUser.role[0].role
         const authCodeDetails = req.headers["authcode"]
         const result = await findUserByUserIdAndToken(userId, authCodeDetails)
+        const currentUTCTime= await getCurrentUTCTimestamp()
 
         if (result.success) {
             const data = businessSourcesModel({
@@ -30,12 +32,43 @@ export const addBusinessSources = async (req, res) => {
                 }],
                 displayStatus: [{ displayStatus: "1", logId: randomString.generate(10) }],
                 createdBy: userRole,
-                createdOn: await getCurrentUTCTimestamp(),
+                createdOn: currentUTCTime,
                 modifiedOn: [],
                 modifiedBy: []
             })
 
-            await data.save()
+            const savedBussinessSources= await data.save()
+
+            //save data in log 
+
+            const addBusinessSourceslog=new businessSourcesLog({
+                userId:savedBussinessSources.userId,
+                sourceId:savedBussinessSources.sourceId,
+                createdBy:savedBussinessSources.createdBy,
+                createdOn:savedBussinessSources.createdOn,
+                propertyId:savedBussinessSources.propertyId,
+                shortCode: [
+                    {
+                      logId: savedBussinessSources.shortCode[0].logId,
+                      shortCode: savedBussinessSources.shortCode[0].shortCode,
+                      userId: userId,
+                      deviceType: deviceType,
+                      ipAddress:ipAddress,
+                      modifiedOn:currentUTCTime,
+                    },
+                  ],
+                  sourceName: [
+                    {
+                      logId: savedBussinessSources.sourceName[0].logId,
+                      sourceName: savedBussinessSources.sourceName[0].sourceName,
+                      userId: userId,
+                      deviceType: deviceType,
+                      ipAddress:ipAddress,
+                      modifiedOn:currentUTCTime,
+                    },
+                  ],
+            })
+            await addBusinessSourceslog.save()
 
             return res.status(200).json({ message: "Business source added successfully", statuscode: 200 })
         } else {
@@ -188,6 +221,7 @@ export const getBusinessSources = async (req, res) => {
                         convertedModifiedOn = convertTimestampToCustomFormat(businessSource.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
                     const modifiedBy = businessSource.modifiedBy.length > 0 ? businessSource.modifiedBy[0].modifiedBy : "";
+
                     return {
                         ...businessSource._doc,
                         createdOn: convertedDateUTC,

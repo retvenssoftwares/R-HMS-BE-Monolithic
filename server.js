@@ -24,6 +24,7 @@ import superAdminRoutes from "./routers/superAdmin/admin.routes.js"
 import testR from './routers/test.router.js'
 import mmtRoutes from './routers/OTA/addMMT.router.js'
 import bulkUpdateRoutes from './routers/InventoryAndRates/manageInventoryRates.routes.js'
+import mmtBookingNotificationRoutes from './routers/OTA/Notifications/notification.routes.js'
 // import { oldBooking } from "./helpers/deletOldBooking.js";
 
 app.use(cors({
@@ -41,6 +42,7 @@ app.use(rooms)
 app.use(user)
 app.use(roomRoutes)
 app.use(amenityRoutes)
+app.use(mmtBookingNotificationRoutes)
 app.use(companyRoutes)
 app.use(booking)
 app.use(bulkUpdateRoutes)

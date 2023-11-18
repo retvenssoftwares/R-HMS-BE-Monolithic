@@ -23,6 +23,10 @@ modifiedBy: [{
   modifiedBy: {
       type: String,
       default: ''
+  },
+  logId:{
+    type:String,
+    default:""
   }
 }],
 
@@ -30,6 +34,10 @@ modifiedOn: [{
   modifiedOn: {
       type: String,
       default: ''
+  },
+  logId:{
+    type:String,
+    default:""
   }
 }],
  
@@ -38,13 +46,20 @@ shortCode:[{
     type: String,
     default: "",
   },
-
+  logId:{
+    type:String,
+    default:""
+  }
 }],
 
 chargeRule:[{
   chargeRule:{
     type: String,
     default: "",
+  },
+  logId:{
+    type:String,
+    default:""
   }
 
 }],
@@ -53,6 +68,10 @@ postingRule:[{
   postingRule:{
     type: String,
     default: "",
+  },
+  logId:{
+    type:String,
+    default:""
   }
 
 }],
@@ -64,6 +83,10 @@ postingRule:[{
         type: String,
         default: "",
       },
+      logId:{
+        type:String,
+        default:""
+      }
     },
   ],
 
@@ -72,6 +95,10 @@ inclusionName:[{
   inclusionName:{
     type: String,
     default: "",
+  },
+  logId:{
+    type:String,
+    default:""
   }
 
 }],
@@ -79,6 +106,10 @@ inclusionType:[{
   inclusionType:{
     type: String,
     default: "",
+  },
+  logId:{
+    type:String,
+    default:""
   }
 
 }],

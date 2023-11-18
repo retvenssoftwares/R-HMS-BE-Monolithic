@@ -7,6 +7,7 @@ import {
   getCurrentUTCTimestamp,
   findUserByUserIdAndToken
 } from "../../helpers/helper.js";
+import bookingSourceLog from "../../models/LogModels/bookingSourcesLog.js";
 
 const postBookingSource = async (req, res) => {
   try {
@@ -14,7 +15,9 @@ const postBookingSource = async (req, res) => {
     const {
       propertyId,
       shortCode,
-      bookingSource
+      bookingSource,
+      deviceType,
+      ipAddress
     } = req.body;
 
     const authCodeValue = req.headers['authcode']
@@ -54,7 +57,40 @@ const postBookingSource = async (req, res) => {
       });
 
       // Save the reservation record
-      const savedReservation = await newBookingSource.save();
+      const savedBookingSourecs = await newBookingSource.save();
+
+      // save data in logs
+
+      const addBookingSourceLog =new bookingSourceLog({
+        userId:savedBookingSourecs.userId,
+        bookingSourceId:savedBookingSourecs.bookingSourceId,
+        createdBy:savedBookingSourecs.createdBy,
+        createdOn:savedBookingSourecs.createdOn,
+        propertyId:savedBookingSourecs.propertyId,
+        shortCode: [
+          {
+            logId: savedBookingSourecs.shortCode[0].logId,
+            shortCode: savedBookingSourecs.shortCode[0].shortCode,
+            userId: userId,
+            deviceType: deviceType,
+            ipAddress:ipAddress,
+            modifiedOn:currentUTCTime,
+          },
+        ],
+        bookingSource: [
+          {
+            logId: savedBookingSourecs.bookingSource[0].logId,
+            bookingSource: savedBookingSourecs.bookingSource[0].bookingSource,
+            userId: userId,
+            deviceType: deviceType,
+            
+            modifiedOn:currentUTCTime,
+          },
+        ],
+      })
+
+      await addBookingSourceLog.save();
+
       return res.status(200).json({ message: "New booking Source added successfully", statuscode: 200 });
     } else {
       return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

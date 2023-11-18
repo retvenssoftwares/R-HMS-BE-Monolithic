@@ -166,7 +166,6 @@ const postProperty = async (req, res) => {
       await add.save()
 
 
-
       // Push propertyId in the hotelCode array of findUser model
       findUser.hotelCode.push({
         hotelCode: savedProperty.propertyId
@@ -177,6 +176,7 @@ const postProperty = async (req, res) => {
 
 
       return res.status(200).json({ message: "New property added successfully", propertyId: savedProperty.propertyId, statuscode: 200 });
+
 
     } else {
       return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

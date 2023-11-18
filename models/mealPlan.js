@@ -1,69 +1,81 @@
-import mongoose from 'mongoose';
-import db1 from "../db/conn.js"
+import mongoose from "mongoose";
+import db1 from "../db/conn.js";
 const mealSchema = new mongoose.Schema({
     displayStatus: [{ displayStatus: { type: String, default: '1', enum: ['0', '1'], }, logId: { type: String, default: "" } }],
-    propertyId: {
+    
+  propertyId: {
+    type: String,
+    default: "",
+  },
+
+  mealPlanId: {
+    type: String,
+    default: "",
+  },
+
+  shortCode: [
+    {
+      shortCode: {
         type: String,
-        default: ''
+        default: "",
+      },
+      logId: { type: String, default: "" },
     },
+  ],
 
-    mealPlanId: {
+  mealPlanName: [
+    {
+      mealPlanName: {
         type: String,
-        default: ''
+        default: "",
+      },
+      logId: { type: String, default: "" },
     },
+  ],
 
-    shortCode: [{
-        shortCode: {
-            type: String,
-            default: ''
-        },
-        logId: { type: String, default: '' }
-    }],
-
-    mealPlanName: [{
-        mealPlanName: {
-            type: String,
-            default: ''
-        },
-        logId: { type: String, default: '' }
-    }],
-
-    chargesPerOccupancy:[{
-        chargesPerOccupancy:{
-            type: String,
-            default: ''
-        }
-    }],
-    createdBy: {
+  chargesPerOccupancy: [
+    {
+      chargesPerOccupancy: {
         type: String,
-        default: ''
-    },
-
-    createdOn: {
+        default: "",
+      },
+      logId: {
         type: String,
-        default: ''
+        default: "",
+      },
     },
+  ],
+  createdBy: {
+    type: String,
+    default: "",
+  },
 
-    modifiedBy: [{
-        modifiedBy: {
-            type: String,
-            default: ''
-        },
-        logId: { type: String, default: '' }
-    }],
+  createdOn: {
+    type: String,
+    default: "",
+  },
 
-    modifiedOn: [{
-        modifiedOn: {
-            type: String,
-            default: ''
-        },
-        logId: { type: String, default: '' }
-    }],
+  modifiedBy: [
+    {
+      modifiedBy: {
+        type: String,
+        default: "",
+      },
+      logId: { type: String, default: "" },
+    },
+  ],
 
-   
-
+  modifiedOn: [
+    {
+      modifiedOn: {
+        type: String,
+        default: "",
+      },
+      logId: { type: String, default: "" },
+    },
+  ],
 });
 
-const mealPlan = db1.model('mealPlan', mealSchema);
+const mealPlan = db1.model("mealPlan", mealSchema);
 
 export default mealPlan;

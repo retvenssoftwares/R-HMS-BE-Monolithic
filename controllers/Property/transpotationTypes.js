@@ -88,6 +88,7 @@ export const updateTransportation = async (req, res) => {
         const { shortCode, transportationModeName,deviceType,ipAddress,displayStatus } = req.body
         const UserauthCode = await verifying.findOne({ userId: userId });
         const userid= UserauthCode.userId
+        const userRole=UserauthCode.role[0].role
         if (!UserauthCode) {
             return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 });
         }

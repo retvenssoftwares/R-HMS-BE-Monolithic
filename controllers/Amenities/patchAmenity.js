@@ -2,18 +2,19 @@ import amenity from '../../models/amenity.js'
 import verifiedUser from '../../models/verifiedUsers.js'
 import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/helper.js'
 import randomString from "randomstring"
+import amenitiesLog from '../../models/LogModels/aminitiesLogs.js'
 
 const patchAmenity = async (req, res) => {
 
     try {
         const { userId,amenityId} = req.query
-        const { shortCode, amenityName, amenityType, amenityIcon, amenityIconLink, displayStatus } = req.body;
+        const { shortCode, amenityName, amenityType, amenityIcon, amenityIconLink, displayStatus,deviceType,ipAddress } = req.body;
 
         const authCodeValue = req.headers['authcode'];
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
         const findUser = await verifiedUser.findOne({ userId })
-
+        const userid=findUser.userId;
         if (result.success) {
             let userRole = findUser.role[0].role;
 
@@ -93,6 +94,80 @@ const patchAmenity = async (req, res) => {
             
 
             if (updatedAmenity) {
+
+                //save data in logs
+
+                const findAmenityLogs = await amenitiesLog.find({amenityId})
+                if (findAmenityLogs){
+                    if (shortCode) {
+                        const shortCodeObject = {
+                            shortCode: updatedAmenity.shortCode[0].shortCode,
+                            logId: updatedAmenity.shortCode[0].logId,
+                            userId: userid,
+                            deviceType: deviceType,
+                            ipAddress:ipAddress,
+                            modifiedOn: currentUTCTime,
+                        };
+                        findAmenityLogs.shortCode.unshift(shortCodeObject);
+                    }
+                    if (amenityName) {
+                        const amenityNameObject = {
+                            amenityName: updatedAmenity.amenityName[0].amenityName,
+                            logId: updatedAmenity.amenityName[0].logId,
+                            userId: userid,
+                            deviceType: deviceType,
+                            ipAddress:ipAddress,
+                            modifiedOn: currentUTCTime,
+                        };
+                        findAmenityLogs.amenityName.unshift(amenityNameObject);
+                    }
+                    if (amenityType) {
+                        const amenityTypeObject = {
+                            amenityType: updatedAmenity.amenityType[0].amenityType,
+                            logId: updatedAmenity.amenityType[0].logId,
+                            userId: userid,
+                            deviceType: deviceType,
+                            ipAddress:ipAddress,
+                            modifiedOn: currentUTCTime,
+                        };
+                        findAmenityLogs.amenityType.unshift(amenityTypeObject);
+                    }
+                    if (displayStatus) {
+                        const displayStatusObject = {
+                            displayStatus: updatedAmenity.displayStatus[0].displayStatus,
+                            logId: updatedAmenity.displayStatus[0].logId,
+                            userId: userid,
+                            deviceType: deviceType,
+                            ipAddress:ipAddress,
+                            modifiedOn: currentUTCTime,
+                        };
+                        findAmenityLogs.displayStatus.unshift(displayStatusObject);
+                    }
+                    if (amenityIconLink) {
+                        const amenityIconLinkObject = {
+                            amenityIconLink: updatedAmenity.amenityIconLink[0].amenityIconLink,
+                            logId: updatedAmenity.amenityIconLink[0].logId,
+                            userId: userid,
+                            deviceType: deviceType,
+                            ipAddress:ipAddress,
+                            modifiedOn: currentUTCTime,
+                        };
+                        findAmenityLogs.amenityIconLink.unshift(amenityIconLinkObject);
+                    }
+                    if (amenityIcon) {
+                        const amenityIconObject = {
+                            amenityIcon: updatedAmenity.amenityIcon[0].amenityIcon,
+                            logId: updatedAmenity.amenityIcon[0].logId,
+                            userId: userid,
+                            deviceType: deviceType,
+                            ipAddress:ipAddress,
+                            modifiedOn: currentUTCTime,
+                        };
+                        findAmenityLogs.amenityIcon.unshift(amenityIconObject);
+                    }
+                }
+                await findAmenityLogs.save();
+
                 return res.status(200).json({ message: "Amenity successfully updated", statuscode: 200 });
 
             } else {

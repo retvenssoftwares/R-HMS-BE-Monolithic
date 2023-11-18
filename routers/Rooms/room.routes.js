@@ -20,6 +20,7 @@ import fetchBarRatePlan from '../../controllers/Rooms/getBarRatePlan.js'
 import updateBarRatePlan from '../../controllers/Rooms/patchBarRatePlan.controller.js'
 import getFloors from '../../controllers/Rooms/getPropertyFloors.js';
 import { packageRatePlan, updatePackageRatePlan } from '../../controllers/Rooms/package.js';
+import companyRatePlans from '../../controllers/Rooms/getCompanyRatePlan.js';
 
 //check room availabilty
 import getRoom from '../../controllers/Rooms/getRoomsList.js';
@@ -65,6 +66,9 @@ router.post("/api/addCompanyRatePlan", companyRatePlan)
 
 //update companyRtePlan
 router.patch("/api/updateCompanyRatePlan", updateCompanyRatePlan)
+
+//get companyRatePlan
+router.get('/api/getCompanyRatePlans', companyRatePlans)
 
 //post BarRatePlan
 router.post('/api/barRatePlan', BarRatePlan)

@@ -56,6 +56,7 @@ const getRoomAvailability = async (req, res) => {
 
             if (!roomTypes || roomTypes.length === 0) {
                 return res.status(400).json({ message: "No room types found", statuscode: 400 });
+                
             }
 
             const availableRooms = await Promise.all(roomTypes.map(async (roomType) => {

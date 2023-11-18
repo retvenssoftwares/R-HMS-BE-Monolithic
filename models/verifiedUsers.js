@@ -13,6 +13,15 @@ const verifiedUsersSchema = new mongoose.Schema({
     default: ''
 
   },
+  otp: {
+    type: String,
+    default: ""
+  },
+
+  time: {
+    type: String,
+    default: ""
+  },
   role: [{
     role: {
       type: String,
@@ -52,13 +61,13 @@ const verifiedUsersSchema = new mongoose.Schema({
     required: false,
     default: ''
   },
-  hotelCode:[{
-    hotelCode:{
-      type:String,
-      default:''
+  hotelCode: [{
+    hotelCode: {
+      type: String,
+      default: ''
     }
   }],
-  
+
   authCode: {
     type: String,
     default: ''

@@ -1,6 +1,7 @@
-import barRatePlan from "../../models/barRatePlan.js"
+import barRatePlanModel from "../../models/barRatePlan.js";
 import roomTypeModel from "../../models/roomType.js";
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
+
 const getRatePlansListWithRooms = async (req, res) => {
     try {
         const { propertyId, userId } = req.query;
@@ -8,41 +9,41 @@ const getRatePlansListWithRooms = async (req, res) => {
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
         if (result.success) {
-
             if (!propertyId) {
-                return res.status(400).json({ message: "Please enter propertyId", statuscode: 400 })
+                return res.status(400).json({ message: "Please enter propertyId", statuscode: 400 });
             }
-            const findRatePlans = await barRatePlan.find({ propertyId: propertyId })
-                .select("ratePlanName propertyId barRatePlanId roomType barRates")
-                .lean();
 
-            if (findRatePlans.length > 0) {
-                const foundRateData = await Promise.all(findRatePlans.map(async (rateData) => {
-                    // console.log(rateData.roomType[0].roomTypeId, "ids")
-                    const roomTypeName = await roomTypeModel.findOne({ roomTypeId: rateData.roomType[0].roomTypeId }).select('roomTypeName roomTypeId');
+            // Find unique roomTypeIds for the given propertyId
+            const uniqueRoomTypeIds = await barRatePlanModel.distinct('roomType.roomTypeId', { propertyId });
 
-                    const barRates = rateData.barRates || {};
-                    const ratePlanTotal = (barRates.ratePlanTotal && barRates.ratePlanTotal[0].ratePlanTotal) || '';
-                    const ratePlanName = rateData.ratePlanName.length > 0 ? rateData.ratePlanName[0].ratePlanName : '';
+            if (uniqueRoomTypeIds.length > 0) {
+                const foundRateData = await Promise.all(uniqueRoomTypeIds.map(async (roomTypeId) => {
+                    const roomType = await roomTypeModel.findOne({ roomTypeId }).select('roomTypeName');
+
+                    const barRatePlans = await barRatePlanModel.find({ propertyId, 'roomType.roomTypeId': roomTypeId })
+                        .select("ratePlanName propertyId barRatePlanId barRates");
+
+                    const formattedBarRatePlans = barRatePlans.map((barRatePlan) => ({
+                        ratePlanName: barRatePlan.ratePlanName[0].ratePlanName || "",
+                        barRatePlanId: barRatePlan.barRatePlanId || "",
+                        ratePlanTotal: barRatePlan.barRates.ratePlanTotal[0].ratePlanTotal || ""
+                    }));
+
                     return {
-                        ...rateData._doc,
-                        propertyId: rateData.propertyId || "",
-                        roomTypeId: roomTypeName.roomTypeId || '',
-                        roomTypeName: roomTypeName.roomTypeName[0].roomTypeName || '',
-                        barRatePlanId: rateData.barRatePlanId || "",
-                        ratePlanTotal,
-                        ratePlanName
+                        propertyId,
+                        roomTypeId,
+                        roomTypeName: roomType.roomTypeName[0].roomTypeName || '',
+                        barRatePlans: formattedBarRatePlans
                     };
                 }));
-                return res.status(200).json({ data: foundRateData, statuscode: 200 });
 
+                return res.status(200).json({ data: foundRateData, statuscode: 200 });
             } else {
                 return res.status(200).json({ message: "No rateplans found", status: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }
-
     } catch (error) {
         console.log("error", error);
         res.status(500).json({ message: "Internal Server Error", status: 500 });
@@ -50,4 +51,3 @@ const getRatePlansListWithRooms = async (req, res) => {
 };
 
 export default getRatePlansListWithRooms;
-

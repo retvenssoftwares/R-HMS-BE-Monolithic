@@ -1,8 +1,7 @@
 
 import mongoose from "mongoose";
 import db1 from "../db/conn.js";
-import { generateFourDigitRandomNumber, generateString } from "../helpers/helper.js";
-import Randomstring from "randomstring";
+
 
 const floor = new mongoose.Schema({
 
@@ -10,84 +9,48 @@ const floor = new mongoose.Schema({
         type:String,
         default:""
     },
-  
-    floorInHotel : [{
+
+    floorInHotel:[{
+        floorInHotel:{
+            type:String,
+            default:''
+        },
+    }],
+
+  floorCountStart:[{
+    floorCountStart:{
+        type:String,
+        default:''
+    }
+  }],
+
+    floorDetails : [{
 
             floorId: {
                 type: String,
-                default: await generateFourDigitRandomNumber(),
+                default: ''
               },
-        
-            floorName : [{
-
                 floorName : {
                     type:String,
                     default:""
                 },
-
-                logId:{
-                    type:String,
-                    default: "",
-                }
-              
-            }],
-        
-            roomsInFloor :[{
-
                 roomsInFloor : {
                     type:String,
                     default: "",
                 },
 
-                logId:{
-                    type:String,
-                    default:"",
-                }
-               
-            }],
-
-            roomNumberPrefix :[{
-
                 roomNumberPrefix : {
                     type:String,
                     default: "",
                 },
-
-                logId:{
+                floorType:{
                     type:String,
-                    default: "",
-                }
-              
-            }],
-
-            amenities : [{
-
+                    default:''
+                },
                 amenities : [{
                     type:String,
                     default:"",
                 }],
-
-                logId:{
-                    type:String,
-                    default:"",
-                }
-               
-            }],
-
-            seriesStart : [{
-
-                seriesStart : {
-                    type:String,
-                    default:""
-                },
-
-                logId:{
-                    type:String,
-                    default:"",
-                }
-               
-            }]
-            
         }],
 
 },
@@ -97,20 +60,6 @@ const floor = new mongoose.Schema({
 }
 
 )
-
-
-floor.pre('save', async function (next) {
-    const floor = this;
-    for (const detail of floor.floorInHotel) {
-      detail.floorId = await generateFourDigitRandomNumber();
-    //   detail.floorName.logId = await generateString()
-    //   detail.roomsInFloor.logId = await generateString()
-    //   detail.roomNumberPrefix.logId = await generateString()
-    //   detail.amenities.logId = await generateString()
-    //   detail.seriesStart = await generateString()
-    }
-    next();
-});
   
   
 

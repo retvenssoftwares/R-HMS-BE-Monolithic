@@ -35,7 +35,7 @@ async function findUserByUserIdAndToken(userId, token) {
     // console.log("user")
 
     if (!user) {
-      return { success: false, message: "User not found or invalid userId", statuscode: 400 };;
+      return { success: false, message: "User not found or invalid userId", statuscode: 400 };
     }
 
     // Check if the token exists in the token array

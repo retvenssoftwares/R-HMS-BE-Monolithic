@@ -52,6 +52,7 @@ export const addBusinessSources = async (req, res) => {
                       shortCode: savedBussinessSources.shortCode[0].shortCode,
                       userId: userId,
                       deviceType: deviceType,
+                      ipAddress:ipAddress,
                       modifiedOn:currentUTCTime,
                     },
                   ],
@@ -61,6 +62,7 @@ export const addBusinessSources = async (req, res) => {
                       sourceName: savedBussinessSources.sourceName[0].sourceName,
                       userId: userId,
                       deviceType: deviceType,
+                      ipAddress:ipAddress,
                       modifiedOn:currentUTCTime,
                     },
                   ],
@@ -197,16 +199,17 @@ export const getBusinessSources = async (req, res) => {
                     } else {
                         convertedModifiedOn = convertTimestampToCustomFormat(businessSource.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
+                    const modifiedBy = businessSource.modifiedBy.length > 0 ? businessSource.modifiedBy[0].modifiedBy : "";
 
                     return {
                         ...businessSource._doc,
                         createdOn: convertedDateUTC,
                         sourceId: businessSource.sourceId || '',
                         createdBy: businessSource.createdBy,
-                        sourceName: businessSource.sourceName[0].sourceName || {},
-                        modifiedBy: businessSource.modifiedBy[0].modifiedBy || {},
+                        sourceName: businessSource.sourceName[0].sourceName || '',
+                        modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn || '',
-                        shortCode: businessSource.shortCode[0].shortCode || {},
+                        shortCode: businessSource.shortCode[0].shortCode || '',
                     };
                 });
 

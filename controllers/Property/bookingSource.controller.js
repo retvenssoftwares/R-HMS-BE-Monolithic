@@ -41,6 +41,8 @@ const postBookingSource = async (req, res) => {
           logId: Randomstring.generate(10)
         }],
         bookingSourceId: Randomstring.generate(8),
+        displayStatus: [{ displayStatus: "1", logId: Randomstring.generate(10) }],
+        dateUTC: currentUTCTime,
         createdBy: userRole,
         createdOn: currentUTCTime,
         modifiedBy: [],
@@ -81,7 +83,7 @@ const postBookingSource = async (req, res) => {
             bookingSource: savedBookingSourecs.bookingSource[0].bookingSource,
             userId: userId,
             deviceType: deviceType,
-            
+            ipAddress:ipAddress,
             modifiedOn:currentUTCTime,
           },
         ],

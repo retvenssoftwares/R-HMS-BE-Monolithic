@@ -4,7 +4,7 @@ const bookingSourceSchema = Schema({
 
     propertyId: { type: String, default: '', unique: false },
     bookingSourceId: { type: String, default: '' },
-
+    displayStatus: [{ displayStatus: { type: String, default: '1', enum: ['0', '1'], }, logId: { type: String, default: "" } }],
     shortCode: [{
         shortCode: {
             type: String,

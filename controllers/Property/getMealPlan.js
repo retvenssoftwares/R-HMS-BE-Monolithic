@@ -15,7 +15,7 @@ const getMealPlan = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
-            const findAllMealPlan = await mealPlan.find({ propertyId });
+            const findAllMealPlan = await mealPlan.find({ propertyId , "displayStatus.0.displayStatus": "1" });
 
             if (findAllMealPlan.length > 0) {
                 const convertedMealPlan = findAllMealPlan.map(meal => {
@@ -30,7 +30,9 @@ const getMealPlan = async (req, res) => {
                     const modifiedBy = meal.modifiedBy.length > 0 ? meal.modifiedBy[0].modifiedBy : "";
 
                     return {
-                        ...meal._doc,
+                    
+                        propertyId:meal.propertyId,
+                        createdBy:meal.createdBy,
                         createdOn: convertedDateUTC,
                         shortCode: meal.shortCode[0].shortCode || '',
                         mealPlanName: meal.mealPlanName[0].mealPlanName || '',

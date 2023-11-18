@@ -30,6 +30,7 @@ export const addBusinessSources = async (req, res) => {
                     sourceName: req.body.sourceName,
                     logId: randomString.generate(10)
                 }],
+                displayStatus: [{ displayStatus: "1", logId: randomString.generate(10) }],
                 createdBy: userRole,
                 createdOn: currentUTCTime,
                 modifiedOn: [],
@@ -97,7 +98,8 @@ export const updateBusinessSources = async (req, res) => {
         const userRole = findUser.role[0].role
         const authCodeDetails = req.headers["authcode"]
         const result = await findUserByUserIdAndToken(userId, authCodeDetails)
-        const { shortCode, sourceName } = req.body
+        const currentUTCTime= await getCurrentUTCTimestamp();
+        const { shortCode, sourceName,deviceType,ipAddress,displayStatus } = req.body
         if (result.success) {
             if (shortCode) {
                 const logId1 = randomString.generate(10)
@@ -115,7 +117,26 @@ export const updateBusinessSources = async (req, res) => {
                 const updatedShortCode = await businessSourcesModel.findOneAndUpdate({ sourceId: sourceId }, update1, {
                     new: true
                 });
-
+                //save data in logs
+                
+                const update2 = {
+                    $push: {
+                        shortCode: {
+                            $each: [{
+                                shortCode: shortCode,
+                                logId: logId1,
+                                userId: userId,
+                                deviceType: deviceType,
+                                ipAddress: ipAddress,
+                                modifiedOn:currentUTCTime
+                            }],
+                            $position: 0
+                        }
+                    }
+                };
+                await businessSourcesLog.findOneAndUpdate({ sourceId: sourceId }, update2, {
+                    new: true
+                });
             }
 
             if (sourceName) {
@@ -134,9 +155,48 @@ export const updateBusinessSources = async (req, res) => {
                 const updatedSourceName = await businessSourcesModel.findOneAndUpdate({ sourceId: sourceId }, update1, {
                     new: true
                 });
+                
+                //save data in logs
+                const update2 = {
+                    $push: {
+                        sourceName: {
+                            $each: [{
+                                sourceName: sourceName,
+                                logId: logId1,
+                                userId: userId,
+                                deviceType: deviceType,
+                                ipAddress: ipAddress,
+                                modifiedOn:currentUTCTime
+                            }],
+                            $position: 0
+                        }
+                    }
+                };
+                await businessSourcesLog.findOneAndUpdate({ sourceId: sourceId }, update2, {
+                    new: true
+                });
+            }
+            if (displayStatus) {
+                const logId1 = randomString.generate(10)
+                const update1 = {
+                    $push: {
+                        displayStatus: {
+                            $each: [{
+                                displayStatus: displayStatus,
+                                logId: logId1
+                            }],
+                            $position: 0
+                        }
+                    }
+                };
+                const updatedDisplayStatus = await businessSourcesModel.findOneAndUpdate({ sourceId: sourceId }, update1, {
+                    new: true
+                });
 
             }
+            
 
+           
             const logId2 = randomString.generate(10)
             const logId3 = randomString.generate(10)
             const update1 = {
@@ -160,6 +220,8 @@ export const updateBusinessSources = async (req, res) => {
             const updatedBusinessSource = await businessSourcesModel.findOneAndUpdate({ sourceId: sourceId }, update1, {
                 new: true
             });
+
+        
             return res.status(200).json({ message: "Business source updated successfully", statuscode: 200 })
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
@@ -184,7 +246,7 @@ export const getBusinessSources = async (req, res) => {
             return res.status(400).json({ message: "Please enter valid propertyId", statuscode: 400 })
         }
 
-        const businessSourcesFetch = await businessSourcesModel.find({ propertyId: propertyId }).lean();
+        const businessSourcesFetch = await businessSourcesModel.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1" }).lean();
 
         const authCodeDetails = req.headers["authcode"]
         const result = await findUserByUserIdAndToken(userId, authCodeDetails)

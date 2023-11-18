@@ -24,7 +24,7 @@ const identityType = async (req, res) => {
 
 
         if (result.success) {
-            const userIdentity = await identityModel.find({ propertyId }).lean();
+            const userIdentity = await identityModel.find({ propertyId, "displayStatus.0.displayStatus": "1" }).lean();
             if (userIdentity) {
                 // Assuming userTimeZone holds the user's specified time zone
                 const convertedIdentity = userIdentity.map(identity => {

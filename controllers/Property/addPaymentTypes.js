@@ -36,6 +36,8 @@ const addPaymentType = async (req, res) => {
                     logId: randomstring.generate(10)
                 }],
                 createdBy: userRole,
+                createdOn: await getCurrentUTCTimestamp(),
+                displayStatus: [{ displayStatus: "1", logId: randomstring.generate(10) }],
                 createdOn: currentUTCTime,
                 modifiedBy: [],
                 modifiedOn: []

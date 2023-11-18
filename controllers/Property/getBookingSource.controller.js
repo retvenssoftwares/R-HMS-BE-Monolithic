@@ -15,7 +15,7 @@ const bookingSourcesGet = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
 
         if (result.success) {
-            const bookingSource = await bookingModel.find({ propertyId: propertyId }).lean();
+            const bookingSource = await bookingModel.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1"  }).lean();
             if (bookingSource.length > 0) {
                 const convertedBookingSources = bookingSource.map(bookingSource => {
                     const convertedDateUTC = convertTimestampToCustomFormat(bookingSource.createdOn, targetTimeZone);

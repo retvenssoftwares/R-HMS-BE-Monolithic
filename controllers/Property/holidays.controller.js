@@ -50,6 +50,7 @@ const postHoliday = async (req, res) => {
           endDate: endDate,
           logId: Randomstring.generate(10)
         }],
+        displayStatus: [{ displayStatus: "1", logId: Randomstring.generate(10) }],
         createdBy: userRole,
 
         createdOn: currentUTCTime,

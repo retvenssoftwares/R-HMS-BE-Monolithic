@@ -2,12 +2,14 @@ import randomstring from 'randomstring'
 import mealPlan from '../../models/mealPlan.js'
 import verifiedUser from '../../models/verifiedUsers.js'
 import { findUserByUserIdAndToken, getCurrentUTCTimestamp } from '../../helpers/helper.js'
+import mealPLanLog from '../../models/LogModels/mealPlanLogs.js'
 
 const patchMealPlan = async (req, res) => {
     try {
-        const { shortCode ,mealPlanName,chargesPerOccupancy } = req.body;
+        const { shortCode ,mealPlanName,chargesPerOccupancy, displayStatus,deviceType,ipAddress } = req.body;
         const { mealPlanId, userId } = req.query;
         const findUser = await verifiedUser.findOne({ userId: userId});
+        const userid=findUser.userId;
 
         if (!findUser) {
             return res.status(404).json({ message: "User not found or invalid userid", statuscode: 404 })
@@ -49,6 +51,13 @@ const patchMealPlan = async (req, res) => {
                 };
                 findMealPlan.chargesPerOccupancy.unshift(chargesPerOccupancyObject);
             }
+            if (displayStatus) {
+                const displayStatusObject = {
+                    displayStatus: displayStatus,
+                    logId: randomstring.generate(10)
+                };
+                findMealPlan.displayStatus.unshift(displayStatusObject);
+            }
 
             const modifiedByObject = {
                 modifiedBy: userRole,
@@ -62,6 +71,58 @@ const patchMealPlan = async (req, res) => {
             const updatedMealPlan = await findMealPlan.save();
 
             if (updatedMealPlan) {
+
+                //save data in logs
+
+                const findMealPlanLog=await mealPLanLog.findOne({mealPlanId})
+                if (findMealPlanLog){
+                    if (shortCode) {
+                        const shortCodeObject = {
+                            shortCode: updatedMealPlan.shortCode[0].shortCode,
+                            logId: updatedMealPlan.shortCode[0].logId,
+                            userId: userid,
+                            deviceType: deviceType,
+                            ipAddress:ipAddress,
+                            modifiedOn: currentUTCTime,
+                        };
+                        findMealPlanLog.shortCode.unshift(shortCodeObject);
+                    }
+                    if (mealPlanName) {
+                        const mealPlanNameObject = {
+                            mealPlanName: updatedMealPlan.mealPlanName[0].mealPlanName,
+                            logId: updatedMealPlan.mealPlanName[0].logId,
+                            userId: userid,
+                            deviceType: deviceType,
+                            ipAddress:ipAddress,
+                            modifiedOn: currentUTCTime,
+                        };
+                        findMealPlanLog.mealPlanName.unshift(mealPlanNameObject);
+                    }
+                    if (chargesPerOccupancy) {
+                        const chargesPerOccupancyObject = {
+                            chargesPerOccupancy: updatedMealPlan.chargesPerOccupancy[0].chargesPerOccupancy,
+                            logId: updatedMealPlan.chargesPerOccupancy[0].logId,
+                            userId: userid,
+                            deviceType: deviceType,
+                            ipAddress:ipAddress,
+                            modifiedOn: currentUTCTime,
+                        };
+                        findMealPlanLog.chargesPerOccupancy.unshift(chargesPerOccupancyObject);
+                    }
+                    if (displayStatus) {
+                        const displayStatusObject = {
+                            displayStatus: updatedMealPlan.displayStatus[0].displayStatus,
+                            logId: updatedMealPlan.displayStatus[0].logId,
+                            userId: userid,
+                            deviceType: deviceType,
+                            ipAddress:ipAddress,
+                            modifiedOn: currentUTCTime,
+                        };
+                        findMealPlanLog.displayStatus.unshift(displayStatusObject);
+                    }
+                }
+
+                await findMealPlanLog.save();
                 return res.status(200).json({ message: "Meal Plan successfully updated", statuscode: 200 });
             }
         } else {

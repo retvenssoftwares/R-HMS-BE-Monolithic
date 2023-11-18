@@ -31,7 +31,7 @@ export const transportationAdd = async (req, res) => {
                 }],
                 createdBy: userRole,
                 createdOn: await getCurrentUTCTimestamp(),
-                displayStatus: [{ displayStatus: "1", logId: Randomstring.generate(10) }],
+                displayStatus: [{ displayStatus: "1", logId: randomString.generate(10) }],
                 modifiedBy: [],
                 modifiedOn: []
             });
@@ -84,7 +84,7 @@ export const updateTransportation = async (req, res) => {
             if (displayStatus) {
                 const displayStatusObject = {
                     displayStatus: displayStatus,
-                    logId: Randomstring.generate(10)
+                    logId: randomString.generate(10)
                 };
                 findTransportationRecord.displayStatus.unshift(displayStatusObject);
             }

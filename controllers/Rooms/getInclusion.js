@@ -19,8 +19,8 @@ const getInclusion = async (req, res) => {
             if (!result.success) {
                 return res.status(result.statuscode).json({ message: "Invalid propertyId entered", statuscode: result.statuscode })
             }
-            const inclusion = await inclusionModel.find({ propertyId: propertyId });
-
+            const inclusion = await inclusionModel.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1"  });
+console.log(inclusion)
             if (inclusion.length > 0) {
                 const convertedInclusion = inclusion.map(inclusion => {
                     // Convert the dateUTC to the user's time zone
@@ -35,7 +35,7 @@ const getInclusion = async (req, res) => {
                     const modifiedBy = inclusion.modifiedBy.length > 0 ? inclusion.modifiedBy[0].modifiedBy : "";
 
                     return {
-                        ...inclusion._doc,
+                        propertyId:inclusion.propertyId,
                         createdOn: convertedDateUTC,
                         inclusionId: inclusion.inclusionId,
                         inclusionName: inclusion.inclusionName[0].inclusionName || '',

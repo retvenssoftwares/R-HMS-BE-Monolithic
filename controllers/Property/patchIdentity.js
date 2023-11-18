@@ -45,7 +45,7 @@ const patchIdentityType = async (req, res) => {
             if (displayStatus) {
                 const displayStatusObject = {
                     displayStatus: displayStatus,
-                    logId: Randomstring.generate(10)
+                    logId: randomString.generate(10)
                 };
                 findIdentityType.displayStatus.unshift(displayStatusObject);
             }

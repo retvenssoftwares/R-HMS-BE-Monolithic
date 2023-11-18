@@ -53,7 +53,7 @@ const patchPaymentType = async (req, res) => {
             if (displayStatus) {
                 const displayStatusObject = {
                     displayStatus: displayStatus,
-                    logId: Randomstring.generate(10)
+                    logId: randomString.generate(10)
                 };
                 findPaymentType.displayStatus.unshift(displayStatusObject);
             }

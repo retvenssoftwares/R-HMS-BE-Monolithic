@@ -1,11 +1,12 @@
 import inclusion from '../../models/inclusion.js'
 import verifiedUser from '../../models/verifiedUsers.js'
  import { getCurrentUTCTimestamp,findUserByUserIdAndToken } from '../../helpers/helper.js'
-
+ import randomString from "randomstring"
+ 
 const patchInclusion = async (req, res) => {
     try {
          const {userId,inclusionId} =req.query;
-        const {  inclusionName,shortCode,postingRule,charge,chargeRule, inclusionType} = req.body;
+        const {  inclusionName,shortCode,postingRule,charge,chargeRule, inclusionType, displayStatus} = req.body;
         const authCodeValue = req.headers['authcode'];
 
         const findUser = await verifiedUser.findOne({ userId });
@@ -59,6 +60,13 @@ const patchInclusion = async (req, res) => {
                 chargeRule: chargeRule
             };
             findInclusion.chargeRule.unshift(chargeRuleObject);
+        }
+        if (displayStatus) {
+            const displayStatusObject = {
+                displayStatus: displayStatus,
+                logId: randomString.generate(10)
+            };
+            findInclusion.displayStatus.unshift(displayStatusObject);
         }
 
         const modifiedByObject = {

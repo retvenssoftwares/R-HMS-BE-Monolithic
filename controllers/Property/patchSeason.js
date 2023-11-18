@@ -6,7 +6,7 @@ import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from '../../helpers/
 const patchSeason = async (req, res) => {
     try {
         const { userId } = req.query
-        const { shortCode, seasonName, startDate, endDate, days } = req.body;
+        const { shortCode, seasonName, startDate, endDate, days, displayStatus } = req.body;
         const seasonId = req.query.seasonId;
         const authCodeValue = req.headers['authcode'];
         const findUser = await verifiedUser.findOne({ userId });
@@ -42,6 +42,14 @@ const patchSeason = async (req, res) => {
                     logId: Randomstring.generate(10)
                 };
                 findSeason.seasonName.unshift(seasonNameObject);
+            }
+
+            if (displayStatus) {
+                const displayStatusObject = {
+                    displayStatus: displayStatus,
+                    logId: Randomstring.generate(10)
+                };
+                findSeason.displayStatus.unshift(displayStatusObject);
             }
 
             if (startDate) {

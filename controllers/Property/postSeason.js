@@ -51,7 +51,7 @@ const postSeason = async (req, res) => {
         createdBy: userRole,
 
         createdOn: await getCurrentUTCTimestamp(),
-
+        displayStatus: [{ displayStatus: "1", logId: Randomstring.generate(10) }],
         modifiedBy: [],
         modifiedOn: [],
         days: [{ days: daysArray, logId: Randomstring.generate(10) }],

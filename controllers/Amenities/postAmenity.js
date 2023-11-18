@@ -4,6 +4,7 @@ dotenv.config();
 import verifiedUser from "../../models/verifiedUsers.js";
 import amenityModel from "../../models/amenity.js";
 import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from "../../helpers/helper.js";
+import randomString from "randomstring"
 
 const postAmenity = async (req, res) => {
    try {
@@ -53,6 +54,7 @@ const postAmenity = async (req, res) => {
                amenityIcon: [{
                   amenityIcon: amenityIcon
                }],
+               displayStatus: [{ displayStatus: "1", logId: randomString.generate(10) }],
                amenityIconLink: [{
                   amenityIconLink
                }]

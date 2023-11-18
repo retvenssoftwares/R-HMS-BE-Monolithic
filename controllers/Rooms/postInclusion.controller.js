@@ -51,6 +51,7 @@ const postInclusion = async (req, res) => {
         postingRule: [{
           postingRule: postingRule
         }],
+        displayStatus: [{ displayStatus: "1", logId: Randomstring.generate(10) }],
         createdBy: userRole,
 
         createdOn: await getCurrentUTCTimestamp(),

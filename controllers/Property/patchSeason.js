@@ -145,14 +145,6 @@ const patchSeason = async (req, res) => {
                 }
             }
             await findSeasonLog.save();
-    
-                // const modifiedByObject = {
-                //     modifiedBy: userRole,
-                //     logId: Randomstring.generate(10)
-                // };
-    
-                // findSeasonLog.modifiedBy.unshift(modifiedByObject);
-                // findSeasonLog.modifiedOn.unshift({ modifiedOn: currentUTCTime, logId: Randomstring.generate(10) });
 
                 return res.status(200).json({ message: "Season updated successfully ", statuscode: 200 });
             }

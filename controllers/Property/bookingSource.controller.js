@@ -81,7 +81,7 @@ const postBookingSource = async (req, res) => {
             bookingSource: savedBookingSourecs.bookingSource[0].bookingSource,
             userId: userId,
             deviceType: deviceType,
-            
+            ipAddress:ipAddress,
             modifiedOn:currentUTCTime,
           },
         ],

@@ -5,12 +5,13 @@ import {
     findUserByUserIdAndToken,
 } from "../../helpers/helper.js";
 import userModel from '../../models/verifiedUsers.js';
+import bookingSourceLog from "../../models/LogModels/bookingSourcesLog.js";
 
 const updateBookingSource = async (req, res) => {
     try {
         const bookingSourceId = req.query.bookingSourceId;
         const userId = req.query.userId
-        const { bookingSource, shortCode } = req.body;
+        const { bookingSource, shortCode,ipAddress,deviceType } = req.body;
         const authCodeValue = req.headers['authcode'];
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
@@ -51,6 +52,28 @@ const updateBookingSource = async (req, res) => {
                 const updatedBookingSourceName = await bookingSourceModel.findOneAndUpdate({ bookingSourceId: bookingSourceId }, update1, {
                     new: true
                 });
+                
+                //save data in logs 
+                const update2 = {
+                    $push: {
+                        bookingSource: {
+                            $each: [{
+                                bookingSource: bookingSource,
+                                logId: logId1,
+                                userId: userId,
+                                deviceType: deviceType,
+                                ipAddress: ipAddress,
+                                modifiedOn:currentUTCTime
+                            }],
+                            $position: 0
+                        }
+                    }
+                };
+                await bookingSourceLog.findOneAndUpdate({ bookingSourceId: bookingSourceId }, update2, {
+                    new: true
+                });
+                
+
             }
 
             // Check if shortCode is provided in the request
@@ -68,6 +91,26 @@ const updateBookingSource = async (req, res) => {
                     }
                 };
                 const updatedBookingShortCode = await bookingSourceModel.findOneAndUpdate({ bookingSourceId: bookingSourceId }, update1, {
+                    new: true
+                });
+
+                //save data in logs
+                const update2 = {
+                    $push: {
+                        shortCode: {
+                            $each: [{
+                                shortCode: shortCode,
+                                logId: logId1,
+                                userId: userId,
+                                deviceType: deviceType,
+                                ipAddress: ipAddress,
+                                modifiedOn:currentUTCTime
+                            }],
+                            $position: 0
+                        }
+                    }
+                };
+                 await bookingSourceLog.findOneAndUpdate({ bookingSourceId: bookingSourceId }, update2, {
                     new: true
                 });
 

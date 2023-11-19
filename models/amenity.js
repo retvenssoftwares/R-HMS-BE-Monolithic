@@ -116,6 +116,7 @@ const amenitySchema = new mongoose.Schema(
         },
       },
     ],
+    displayStatus: [{ displayStatus: { type: String, default: '1' }, logId: { type: String, default: "" } }],
   },
   {
     versionKey: false,

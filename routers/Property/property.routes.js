@@ -11,6 +11,7 @@ import addPaymentType from "../../controllers/Property/addPaymentTypes.js"
 import getPaymentTypes from '../../controllers/Property/getPaymentTypes.js'
 import patchPaymentType from '../../controllers/Property/patchPaymentTypes.js';
 import userProperty from "../../controllers/Property/getUserProperties.controller.js"
+import getPropertyById from '../../controllers/Property/getPropertyByPropertyId.js';
 
 
 //images
@@ -69,6 +70,7 @@ router.post(
     upload.fields([{ name: 'hotelLogo', maxCount: 1 }]),
     postProperty
 );
+router.get("/api/getPropertyById", getPropertyById);
 
 // transport
 router.post("/api/addTransportation", transportationAdd)
@@ -91,7 +93,7 @@ router.patch("/api/propertyAdditionalDetails", editProperty)
 //images
 router.patch("/api/uploadPropertyImages", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), uploadPropertyImages);
 router.patch("/api/changeImageIndex", dragDropPropertyImages);
-router.patch("/api/updatePropertyImage",updatePropertyImage)
+router.patch("/api/updatePropertyImage", updatePropertyImage)
 
 router.patch("/api/editProperty", editProperty);
 
@@ -138,9 +140,9 @@ router.get("/api/companyType", getCompany);
 
 
 //MealPlan
-router.post("/api/postMealPlan",postMealPlan)
-router.get("/api/getMealPlan",getMealPlan)
-router.patch("/api/patchMeal",patchMealPlan)
+router.post("/api/postMealPlan", postMealPlan)
+router.get("/api/getMealPlan", getMealPlan)
+router.patch("/api/patchMeal", patchMealPlan)
 
 //ota source
 router.post("/api/postOtaSourcePlan", OtaSources)

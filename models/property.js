@@ -204,10 +204,6 @@ const propertySchema = new Schema({
         type: String,
         default: ''
     },
-    propertyChainName: {
-        type: String,
-        default: ""
-    },
     starCategory: {
         type: String,
         default: ''

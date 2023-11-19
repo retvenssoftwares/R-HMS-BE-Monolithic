@@ -16,7 +16,7 @@ const getAmenities = async (req, res) => {
                     const convertedDateUTC = convertTimestampToCustomFormat(amenities.createdOn, targetTimeZone);
                     var convertedModifiedOn;
                     if (amenities.modifiedOn.length === 0) {
-                        convertedModifiedOn = {}
+                        convertedModifiedOn = ''
                     } else {
                         convertedModifiedOn = convertTimestampToCustomFormat(amenities.modifiedOn[0].modifiedOn, targetTimeZone);
                     }
@@ -28,11 +28,11 @@ const getAmenities = async (req, res) => {
                         createdOn: convertedDateUTC,
                         amenityId: amenities.amenityId || '',
                         createdBy: amenities.createdBy,
-                        amenityName: amenities.amenityName[0].amenityName || {},
-                        shortCode: amenities.shortCode[0].shortCode || {},
+                        amenityName: amenities.amenityName[0].amenityName || '',
+                        shortCode: amenities.shortCode[0].shortCode || '' ,
                         modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn,
-                        amenityType: amenities.amenityType[0].amenityType || {}
+                        amenityType: amenities.amenityType[0].amenityType || ''
                     };
                 });
 

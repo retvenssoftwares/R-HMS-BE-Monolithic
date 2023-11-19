@@ -3,7 +3,8 @@ dotenv.config();
 import roomModel from "../../models/roomType.js";
 import bedType from "../../models/superAdmin/bedType.js"
 import roomImage from "../../models/roomTypeImages.js"
-import barRatePlan from "../../models/barRatePlan.js"
+//import barRatePlan from "../../models/barRatePlan.js"
+import amenitiesModel from '../../models/amenity.js'
 import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const fetchRoom = async (req, res) => {
@@ -16,7 +17,7 @@ const fetchRoom = async (req, res) => {
         if (result.success) {
           
             const roomImages = await roomImage.find({ roomTypeId: roomTypeId });
-            const barrate = await barRatePlan.find({ 'roomType.roomTypeId': roomTypeId });
+           // const barrate = await barRatePlan.find({ 'roomType.roomTypeId': roomTypeId });
            //console.log(barrate)
 
             const rooms = await roomModel.find({ roomTypeId: roomTypeId });
@@ -48,7 +49,7 @@ const fetchRoom = async (req, res) => {
                     const firstMaximumRate = room.maximumRate[0].maximumRate;
                     const firstExtraAdultRate = room.extraAdultRate[0].extraAdultRate;
                     const firstExtraChildRate = room.extraChildRate[0].extraChildRate;
-                    const amenitiesCount = room.amenities[0].amenities;
+                    const amenities = room.amenities[0].amenities;
                     const roomTypeId = room.roomTypeId || ''
 
                     //bedTypes
@@ -61,10 +62,22 @@ const fetchRoom = async (req, res) => {
                         bedTypeId: foundBed.bedTypeId,
                         bedType: foundBed.bedType,
                     }));
+
+                    //amenity
+                    const allAmenities = amenities.map((item)=>item.amenityId)
+                  // console.log(allAmenities)
+                     const foundAmenity = await amenitiesModel.find({amenityId:{$in:allAmenities}});
+                  //console.log(foundAmenity)
+
+                  const amenityNames =foundAmenity.map((foundAmenity)=>({
+                    amenityName :foundAmenity.amenityName[0].amenityName,
+                    amenityIconLink: foundAmenity.amenityIconLink[0].amenityIconLink
+                  }))
                     
                    
+
+                    //roomImages
                 const filteredRoomImages = roomImages.filter(img => img.roomTypeId === roomTypeId);
-                
                 // Extract necessary data from roomImages
                 const imagesData = filteredRoomImages.map(img => ({
                     image: img.roomImages[0].image || '',
@@ -72,20 +85,21 @@ const fetchRoom = async (req, res) => {
                 }));
 
                 //extract data from barrate
-                const bardata = barrate.map(bar=>({
-                    rateType:bar.rateType,
-                    ratePlanName:bar.ratePlanName[0].ratePlanName || '',
-                    shortCode:bar.shortCode[0].shortCode || '',
-                    roomBaseRate:bar.barRates.roomBaseRate[0].roomBaseRate || '',
-                    mealCharge:bar.barRates.mealCharge[0].mealCharge || '',
-                    inclusionCharge:bar.barRates.inclusionCharge[0].inclusionCharge || '',
-                    roundUp:bar.barRates.roundUp[0].roundUp || '',
-                    extraAdultRate:bar.barRates.extraAdultRate[0].extraAdultRate || '',
-                    extraChildRate:bar.barRates.extraChildRate[0].extraChildRate || '',
-                    ratePlanTotal:bar.barRates.ratePlanTotal[0].ratePlanTotal || '',
-                    inclusion:bar.inclusion[0].inclusionPlan || ''
+                // const bardata = barrate.map(bar=>({
+                //     rateType:bar.rateType,
+                //     roomTypeId:bar.roomType[0].roomTypeId,
+                //     ratePlanName:bar.ratePlanName[0].ratePlanName || '',
+                //     shortCode:bar.shortCode[0].shortCode || '',
+                //     roomBaseRate:bar.barRates.roomBaseRate[0].roomBaseRate || '',
+                //     mealCharge:bar.barRates.mealCharge[0].mealCharge || '',
+                //     inclusionCharge:bar.barRates.inclusionCharge[0].inclusionCharge || '',
+                //     roundUp:bar.barRates.roundUp[0].roundUp || '',
+                //     extraAdultRate:bar.barRates.extraAdultRate[0].extraAdultRate || '',
+                //     extraChildRate:bar.barRates.extraChildRate[0].extraChildRate || '',
+                //     ratePlanTotal:bar.barRates.ratePlanTotal[0].ratePlanTotal || '',
+                //     inclusion:bar.inclusion[0].inclusionPlan || ''
 
-                }))
+                // }))
        
 
                 // Include fetched roomImages in the property object
@@ -107,11 +121,11 @@ const fetchRoom = async (req, res) => {
                         maximumRate: firstMaximumRate,
                         extraAdultRate: firstExtraAdultRate,
                         extraChildRate: firstExtraChildRate,
-                        amenities: amenitiesCount,
+                       amenities: amenityNames,
                         roomTypeId: roomTypeId,
                         roomImages: imagesData,
                         roomTypeId: roomTypeId,
-                        ratePlan:bardata
+                       // ratePlan:bardata
                     };
 
                     

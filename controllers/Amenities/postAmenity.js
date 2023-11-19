@@ -67,6 +67,7 @@ const postAmenity = async (req, res) => {
             logId: Randomstring.generate(10),
           },
         ],
+        displayStatus: [{ displayStatus: "1", logId: Randomstring.generate(10) }],
         amenityIconLink: [
           {
             amenityIconLink,

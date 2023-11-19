@@ -22,7 +22,7 @@ const getAmenities = async (req, res) => {
                 amenityIcon: amenity.amenityIcon[0].amenityIcon || "",
                 amenityIconLink: amenity.amenityIconLink[0].amenityIconLink || ""
             }));
-
+//
             const convertedAdminAmenity = adminAmenity.map((adminAmenity) => ({
                 ...adminAmenity._doc,
                 amenityId: adminAmenity.amenityId,

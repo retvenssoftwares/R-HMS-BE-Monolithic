@@ -31,7 +31,8 @@ const getReservation = async (req, res) => {
                     const modifiedBy = reservations.modifiedBy.length > 0 ? reservations.modifiedBy[0].modifiedBy : "";
 
                     return {
-                        ...reservations._doc,
+                        propertyId:reservations.propertyId,
+                        createdBy:reservations.createdBy,
                         createdOn: convertedDateUTC,
                         reservationName: reservations.reservationName[0].reservationName || '',
                         status: reservations.status[0].status || '',

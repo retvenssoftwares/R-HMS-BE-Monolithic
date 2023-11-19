@@ -14,10 +14,11 @@ const patchIdentityType = async (req, res) => {
         const identityTypeId = req.query.identityTypeId;
         const authCodeValue = req.headers['authcode'];
         const findUser = await verifiedUser.findOne({ userId });
-        const userid=findUser.userId
+  
         if (!findUser) {
             return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 });
         }
+        const userid=findUser.userId
         let userRole = findUser.role[0].role;
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
         if (result.success) {

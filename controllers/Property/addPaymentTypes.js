@@ -14,7 +14,7 @@ const addPaymentType = async (req, res) => {
         if (!findUser) {
             return res.status(400).json({ message: "User not found or invalid userId", statuscode: 400 })
         }
-        let userRole = findUser.role[0].role
+        let userRole = findUser.role[0].role || ''
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
         const currentUTCTime=await getCurrentUTCTimestamp()
 

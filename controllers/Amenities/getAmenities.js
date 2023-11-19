@@ -32,7 +32,9 @@ const getAmenities = async (req, res) => {
                         shortCode: amenities.shortCode[0].shortCode || '' ,
                         modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn,
-                        amenityType: amenities.amenityType[0].amenityType || ''
+                        amenityType: amenities.amenityType[0].amenityType || '',
+                        amenityIconLink:amenities.amenityIconLink[0].amenityIconLink || '',
+                        amenityIcon:amenities.amenityIcon[0].amenityIcon || ''
                     };
                 });
 

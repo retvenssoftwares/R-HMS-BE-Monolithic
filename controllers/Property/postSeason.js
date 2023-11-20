@@ -93,6 +93,16 @@ const postSeason = async (req, res) => {
             modifiedOn: currentUTCTime,
           },
         ],
+        displayStatus: [
+          {
+            displayStatus: savedSeasons.displayStatus[0].displayStatus,
+            logId: savedSeasons.displayStatus[0].logId,
+            userId: userId,
+            deviceType: deviceType,
+            ipAddress:ipAddress,
+            modifiedOn: currentUTCTime,
+          },
+        ],
         seasonName: [
           {
             seasonName: savedSeasons.seasonName[0].seasonName,

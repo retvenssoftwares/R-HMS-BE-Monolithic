@@ -67,6 +67,14 @@ export const transportationAdd = async (req, res) => {
                     ipAddress:ipAddress,
                     modifiedOn: currentUTCTime,
                 }],
+                displayStatus: [{
+                    displayStatus: savedTranportation.displayStatus[0].displayStatus,
+                    logId: savedTranportation.displayStatus[0].logId,
+                    userId: userId,
+                    deviceType: deviceType,
+                    ipAddress:ipAddress,
+                    modifiedOn: currentUTCTime,
+                }],
             })
 
             await addTransportationLog.save();
@@ -166,6 +174,17 @@ export const updateTransportation = async (req, res) => {
                 }
                 findTransportationLog.transportationModeName.unshift(transportationModeNameObject);
                 }
+                if(displayStatus){
+                    const displayStatusObject={
+                    displayStatus: savedTranportation.displayStatus[0].displayStatus,
+                    logId: savedTranportation.displayStatus[0].logId,
+                    userId: userid,
+                    deviceType: deviceType,
+                    ipAddress:ipAddress,
+                    modifiedOn: currentUTCTime,
+                }
+                findTransportationLog.displayStatus.unshift(displayStatusObject);
+                }
             }
             await findTransportationLog.save();
 
@@ -193,7 +212,7 @@ export const getTransportation = async (req, res) => {
 
         const authCodeDetails = req.headers["authcode"];
 
-        const getDetails = await transportation.find({ propertyId: req.query.propertyId, "displayStatus.0.displayStatus": "1" }).lean();
+        const getDetails = await transportation.find({ propertyId: req.query.propertyId, "displayStatus.0.displayStatus": "1" }).sort({_id:-1}).lean();
 
         if (!getDetails) {
             return res.status(404).json({ message: "No transportation types found", statuscode: 404 });

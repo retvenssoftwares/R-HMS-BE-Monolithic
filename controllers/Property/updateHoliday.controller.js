@@ -96,6 +96,17 @@ const patchHoliday = async (req, res) => {
                     };
                     findHolidayLog.shortCode.unshift(shortCodeObject);
                 }
+                if (displayStatus) {
+                    const displayStatusObject = {
+                        displayStatus:updatedHoliday.displayStatus[0].displayStatus,
+                        logId:updatedHoliday.displayStatus[0].logId,
+                        userId:userid,
+                        deviceType:deviceType,
+                        ipAddress:ipAddress,
+                        modifiedOn:currentUTCTime,
+                    };
+                    findHolidayLog.displayStatus.unshift(displayStatusObject);
+                }
 
                 if (holidayName) {
                     const holidayNameObject = {

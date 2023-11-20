@@ -70,6 +70,14 @@ const addPaymentType = async (req, res) => {
                     ipAddress:ipAddress,
                     modifiedOn:currentUTCTime,
                 }],
+                displayStatus: [{
+                    logId: savedPaymentType.displayStatus[0].logId,
+                    displayStatus: savedPaymentType.displayStatus[0].displayStatus,
+                    userId: userId,
+                    deviceType: deviceType,
+                    ipAddress:ipAddress,
+                    modifiedOn:currentUTCTime,
+                }],
                 receivedTo: [{
                     logId: savedPaymentType.receivedTo[0].logId,
                     receivedTo: savedPaymentType.receivedTo[0].receivedTo,

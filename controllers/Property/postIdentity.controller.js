@@ -73,6 +73,14 @@ const userIdentity = async (req, res) => {
                         ipAddress:ipAddress,
                         modifiedOn: currentUTCTime,   
                     }],
+                    displayStatus: [{
+                        logId:savedIdentity.displayStatus[0].logId,
+                        displayStatus: savedIdentity.displayStatus[0].displayStatus,
+                        userId: userId,
+                        deviceType: deviceType,
+                        ipAddress:ipAddress,
+                        modifiedOn: currentUTCTime,   
+                    }],
                     
                 })
 

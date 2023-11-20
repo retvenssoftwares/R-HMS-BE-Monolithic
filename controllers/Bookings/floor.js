@@ -1,5 +1,6 @@
 import mongoose, { model, mongo } from "mongoose"
 import floor from "../../models/floor.js"
+import roomModel from "../../models/roomInFloor.js"
 import randomstring from 'randomstring'
 import verifiedUser from "../../models/verifiedUsers.js"
 import { findUserByUserIdAndToken } from "../../helpers/helper.js"
@@ -42,6 +43,8 @@ export const addRoomInfloor = async (req, res) => {
     });
 
     await floorData.save();
+
+    
 
     
     return res.status(200).json({ message: "Floors added successfully", statusCode: 200 });

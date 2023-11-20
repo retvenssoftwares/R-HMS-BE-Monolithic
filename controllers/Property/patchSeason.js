@@ -103,6 +103,17 @@ const patchSeason = async (req, res) => {
                     };
                     findSeasonLog.shortCode.unshift(shortCodeObject);
                 }
+                if (displayStatus) {
+                    const displayStatusObject = {
+                        displayStatus:updatedSeason.displayStatus[0].displayStatus,
+                        logId:updatedSeason.displayStatus[0].logId,
+                        userId:userid,
+                        deviceType:deviceType,
+                        ipAddress:ipAddress,
+                        modifiedOn:currentUTCTime,
+                    };
+                    findSeasonLog.displayStatus.unshift(displayStatusObject);
+                }
 
                 if (seasonName) {
                     const seasonNameObject = {

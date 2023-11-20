@@ -60,7 +60,6 @@ const editUserOnboarding = async (req, res) => {
                 modifiedDate: (await getCurrentUTCTimestamp()).toString()
             }
 
-
             elementToUpdate.postCode.unshift(postCodeObject);
             const stateObject = {
                 state: state,
@@ -113,6 +112,11 @@ const editUserOnboarding = async (req, res) => {
                 .catch((error) => {
                     console.error(error)
                 })
+                return res.status(200).json({
+                    message: "User updated successfully",
+                    propertyName: findRecord.singlePropertyDetails[0].propertyName[0].propertyName,
+                    statuscode: 200
+                });
         } else {
             const { userId, propertyChainName, numberOfProperties, propertyType, baseCurrency, websiteUrl } = req.body
             var findRecord = await userModel.findOne({ userId });
@@ -181,7 +185,11 @@ const editUserOnboarding = async (req, res) => {
                     console.error(error)
                 })
         }
-        return res.status(200).json({ message: "User updated successfully", statuscode: 200 })
+        return res.status(200).json({
+            message: "User updated successfully",
+            propertyChainName: findRecord.multipleData[0].propertyChainName[0].propertyChainName,
+            statuscode: 200
+        });
     }
 
     catch (err) {

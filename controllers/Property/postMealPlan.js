@@ -73,6 +73,14 @@ const postMealPlan = async (req, res) => {
           ipAddress:ipAddress,
           modifiedOn:currentUTCTime,
       }],
+      displayStatus: [{
+        displayStatus: savedMealPlan.displayStatus[0].displayStatus,
+          logId: savedMealPlan.displayStatus[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
       mealPlanName: [{
         mealPlanName: savedMealPlan.mealPlanName[0].mealPlanName,
         logId: savedMealPlan.mealPlanName[0].logId,

@@ -109,17 +109,17 @@ const patchMealPlan = async (req, res) => {
                         };
                         findMealPlanLog.chargesPerOccupancy.unshift(chargesPerOccupancyObject);
                     }
-                    if (displayStatus) {
-                        const displayStatusObject = {
-                            displayStatus: updatedMealPlan.displayStatus[0].displayStatus,
-                            logId: updatedMealPlan.displayStatus[0].logId,
-                            userId: userid,
-                            deviceType: deviceType,
-                            ipAddress:ipAddress,
-                            modifiedOn: currentUTCTime,
-                        };
-                        findMealPlanLog.displayStatus.unshift(displayStatusObject);
-                    }
+                    // if (displayStatus) {
+                    //     const displayStatusObject = {
+                    //         displayStatus: updatedMealPlan.displayStatus[0].displayStatus,
+                    //         logId: updatedMealPlan.displayStatus[0].logId,
+                    //         userId: userid,
+                    //         deviceType: deviceType,
+                    //         ipAddress:ipAddress,
+                    //         modifiedOn: currentUTCTime,
+                    //     };
+                    //     findMealPlanLog.displayStatus.unshift(displayStatusObject);
+                    // }
                 }
 
                 await findMealPlanLog.save();

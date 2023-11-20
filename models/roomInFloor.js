@@ -21,35 +21,20 @@ const roomInFloorData = new mongoose.Schema({
                 default: ""
             },
 
-            houseKeepingStatus: [{
+           
                 houseKeepingStatus: {
                     type: String,
                     default: ""
                 },
-
-
-                logId: {
-                    type: String,
-                    default: ""
-                }
-
-            }],
-
-            roomNumber: [{
+            
                 roomNumber: {
                     type: String,
                     default: ""
                 },
 
-                logId: {
-                    type: String,
-                    default: ""
-                }
-            }],
-
             roomId: {
                 type: String,
-                default: await generateFourDigitRandomNumber(),
+                default:''
             }
         }],
 
@@ -62,25 +47,6 @@ const roomInFloorData = new mongoose.Schema({
         versionKey: false
     }
 )
-
-
-roomInFloorData.pre('save', async function (next) {
-    const floorData = this;
-  
-    if (floorData.floorData && Array.isArray(floorData.floorData)) {
-      for (const floor of floorData.floorData) {
-        if (floor.room && Array.isArray(floor.room)) {
-          for (const room of floor.room) {
-            room.roomId = await generateFourDigitRandomNumber();
-          }
-        }
-      }
-    }
-  
-    next();
-  });
-  
-
 const roomFloorDetails = db1.model("roomInFloorDetails", roomInFloorData)
 
 export default roomFloorDetails

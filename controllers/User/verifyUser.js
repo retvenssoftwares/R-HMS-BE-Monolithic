@@ -170,7 +170,7 @@ const verifyUserProperty = async (req, res) => {
             await sendEmail(userName, hotelcode, chainProperty.hotelRCode, email)
              
         }
-        //await userModel.deleteOne({ userId: userId })
+        await userModel.deleteOne({ userId: userId })
         return res.status(200).json({ message: "User successfully verified", statuscode: 200 })
 
     } catch (error) {

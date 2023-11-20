@@ -1,5 +1,5 @@
 import amenity from '../../models/amenity.js';
-import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from '../../helpers/helper.js';
+import { convertTimestampToCustomFormat, findUserByUserIdAndToken, validateHotelCode } from '../../helpers/helper.js';
 
 const getAmenities = async (req, res) => {
     try {
@@ -9,7 +9,15 @@ const getAmenities = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
-            const findAllAmenities = await amenity.find({ propertyId, "displayStatus.0.displayStatus": "1"  }).lean();
+            if (!propertyId) {
+                return res.status(400).json({ message: "Please enter propertyId", statuscode: 400 })
+            }
+
+            const result = await validateHotelCode(userId, propertyId)
+            if (!result.success) {
+                return res.status(result.statuscode).json({ message: "Invalid propertyId entered", statuscode: result.statuscode })
+            }
+            const findAllAmenities = await amenity.find({ propertyId, "displayStatus.0.displayStatus": "1" }).sort({ createdOn: -1 }).lean();
 
             if (findAllAmenities.length > 0) {
                 const convertedAmenity = findAllAmenities.map(amenities => {
@@ -29,18 +37,18 @@ const getAmenities = async (req, res) => {
                         amenityId: amenities.amenityId || '',
                         createdBy: amenities.createdBy,
                         amenityName: amenities.amenityName[0].amenityName || '',
-                        shortCode: amenities.shortCode[0].shortCode || '' ,
+                        shortCode: amenities.shortCode[0].shortCode || '',
                         modifiedBy: modifiedBy,
                         modifiedOn: convertedModifiedOn,
                         amenityType: amenities.amenityType[0].amenityType || '',
-                        amenityIconLink:amenities.amenityIconLink[0].amenityIconLink || '',
-                        amenityIcon:amenities.amenityIcon[0].amenityIcon || ''
+                        amenityIconLink: amenities.amenityIconLink[0].amenityIconLink || '',
+                        amenityIcon: amenities.amenityIcon[0].amenityIcon || ''
                     };
                 });
 
                 return res.status(200).json({ data: convertedAmenity, statuscode: 200 });
             } else {
-                return res.status(404).json({ message: "No amenities found", statuscode: 404 });
+                return res.status(200).json({ message: "No amenities found", statuscode: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

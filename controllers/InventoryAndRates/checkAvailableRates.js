@@ -629,8 +629,8 @@ const checkRate = async (req, res) => {
     //     message: "start date cannot be equal to end date",
     //     statuscode: 400,
     //   });
-    // } 
-     if (startDate > endDate) {
+    // } else 
+    if (startDate > endDate) {
       return res.status(400).json({
         message: "start date cannot be greater than end date",
         statuscode: 400,

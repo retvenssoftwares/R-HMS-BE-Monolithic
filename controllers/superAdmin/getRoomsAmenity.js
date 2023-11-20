@@ -1,20 +1,19 @@
 import amenity from '../../models/superAdmin/amenities.js';
 import propertyAmenity from "../../models/amenity.js"
 
-const getAmenities = async (req, res) => {
+const getRoomAmenities = async (req, res) => {
     try {
         const propertyId = req.query.propertyId;
 
         if (propertyId) {
             const [amenityData, adminAmenity] = await Promise.all([
-                propertyAmenity.find({ propertyId: propertyId, "amenityType.0.amenityType": "Property","displayStatus.0.displayStatus":"1" }),
-                amenity.find({ "amenityType.0.amenityType": "Property" }).lean()
+                propertyAmenity.find({ propertyId: propertyId, "amenityType.0.amenityType": "Rooms","displayStatus.0.displayStatus":"1"}),
+                amenity.find({ "amenityType.0.amenityType": "Rooms" }).lean()
             ]);
 
-            if ( amenityData.length === 0 && adminAmenity.length=== 0) {
+            if ( amenityData.length === 0 && adminAmenity.length === 0) {
                 return res.status(404).json({ message: "Amenity data not found", statusCode: 404 });
             }
-
             const hotelAmenity = amenityData.map((amenity) => ({
                 amenityId: amenity.amenityId || "",
                 amenityName: amenity.amenityName[0].amenityName || "",
@@ -33,7 +32,7 @@ const getAmenities = async (req, res) => {
             const allAmenities = hotelAmenity.concat(convertedAdminAmenity);
             return res.status(200).json({ data: allAmenities, statusCode: 200 });
         } else {
-            const findAllAmenities = await amenity.find({ "amenityType.0.amenityType": "Property" }).lean();
+            const findAllAmenities = await amenity.find({ "amenityType.0.amenityType": "Rooms" }).lean();
 
             if (findAllAmenities.length > 0) {
                 const convertedAmenity = findAllAmenities.map((amenities) => ({
@@ -56,4 +55,4 @@ const getAmenities = async (req, res) => {
     }
 };
 
-export default getAmenities;
+export default getRoomAmenities;

@@ -47,6 +47,7 @@ import getAmenityIcon from "../../controllers/superAdmin/getAmenityIcon.js";
 //postAmenity
 import postAmenity from "../../controllers/superAdmin/createAmenity.js";
 import getAmenity from "../../controllers/superAdmin/getAmenity.js";
+import fetchRoomAmenity from '../../controllers/superAdmin/getRoomsAmenity.js'
 
 //RateType
 import postRateType from "../../controllers/superAdmin/postRateTypeName.js";
@@ -105,6 +106,7 @@ router.get("/api/getDesignation", getDesignation);
 //Amenitytype
 router.post("/api/postAmenityType", postAmenityType);
 router.get("/api/getAmenityType", getAmenityType);
+router.get("/api/getRoomAmenity",fetchRoomAmenity)
 
 //AmenityIcon
 router.post(

@@ -193,7 +193,26 @@ export const updateBusinessSources = async (req, res) => {
                     new: true
                 });
 
-            }
+                //save data in logs
+                
+                    const update2 = {
+                        $push: {
+                            displayStatus: {
+                                $each: [{
+                                    displayStatus: displayStatus,
+                                    logId: logId1,
+                                    deviceType: deviceType,
+                                    ipAddress: ipAddress,
+                                    modifiedOn:currentUTCTime
+                                }],
+                                $position: 0
+                            }
+                        }
+                    };
+                await businessSourcesLog.findOneAndUpdate({ sourceId: sourceId }, update2, {
+                        new: true
+            })
+        }
             
 
            
@@ -246,7 +265,7 @@ export const getBusinessSources = async (req, res) => {
             return res.status(400).json({ message: "Please enter valid propertyId", statuscode: 400 })
         }
 
-        const businessSourcesFetch = await businessSourcesModel.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1" }).lean();
+        const businessSourcesFetch = await businessSourcesModel.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1" }).sort({_id:-1}).lean();
 
         const authCodeDetails = req.headers["authcode"]
         const result = await findUserByUserIdAndToken(userId, authCodeDetails)

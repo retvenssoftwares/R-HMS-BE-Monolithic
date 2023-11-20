@@ -94,7 +94,17 @@ const patchIdentityType = async (req, res) => {
                     };
                     findIdentityLog.identityType.unshift(identityTypeObject);
                 }
-        
+                if (displayStatus) {
+                    const displayStatusObject = {
+                        displayStatus:updatedIdentityType.displayStatus[0].displayStatus,
+                        logId:updatedIdentityType.displayStatus[0].logId,
+                        userId:userid,
+                        deviceType:deviceType,
+                        ipAddress:ipAddress,
+                        modifiedOn:currentUTCTime,
+                    };
+                    findreservationLog.displayStatus.unshift(displayStatusObject);
+                }
             }
             await findIdentityLog.save();
 

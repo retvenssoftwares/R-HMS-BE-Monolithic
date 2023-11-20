@@ -132,6 +132,26 @@ const updateBookingSource = async (req, res) => {
                 const updateddisplayStatus = await bookingSourceModel.findOneAndUpdate({ bookingSourceId: bookingSourceId }, update1, {
                     new: true
                 });
+                
+                // save data in logs
+                const update2 = {
+                    $push: {
+                        displayStatus: {
+                            $each: [{
+                                displayStatus: displayStatus,
+                                logId: logId1,
+                                userId: userId,
+                                deviceType: deviceType,
+                                ipAddress: ipAddress,
+                                modifiedOn:currentUTCTime
+                            }],
+                            $position: 0
+                        }
+                    }
+                };
+               await bookingSourceLog.findOneAndUpdate({ bookingSourceId: bookingSourceId }, update2, {
+                    new: true
+                });
 
             }
 

@@ -8,7 +8,7 @@ const getReservation = async (req, res) => {
         const authCodeValue = req.headers['authcode']
 
         const findProperty = await properties.findOne({ propertyId: propertyId, userId: userId });
-        console.log(findProperty)
+        // console.log(findProperty)
         if (!findProperty) {
             return res.status(404).json({ message: "Please enter valid propertyId and userId", statuscode: 404 })
         }
@@ -16,7 +16,7 @@ const getReservation = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
-            const findAllReservation = await reservation.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1" });
+            const findAllReservation = await reservation.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1" }).sort({_id:-1}).lean();
 
             if (findAllReservation.length > 0) {
                 const convertedReservation = findAllReservation.map(reservations => {

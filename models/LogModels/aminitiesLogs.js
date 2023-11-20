@@ -46,6 +46,34 @@ const amenitiesLogModel = new mongoose.Schema(
         },
       },
     ],
+    displayStatus: [
+      {
+        displayStatus: {
+          type: String,
+          default: "",
+        },
+        logId: {
+          type: String,
+          default: "",
+        },
+        modifiedOn: {
+          type: String,
+          default: "",
+        },
+        userId: {
+          type: String,
+          default: "",
+        },
+        ipAddress: {
+          type: String,
+          default: "",
+        },
+        deviceType: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
 
     amenityId: {
       type: String,

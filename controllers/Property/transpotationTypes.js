@@ -193,7 +193,7 @@ export const getTransportation = async (req, res) => {
 
         const authCodeDetails = req.headers["authcode"];
 
-        const getDetails = await transportation.find({ propertyId: req.query.propertyId, "displayStatus.0.displayStatus": "1" }).lean();
+        const getDetails = await transportation.find({ propertyId: req.query.propertyId, "displayStatus.0.displayStatus": "1" }).sort({_id:-1}).lean();
 
         if (!getDetails) {
             return res.status(404).json({ message: "No transportation types found", statuscode: 404 });

@@ -111,6 +111,17 @@ const patchPaymentType = async (req, res) => {
                     };
                     findPaymentLog.receivedTo.unshift(receivedToObject);
                 }
+                if (displayStatus) {
+                    const displayStatusObject = {
+                        displayStatus:updatedPaymentType.displayStatus[0].displayStatus,
+                        logId:updatedPaymentType.displayStatus[0].logId,
+                        userId:userid,
+                        deviceType:deviceType,
+                        ipAddress:ipAddress,
+                        modifiedOn:currentUTCTime,
+                    };
+                    findreservationLog.displayStatus.unshift(displayStatusObject);
+                }
             }
             await findPaymentLog.save();
 

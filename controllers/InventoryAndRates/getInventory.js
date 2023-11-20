@@ -180,18 +180,23 @@ const getInventory = async (req, res) => {
                 roomTypeId,
                 roomTypeName,
                 numberOfRooms: roomType.numberOfRooms,
-                calculatedInventoryData:
-                    calculatedInventoryData.length > 0
-                        ? calculatedInventoryData.map((item) => ({
+                calculatedInventoryData: calculatedInventoryData.length > 0
+                    ? calculatedInventoryData.map((item) => {
+                        let isBlocked = "false";
+                        // console.log(item.date)
+                        // console.log(item.inventory)
+                        // console.log(roomType.numberOfRooms)
+                        if (blockedInventoryDates.includes(item.date) && item.inventory < roomType.numberOfRooms) {
+                            isBlocked = "true"
+                        }
+
+
+                        return {
                             ...item,
-                            isBlocked:
-                                blockedInventoryDates.includes(item.date) ||
-                                    ((blockedInventoryDates.includes(item.date) &&
-                                        item.inventory >= roomType.numberOfRooms))
-                                    ? "true"
-                                    : "false",
-                        }))
-                        : "false",
+                            isBlocked,
+                        };
+                    })
+                    : "false",
             };
         });
 

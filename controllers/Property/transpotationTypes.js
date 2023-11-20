@@ -67,6 +67,14 @@ export const transportationAdd = async (req, res) => {
                     ipAddress:ipAddress,
                     modifiedOn: currentUTCTime,
                 }],
+                displayStatus: [{
+                    displayStatus: savedTranportation.displayStatus[0].displayStatus,
+                    logId: savedTranportation.displayStatus[0].logId,
+                    userId: userId,
+                    deviceType: deviceType,
+                    ipAddress:ipAddress,
+                    modifiedOn: currentUTCTime,
+                }],
             })
 
             await addTransportationLog.save();
@@ -165,6 +173,17 @@ export const updateTransportation = async (req, res) => {
                     modifiedOn: currentUTCTime,
                 }
                 findTransportationLog.transportationModeName.unshift(transportationModeNameObject);
+                }
+                if(displayStatus){
+                    const displayStatusObject={
+                    displayStatus: savedTranportation.displayStatus[0].displayStatus,
+                    logId: savedTranportation.displayStatus[0].logId,
+                    userId: userid,
+                    deviceType: deviceType,
+                    ipAddress:ipAddress,
+                    modifiedOn: currentUTCTime,
+                }
+                findTransportationLog.displayStatus.unshift(displayStatusObject);
                 }
             }
             await findTransportationLog.save();

@@ -67,6 +67,16 @@ export const addBusinessSources = async (req, res) => {
                       modifiedOn:currentUTCTime,
                     },
                   ],
+                  displayStatus: [
+                    {
+                      logId: savedBussinessSources.displayStatus[0].logId,
+                      displayStatus: savedBussinessSources.displayStatus[0].displayStatus,
+                      userId: userId,
+                      deviceType: deviceType,
+                      ipAddress:ipAddress,
+                      modifiedOn:currentUTCTime,
+                    },
+                  ],
             })
             await addBusinessSourceslog.save()
 

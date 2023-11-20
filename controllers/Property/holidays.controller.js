@@ -80,6 +80,16 @@ const postHoliday = async (req, res) => {
             modifiedOn:currentUTCTime,
           },
         ],
+        displayStatus: [
+          {
+            logId: savedHoliday.displayStatus[0].logId,
+            displayStatus: savedHoliday.displayStatus[0].displayStatus,
+            userId: userId,
+            deviceType: deviceType,
+            ipAddress:ipAddress,
+            modifiedOn:currentUTCTime,
+          },
+        ],
         holidayName: [
           {
             holidayName: savedHoliday.holidayName[0].holidayName,

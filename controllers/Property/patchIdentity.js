@@ -103,7 +103,7 @@ const patchIdentityType = async (req, res) => {
                         ipAddress:ipAddress,
                         modifiedOn:currentUTCTime,
                     };
-                    findreservationLog.displayStatus.unshift(displayStatusObject);
+                    findIdentityLog.displayStatus.unshift(displayStatusObject);
                 }
             }
             await findIdentityLog.save();

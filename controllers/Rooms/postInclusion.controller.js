@@ -91,6 +91,16 @@ const postInclusion = async (req, res) => {
             modifiedOn: currentUTCTime,
           },
         ],
+        displayStatus: [
+          {
+            displayStatus: savedinclusion.displayStatus[0].displayStatus,
+            logId: savedinclusion.displayStatus[0].logId,
+            userId: userId,
+            deviceType: deviceType,
+            ipAddress:ipAddress,
+            modifiedOn: currentUTCTime,
+          },
+        ],
         charge: [
           {
             charge: savedinclusion.charge[0].charge,

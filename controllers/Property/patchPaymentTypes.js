@@ -120,7 +120,7 @@ const patchPaymentType = async (req, res) => {
                         ipAddress:ipAddress,
                         modifiedOn:currentUTCTime,
                     };
-                    findreservationLog.displayStatus.unshift(displayStatusObject);
+                    findPaymentLog.displayStatus.unshift(displayStatusObject);
                 }
             }
             await findPaymentLog.save();

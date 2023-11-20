@@ -10,19 +10,23 @@ const userProperty = async (req, res) => {
         const userId = req.query.userId;
 
         const authCodeValue = req.headers['authcode']
-        const userProperties = await propertyModel.find({ userId: userId }, 'hotelRcode propertyName propertyType city country amenities -_id createdOn propertyId').lean();
+        const userProperties = await propertyModel.find({ userId: userId }, 'hotelRcode propertyName propertyType city country propertyRating hotelLogo amenities -_id createdOn propertyId').sort({ createdOn: -1 }).lean();
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
-
+        // console.log(userProperties);
 
         if (result.success) {
             if (userProperties.length > 0) {
                 const convertedPropertiesPromises = userProperties.map(async (property) => {
                     const convertedDateUTC = convertTimestampToCustomFormat(property.createdOn, targetTimeZone);
                     const amenitiesCount = (property.amenities && property.amenities[0] && property.amenities[0].amenities) || 0;
+                    let hotelLogo = '';
+                    if (property.hotelLogo && property.hotelLogo[0] && property.hotelLogo[0].hotelLogo) {
+                        hotelLogo = property.hotelLogo[0].hotelLogo;
+                    }
 
                     // console.log(amenitiesCount.length)
                     const propertyRoomsCount = await roomTypeModel.find({ propertyId: property.propertyId }).select('roomTypeId').countDocuments();
-                    
+
                     let amenitiesLength = 0;
                     if (amenitiesCount !== 0) {
                         amenitiesLength = amenitiesCount.length;
@@ -32,6 +36,8 @@ const userProperty = async (req, res) => {
                         createdOn: convertedDateUTC,
                         hotelRcode: property.hotelRCode,
                         propertyName: property.propertyName[0].propertyName || '',
+                        propertyRating: property.propertyRating || '',
+                        hotelLogo: hotelLogo,
                         city: property.city[0].city || '',
                         country: property.country || '',
                         propertyId: property.propertyId,

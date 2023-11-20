@@ -29,10 +29,10 @@ const getInventory = async (req, res) => {
         const endDateObj = new Date(checkOutDate);
         const checkOutDateISO = endDateObj.toISOString();
 
-        if (checkInDate === checkOutDate) {
-            // console.log(checkInDate, checkOutDate)
-            return res.status(400).json({ message: "Check-in date cannot be equal to check-out date", statuscode: 400 });
-        }
+        // if (checkInDate === checkOutDate) {
+        //     // console.log(checkInDate, checkOutDate)
+        //     return res.status(400).json({ message: "Check-in date cannot be equal to check-out date", statuscode: 400 });
+        // }
         if (checkInDate > checkOutDate) {
             return res.status(400).json({ message: "Check-in date cannot be greater than check-out date", statuscode: 400 });
         }
@@ -184,9 +184,14 @@ const getInventory = async (req, res) => {
                     calculatedInventoryData.length > 0
                         ? calculatedInventoryData.map((item) => ({
                             ...item,
-                            isBlocked: blockedInventoryDates.includes(item.date).toString(),
+                            isBlocked:
+                                blockedInventoryDates.includes(item.date) ||
+                                    ((blockedInventoryDates.includes(item.date) &&
+                                        item.inventory >= roomType.numberOfRooms))
+                                    ? "true"
+                                    : "false",
                         }))
-                        : false,
+                        : "false",
             };
         });
 

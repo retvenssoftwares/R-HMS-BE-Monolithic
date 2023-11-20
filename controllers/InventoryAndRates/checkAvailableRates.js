@@ -624,12 +624,13 @@ const checkRate = async (req, res) => {
   const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
   if (result.success) {
-    if (startDate === endDate) {
-      return res.status(400).json({
-        message: "start date cannot be equal to end date",
-        statuscode: 400,
-      });
-    } else if (startDate > endDate) {
+    // if (startDate === endDate) {
+    //   return res.status(400).json({
+    //     message: "start date cannot be equal to end date",
+    //     statuscode: 400,
+    //   });
+    // } 
+     if (startDate > endDate) {
       return res.status(400).json({
         message: "start date cannot be greater than end date",
         statuscode: 400,

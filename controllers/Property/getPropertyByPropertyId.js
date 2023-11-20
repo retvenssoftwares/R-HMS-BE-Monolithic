@@ -1,5 +1,6 @@
 import propertyModel from "../../models/property.js";
 import { findUserByUserIdAndToken } from "../../helpers/helper.js"
+import amenitiesModel from '../../models/amenity.js'
 const getPropertyById = async (req, res) => {
     try {
         const { userId, propertyId } = req.query
@@ -13,6 +14,19 @@ const getPropertyById = async (req, res) => {
         if (!findProperty) {
             return res.status(404).json({ message: "Property not found", statuscode: 404 });
         }
+
+        const amenities = findProperty.amenities[0].amenities || '';
+
+        //amenity
+        const allAmenities = amenities.map((item) => item.amenityId)
+        // console.log(allAmenities)
+        const foundAmenity = await amenitiesModel.find({ amenityId: { $in: allAmenities } });
+        //console.log(foundAmenity)
+
+        const amenityNames = foundAmenity.map((foundAmenity) => ({
+            amenityName: foundAmenity.amenityName[0].amenityName,
+            amenityIconLink: foundAmenity.amenityIconLink[0].amenityIconLink
+        }))
         // Fetch the 0th object for array fields
         const planData = {
             ...findProperty,
@@ -34,7 +48,7 @@ const getPropertyById = async (req, res) => {
             state: findProperty.state.length > 0 ? findProperty.state[0].state : ""
         };
 
-    
+
 
         return res.status(200).json({ data: planData, statuscode: 200 });
     } catch (error) {

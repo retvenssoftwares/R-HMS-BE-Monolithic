@@ -15,7 +15,7 @@ const getCompanyRatePlans = async (req, res) => {
             if (!result.success) {
                 return res.status(result.statuscode).json({ message: "Invalid propertyId entered", statuscode: result.statuscode })
             }
-            const findCompanyRatePlans = await companyRatePlanModel.find({ propertyId }, 'propertyId companyRatePlanId roomTypeId mealPlanId companyId inclusionTotal ratePlanInclusion ratePlanName shortCode').lean();
+            const findCompanyRatePlans = await companyRatePlanModel.find({ propertyId,"displayStatus.0.displayStatus":"1" }, 'propertyId companyRatePlanId roomTypeId mealPlanId companyId inclusionTotal ratePlanInclusion ratePlanName shortCode').sort({_id:-1}).lean();
 
             if (findCompanyRatePlans.length > 0) {
                 const mappedCompanyRatePlans = findCompanyRatePlans.map((plan) => {

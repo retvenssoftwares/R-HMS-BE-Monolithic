@@ -59,7 +59,13 @@ import getOta from "../../controllers/superAdmin/otaGet.js";
 import otaPatch from "../../controllers/superAdmin/otaPatch.js";
 import fetchActiveOta from "../../controllers/superAdmin/getActiveOta.js"
 
+//post basic Currency
+import currency from "../../controllers/superAdmin/basicCurrency.js"
+router.post("/api/basicCurrency",currency)
 
+//get basic Currency
+import getCurrency from "../../controllers/superAdmin/getBasicCurrency.js";
+router.get("/api/getCurrency",getCurrency)
 
 
 //ratesAndRestrictions

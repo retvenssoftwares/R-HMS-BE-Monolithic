@@ -12,7 +12,7 @@ const getHoliday = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
-            const findAllHoliday = await holiday.find({ propertyId, "displayStatus.0.displayStatus": "1"  });
+            const findAllHoliday = await holiday.find({ propertyId, "displayStatus.0.displayStatus": "1"  }).sort({_id:-1}).lean();
 
             if (findAllHoliday.length > 0) {
                 const convertedHoliday = findAllHoliday.map(holidays => {

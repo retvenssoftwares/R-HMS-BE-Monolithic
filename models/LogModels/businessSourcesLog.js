@@ -1,123 +1,167 @@
 import mongoose from "mongoose";
 import db2 from "../../db/conn2.js";
-const businessSourcesLogModel = new mongoose.Schema({
+const businessSourcesLogModel = new mongoose.Schema(
+  {
     sourceId: {
-        type: String,
-        default: ""
+      type: String,
+      default: "",
     },
-    shortCode: [{
+    shortCode: [
+      {
         shortCode: {
-            type: String,
-            default: ""
-        }, logId: {
-            type: String,
-            default: ""
+          type: String,
+          default: "",
+        },
+        logId: {
+          type: String,
+          default: "",
         },
         modifiedOn: {
-            type: String,
-            default: "",
-          },
-          userId: {
-            type: String,
-            default: "",
-          },
-          ipAddress: {
-            type: String,
-            default: "",
-          },
-          deviceType: {
-            type: String,
-            default: "",
-          },
-    }],
+          type: String,
+          default: "",
+        },
+        userId: {
+          type: String,
+          default: "",
+        },
+        ipAddress: {
+          type: String,
+          default: "",
+        },
+        deviceType: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
+    displayStatus: [
+      {
+        displayStatus: {
+          type: String,
+          default: "",
+        },
+        logId: {
+          type: String,
+          default: "",
+        },
+        modifiedOn: {
+          type: String,
+          default: "",
+        },
+        userId: {
+          type: String,
+          default: "",
+        },
+        ipAddress: {
+          type: String,
+          default: "",
+        },
+        deviceType: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
     propertyId: {
-        type: String,
-        default: ""
+      type: String,
+      default: "",
     },
-    sourceName: [{
+    sourceName: [
+      {
         sourceName: {
-            type: String,
-            default: ""
-        }, logId: {
-            type: String,
-            default: ""
+          type: String,
+          default: "",
+        },
+        logId: {
+          type: String,
+          default: "",
         },
         modifiedOn: {
-            type: String,
-            default: "",
-          },
-          userId: {
-            type: String,
-            default: "",
-          },
-          ipAddress: {
-            type: String,
-            default: "",
-          },
-          deviceType: {
-            type: String,
-            default: "",
-          },
-    }],
+          type: String,
+          default: "",
+        },
+        userId: {
+          type: String,
+          default: "",
+        },
+        ipAddress: {
+          type: String,
+          default: "",
+        },
+        deviceType: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
     createdBy: {
-        type: String,
-        default: ""
+      type: String,
+      default: "",
     },
     createdOn: {
-        type: String,
-        default: ""
+      type: String,
+      default: "",
     },
-    modifiedOn: [{
+    modifiedOn: [
+      {
         modifiedOn: {
-            type: String,
-            default: ""
+          type: String,
+          default: "",
         },
         logId: {
-            type: String,
-            default: ""
+          type: String,
+          default: "",
         },
-          userId: {
-            type: String,
-            default: "",
-          },
-          ipAddress: {
-            type: String,
-            default: "",
-          },
-          deviceType: {
-            type: String,
-            default: "",
-          },
-    }],
-    modifiedBy: [{
+        userId: {
+          type: String,
+          default: "",
+        },
+        ipAddress: {
+          type: String,
+          default: "",
+        },
+        deviceType: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
+    modifiedBy: [
+      {
         modifiedBy: {
-            type: String,
-            default: ""
+          type: String,
+          default: "",
         },
         logId: {
-            type: String,
-            default: ""
+          type: String,
+          default: "",
         },
         modifiedOn: {
-            type: String,
-            default: "",
-          },
-          userId: {
-            type: String,
-            default: "",
-          },
-          ipAddress: {
-            type: String,
-            default: "",
-          },
-          deviceType: {
-            type: String,
-            default: "",
-          },
-    }]
-}, {
-    versionKey: false
-})
+          type: String,
+          default: "",
+        },
+        userId: {
+          type: String,
+          default: "",
+        },
+        ipAddress: {
+          type: String,
+          default: "",
+        },
+        deviceType: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
+  },
+  {
+    versionKey: false,
+  }
+);
 
-const businessSourcesLog = db2.model("businessSourcesLogModel", businessSourcesLogModel)
-export default businessSourcesLog
+const businessSourcesLog = db2.model(
+  "businessSourcesLogModel",
+  businessSourcesLogModel
+);
+export default businessSourcesLog;

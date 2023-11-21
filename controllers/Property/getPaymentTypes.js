@@ -15,7 +15,7 @@ const getPaymentTypes = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
-            const findAllPaymentTypes = await paymentTypeModel.find({ propertyId, "displayStatus.0.displayStatus": "1"  }).lean();
+            const findAllPaymentTypes = await paymentTypeModel.find({ propertyId, "displayStatus.0.displayStatus": "1"  }).sort({_id:-1}).lean();
             if (findAllPaymentTypes.length > 0) {
                 const convertedPaymentTypes = findAllPaymentTypes.map(paymentType => {
                     const convertedDateUTC = convertTimestampToCustomFormat(paymentType.createdOn, targetTimeZone);

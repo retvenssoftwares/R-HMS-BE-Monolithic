@@ -12,7 +12,7 @@ const companyType = async (req, res) => {
                 return res.status(404).json({ message: "Please enter valid propertyId", statuscode: 404 })
             }
         if (findProperty) {
-            const userCompany = await companyModel.find({ propertyId }).select('propertyId companyId companyName contactPerson expiration').lean();
+            const userCompany = await companyModel.find({ propertyId }).select('propertyId companyId companyName contactPerson expiration').sort({_id:-1}).lean();
             const convertedCompany = userCompany.map(company => {
                 // Convert the dateUTC to the user's time zone
                 // const convertedDateUTC = convertTimestampToCustomFormat(company.createdOn, targetTimeZone);

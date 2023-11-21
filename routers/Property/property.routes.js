@@ -88,14 +88,14 @@ router.get("/api/getBusinessSources", getBusinessSources)
 // router.post("/api/addInclusionPlan",addInclusionPlan)
 // router.patch("/api/updateInclusionPlan",updateInclusionPlan)
 
-router.patch("/api/propertyAdditionalDetails", editProperty)
+// router.patch("/api/propertyAdditionalDetails", editProperty)
 
 //images
 router.patch("/api/uploadPropertyImages", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), uploadPropertyImages);
 router.patch("/api/changeImageIndex", dragDropPropertyImages);
 router.patch("/api/updatePropertyImage", updatePropertyImage)
 
-router.patch("/api/editProperty", editProperty);
+router.patch("/api/editProperty", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), editProperty);
 
 //company
 // router.post("/api/addCompany", upload.fields([{ name: "companyLogo", maxCount: 1 }, { name: "contractPdf", maxCount: 3 }]), addCompany)

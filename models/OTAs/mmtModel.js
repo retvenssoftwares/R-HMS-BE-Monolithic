@@ -1,24 +1,31 @@
 import mongoose from 'mongoose'
-import db1 from '../db/conn.js'
+import db1 from '../../db/conn.js'
 
 const mmtSchema = mongoose.Schema({
     otaId: {
         type: String,
         default: ''
     },
-    title: {
+    connectionId: {
         type: String,
         default: ''
     },
-    currency: {
+    userId: {
         type: String,
         default: ''
     },
-    propertyId: {
+    hotelRcode: {
         type: String,
         default: ''
     },
-    otaPropertyId: {
+    mmtHotelCode: {
+        type: String,
+        default: ''
+    },
+    createdOn: {
+        type: String, default: ''
+    },
+    createdBy: {
         type: String,
         default: ''
     },
@@ -26,19 +33,10 @@ const mmtSchema = mongoose.Schema({
         type: String,
         default: ''
     },
-    mappingData: [{
-        otaRatePlanId: {
-            type: String,
-            default: ''
-        },
-        linkedRatePlanId: {
-            type: String,
-            default: ''
-        }
-    }]
+
 }, {
     versionKey: false
 });
 
-const mmtModel = db1.model("mmt", mmtSchema)
+const mmtModel = db1.model("mmtConnection", mmtSchema)
 export default mmtModel

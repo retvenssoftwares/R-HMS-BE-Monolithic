@@ -15,22 +15,35 @@ const getPropertyById = async (req, res) => {
             return res.status(404).json({ message: "Property not found", statuscode: 404 });
         }
 
-        const amenities = findProperty.amenities[0].amenities || '';
+        let amenities = '';
+        let amenityNames = []; // Define amenityNames here
+        if (findProperty.amenities && findProperty.amenities.length > 0) {
+            amenities = findProperty.amenities[0].amenities;
+            const allAmenities = amenities.map((item) => item.amenityId)
+           // console.log(allAmenities)
+            const foundAmenity = await amenitiesModel.find({ amenityId: { $in: allAmenities } });
+             amenityNames = foundAmenity.map((foundAmenity) => ({
+                amenityName: foundAmenity.amenityName[0].amenityName,
+                amenityIconLink: foundAmenity.amenityIconLink[0].amenityIconLink
+               
+            }))
+            console.log(amenityNames)
+        }
 
-        //amenity
-        const allAmenities = amenities.map((item) => item.amenityId)
-        // console.log(allAmenities)
-        const foundAmenity = await amenitiesModel.find({ amenityId: { $in: allAmenities } });
-        //console.log(foundAmenity)
+      
+  
+      
 
-        const amenityNames = foundAmenity.map((foundAmenity) => ({
-            amenityName: foundAmenity.amenityName[0].amenityName,
-            amenityIconLink: foundAmenity.amenityIconLink[0].amenityIconLink
-        }))
+     
         // Fetch the 0th object for array fields
         const planData = {
             ...findProperty,
             propertyId: propertyId,
+            phone:findProperty.phone || '',
+            reservationPhone:findProperty.reservationPhone || '',
+            websiteUrl:findProperty.websiteUrl || '',
+            latitude: findProperty.location && findProperty.location.length > 0 ? findProperty.location[0].latitude : '',
+            longitude: findProperty.location && findProperty.location.length > 0 ? findProperty.location[0].longitude : '',
             propertyType: findProperty.propertyType || "",
             starCategory: findProperty.starCategory || "",
             propertyDescription: findProperty.propertyDescription.length > 0 ? findProperty.propertyDescription[0].propertyDescription : "",
@@ -43,7 +56,7 @@ const getPropertyById = async (req, res) => {
             postCode: findProperty.postCode.length > 0 ? findProperty.postCode[0].postCode : "",
             propertyName: findProperty.propertyName.length > 0 ? findProperty.propertyName[0].propertyName : "",
             rating: findProperty.rating.length > 0 ? findProperty.rating[0].rating : "",
-            amenities: findProperty.amenities.length > 0 ? findProperty.amenities[0].amenities : "",
+            amenities: amenityNames || [], 
             hotelLogo: findProperty.hotelLogo.length > 0 ? findProperty.hotelLogo[0].hotelLogo : "",
             state: findProperty.state.length > 0 ? findProperty.state[0].state : ""
         };

@@ -116,7 +116,7 @@ const companyRatePlan = new mongoose.Schema(
   displayStatus: [{
     displayStatus:{
       type: String,
-      default: "",
+      default: "1",
     },
     logId: {
       type: String,

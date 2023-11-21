@@ -13,6 +13,7 @@ import changeIndex from '../../controllers/Rooms/uploadPatchRoomImage.controller
 import inclusion from '../../controllers/Rooms/postInclusion.controller.js';
 import getInclusion from '../../controllers/Rooms/getInclusion.js';
 import patchInclusions from '../../controllers/Rooms/patchInclusion.js';
+import getRoomsTypes from '../../controllers/Rooms/getRoomType.js';
 
 import { companyRatePlan, updateCompanyRatePlan } from '../../controllers/Rooms/companyRatePlan.js';
 import BarRatePlan from '../../controllers/Rooms/postBarRatePlan.controller.js'
@@ -89,5 +90,8 @@ router.patch("/api/updatePackageRatePlan", updatePackageRatePlan)
 router.get("/api/getPropertyFloors", getFloors)
 
 router.get("/api/getRoomList",getRoom);
+
+//roomType
+router.get("/api/getRoomType", getRoomsTypes)
 
 export default router;

@@ -27,14 +27,11 @@ const companyType = async (req, res) => {
                     expiration : company.expiration[0] || '',
                     
                 };
-
             });
-
             return res.status(200).json({ data: convertedCompany, statuscode: 200 });
         } else {
             return res.status(200).json({ message: "No company found", statuscode: 200 });
         }
-
         }catch (error) {
             console.log(error);
         return res.status(500).json({ message: "Internal server error", statusCode: 500 });

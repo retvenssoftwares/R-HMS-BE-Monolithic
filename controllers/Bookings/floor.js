@@ -35,17 +35,47 @@ export const addRoomInfloor = async (req, res) => {
       };
     });
 
-    const floorData = new floor({
-      propertyId: propertyId,
-      floorCountStart: [{ floorCountStart: floorCountStart }],
-      floorInHotel: [{ floorInHotel: floorInHotel }],
-      floorDetails: floorDataArray
-    });
+     // Check if propertyId exists in floor model
+     const existingFloor = await floor.findOne({ propertyId: propertyId });
 
-    await floorData.save();
+     if (existingFloor) {
+       // If propertyId exists, update the existing record by adding floor details
+       existingFloor.floorDetails.push(...floorDataArray);
+       await existingFloor.save();
+     } else {
+       // If propertyId doesn't exist, create a new floor record with floor details
+       const newFloor = new floor({
+         propertyId: propertyId,
+         floorCountStart: [{ floorCountStart: floorCountStart }],
+         floorInHotel: [{ floorInHotel: floorInHotel }],
+         floorDetails: floorDataArray
+       });
+ 
+       await newFloor.save();
+     }
 
-    
+  // Creating room models for each floor
+  for (const floorDetail of floorDataArray) {
+    // Check if propertyId exists in roomModel
+    const existingRoom = await roomModel.findOne({ propertyId: propertyId });
 
+    if (existingRoom) {
+      // If propertyId exists, update the existing record by adding floorId
+      existingRoom.floorData.push({ floorId: floorDetail.floorId });
+      await existingRoom.save();
+    } else {
+      // If propertyId doesn't exist, create a new roomModel with floorId
+      const roomSchema = roomModel({
+        propertyId: propertyId,
+        floorData: [{ floorId: floorDetail.floorId }], // Passing the floorId to roomModel
+        // Add other room details as needed
+      });
+
+      await roomSchema.save();
+    }
+  }
+
+  
     
     return res.status(200).json({ message: "Floors added successfully", statusCode: 200 });
   } catch (err) {

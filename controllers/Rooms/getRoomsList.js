@@ -15,7 +15,7 @@ const getRoom = async (req, res) => {
       if (!result.success) {
         return res.status(result.statuscode).json({ message: "Invalid propertyId entered", statuscode: result.statuscode })
       }
-      const findRoom = await roomTypeModel.find({ propertyId: propertyId }).select("roomTypeName.roomTypeName propertyId roomTypeId baseAdult.baseAdult baseChild.baseChild extraAdultRate.extraAdultRate extraChildRate.extraChildRate ").lean();
+      const findRoom = await roomTypeModel.find({ propertyId: propertyId }).select("roomTypeName.roomTypeName propertyId roomTypeId baseAdult.baseAdult baseChild.baseChild extraAdultRate.extraAdultRate baseRate.baseRate extraChildRate.extraChildRate ").lean();
 
       if (findRoom.length > 0) {
         const foundRoomData = findRoom.map((roomData) => {
@@ -27,7 +27,8 @@ const getRoom = async (req, res) => {
             baseAdult: roomData.baseAdult[0].baseAdult || '',
             baseChild: roomData.baseChild[0].baseChild || '',
             extraAdultRate: roomData.extraAdultRate[0].extraAdultRate || '',
-            extraChildRate: roomData.extraChildRate[0].extraChildRate || ''
+            extraChildRate: roomData.extraChildRate[0].extraChildRate || '',
+            baseRate: roomData.baseRate[0].baseRate || ''
           }
         })
         return res.status(200).json({ data: foundRoomData, statuscode: 200 });

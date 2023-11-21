@@ -52,7 +52,7 @@ const identityType = async (req, res) => {
                 });
                 return res.status(200).json({ data: convertedIdentity, statuscode: 200 });
             } else {
-                return res.status(200).json({ message: "No identities found", statuscode: 200 });
+                return res.status(200).json({ message: "No identities found",count:"0",  statuscode: 200 });
             }
 
         } else {

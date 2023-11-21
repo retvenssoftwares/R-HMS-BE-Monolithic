@@ -51,7 +51,7 @@ const getInclusion = async (req, res) => {
                 });
                 return res.status(200).json({ data: convertedInclusion, statuscode: 200 });
             } else {
-                return res.status(200).json({ message: "No inclusion found", statuscode: 200 });
+                return res.status(200).json({ message: "No inclusion found",count:"0",  statuscode: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

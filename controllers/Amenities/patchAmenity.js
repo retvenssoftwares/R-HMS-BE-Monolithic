@@ -97,7 +97,7 @@ const patchAmenity = async (req, res) => {
 
                 //save data in logs
 
-                const findAmenityLogs = await amenitiesLog.find({amenityId})
+                const findAmenityLogs = await amenitiesLog.findOne({amenityId})
                 if (findAmenityLogs){
                     if (shortCode) {
                         const shortCodeObject = {

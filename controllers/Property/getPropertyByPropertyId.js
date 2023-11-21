@@ -20,7 +20,7 @@ const getPropertyById = async (req, res) => {
         if (findProperty.amenities && findProperty.amenities.length > 0) {
             amenities = findProperty.amenities[0].amenities;
             const allAmenities = amenities.map((item) => item.amenityId)
-           // console.log(allAmenities)
+            console.log(allAmenities)
             const foundAmenity = await amenitiesModel.find({ amenityId: { $in: allAmenities } });
              amenityNames = foundAmenity.map((foundAmenity) => ({
                 amenityName: foundAmenity.amenityName[0].amenityName,

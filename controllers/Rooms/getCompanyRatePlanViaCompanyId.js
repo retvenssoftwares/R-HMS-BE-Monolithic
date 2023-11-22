@@ -38,7 +38,7 @@ const fetchRoom = async (req, res) => {
                     const roomTypeId = room.roomTypeId || '';
                      const mealPlanId = room.mealPlanId || '';
                      const shortCode =room.shortCode[0].shortCode || '';
-
+                     const inclusion =room.ratePlanInclusion.length || '';
 
 
                        // Fetch roomTypeName based on roomTypeId
@@ -55,8 +55,9 @@ const fetchRoom = async (req, res) => {
                     return {
                         shortCode: shortCode,
                         ratePlanName:ratePlanName,
-                        roomTypeName:roomTypeName,
-                        mealPlanId:mealPlanName
+                        roomTypeName:roomTypeName[0].roomTypeName,
+                        mealPlanName:mealPlanName[0].mealPlanName,
+                        inclusion:inclusion
                         
                     };
 

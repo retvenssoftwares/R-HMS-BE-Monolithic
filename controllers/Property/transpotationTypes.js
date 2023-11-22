@@ -3,6 +3,7 @@ import verifying from "../../models/verifiedUsers.js"
 import randomString from "randomstring"
 import { convertTimestampToCustomFormat, getCurrentUTCTimestamp, findUserByUserIdAndToken } from "../../helpers/helper.js"
 import transportationLog from "../../models/LogModels/transportationLog.js"
+import property from "../../models/property.js"
 
 //post 
 export const transportationAdd = async (req, res) => {
@@ -203,16 +204,21 @@ export const updateTransportation = async (req, res) => {
 export const getTransportation = async (req, res) => {
     try {
         const userId = req.query.userId;
+        const propertyId=req.query.propertyId;
         const UserauthCode = await verifying.findOne({ userId: userId });
         const targetTimeZone = req.query.targetTimeZone;
 
         if (!UserauthCode) {
             return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 });
         }
+        const findProperty = await property.findOne({ propertyId: propertyId })
+        if (!findProperty) {
+            return res.status(404).json({ message: "Please enter valid propertyId", statuscode: 404 })
+        }
 
         const authCodeDetails = req.headers["authcode"];
 
-        const getDetails = await transportation.find({ propertyId: req.query.propertyId, "displayStatus.0.displayStatus": "1" }).sort({_id:-1}).lean();
+        const getDetails = await transportation.find({ propertyId:propertyId, "displayStatus.0.displayStatus": "1" }).sort({_id:-1}).lean();
 
         if (!getDetails) {
             return res.status(404).json({ message: "No transportation types found", statuscode: 404 });

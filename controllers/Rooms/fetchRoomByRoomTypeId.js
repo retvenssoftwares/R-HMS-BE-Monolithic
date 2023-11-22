@@ -71,6 +71,8 @@ const fetchRoom = async (req, res) => {
 
                     const amenityNames = foundAmenity.map((foundAmenity) => ({
                         amenityName: foundAmenity.amenityName[0].amenityName,
+                        amenityId:foundAmenity.amenityId,
+                        amenityType:foundAmenity.amenityType[0].amenityType,
                         amenityIconLink: foundAmenity.amenityIconLink[0].amenityIconLink
                     }))
 

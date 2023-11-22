@@ -42,6 +42,7 @@ const userProperty = async (req, res) => {
                         country: property.country || '',
                         propertyId: property.propertyId,
                         totalRooms: propertyRoomsCount,
+                        propertyType:property.propertyType,                      
                         amenities: amenitiesLength
                     };
                 });

@@ -59,13 +59,16 @@ import identityTypes from "../../controllers/Property/patchIdentity.js"
 //mealPlan
 import postMealPlan from '../../controllers/Property/postMealPlan.js';
 import getMealPlan from '../../controllers/Property/getMealPlan.js';
-import patchMealPlan from '../../controllers/Property/updateMealPlan.js'
+import patchMealPlan from '../../controllers/Property/updateMealPlan.js';
 
 //ota sources
-import OtaSources from '../../controllers/Property/postOtaSources.js'
-import otaSourcePlan from '../../controllers/Property/getOtaSource.js'
+import OtaSources from '../../controllers/Property/postOtaSources.js';
+import otaSourcePlan from '../../controllers/Property/getOtaSource.js';
 
-router.post(
+//companyId
+import getCompanyId from '../../controllers/Property/getCompanyByCompanyId.js';
+
+router.post( 
     '/api/createProperty',
     upload.fields([{ name: 'hotelLogo', maxCount: 1 }]),
     postProperty
@@ -147,4 +150,8 @@ router.patch("/api/patchMeal", patchMealPlan)
 //ota source
 router.post("/api/postOtaSourcePlan", OtaSources)
 router.get("/api/getOtaSource", otaSourcePlan)
+
+//companyId
+router.get("/api/fetchCompanyDetails", getCompanyId)
+
 export default router;

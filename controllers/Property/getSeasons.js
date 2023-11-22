@@ -47,7 +47,7 @@ const getSeasons = async (req, res) => {
 
                 return res.status(200).json({ data: convertedSeasons, statuscode: 200 });
             } else {
-                return res.status(200).json({ message: "No seasons found", statuscode: 200 });
+                return res.status(200).json({ message: "No seasons found",count:"0", statuscode: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

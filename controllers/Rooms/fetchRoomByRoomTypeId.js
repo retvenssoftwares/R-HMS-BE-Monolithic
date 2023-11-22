@@ -80,7 +80,7 @@ const fetchRoom = async (req, res) => {
                     const filteredRoomImages = roomImages.filter(img => img.roomTypeId === roomTypeId);
                     // Extract necessary data from roomImages
                     const imagesData = filteredRoomImages.map(img => ({
-                        image: img.roomImages[0].image || '',
+                        image: (img.roomImages[0] && img.roomImages[0].image) || '', // Add a check before accessing 'image'
 
                     }));
 

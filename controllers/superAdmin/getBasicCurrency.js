@@ -3,7 +3,6 @@ import currencyModel from "../../models/superAdmin/basicCurrency.js";
 const getCurrency = async (req, res) => {
   try {
     const currency = await currencyModel.find().select("-_id -__v");
-    console.log(currency);
     if (!currency) {
       return res.status(404)({
         message: "Currency not found",

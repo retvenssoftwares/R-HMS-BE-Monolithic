@@ -680,16 +680,16 @@ const checkRate = async (req, res) => {
       const response = await Promise.all(ratePlanTotalResult.map(async (result) => {
         const { roomTypeId, barRatePlanId } = result;
         //console.log(barRatePlanId)
-   
+
 
         // Fetch restriction document
         const [restrictionDocument, otaDocuments] = await Promise.all([
           restrictionModel.findOne({ roomTypeId, ratePlanId: barRatePlanId }),
           otaModel.find({ roomTypeId, ratePlanId: barRatePlanId }, { otaId: 1, source: 1, manageOTARates: 1 }),
         ]);
-    
 
-    
+
+
         //ota rates
         const otaIds = await Promise.all(
           otaDocuments.map(async (otaDoc) => {
@@ -749,7 +749,7 @@ const checkRate = async (req, res) => {
 
         if (restrictionDocument) {
           const rateDocument = await rateModel.findOne({ roomTypeId, ratePlanId: barRatePlanId });
-    
+
           // Extract the filtered and sorted arrays using a helper function
           const baseRates = extractFilteredAndSortedArray(
             restrictionDocument.manageRestrictions.stopSell,
@@ -766,7 +766,7 @@ const checkRate = async (req, res) => {
             result.extraAdultRate,
             result.extraChildRate
           );
-    
+
           return {
             ...result,
             baseRates,
@@ -779,7 +779,7 @@ const checkRate = async (req, res) => {
           };
         } else {
           const rateDocument = await rateModel.findOne({ roomTypeId, ratePlanId: barRatePlanId });
-    
+
           // Extract the baseRates array for scenarios where no restrictions are present
           const baseRates = extractBaseRatesForNoRestrictions(
             rateDocument ? rateDocument.manageRates.baseRate : null,
@@ -791,7 +791,7 @@ const checkRate = async (req, res) => {
             result.extraAdultRate,
             result.extraChildRate
           );
-    
+
           return {
             ...result,
             baseRates,
@@ -948,7 +948,7 @@ function extractFilteredAndSortedArray(stopSell, minimumLOS, maximumLOS, COA, CO
 
     const baseRateEntry = {
       date,
-      baseRate:  baseRate ? baseRate.find((item) => item.date === date)?.baseRate || ratePlanTotal:ratePlanTotal,
+      baseRate: baseRate ? baseRate.find((item) => item.date === date)?.baseRate || ratePlanTotal : ratePlanTotal,
       extraAdultRate: extraAdultRate ? extraAdultRate.find((item) => item.date === date)?.extraAdultRate || extraAdultRateVal : extraAdultRateVal,
       extraChildRate: extraChildRate ? extraChildRate.find((item) => item.date === date)?.extraChildRate || extraChildRateVal : extraChildRateVal,
     };
@@ -999,7 +999,14 @@ function extractBaseRatesForNoRestrictions(baseRate, extraAdultRate, extraChildR
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
-  return baseRates;
+  if (baseRates.length > 0) {
+    return baseRates;
+  } else {
+    return res.status(200).json({ data: baseRates, statuscode: 200 });
+  }
+
+
+  // return baseRates;
 }
 
 

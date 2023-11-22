@@ -18,7 +18,7 @@ import nodeCorn from "node-cron"
 import checkRoomAvailability from "../../controllers/InventoryAndRates/checkRoomAvailability.js"
 import checkRate from "../InventoryAndRates/checkAvailableRates.js";
 
-export const createResrvation = async (req, res) => {
+export const createCompanyResrvation = async (req, res) => {
   const {
     userId,
     propertyId,
@@ -29,12 +29,9 @@ export const createResrvation = async (req, res) => {
     companyId,
     roomDetails,
     remark,
-    discountReservation,
     reservationSummary,
     applyDiscount,
     paymentDetails,
-    barRateReservation,
-    guestInfo,
     isQuickReseration,
     isGroupBooking,
     cardDetails,
@@ -84,102 +81,9 @@ export const createResrvation = async (req, res) => {
 
   let userRole = findUser.role[0].role;
 
-  for (let i = 0; i < guestInfo.length; i++) {
-    if (guestInfo[i].guestId) {
-      guestIdArray.push({ guestId: guestInfo[i].guestId });
-    } else {
-      const guestDetails = new guestCollections({
-        guestId: randomString.generate(10),
-
-        salutation: [
-          {
-            salutation: guestInfo[i].salutation,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        guestName: [
-          {
-            guestName: guestInfo[i].guestName,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        phoneNumber: [
-          {
-            phoneNumber: guestInfo[i].phoneNumber,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        emailAddress: [
-          {
-            emailAddress: guestInfo[i].emailAddress,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        addressLine1: [
-          {
-            addressLine1: guestInfo[i].addressLine1,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        addressLine2: [
-          {
-            addressLine2: guestInfo[i].addressLine2,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        country: [
-          {
-            country: guestInfo[i].country,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        state: [
-          {
-            state: guestInfo[i].state,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        city: [
-          {
-            city: guestInfo[i].city,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        pinCode: [
-          {
-            pinCode: guestInfo[i].pinCode,
-            logId: randomString.generate(10),
-          },
-        ],
-
-
-        c_form: [{
-          c_form: guestInfo[i].c_form,
-          logId: randomString.generate(10),
-        }],
-
-      });
-
-      const guest = await guestDetails.save();
-
-
-      // booking details
-      guestIdArray.push({ guestId: guest.guestId });
-    }
-  }
-
   // create reservation
   const createBooking = new bookingsModel({
-    guestId: guestIdArray,
+    
     bookingId: bookingId,
     propertyId: propertyId,
     checkInDate: [
@@ -224,24 +128,9 @@ export const createResrvation = async (req, res) => {
         logId: randomString.generate(10),
       },
     ],
-    companyReservation: [
-      {
-        companyId: companyId,
-        logId: randomString.generate(10),
-      },
-    ],
-
-    barRateReservation: [{
-      barRateReservation: barRateReservation,
-      logId: randomString.generate(10),
-    }],
 
 
-    discountReservation: [{
-      discountReservation: discountReservation,
-      logId: randomString.generate(10),
-    }],
-
+    companyId: companyId,
 
     roomDetails: [{
       roomDetails: roomDetails,
@@ -340,60 +229,26 @@ export const createResrvation = async (req, res) => {
 
 
 
-      // Function to get guest details by guestId
-      async function getGuestDetails(guestId) {
-        return await guestCollections.findOne({ guestId });
-      }
-
-
       // Function to create and save hold data
-      async function createAndSaveHoldData(booking, c_form, inclusion, adult, childs, charge, extraAdult, extraChild, guestId, remark, internalNote, ratePlanName, roomTypeId, index, ratePlan, name, baseRates, guestDetails) {
+      async function createAndSaveHoldData(booking, inclusion, adult, childs, charge, extraAdult, extraChild, remark, internalNote, roomTypeId, index, ratePlanId, name) {
 
-        const flattenedBaseRates = baseRates.map(item => ({
-          date: item.date,
-          baseRate: item.baseRate,
-          extraAdultRate: item.extraAdultRate,
-          extraChildRate: item.extraChildRate
-        }));
-
-        const bar = booking.barRateReservation.map((item) => ({
-          bookingTypeId: item.barRateReservation[0].bookingTypeId,
-          rateType: item.barRateReservation[0].rateType,
-          bookingSourceId: item.barRateReservation[0].bookingSourceId
-        }));
-
-
-        //console.log(c_form)
-
-        const form = c_form.map((item) => ({
-          c_form: item.c_form,
-          logId: item.logId
-        }))
-
-
+        const company = booking.companyId
+        
         const hold = new holdData({
           bookingId: booking.bookingId || "",
+          companyId :  company || "",
           reservationId: booking.reservationIds && booking.reservationIds[index] || "",
           propertyId: booking.propertyId || "",
           roomTypeId: roomTypeId || "",
-          ratePlanId: ratePlan || "",
-          rateType: booking.rateType || "",
+          ratePlanId: ratePlanId || "",
+          rateTypeId: booking.rateTypeId || "",
           roomTypeName: name || "",
-          barRateReservation: [{
-            barRateReservation: bar
-          }],
-          c_form: form,
           extraInclusionId: inclusion,
           extraAdultRate: extraAdult,
           extraChildRate: extraChild,
           adults: adult,
-          childs: childs,
+          childs: childs,                                                                                                                                                                                                                                                      
           charge: charge,
-          guestId: guestId || "",
-          guestName: guestDetails.guestName && guestDetails.guestName[0] && guestDetails.guestName[0].guestName || "",
-          salutation: guestDetails.salutation && guestDetails.salutation[0] && guestDetails.salutation[0].salutation || "",
-          phoneNumber: guestDetails.phoneNumber && guestDetails.phoneNumber[0] && guestDetails.phoneNumber[0].phoneNumber || "",
-          emailAddress: guestDetails.emailAddress && guestDetails.emailAddress[0] && guestDetails.emailAddress[0].emailAddress || "",
           bookingTime: await getCurrentUTCTimestamp(),
           checkInDate: booking.checkInDate && booking.checkInDate[0] && booking.checkInDate[0].checkInDate || "",
           reservationNumber: booking.reservationNumber || "",
@@ -401,10 +256,7 @@ export const createResrvation = async (req, res) => {
           remark: remark || "",
           internalNote: internalNote || "",
           inventory: 1,
-          ratePlanName: ratePlanName || '',
-          baseRates: [{
-            baseRates: flattenedBaseRates
-          }],
+       
         });
 
         await hold.save();
@@ -417,35 +269,7 @@ export const createResrvation = async (req, res) => {
         const ratePlanId = roomDetail.ratePlanId
         const remark = roomDetail.remark[0].specialRemark;
         const internalNote = roomDetail.remark[0].internalNote
-
-
-        // check Rate plan for that room
-        const checkRateResponse = await checkRate({
-          query: {
-            userId,
-            roomTypeId: roomTypeId,  // Use the roomTypeId of the current room
-            startDate: checkInDate,
-            endDate: checkOutDate,
-            status: true
-          },
-          headers: {
-            authcode: authCodeValue,
-          },
-        }, res);
-
-        const filteredRateResponse = checkRateResponse.filter(response => response.barRatePlanId === ratePlanId);
-      // room rate extra adult extra child rate 
-       
-
-     
-        const ratePlan = filteredRateResponse[0].barRatePlanId
-        const ratePlanName = filteredRateResponse[0].ratePlanName
-        const baseRates = filteredRateResponse[0].baseRates
-
-
-
-        const guestId = booking.guestId.length === 1 ? booking.guestId[0].guestId : booking.guestId[index].guestId;
-
+        
 
         // filds require in the room Details 
         const inclusion = roomDetail.extraInclusionId || ""
@@ -455,17 +279,16 @@ export const createResrvation = async (req, res) => {
         const extraAdult = roomDetail.extraAdult || ""
         const extraChild = roomDetail.extraChild || ""
 
-
         
 
         // check room requriments  
         if (dictionary[roomTypeId] && dictionary[roomTypeId] <= result[roomTypeId]) {
-          const guestDetails = await getGuestDetails(guestId);
-          const c_form = guestDetails.c_form
+          // const guestDetails = await getGuestDetails(guestId);
+          // const c_form = guestDetails.c_form
           const roomTypeName = await roomType.findOne({ roomTypeId: roomTypeId })
           const name = roomTypeName.roomTypeName[0].roomTypeName || ""
 
-          return createAndSaveHoldData(booking, c_form, inclusion, adult, childs, charge, extraAdult, extraChild, guestId, remark, internalNote, ratePlanName, roomTypeId, index, ratePlan, name, baseRates, guestDetails);
+          return createAndSaveHoldData(booking, inclusion, adult, childs, charge, extraAdult, extraChild, remark, internalNote, roomTypeId, index, ratePlanId, name);
         }
       }));
 

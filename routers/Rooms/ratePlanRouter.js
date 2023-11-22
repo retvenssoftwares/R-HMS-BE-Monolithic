@@ -9,6 +9,7 @@ import getRatePlansListWithRooms from '../../controllers/Rooms/getRoomsWithPlans
 import discountPlanGet from '../../controllers/Rooms/getDiscountRatePlanById.js';
 import getAllDiscountPlans from '../../controllers/Rooms/getAllDiscountPlans.js';
 import getCompanyRatePlanViaRoomTypeId from "../../controllers/Rooms/getCompanyRatePlanViaRoomTypeId.js"
+import getRatePlanListForBooking from "../../controllers/Rooms/getRatePlanListForBooking.js"
 const router = express.Router();
 
 router.post("/api/ratePlan", ratePlan);
@@ -21,4 +22,5 @@ router.get("/api/getBarPlanById", getBarRatePlanById);
 router.get("/api/getRoomsWithPlans", getRatePlansListWithRooms);
 router.get("/api/getAllDiscountPlans", getAllDiscountPlans);
 router.get("/api/getCompanyRatePlanViaRoomTypeId", getCompanyRatePlanViaRoomTypeId);
+router.get("/api/getRatePlanlistOfBooking",getRatePlanListForBooking)
 export default router;

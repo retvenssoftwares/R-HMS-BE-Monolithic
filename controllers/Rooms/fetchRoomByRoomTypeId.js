@@ -76,15 +76,12 @@ const fetchRoom = async (req, res) => {
                         amenityIconLink: foundAmenity.amenityIconLink[0].amenityIconLink
                     }))
 
-                    //roomImages
-                    const filteredRoomImages = roomImages.filter(img => img.roomTypeId === roomTypeId);
-                    // Extract necessary data from roomImages
-                    const imagesData = filteredRoomImages.map(img => ({
-                        image: (img.roomImages[0] && img.roomImages[0].image) || '', // Add a check before accessing 'image'
+// roomImages
+const filteredRoomImages = roomImages.filter(img => img.roomTypeId === roomTypeId);
 
-                    }));
+// Extract all images for all rooms into a single array
+const imagesData = [].concat(...filteredRoomImages.map(img => img.roomImages.map(image => ({ image: image.image }))));
 
-                 
 
 
                     // Include fetched roomImages in the property object

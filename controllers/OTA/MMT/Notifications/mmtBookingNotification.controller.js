@@ -1,5 +1,5 @@
 import { parseString, Builder } from 'xml2js';
-import BookingNotificationMMT from '../../../models/Notifications/mmtBookingNotification.js';
+import BookingNotificationMMT from '../../../../models/Notifications/mmtBookingNotification.js';
 
 const pushBookingNotificationMMT = async (req, res) => {
     const xmlData = `

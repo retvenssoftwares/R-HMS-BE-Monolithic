@@ -82,22 +82,7 @@ const fetchRoom = async (req, res) => {
 
                     }));
 
-                    //extract data from barrate
-                    // const bardata = barrate.map(bar=>({
-                    //     rateType:bar.rateType,
-                    //     roomTypeId:bar.roomType[0].roomTypeId,
-                    //     ratePlanName:bar.ratePlanName[0].ratePlanName || '',
-                    //     shortCode:bar.shortCode[0].shortCode || '',
-                    //     roomBaseRate:bar.barRates.roomBaseRate[0].roomBaseRate || '',
-                    //     mealCharge:bar.barRates.mealCharge[0].mealCharge || '',
-                    //     inclusionCharge:bar.barRates.inclusionCharge[0].inclusionCharge || '',
-                    //     roundUp:bar.barRates.roundUp[0].roundUp || '',
-                    //     extraAdultRate:bar.barRates.extraAdultRate[0].extraAdultRate || '',
-                    //     extraChildRate:bar.barRates.extraChildRate[0].extraChildRate || '',
-                    //     ratePlanTotal:bar.barRates.ratePlanTotal[0].ratePlanTotal || '',
-                    //     inclusion:bar.inclusion[0].inclusionPlan || ''
-
-                    // }))
+                 
 
 
                     // Include fetched roomImages in the property object

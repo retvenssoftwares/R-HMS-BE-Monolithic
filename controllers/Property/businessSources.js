@@ -3,6 +3,7 @@ import businessSourcesModel from "../../models/businessSources.js";
 import verifying from "../../models/verifiedUsers.js"
 import randomString from "randomstring"
 import businessSourcesLog from "../../models/LogModels/businessSourcesLog.js";
+import property from "../../models/property.js"
 //post
 export const addBusinessSources = async (req, res) => {
     try {
@@ -271,8 +272,9 @@ export const getBusinessSources = async (req, res) => {
         if (!findUser) {
             return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 })
         }
-        if (!propertyId) {
-            return res.status(400).json({ message: "Please enter valid propertyId", statuscode: 400 })
+        const findProperty = await property.findOne({ propertyId: propertyId })
+        if (!findProperty) {
+            return res.status(404).json({ message: "Please enter valid propertyId", statuscode: 404 })
         }
 
         const businessSourcesFetch = await businessSourcesModel.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1" }).sort({_id:-1}).lean();

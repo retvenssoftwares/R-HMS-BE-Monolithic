@@ -7,11 +7,11 @@ const getAmenities = async (req, res) => {
 
         if (propertyId) {
             const [amenityData, adminAmenity] = await Promise.all([
-                propertyAmenity.find({ propertyId: propertyId, "amenityType.0.amenityType": "Property" }),
+                propertyAmenity.find({ propertyId: propertyId, "amenityType.0.amenityType": "Property","displayStatus.0.displayStatus":"1" }),
                 amenity.find({ "amenityType.0.amenityType": "Property" }).lean()
             ]);
 
-            if (!amenityData || amenityData.length === 0) {
+            if ( amenityData.length === 0 && adminAmenity.length=== 0) {
                 return res.status(404).json({ message: "Amenity data not found", statusCode: 404 });
             }
 

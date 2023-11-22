@@ -12,7 +12,7 @@ const companyRatePlans = async (req, res) => {
         return res.status(404).json({ message: "Please enter valid userId", statuscode: 404 })
     }
     if(result.success){
-    const findRatePlan = await companyRatePlanModel.findOne({companyRatePlanId :companyRatePlanId });
+    const findRatePlan = await companyRatePlanModel.findOne({companyRatePlanId :companyRatePlanId ,"displayStatus.0.displayStatus": "1"}).sort({_id:-1}).lean();
     if (!findRatePlan) {
         return res.status(404).json({ message: "Please enter valid companyRatePlanId", statuscode: 404 })
     }

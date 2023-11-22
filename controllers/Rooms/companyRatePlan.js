@@ -89,11 +89,16 @@ export const companyRatePlan = async (req, res) => {
             extraChildRate: extraChildRate,
             logId: Randomstring.generate(10),
           }],
+
           ratePlanTotal: [{
             ratePlanTotal: ratePlanTotal,
             logId: Randomstring.generate(10),
           }],
         },
+        displayStatus: [{
+          displayStatus: "1", 
+          logId: Randomstring.generate(10) 
+         }],
 
       })
 
@@ -166,7 +171,7 @@ export const companyRatePlan = async (req, res) => {
 //update company patch api
 export const updateCompanyRatePlan = async (req, res) => {
   try {
-    const { userId, ratePlanName, shortCode, ratePlanInclusion, inclusionTotal, ratePlanTotal, deviceType, ipAddress, roomBaseRate, mealCharge, inclusionCharge, roundUp, extraAdultRate, extraChildRate } = req.body;
+    const { userId, ratePlanName, shortCode, ratePlanInclusion, inclusionTotal, ratePlanTotal, deviceType, ipAddress, roomBaseRate, mealCharge, inclusionCharge, roundUp, extraAdultRate, extraChildRate,displayStatus } = req.body;
     const companyRatePlan = await companyRateModel.findOne({ companyRatePlanId: req.query.companyRatePlanId })
 
     if (!companyRatePlan) {
@@ -200,6 +205,7 @@ export const updateCompanyRatePlan = async (req, res) => {
       const roundUpLog = Randomstring.generate(10)
       const extraAdultRateLog = Randomstring.generate(10)
       const extraChildRateLog = Randomstring.generate(10)
+      const displayStatusLog = Randomstring.generate(10)
 
       if (ratePlanName) {
         const ratePlanNameObject = { ratePlanName: ratePlanName, logId: ratePlanNameLog, ipAddress: clientIp, deviceType: deviceType };
@@ -304,6 +310,15 @@ export const updateCompanyRatePlan = async (req, res) => {
           deviceType: deviceType,
         }
         companyRatePlan.barRates.extraChildRate.unshift(extraChildRateObject);
+      }
+      if (displayStatus) {
+        const displayStatusObject = {
+          displayStatus: displayStatus,
+          logId: displayStatusLog,
+          ipAddress: clientIp,
+          deviceType: deviceType,
+        }
+        companyRatePlan.displayStatus.unshift(displayStatusObject);
       }
 
 

@@ -71,6 +71,14 @@ const postReservationType = async (req, res) => {
             ipAddress:ipAddress,
             modifiedOn: currentUTCTime,                 
            }],
+           displayStatus: [{
+            logId:savedReservation.displayStatus[0].logId,
+            displayStatus: savedReservation.displayStatus[0].displayStatus,
+            userId: userId,
+            deviceType: deviceType,
+            ipAddress:ipAddress,
+            modifiedOn: currentUTCTime,                 
+           }],
       })
       await addReservationLogs.save();
 

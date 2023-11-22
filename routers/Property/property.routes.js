@@ -59,13 +59,16 @@ import identityTypes from "../../controllers/Property/patchIdentity.js"
 //mealPlan
 import postMealPlan from '../../controllers/Property/postMealPlan.js';
 import getMealPlan from '../../controllers/Property/getMealPlan.js';
-import patchMealPlan from '../../controllers/Property/updateMealPlan.js'
+import patchMealPlan from '../../controllers/Property/updateMealPlan.js';
 
 //ota sources
-import OtaSources from '../../controllers/Property/postOtaSources.js'
-import otaSourcePlan from '../../controllers/Property/getOtaSource.js'
+import OtaSources from '../../controllers/Property/postOtaSources.js';
+import otaSourcePlan from '../../controllers/Property/getOtaSource.js';
 
-router.post(
+//companyId
+import getCompanyId from '../../controllers/Property/getCompanyByCompanyId.js';
+
+router.post( 
     '/api/createProperty',
     upload.fields([{ name: 'hotelLogo', maxCount: 1 }]),
     postProperty
@@ -88,14 +91,14 @@ router.get("/api/getBusinessSources", getBusinessSources)
 // router.post("/api/addInclusionPlan",addInclusionPlan)
 // router.patch("/api/updateInclusionPlan",updateInclusionPlan)
 
-router.patch("/api/propertyAdditionalDetails", editProperty)
+// router.patch("/api/propertyAdditionalDetails", editProperty)
 
 //images
 router.patch("/api/uploadPropertyImages", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), uploadPropertyImages);
 router.patch("/api/changeImageIndex", dragDropPropertyImages);
 router.patch("/api/updatePropertyImage", updatePropertyImage)
 
-router.patch("/api/editProperty", editProperty);
+router.patch("/api/editProperty", upload.fields([{ name: 'hotelImage', maxCount: 1 }]), editProperty);
 
 //company
 // router.post("/api/addCompany", upload.fields([{ name: "companyLogo", maxCount: 1 }, { name: "contractPdf", maxCount: 3 }]), addCompany)
@@ -147,4 +150,8 @@ router.patch("/api/patchMeal", patchMealPlan)
 //ota source
 router.post("/api/postOtaSourcePlan", OtaSources)
 router.get("/api/getOtaSource", otaSourcePlan)
+
+//companyId
+router.get("/api/fetchCompanyDetails", getCompanyId)
+
 export default router;

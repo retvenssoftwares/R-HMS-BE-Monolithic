@@ -15,7 +15,7 @@ const bookingSourcesGet = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
 
         if (result.success) {
-            const bookingSource = await bookingModel.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1"  }).lean();
+            const bookingSource = await bookingModel.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1"  }).sort({_id:-1}).lean();
             if (bookingSource.length > 0) {
                 const convertedBookingSources = bookingSource.map(bookingSource => {
                     const convertedDateUTC = convertTimestampToCustomFormat(bookingSource.createdOn, targetTimeZone);
@@ -41,7 +41,7 @@ const bookingSourcesGet = async (req, res) => {
                 return res.status(200).json({ data: convertedBookingSources, statuscode: 200 });
             }
             else {
-                return res.status(200).json({ message: "No booking sources found", statuscode: 200 });
+                return res.status(200).json({ message: "No booking sources found",count:"0", statuscode: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

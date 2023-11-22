@@ -29,10 +29,10 @@ const getInventory = async (req, res) => {
         const endDateObj = new Date(checkOutDate);
         const checkOutDateISO = endDateObj.toISOString();
 
-        if (checkInDate === checkOutDate) {
-            // console.log(checkInDate, checkOutDate)
-            return res.status(400).json({ message: "Check-in date cannot be equal to check-out date", statuscode: 400 });
-        }
+        // if (checkInDate === checkOutDate) {
+        //     // console.log(checkInDate, checkOutDate)
+        //     return res.status(400).json({ message: "Check-in date cannot be equal to check-out date", statuscode: 400 });
+        // }
         if (checkInDate > checkOutDate) {
             return res.status(400).json({ message: "Check-in date cannot be greater than check-out date", statuscode: 400 });
         }
@@ -180,13 +180,23 @@ const getInventory = async (req, res) => {
                 roomTypeId,
                 roomTypeName,
                 numberOfRooms: roomType.numberOfRooms,
-                calculatedInventoryData:
-                    calculatedInventoryData.length > 0
-                        ? calculatedInventoryData.map((item) => ({
+                calculatedInventoryData: calculatedInventoryData.length > 0
+                    ? calculatedInventoryData.map((item) => {
+                        let isBlocked = "false";
+                        // console.log(item.date)
+                        // console.log(item.inventory)
+                        // console.log(roomType.numberOfRooms)
+                        if (blockedInventoryDates.includes(item.date) && item.inventory < roomType.numberOfRooms) {
+                            isBlocked = "true"
+                        }
+
+
+                        return {
                             ...item,
-                            isBlocked: blockedInventoryDates.includes(item.date).toString(),
-                        }))
-                        : false,
+                            isBlocked,
+                        };
+                    })
+                    : "false",
             };
         });
 

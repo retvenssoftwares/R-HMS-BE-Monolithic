@@ -77,6 +77,16 @@ const postBookingSource = async (req, res) => {
             modifiedOn:currentUTCTime,
           },
         ],
+        displayStatus: [
+          {
+            logId: savedBookingSourecs.displayStatus[0].logId,
+            displayStatus: savedBookingSourecs.displayStatus[0].displayStatus,
+            userId: userId,
+            deviceType: deviceType,
+            ipAddress:ipAddress,
+            modifiedOn:currentUTCTime,
+          },
+        ],
         bookingSource: [
           {
             logId: savedBookingSourecs.bookingSource[0].logId,

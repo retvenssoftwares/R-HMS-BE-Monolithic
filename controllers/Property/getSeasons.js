@@ -15,7 +15,7 @@ const getSeasons = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
-            const findAllSeasons = await season.find({ propertyId, "displayStatus.0.displayStatus": "1" });
+            const findAllSeasons = await season.find({ propertyId, "displayStatus.0.displayStatus": "1" }).sort({_id:-1}).lean();
 
             if (findAllSeasons.length > 0) {
                 const convertedSeasons = findAllSeasons.map(seasons => {
@@ -47,7 +47,7 @@ const getSeasons = async (req, res) => {
 
                 return res.status(200).json({ data: convertedSeasons, statuscode: 200 });
             } else {
-                return res.status(200).json({ message: "No seasons found", statuscode: 200 });
+                return res.status(200).json({ message: "No seasons found",count:"0", statuscode: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

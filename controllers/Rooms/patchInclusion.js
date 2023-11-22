@@ -72,7 +72,7 @@ const patchInclusion = async (req, res) => {
         if (displayStatus) {
             const displayStatusObject = {
                 displayStatus: displayStatus,
-                logId: randomString.generate(10)
+                logId: Randomstring.generate(10)
             };
             findInclusion.displayStatus.unshift(displayStatusObject);
         }
@@ -102,6 +102,17 @@ const patchInclusion = async (req, res) => {
                         modifiedOn:currentUTCTime,
                     };
                     findInclusionLogs.shortCode.unshift(shortCodeObject);
+                }
+                if (displayStatus) {
+                    const displayStatusObject = {
+                        displayStatus:updatedInclusion.displayStatus[0].displayStatus,
+                        logId:updatedInclusion.displayStatus[0].logId,
+                        userId:userid,
+                        deviceType:deviceType,
+                        ipAddress:ipAddress,
+                        modifiedOn:currentUTCTime,
+                    };
+                    findInclusionLogs.displayStatus.unshift(displayStatusObject);
                 }
                 if (inclusionName) {
                     const inclusionNameObject = {

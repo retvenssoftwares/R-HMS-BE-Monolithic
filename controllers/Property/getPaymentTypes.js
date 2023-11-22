@@ -15,7 +15,7 @@ const getPaymentTypes = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
-            const findAllPaymentTypes = await paymentTypeModel.find({ propertyId, "displayStatus.0.displayStatus": "1"  }).lean();
+            const findAllPaymentTypes = await paymentTypeModel.find({ propertyId, "displayStatus.0.displayStatus": "1"  }).sort({_id:-1}).lean();
             if (findAllPaymentTypes.length > 0) {
                 const convertedPaymentTypes = findAllPaymentTypes.map(paymentType => {
                     const convertedDateUTC = convertTimestampToCustomFormat(paymentType.createdOn, targetTimeZone);
@@ -44,7 +44,7 @@ const getPaymentTypes = async (req, res) => {
                 return res.status(200).json({ data: convertedPaymentTypes, statuscode: 200 });
             }
             else {
-                return res.status(200).json({ message: "No payment types found", statuscode: 200 });
+                return res.status(200).json({ message: "No payment types found",count:"0",  statuscode: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

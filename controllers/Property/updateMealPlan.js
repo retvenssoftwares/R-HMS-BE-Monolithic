@@ -17,7 +17,6 @@ const patchMealPlan = async (req, res) => {
         const authCodeValue = req.headers['authcode'];
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
-        console.log(result);
         if (result.success) {
             let userRole = findUser.role[0].role;
 

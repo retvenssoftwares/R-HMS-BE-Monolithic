@@ -3,6 +3,7 @@ import verifying from "../../models/verifiedUsers.js"
 import randomString from "randomstring"
 import { convertTimestampToCustomFormat, getCurrentUTCTimestamp, findUserByUserIdAndToken } from "../../helpers/helper.js"
 import transportationLog from "../../models/LogModels/transportationLog.js"
+import property from "../../models/property.js"
 
 //post 
 export const transportationAdd = async (req, res) => {
@@ -62,6 +63,14 @@ export const transportationAdd = async (req, res) => {
                   transportationModeName: [{
                     transportationModeName: savedTranportation.transportationModeName[0].transportationModeName,
                     logId: savedTranportation.transportationModeName[0].logId,
+                    userId: userId,
+                    deviceType: deviceType,
+                    ipAddress:ipAddress,
+                    modifiedOn: currentUTCTime,
+                }],
+                displayStatus: [{
+                    displayStatus: savedTranportation.displayStatus[0].displayStatus,
+                    logId: savedTranportation.displayStatus[0].logId,
                     userId: userId,
                     deviceType: deviceType,
                     ipAddress:ipAddress,
@@ -166,6 +175,17 @@ export const updateTransportation = async (req, res) => {
                 }
                 findTransportationLog.transportationModeName.unshift(transportationModeNameObject);
                 }
+                if(displayStatus){
+                    const displayStatusObject={
+                    displayStatus: savedTranportation.displayStatus[0].displayStatus,
+                    logId: savedTranportation.displayStatus[0].logId,
+                    userId: userid,
+                    deviceType: deviceType,
+                    ipAddress:ipAddress,
+                    modifiedOn: currentUTCTime,
+                }
+                findTransportationLog.displayStatus.unshift(displayStatusObject);
+                }
             }
             await findTransportationLog.save();
 
@@ -184,16 +204,21 @@ export const updateTransportation = async (req, res) => {
 export const getTransportation = async (req, res) => {
     try {
         const userId = req.query.userId;
+        const propertyId=req.query.propertyId;
         const UserauthCode = await verifying.findOne({ userId: userId });
         const targetTimeZone = req.query.targetTimeZone;
 
         if (!UserauthCode) {
             return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 });
         }
+        const findProperty = await property.findOne({ propertyId: propertyId })
+        if (!findProperty) {
+            return res.status(404).json({ message: "Please enter valid propertyId", statuscode: 404 })
+        }
 
         const authCodeDetails = req.headers["authcode"];
 
-        const getDetails = await transportation.find({ propertyId: req.query.propertyId, "displayStatus.0.displayStatus": "1" }).lean();
+        const getDetails = await transportation.find({ propertyId:propertyId, "displayStatus.0.displayStatus": "1" }).sort({_id:-1}).lean();
 
         if (!getDetails) {
             return res.status(404).json({ message: "No transportation types found", statuscode: 404 });
@@ -229,7 +254,7 @@ export const getTransportation = async (req, res) => {
                 return res.status(200).json({ data: convertedTransportationTypes, statuscode: 200 });
             }
             else {
-                return res.status(404).json({ message: "No transportation types found", statuscode: 404 });
+                return res.status(200).json({ message: "No transportation types found",count:"0",  statuscode: 200 });
             }
 
         } else {

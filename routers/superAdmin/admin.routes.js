@@ -47,6 +47,7 @@ import getAmenityIcon from "../../controllers/superAdmin/getAmenityIcon.js";
 //postAmenity
 import postAmenity from "../../controllers/superAdmin/createAmenity.js";
 import getAmenity from "../../controllers/superAdmin/getAmenity.js";
+import fetchRoomAmenity from '../../controllers/superAdmin/getRoomsAmenity.js'
 
 //RateType
 import postRateType from "../../controllers/superAdmin/postRateTypeName.js";
@@ -58,7 +59,13 @@ import getOta from "../../controllers/superAdmin/otaGet.js";
 import otaPatch from "../../controllers/superAdmin/otaPatch.js";
 import fetchActiveOta from "../../controllers/superAdmin/getActiveOta.js"
 
+//post basic Currency
+import currency from "../../controllers/superAdmin/basicCurrency.js"
+router.post("/api/basicCurrency",currency)
 
+//get basic Currency
+import getCurrency from "../../controllers/superAdmin/getBasicCurrency.js";
+router.get("/api/getCurrency",getCurrency)
 
 
 //ratesAndRestrictions
@@ -105,6 +112,7 @@ router.get("/api/getDesignation", getDesignation);
 //Amenitytype
 router.post("/api/postAmenityType", postAmenityType);
 router.get("/api/getAmenityType", getAmenityType);
+router.get("/api/getRoomAmenity",fetchRoomAmenity)
 
 //AmenityIcon
 router.post(

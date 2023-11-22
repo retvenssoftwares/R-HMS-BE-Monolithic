@@ -3,6 +3,7 @@ import businessSourcesModel from "../../models/businessSources.js";
 import verifying from "../../models/verifiedUsers.js"
 import randomString from "randomstring"
 import businessSourcesLog from "../../models/LogModels/businessSourcesLog.js";
+import property from "../../models/property.js"
 //post
 export const addBusinessSources = async (req, res) => {
     try {
@@ -61,6 +62,16 @@ export const addBusinessSources = async (req, res) => {
                     {
                       logId: savedBussinessSources.sourceName[0].logId,
                       sourceName: savedBussinessSources.sourceName[0].sourceName,
+                      userId: userId,
+                      deviceType: deviceType,
+                      ipAddress:ipAddress,
+                      modifiedOn:currentUTCTime,
+                    },
+                  ],
+                  displayStatus: [
+                    {
+                      logId: savedBussinessSources.displayStatus[0].logId,
+                      displayStatus: savedBussinessSources.displayStatus[0].displayStatus,
                       userId: userId,
                       deviceType: deviceType,
                       ipAddress:ipAddress,
@@ -193,7 +204,26 @@ export const updateBusinessSources = async (req, res) => {
                     new: true
                 });
 
-            }
+                //save data in logs
+                
+                    const update2 = {
+                        $push: {
+                            displayStatus: {
+                                $each: [{
+                                    displayStatus: displayStatus,
+                                    logId: logId1,
+                                    deviceType: deviceType,
+                                    ipAddress: ipAddress,
+                                    modifiedOn:currentUTCTime
+                                }],
+                                $position: 0
+                            }
+                        }
+                    };
+                await businessSourcesLog.findOneAndUpdate({ sourceId: sourceId }, update2, {
+                        new: true
+            })
+        }
             
 
            
@@ -242,11 +272,12 @@ export const getBusinessSources = async (req, res) => {
         if (!findUser) {
             return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 })
         }
-        if (!propertyId) {
-            return res.status(400).json({ message: "Please enter valid propertyId", statuscode: 400 })
+        const findProperty = await property.findOne({ propertyId: propertyId })
+        if (!findProperty) {
+            return res.status(404).json({ message: "Please enter valid propertyId", statuscode: 404 })
         }
 
-        const businessSourcesFetch = await businessSourcesModel.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1" }).lean();
+        const businessSourcesFetch = await businessSourcesModel.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1" }).sort({_id:-1}).lean();
 
         const authCodeDetails = req.headers["authcode"]
         const result = await findUserByUserIdAndToken(userId, authCodeDetails)
@@ -278,7 +309,7 @@ export const getBusinessSources = async (req, res) => {
                 return res.status(200).json({ data: convertedBusinessSources, statuscode: 200 });
             }
             else {
-                return res.status(404).json({ error: "No business sources found", statuscode: 404 });
+                return res.status(404).json({ error: "No business sources found",count:"0", statuscode: 404 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

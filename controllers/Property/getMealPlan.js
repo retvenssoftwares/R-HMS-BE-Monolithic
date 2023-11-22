@@ -15,7 +15,7 @@ const getMealPlan = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
-            const findAllMealPlan = await mealPlan.find({ propertyId , "displayStatus.0.displayStatus": "1" });
+            const findAllMealPlan = await mealPlan.find({ propertyId , "displayStatus.0.displayStatus": "1" }).sort({_id:-1}).lean();
 
             if (findAllMealPlan.length > 0) {
                 const convertedMealPlan = findAllMealPlan.map(meal => {
@@ -45,7 +45,7 @@ const getMealPlan = async (req, res) => {
 
                 return res.status(200).json({ data: convertedMealPlan, statuscode: 200 });
             } else {
-                return res.status(200).json({ message: "No meal found", statuscode: 200 });
+                return res.status(200).json({ message: "No meal found",count:"0",  statuscode: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

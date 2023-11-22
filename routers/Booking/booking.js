@@ -24,7 +24,7 @@ router.post("/api/quickBooking",creatQuickReservation)
 
 router.post("/api/addFloor",addRoomInfloor)
 
-router.post("/api/addRoomInFloor",roomDetails)
+router.patch("/api/addRoomInFloor",roomDetails)
 
 router.get("/api/getRoomDetailsByFloorId",getRoomByFloorId)
 

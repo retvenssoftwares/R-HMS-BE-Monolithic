@@ -19,8 +19,7 @@ const getInclusion = async (req, res) => {
             if (!result.success) {
                 return res.status(result.statuscode).json({ message: "Invalid propertyId entered", statuscode: result.statuscode })
             }
-            const inclusion = await inclusionModel.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1"  });
-console.log(inclusion)
+            const inclusion = await inclusionModel.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1"  }).sort({_id:-1}).lean();
             if (inclusion.length > 0) {
                 const convertedInclusion = inclusion.map(inclusion => {
                     // Convert the dateUTC to the user's time zone
@@ -52,7 +51,7 @@ console.log(inclusion)
                 });
                 return res.status(200).json({ data: convertedInclusion, statuscode: 200 });
             } else {
-                return res.status(200).json({ message: "No inclusion found", statuscode: 200 });
+                return res.status(200).json({ message: "No inclusion found",count:"0",  statuscode: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

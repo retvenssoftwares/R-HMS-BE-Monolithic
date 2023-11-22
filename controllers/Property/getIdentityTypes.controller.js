@@ -24,7 +24,7 @@ const identityType = async (req, res) => {
 
 
         if (result.success) {
-            const userIdentity = await identityModel.find({ propertyId, "displayStatus.0.displayStatus": "1" }).lean();
+            const userIdentity = await identityModel.find({ propertyId, "displayStatus.0.displayStatus": "1" }).sort({_id:-1}).lean();
             if (userIdentity.length>0) {
                 // Assuming userTimeZone holds the user's specified time zone
                 const convertedIdentity = userIdentity.map(identity => {
@@ -52,7 +52,7 @@ const identityType = async (req, res) => {
                 });
                 return res.status(200).json({ data: convertedIdentity, statuscode: 200 });
             } else {
-                return res.status(200).json({ message: "No identities found", statuscode: 200 });
+                return res.status(200).json({ message: "No identities found",count:"0",  statuscode: 200 });
             }
 
         } else {

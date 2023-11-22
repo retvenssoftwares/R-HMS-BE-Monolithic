@@ -17,6 +17,7 @@ export const companyRatePlan = async (req, res) => {
     }
 
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
+    const currentUTCTime= await getCurrentUTCTimestamp();
 
     let userRole = findUser.role[0].role;
 
@@ -107,47 +108,119 @@ export const companyRatePlan = async (req, res) => {
 
       //logs
       const companyRatePlanLogs = new companyLogs({
+        rateType: result.rateType,
+        propertyId: result.propertyId,
+        roomTypeId: result.roomTypeId,
+        companyRatePlanId: result.companyRatePlanId,
+        mealPlanId: result.mealPlanId,
+        companyId: result.companyId,
+
         ratePlanName: [{
           logId: result.ratePlanName[0].logId,
           ratePlanName: result.ratePlanName[0].ratePlanName,
           deviceType: deviceType,
           ipAddress: clientIp,
-          userId: userId
+          userId: userId,
+          modifiedOn:currentUTCTime
         }],
-        companyRatePlanId: result.companyRatePlanId,
         shortCode: [{
           logId: result.shortCode[0].logId,
           shortCode: result.shortCode[0].shortCode,
           deviceType: deviceType,
           ipAddress: clientIp,
-          userId: userId
+          userId: userId,
+          modifiedOn: currentUTCTime
         }],
-        rateType: result.rateType,
-        propertyId: result.propertyId,
-        roomType: result.roomType,
+  
         ratePlanInclusion: [{
           logId: result.ratePlanInclusion[0].logId,
           ratePlanInclusion: result.ratePlanInclusion[0].ratePlanInclusion,
           deviceType: deviceType,
           ipAddress: clientIp,
-          userId: userId
+          userId: userId,
+          modifiedOn:currentUTCTime
         }],
         inclusionTotal: [{
           logId: result.inclusionTotal[0].logId,
           inclusionTotal: result.inclusionTotal[0].inclusionTotal,
           deviceType: deviceType,
           ipAddress: clientIp,
-          userId: userId
+          userId: userId,
+          modifiedOn:currentUTCTime
         }],
-        // ratePlanTotal:[{
-        //   logId:result.ratePlanTotal[0].logId,
-        //   ratePlanTotal : result.ratePlanTotal[0].ratePlanTotal,
-        //   deviceType:deviceType,
-        //   ipAddress : clientIp,
-        //   userId : userId
-        // }],
-        createdBy: userRole,
-        createdOn: await getCurrentUTCTimestamp(),
+
+        barRates: {
+          roomBaseRate: [{
+            logId: result.barRates.roomBaseRate[0].logId,
+            roomBaseRate:result.barRates.roomBaseRate[0].roomBaseRate,
+            deviceType: deviceType,
+            ipAddress: clientIp,
+            userId: userId,
+            modifiedOn:currentUTCTime
+          }],
+
+          mealCharge: [{
+            logId: result.barRates.mealCharge[0].logId,
+            mealCharge:result.barRates.mealCharge[0].mealCharge,
+            deviceType: deviceType,
+            ipAddress: clientIp,
+            userId: userId,
+            modifiedOn:currentUTCTime
+          }],
+
+          inclusionCharge: [{
+            logId: result.barRates.inclusionCharge[0].logId,
+            inclusionCharge:result.barRates.inclusionCharge[0].inclusionCharge,
+            deviceType: deviceType,
+            ipAddress: clientIp,
+            userId: userId,
+            modifiedOn:currentUTCTime
+          }],
+
+          roundUp: [{
+            logId: result.barRates.roundUp[0].logId,
+            roundUp:result.barRates.roundUp[0].roundUp,
+            deviceType: deviceType,
+            ipAddress: clientIp,
+            userId: userId,
+            modifiedOn:currentUTCTime
+          }],
+          extraAdultRate: [{
+            logId: result.barRates.extraAdultRate[0].logId,
+            extraAdultRate:result.barRates.extraAdultRate[0].extraAdultRate,
+            deviceType: deviceType,
+            ipAddress: clientIp,
+            userId: userId,
+            modifiedOn:currentUTCTime
+          }],
+          extraChildRate: [{
+            logId: result.barRates.extraChildRate[0].logId,
+            extraChildRate:result.barRates.extraChildRate[0].extraChildRate,
+            deviceType: deviceType,
+            ipAddress: clientIp,
+            userId: userId,
+            modifiedOn:currentUTCTime
+          }],
+
+          ratePlanTotal: [{
+            logId: result.barRates.ratePlanTotal[0].logId,
+            ratePlanTotal:result.barRates.ratePlanTotal[0].ratePlanTotal,
+            deviceType: deviceType,
+            ipAddress: clientIp,
+            userId: userId,
+            modifiedOn:currentUTCTime
+          }],
+        },
+        displayStatus:[{
+          logId: result.displayStatus[0].logId,
+          displayStatus:result.displayStatus[0].displayStatus,
+          deviceType: deviceType,
+          ipAddress: clientIp,
+          userId: userId,
+          modifiedOn:currentUTCTime
+        }]
+      
+       
       });
 
       await companyRatePlanLogs.save();
@@ -322,31 +395,35 @@ export const updateCompanyRatePlan = async (req, res) => {
       }
 
 
+      const updateCompanyPlan = await companyRatePlan.save()
 
       const requestData = {
         body: req.body,
         // Add other request data you want to store
       };
       const requestDataString = JSON.stringify(requestData)
-      const updateCompanyPlan = await companyRatePlan.save()
 
 
       const responseData = {
-        message: res.statusMessage, // Store the response message
-        statuscode: res.statuscode, // Store the response status code
+        message: "updated successfully", // Store the response message
+        statuscode: 200, // Store the response status code
         // Add other response data you want to store
       };
       const responseString = JSON.stringify(responseData)
 
       const currentUTCTime = await getCurrentUTCTimestamp();
 
+      //save data in logs
+
+      if (companyRatePlanLogs){
+
       if (ratePlanName) {
-        const ratePlanNameObject = { ratePlanName: ratePlanName, logId: ratePlanNameLog, modifiedOn: currentUTCTime, userId: userId, deviveType: deviceType, ipAddress: clientIp };
+        const ratePlanNameObject = { ratePlanName: ratePlanName, logId: ratePlanNameLog, modifiedOn: currentUTCTime, userId: userId, deviveType: deviceType, ipAddress: clientIp,};
         companyRatePlanLogs.ratePlanName.unshift(ratePlanNameObject);
       }
 
       if (shortCode) {
-        const shortCodeObject = { shortCode: shortCode, logId: shortcodeLog, modifiedOn: currentUTCTime, userId: userId, deviveType: deviceType, ipAddress: clientIp };
+        const shortCodeObject = { shortCode: shortCode, logId: shortcodeLog, modifiedOn: currentUTCTime, userId: userId, deviveType: deviceType, ipAddress: clientIp, };
         companyRatePlanLogs.shortCode.unshift(shortCodeObject);
 
       }
@@ -364,6 +441,17 @@ export const updateCompanyRatePlan = async (req, res) => {
         }
         companyRatePlanLogs.ratePlanInclusion.unshift(ratePlanInclusionObject);
       }
+      if (displayStatus) {
+        const displayStatusObject = {
+          displayStatus: displayStatus,
+          logId: displayStatusLog,
+          modifiedOn: currentUTCTime,
+          userId: userId,
+          deviveType: deviceType,
+          ipAddress: clientIp
+        }
+        companyRatePlanLogs.displayStatus.unshift(displayStatusObject);
+      }
 
       if (inclusionTotal) {
         const inclusionTotalObject = {
@@ -372,8 +460,7 @@ export const updateCompanyRatePlan = async (req, res) => {
           modifiedOn: currentUTCTime,
           userId: userId,
           deviveType: deviceType,
-          ipAddress: clientIp
-
+          ipAddress: clientIp,
         }
         companyRatePlanLogs.inclusionTotal.unshift(inclusionTotalObject);
       }
@@ -385,12 +472,77 @@ export const updateCompanyRatePlan = async (req, res) => {
           modifiedOn: currentUTCTime,
           userId: userId,
           deviveType: deviceType,
-          ipAddress: clientIp
+          ipAddress: clientIp,
         }
-        companyRatePlanLogs.ratePlanTotal.unshift(ratePlanTotalObject);
+        companyRatePlanLogs.barRates.ratePlanTotal.unshift(ratePlanTotalObject);
       }
-
-
+      if (roomBaseRate) {
+        const roomBaseRateObject = {
+          roomBaseRate: roomBaseRate,
+          logId: roomBaseRateLog,
+          modifiedOn: currentUTCTime,
+          userId: userId,
+          deviveType: deviceType,
+          ipAddress: clientIp,
+        }
+        companyRatePlanLogs.barRates.roomBaseRate.unshift(roomBaseRateObject);
+      }
+      if (mealCharge) {
+        const mealChargeObject = {
+          mealCharge: mealCharge,
+          logId: mealChargeLog,
+          modifiedOn: currentUTCTime,
+          userId: userId,
+          deviveType: deviceType,
+          ipAddress: clientIp,
+        }
+        companyRatePlanLogs.barRates.mealCharge.unshift(mealChargeObject);
+      }
+      if (inclusionCharge) {
+        const inclusionChargeObject = {
+          inclusionCharge: inclusionCharge,
+          logId: inclusionChargeLog,
+          modifiedOn: currentUTCTime,
+          userId: userId,
+          deviveType: deviceType,
+          ipAddress: clientIp,
+        }
+        companyRatePlanLogs.barRates.inclusionCharge.unshift(inclusionChargeObject);
+      }
+      if (roundUp) {
+        const roundUpObject = {
+          roundUp: roundUp,
+          logId: roundUpLog,
+          modifiedOn: currentUTCTime,
+          userId: userId,
+          deviveType: deviceType,
+          ipAddress: clientIp,
+        }
+        companyRatePlanLogs.barRates.roundUp.unshift(roundUpObject);
+      }
+      if (extraAdultRate) {
+        const extraAdultRateObject = {
+          extraAdultRate: extraAdultRate,
+          logId: extraAdultRateLog,
+          modifiedOn: currentUTCTime,
+          userId: userId,
+          deviveType: deviceType,
+          ipAddress: clientIp,
+        }
+        companyRatePlanLogs.barRates.extraAdultRate.unshift(extraAdultRateObject);
+      }
+      if (extraChildRate) {
+        const extraChildRateObject = {
+          extraChildRate: extraChildRate,
+          logId: extraChildRateLog,
+          modifiedOn: currentUTCTime,
+          userId: userId,
+          deviveType: deviceType,
+          ipAddress: clientIp,
+        }
+        companyRatePlanLogs.barRates.extraChildRate.unshift(extraChildRateObject);
+      }
+    }
       await companyRatePlanLogs.save();
 
 

@@ -10,6 +10,7 @@ import { addRoomInfloor } from '../../controllers/Bookings/floor.js';
 import {roomDetails} from '../../controllers/Bookings/roomInFloor.js';
 import {getRoomByFloorId} from "../../controllers/Bookings/getRoomByFloorId.js"
 import { testingReservation } from '../../controllers/Bookings/testing.js';
+import {createCompanyResrvation} from "../../controllers/Bookings/companyReservation.js"
 
 router.post("/api/createBooking", createResrvation);
 
@@ -28,5 +29,7 @@ router.patch("/api/addRoomInFloor",roomDetails)
 router.get("/api/getRoomDetailsByFloorId",getRoomByFloorId)
 
 router.get("/api/testing",testingReservation)
+
+router.post("/api/createCompanyBooking",createCompanyResrvation)
 
 export default router;

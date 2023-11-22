@@ -49,6 +49,18 @@ const packagePlan = new mongoose.Schema({
         },
         },
       ],
+    displayStatus: [
+        {
+          displayStatus: {
+            type: String,
+            default: "",
+          },
+          logId: {
+            type: String,
+            default: ""
+        },
+        },
+      ],
       shortCode: [
         {
           shortCode: {

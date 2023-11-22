@@ -18,7 +18,7 @@ const mmtSchema = mongoose.Schema({
         type: String,
         default: ''
     },
-    mmtHotelCode: {
+    OTAHotelCode: {
         type: String,
         default: ''
     },

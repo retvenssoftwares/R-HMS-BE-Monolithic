@@ -152,6 +152,6 @@ router.post("/api/postOtaSourcePlan", OtaSources)
 router.get("/api/getOtaSource", otaSourcePlan)
 
 //companyId
-router.get("/api/companyIdType", getCompanyId)
+router.get("/api/fetchCompanyDetails", getCompanyId)
 
 export default router;

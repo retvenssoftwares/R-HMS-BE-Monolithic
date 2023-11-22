@@ -6,13 +6,13 @@ const rateRuleUpdate = async (req, res) => {
     try {
         const { userId } = req.query
         const authCodeValue = req.headers['authcode']
-        const { otaId, changeType, rateRuleType, adjustmentValue, otaRatePlanCode } = req.body;
+        const { otaId, changeType, rateRuleType, adjustmentValue, otaRatePlanCode, connectionId } = req.body;
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
         if (!result.success) {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }
 
-        const findRecord = await roomAndRateMap.findOne({ otaId })
+        const findRecord = await roomAndRateMap.findOne({ otaId, connectionId: connectionId })
         if (!findRecord) {
             return res.status(404).json({ message: "Incorrect otaId", statuscode: 404 });
         }

@@ -5,49 +5,57 @@ import verifiedUser from "../../models/verifiedUsers.js";
 import user from "../../models/user.js"
 
 export const forgetPassword = async (req, res) => {
-    const { email, Otp, password , userId } = req.body;
+    const { email, userId } = req.body;
 
-    if(!email || !Otp || !password || !userId){
-        return res.status(404).json({ message: "data not found", statusCode: 404 })
-    }
-
-    const userDetails = await user.findOne({userId : userId})
-
-    if(!userDetails){
-        return res.status(404).json({ message: "data not found", statusCode: 404 })
+    if (!userId) {
+        return res.status(400).json({ message: "Enter your userId", statusCode: 400 })
     }
 
     if (email) {
         const data = await verifiedUser.findOne({ email: email })
+        //console.log(data)
         if (!data) {
             return res.status(404).json({ message: "data not found", statusCode: 404 })
         }
         const OTP = Randomstring.generate({ charset: 'numeric', length: 6 });
         await verifiedUser.updateOne({ email: email }, { $set: { otp: OTP, time: await getCurrentUTCTimestamp() } })
         await otpVerification(email, OTP);
-    }
+
+        return res.status(200).json({ message: `Otp sent on your email ${email}`, statusCode: 200 })
+    } else {
+
+        const { Otp, password, confirmPassword } = req.body
+        // if (!Otp) {
+        //     return res.status(404).json({ message: "some filelds is missing", statusCode: 404 })
+        // }
+        if (Otp) {
+            const tenMinutesAgo = new Date(new Date().getTime() - 5 * 60 * 1000);
+            const utcTimestamp = tenMinutesAgo.toISOString();
+            const details = await verifiedUser.findOne({ otp: Otp, time: { $lte: utcTimestamp } })
+            if (details) {
+                await verifiedUser.updateMany({ userId: userId }, { $set: { otp: "", time: "" } })
+                return res.status(200).json({ message: "your otp has expired", statusCode: 200 })
+            } else {
+                const details = await verifiedUser.findOne({ otp: Otp })
+
+                if (!details) {
+                    return res.status(400).json({ message: "Incorrect otp", statusCode: 400 })
+                }
+
+                return res.status(200).json({ message: "otp verified successfully", statusCode: 200 });
 
 
-    if (Otp) {
-        const tenMinutesAgo = new Date(new Date().getTime() - 1 * 60 * 1000);
-        const utcTimestamp = tenMinutesAgo.toISOString();
-
-        const details = await verifiedUser.findOne({ otp: Otp, time: { $lte: utcTimestamp } })
-        if (details) {
-            await verifiedUser.updateMany({userId : userId} , {$set : {otp : "" , time : ""}})
-            return res.status(200).json({ message: "your otp has expired", statusCode: 200 })
-        } else {
-            const details = await verifiedUser.findOne({ otp: Otp })
-
-            if(!details){
-                return res.status(404).json({ message: "Incorrect otp", statusCode: 404 })
             }
-            
-            if (Otp === details.otp) {
+
+        } else {
+            if (!password || !confirmPassword) {
+                return res.status(400).json({ message: "Enter password first", statusCode: 400 });
+            }
+            if (password === confirmPassword) {
                 const encryptedPass = encrypt(password);
-                console.log(encryptedPass)
-                await verifiedUser.updateOne(
-                    { otp: Otp },
+                //console.log(encryptedPass)
+                const updatedPassword = await verifiedUser.updateOne(
+                    { userId: userId },
                     {
                         $push: {
                             password: {
@@ -58,9 +66,19 @@ export const forgetPassword = async (req, res) => {
                     }
                 );
 
-                await verifiedUser.updateMany({userId : userId} , {$set : {otp : "" , time : ""}})
+                if (updatedPassword) {
+                    await verifiedUser.updateMany({ userId: userId }, { $set: { otp: "", time: "" } })
+                }
+
+                return res.status(200).json({ message: "password updated successfully", statusCode: 200 })
+
+
+            } else {
+                return res.status(400).json({ message: "password not matched", statusCode: 400 });
             }
         }
 
+
+
     }
-};
+}

@@ -56,8 +56,8 @@ const fetchRoom = async (req, res) => {
                     return {
                         shortCode: shortCode,
                         ratePlanName:ratePlanName,
-                        roomTypeName:roomTypeName[0].roomTypeName,
-                        mealPlanName:mealPlanName[0].mealPlanName,
+                        roomTypeName:roomTypeName[0].roomTypeName || '',
+                        mealPlanName:mealPlanName[0].mealPlanName || '',
                         inclusion:inclusion,
                         ratePlanTotal:ratePlanTotal
                         

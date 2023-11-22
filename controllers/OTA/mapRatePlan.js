@@ -6,7 +6,7 @@ const mapRateData = async (req, res) => {
     try {
         const { userId } = req.query
         const authCodeValue = req.headers['authcode']
-        const { otaId, otaRoomTypeCode, roomTypeId, ratePlanId, otaRatePlanCode } = req.body;
+        const { otaId, otaRoomTypeCode, roomTypeId, ratePlanId, otaRatePlanCode, connectionId } = req.body;
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
         if (!result.success) {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
@@ -18,7 +18,7 @@ const mapRateData = async (req, res) => {
         }
 
         await roomAndRateMap.findOneAndUpdate(
-            { otaId: otaId },
+            { otaId: otaId, connectionId: connectionId },
             { $push: { mappedRatePlanData: { otaRoomTypeCode: otaRoomTypeCode, roomTypeId: roomTypeId, ratePlanId: ratePlanId, otaRatePlanCode: otaRatePlanCode } } }, // The update operation using $push
             { new: true })
         return res.status(200).json({ message: "Rate mapped successfully", statuscode: 200 })

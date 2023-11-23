@@ -22,8 +22,9 @@ export const packageRatePlan = async (req, res) => {
       minimumNights,
       maximumNights,
       packageRateAdjustment,
-      inclusionTotal,
-      ratePlanTotal,
+      packageTotal,
+      extraAdultRate,
+      extraChildRate,
       ipAddress,
       deviceType,
     } = req.body;
@@ -98,19 +99,24 @@ export const packageRatePlan = async (req, res) => {
           },
         ],
 
-        inclusionTotal: [
-          {
-            inclusionTotal: inclusionTotal,
+    
+        barRates: {
+         
+          extraAdultRate: [{
+            extraAdultRate: extraAdultRate,
             logId: Randomstring.generate(10),
-          },
-        ],
+          }],
+          extraChildRate: [{
+            extraChildRate: extraChildRate,
+            logId: Randomstring.generate(10),
+          }],
 
-        ratePlanTotal: [
-          {
-            ratePlanTotal: ratePlanTotal,
+          packageTotal: [{
+            packageTotal: packageTotal,
             logId: Randomstring.generate(10),
-          },
-        ],
+          }],
+        },
+     
 
         displayStatus: [{
           displayStatus: "1", 
@@ -143,6 +149,7 @@ export const packageRatePlan = async (req, res) => {
         ratePlanId: ratePlanId,
 
         createdOn: currentUTCTime,
+
         shortCode: [{
           shortCode: packageplan.shortCode[0].shortCode,
           logId: packageplan.shortCode[0].logId,
@@ -191,22 +198,35 @@ export const packageRatePlan = async (req, res) => {
           ipAddress:ipAddress,
           modifiedOn:currentUTCTime,
       }],
-      inclusionTotal: [{
-        inclusionTotal: packageplan.inclusionTotal[0].inclusionTotal,
-          logId: packageplan.inclusionTotal[0].logId,
-          userId: userId,
+      
+      barRates: {
+        extraAdultRate: [{
+          logId: packageplan.barRates.extraAdultRate[0].logId,
+          extraAdultRate:packageplan.barRates.extraAdultRate[0].extraAdultRate,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime,
-      }],
-      ratePlanTotal: [{
-        ratePlanTotal: packageplan.ratePlanTotal[0].ratePlanTotal,
-          logId: packageplan.ratePlanTotal[0].logId,
+          ipAddress: clientIp,
           userId: userId,
+          modifiedOn:currentUTCTime
+        }],
+        extraChildRate: [{
+          logId: packageplan.barRates.extraChildRate[0].logId,
+          extraChildRate:packageplan.barRates.extraChildRate[0].extraChildRate,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime,
-      }],
+          ipAddress: clientIp,
+          userId: userId,
+          modifiedOn:currentUTCTime
+        }],
+
+        packageTotal: [{
+          logId: packageplan.barRates.packageTotal[0].logId,
+          packageTotal:packageplan.barRates.packageTotal[0].packageTotal,
+          deviceType: deviceType,
+          ipAddress: clientIp,
+          userId: userId,
+          modifiedOn:currentUTCTime
+        }],
+      },
+   
       ratePlanInclusion: [{
         ratePlanInclusion: packageplan.ratePlanInclusion[0].ratePlanInclusion,
           logId: packageplan.ratePlanInclusion[0].logId,

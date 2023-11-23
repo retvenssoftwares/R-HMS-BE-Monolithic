@@ -19,6 +19,7 @@ const getBarRatePlans = async (req, res) => {
 
             if (findBarRatePlans.length > 0) {
                 const mappedBarRatePlans = findBarRatePlans.map((plan) => {
+                    const inclusionCount = plan.inclusion[0].inclusionPlan.length || '';
                     return {
                         ...plan._doc,
                         propertyId: plan.propertyId || '',
@@ -36,8 +37,8 @@ const getBarRatePlans = async (req, res) => {
                         roundUp: plan.barRates.roundUp[0].roundUp || '',
                         extraAdultRate: plan.barRates.extraAdultRate[0].extraAdultRate || '',
                         extraChildRate: plan.barRates.extraChildRate[0].extraChildRate || '',
-                        ratePlanTotal: plan.barRates.ratePlanTotal[0].ratePlanTotal || ''
-
+                        ratePlanTotal: plan.barRates.ratePlanTotal[0].ratePlanTotal || '',
+                        inclusionCount : inclusionCount
                     }
                 })
                 return res.status(200).json({ data: mappedBarRatePlans, statuscode: 200 })

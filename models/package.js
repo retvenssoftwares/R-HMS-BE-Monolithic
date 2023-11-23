@@ -112,11 +112,10 @@ const packagePlan = new mongoose.Schema({
           type: String,
           default: "",
         },
-        packageTotal:{
-          type: String,
-          default: "",
-        },
-        
+        changeType: {
+          type: String, //increase or decrease
+          default: ""
+      }, 
       }],
       logId: {
         type: String,
@@ -131,10 +130,6 @@ const packagePlan = new mongoose.Schema({
             default: "",
           },
           inclusionName: {
-            type: String,
-            default: "",
-          },
-          inclusionType: {
             type: String,
             default: "",
           },
@@ -161,30 +156,12 @@ const packagePlan = new mongoose.Schema({
   
       ],
 
+      packageTotal:{
+        type: String,
+        default: "",
+      },
 
-      inclusionTotal: [{
-        inclusionTotal:{
-          type: String,
-          default: "",
-        },
-        logId: {
-          type: String,
-          default: ""
-      },
-     
-       
-      }],
-      ratePlanTotal: [{
-        ratePlanTotal:{
-          type: String,
-          default: "",
-        },
-        logId: {
-          type: String,
-          default: ""
-      },
-     
-      }],
+
 
 },
 {

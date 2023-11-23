@@ -9,12 +9,8 @@ import { findUserByUserIdAndToken, getCurrentUTCTimestamp } from '../../../helpe
 
 const addMMTRecord = async (req, res) => {
     try {
-        const { userId } = req.query
+        const { userId, propertyId } = req.query
         const authCodeValue = req.headers['authcode']
-        const propertyID = await property.findOne({ userId }, 'propertyId').lean();
-        if (!propertyID) {
-            return res.status(400).json({ message: "userId does not match our records", statuscode: 400 });
-        }
 
         const user = await userModel.findOne({ userId: userId })
         if (!user) {
@@ -39,14 +35,14 @@ const addMMTRecord = async (req, res) => {
 
             await mmtRecord.save()
             await property.findOneAndUpdate(
-                { propertyId: propertyID.propertyId },
+                { propertyId: propertyId },
                 { $push: { OTAs: { otaId: otaId, activatedOn: await getCurrentUTCTimestamp() } } }, // The update operation using $push
                 { new: true })
 
             const mappedRecord = new roomAndRateMap({
                 otaId: otaId,
                 connectionId: mmtRecord.connectionId,
-                mmtHotelCode: mmtHotelCode,
+                OTAHotelCode: mmtHotelCode,
                 userId: userId,
                 hotelRcode: hotelRcode,
                 accessToken: accessToken,
@@ -57,7 +53,7 @@ const addMMTRecord = async (req, res) => {
             });
 
             await mappedRecord.save()
-            return res.status(200).json({ message: "MMT OTA Mapping successful", statuscode: 200 })
+            return res.status(200).json({ message: "MMT OTA Mapping successful", statuscode: 200, connectionId: mappedRecord.connectionId })
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }

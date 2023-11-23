@@ -6,6 +6,7 @@ import {
   findUserByUserIdAndToken,
   getCurrentUTCTimestamp,
 } from "../../helpers/helper.js";
+import packageRatePlanLog from "../../models/LogModels/packageLogs.js";
 
 export const packageRatePlan = async (req, res) => {
   try {
@@ -42,6 +43,8 @@ export const packageRatePlan = async (req, res) => {
 
     var clientIp = requestIP.getClientIp(req);
 
+    const currentUTCTime= await getCurrentUTCTimestamp();
+
     const packageId = Randomstring.generate(10);
 
     if (result.success) {
@@ -58,7 +61,7 @@ export const packageRatePlan = async (req, res) => {
 
         ratePlanId: ratePlanId,
 
-        createdOn: await getCurrentUTCTimestamp(),
+        createdOn: currentUTCTime,
 
         ratePlanName: [
           {
@@ -109,6 +112,12 @@ export const packageRatePlan = async (req, res) => {
           },
         ],
 
+        displayStatus: [{
+          displayStatus: "1", 
+          logId: Randomstring.generate(10) 
+         }],
+
+
         ratePlanInclusion: [
           {
             ratePlanInclusion: ratePlanInclusion,
@@ -117,12 +126,98 @@ export const packageRatePlan = async (req, res) => {
         ],
       });
       const packageplan = await packageRatePlan.save();
-      return res
-        .status(200)
-        .json({
-          message: "package rate Plan added successfully",
-          statusCode: 200,
-        });
+
+      //save data in logs
+
+      const addPackageLogs=new packageRatePlanLog({
+        propertyId: propertyId,
+
+        packageId: packageId,
+
+        rateType: rateType,
+
+        roomTypeId: roomTypeId,
+
+        createdBy: userRole,
+
+        ratePlanId: ratePlanId,
+
+        createdOn: currentUTCTime,
+        shortCode: [{
+          shortCode: packageplan.shortCode[0].shortCode,
+          logId: packageplan.shortCode[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+        displayStatus: [{
+          displayStatus: packageplan.displayStatus[0].displayStatus,
+          logId: packageplan.displayStatus[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+      ratePlanName: [{
+        ratePlanName: packageplan.ratePlanName[0].ratePlanName,
+          logId: packageplan.ratePlanName[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+      minimumNights: [{
+        minimumNights: packageplan.minimumNights[0].minimumNights,
+          logId: packageplan.minimumNights[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+      maximumNights: [{
+        maximumNights: packageplan.maximumNights[0].maximumNights,
+          logId: packageplan.maximumNights[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+      packageRateAdjustment: [{
+        packageRateAdjustment: packageplan.packageRateAdjustment[0].packageRateAdjustment,
+          logId: packageplan.packageRateAdjustment[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+      inclusionTotal: [{
+        inclusionTotal: packageplan.inclusionTotal[0].inclusionTotal,
+          logId: packageplan.inclusionTotal[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+      ratePlanTotal: [{
+        ratePlanTotal: packageplan.ratePlanTotal[0].ratePlanTotal,
+          logId: packageplan.ratePlanTotal[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+      ratePlanInclusion: [{
+        ratePlanInclusion: packageplan.ratePlanInclusion[0].ratePlanInclusion,
+          logId: packageplan.ratePlanInclusion[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+      })
+      await addPackageLogs.save();
+      return res.status(200).json({message: "package rate Plan added successfully",statusCode: 200,});
     } else {
       return res
         .status(result.statuscode)
@@ -148,11 +243,13 @@ export const updatePackageRatePlan = async (req, res) => {
       maximumNights,
       packageRateAdjustment,
       deviceType,
+      displayStatus,
       ipAddress,
     } = req.body;
 
     const authCode = req.headers["authcode"];
     const userToken = await findUserByUserIdAndToken(userId, authCode);
+    const currentUTCTime= await getCurrentUTCTimestamp();
 
     if (!userToken) {
       return res
@@ -161,6 +258,7 @@ export const updatePackageRatePlan = async (req, res) => {
     }
 
     const packageRatePlan = await packageRatePlanModel.findOne({ packageId: req.query.packageId });
+    const addpackageRateLog= await packageRatePlanLog.findOne({packageId:req.query.packageId})
 
     if (!packageRatePlan) {
       return res
@@ -178,6 +276,7 @@ export const updatePackageRatePlan = async (req, res) => {
     const minimumNightsLog = Randomstring.generate(10);
     const maximumNightsLog = Randomstring.generate(10);
     const packageRateAdjustmentLog = Randomstring.generate(10);
+    const displayStatusLog = Randomstring.generate(10);
 
     if (ratePlanName) {
       const ratePlanNameObject = {
@@ -185,8 +284,10 @@ export const updatePackageRatePlan = async (req, res) => {
         logId: ratePlanNameLog,
         ipAddress: clientIp,
         deviceType: deviceType,
+        userId: userId,
       };
       packageRatePlan.ratePlanName.unshift(ratePlanNameObject);
+
     }
 
     if (shortCode) {
@@ -195,8 +296,19 @@ export const updatePackageRatePlan = async (req, res) => {
         logId: shortcodeLog,
         ipAddress: clientIp,
         deviceType: deviceType,
+        
       };
       packageRatePlan.shortCode.unshift(shortCodeObject);
+    }
+    if (displayStatus) {
+      const displayStatusObject = {
+        displayStatus: displayStatus,
+        logId: displayStatusLog,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        
+      };
+      packageRatePlan.displayStatus.unshift(displayStatusObject);
     }
 
     if (ratePlanInclusion) {
@@ -262,6 +374,125 @@ export const updatePackageRatePlan = async (req, res) => {
     }
 
     await packageRatePlan.save();
+    const requestData = {
+      body: req.body,
+    };
+    const requestDataString = JSON.stringify(requestData)
+
+
+    const responseData = {
+      message: "updated successfully", 
+      statuscode: 200, }
+    const responseString = JSON.stringify(responseData)
+
+    //save data in logs
+
+    if(addpackageRateLog){
+    if (shortCode) {
+      const shortCodeObject = {
+        shortCode: shortCode,
+        logId: shortcodeLog,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        modifiedOn: currentUTCTime,
+        userId: userId,
+      };
+      addpackageRateLog.shortCode.unshift(shortCodeObject);
+    }
+    if (displayStatus) {
+      const displayStatusObject = {
+        displayStatus: displayStatus,
+        logId: displayStatusLog,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        modifiedOn: currentUTCTime,
+        userId: userId,
+      };
+      addpackageRateLog.displayStatus.unshift(displayStatusObject);
+    }
+    if (ratePlanName) {
+      const ratePlanNameObject = {
+        ratePlanName: ratePlanName,
+        logId: ratePlanNameLog,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        modifiedOn: currentUTCTime,
+        userId: userId,
+      };
+      addpackageRateLog.ratePlanName.unshift(ratePlanNameObject);
+    }
+    if (ratePlanInclusion) {
+      const ratePlanInclusionObject = {
+        ratePlanInclusion: ratePlanInclusion,
+        logId: ratePlanInclusionLog,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        request: requestDataString,
+        response: responseString,
+        modifiedOn: currentUTCTime,
+        userId: userId,
+      };
+      addpackageRateLog.ratePlanInclusion.unshift(ratePlanInclusionObject);
+    }
+    if (inclusionTotal) {
+      const inclusionTotalObject = {
+        inclusionTotal: inclusionTotal,
+        logId: inclusionTotalLog,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        modifiedOn: currentUTCTime,
+        userId: userId,
+      };
+      addpackageRateLog.inclusionTotal.unshift(inclusionTotalObject);
+    }
+    if (ratePlanTotal) {
+      const ratePlanTotalObject = {
+        ratePlanTotal: ratePlanTotal,
+        logId: ratePlanTotalLog,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        modifiedOn: currentUTCTime,
+        userId: userId,
+      };
+      addpackageRateLog.ratePlanTotal.unshift(ratePlanTotalObject);
+    }
+    if (minimumNights) {
+      const minimumNightsObject = {
+        minimumNights: minimumNights,
+        logId: minimumNightsLog,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        modifiedOn: currentUTCTime,
+        userId: userId,
+      };
+      addpackageRateLog.minimumNights.unshift(minimumNightsObject);
+    }
+    if (maximumNights) {
+      const maximumNightsObject = {
+        maximumNights: maximumNights,
+        logId: maximumNightsLog,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        modifiedOn: currentUTCTime,
+        userId: userId,
+      };
+      addpackageRateLog.maximumNights.unshift(maximumNightsObject);
+    }
+    if (packageRateAdjustment) {
+      const packageRateAdjustmentObject = {
+        packageRateAdjustment: packageRateAdjustment,
+        logId: packageRateAdjustmentLog,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        modifiedOn: currentUTCTime,
+        request: requestDataString,
+        response: responseString,
+        userId: userId,
+      };
+      addpackageRateLog.packageRateAdjustment.unshift(packageRateAdjustmentObject);
+    }
+  }
+  await addpackageRateLog.save()
 
     return res
       .status(200)

@@ -88,25 +88,9 @@ const booking = new mongoose.Schema({
 
     }],
 
-    // rateType: [{
-    //     //change to rateTypeId
-    //     rateTypeId: {
-    //         type: String,
-    //         default: ""
-    //     },
-
-    //     logId: {
-    //         type: String,
-    //         default: ""
-    //     }
-
-    // }],
-
-
-    // company Reservation
-    // change to companyId
-    companyReservation: [{
-        companyId: {
+    rateType: [{
+        //change to rateTypeId
+        rateTypeId: {
             type: String,
             default: ""
         },
@@ -117,6 +101,16 @@ const booking = new mongoose.Schema({
         }
 
     }],
+
+
+    // company Reservation
+    // change to companyId
+
+        companyId: {
+            type: String,
+            default: ""
+        },
+    
 
 
     // bar reservation
@@ -196,39 +190,30 @@ const booking = new mongoose.Schema({
                 default: ""
             },
 
-
-
-
             adults: {
                 type: String,
                 default: ""
             },
-
-
-
 
             childs: {
                 type: String,
                 default: ""
             },
 
-
-
-
             charge: {
                 type: String,
                 default: ""
             },
-
-
-
 
             extraAdult: {
                 type: String,
                 default: ""
             },
 
-
+            extraChild : {
+                type: String,
+                default: ""
+            },
 
             // this fileds could be used in quick reservation 
 
@@ -239,10 +224,48 @@ const booking = new mongoose.Schema({
 
 
             //change to id
-            extraInclusionId: {
+            extraInclusionId: [{
                 type: String,
-                default: ""
-            },
+                default: "" 
+            }],
+
+
+            remark: [{
+                specialRemark: {
+                    type: String,
+                    default: ""
+                },
+    
+    
+                internalNote: {
+                    type: String,
+                    default: ""
+                },
+    
+            }],
+
+            createTask: [{
+                taskTitle: {
+                    type: String,
+                    default: ""
+                },
+    
+    
+    
+                schedule: {
+                    type: String,
+                    default: ""
+                },
+    
+    
+    
+                description: {
+                    type: String,
+                    default: ""
+                },
+    
+    
+            }],
 
         }],
 
@@ -256,28 +279,28 @@ const booking = new mongoose.Schema({
 
 
 
-    remark: [{
-        remark: [{
-            specialRemark: {
-                type: String,
-                default: ""
-            },
+    // remark: [{
+    //     remark: [{
+    //         specialRemark: {
+    //             type: String,
+    //             default: ""
+    //         },
 
 
-            internalNote: {
-                type: String,
-                default: ""
-            },
+    //         internalNote: {
+    //             type: String,
+    //             default: ""
+    //         },
 
-        }],
+    //     }],
 
-        logId: {
-            type: String,
-            default: ""
-        }
+    //     logId: {
+    //         type: String,
+    //         default: ""
+    //     }
 
 
-    }],
+    // }],
 
 
 
@@ -442,36 +465,36 @@ const booking = new mongoose.Schema({
     }],
 
 
-    createTask: [{
-        createTask: [{
-            taskTitle: {
-                type: String,
-                default: ""
-            },
+    // createTask: [{
+    //     createTask: [{
+    //         taskTitle: {
+    //             type: String,
+    //             default: ""
+    //         },
 
 
 
-            schedule: {
-                type: String,
-                default: ""
-            },
+    //         schedule: {
+    //             type: String,
+    //             default: ""
+    //         },
 
 
 
-            description: {
-                type: String,
-                default: ""
-            },
+    //         description: {
+    //             type: String,
+    //             default: ""
+    //         },
 
 
-        }],
+    //     }],
 
-        logId: {
-            type: String,
-            default: ""
-        }
+    //     logId: {
+    //         type: String,
+    //         default: ""
+    //     }
 
-    }]
+    // }]
 },
 
     {

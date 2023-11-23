@@ -49,4 +49,3 @@ const getRatePlansList = async (req, res) => {
 };
 
 export default getRatePlansList;
-

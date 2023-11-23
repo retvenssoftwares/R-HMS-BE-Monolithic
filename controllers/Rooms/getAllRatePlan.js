@@ -3,14 +3,16 @@ import barRatePlan from "../../models/barRatePlan.js"
 import packageModel from '../../models/package.js'
 import discountPlan from "../../models/discountPlan.js"
 import roomTypeModel from "../../models/roomType.js";
-
+import {findUserByUserIdAndToken,  } from "../../helpers/helper.js";
 const allRatePlans = async(req,res)=>{
     try{
-     const {propertyId}=req.query;
+     const {propertyId,userId}=req.query;
+     const authCodeValue = req.headers['authcode']
 
+     const result = await findUserByUserIdAndToken(userId, authCodeValue)
      const companyRatePlan=await companyRatePlanModel.find({propertyId}).lean();
     
- 
+ if(result.success){
      //CompanyRatePlan
     //Map roomTypeId from companyRatePlan
     const roomTypeIds = companyRatePlan.map((item) => item.roomTypeId);
@@ -110,7 +112,9 @@ const allRatePlans = async(req,res)=>{
 
      
   return res.status(200).json({companyRatePlan:CompanyratePlan,barRatePlan:barRatePlanResponse,packageRatePlan:packageRatePlanResponse,statuscode:200})
-    
+}else{
+    return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
+}
 }catch(err){
     console.error(err)
     return res.status(500).json({message: "internal server error",statuscode:500})

@@ -155,14 +155,43 @@ const packagePlan = new mongoose.Schema({
         },
   
       ],
+  
+      barRates:{
+        packageTotal:[{
 
-      packageTotal:{
-        type: String,
-        default: "",
-      },
+          packageTotal:{
+            type: String,
+          default: "",
+          },
+          logId: {
+            type: String,
+            default: ""
+           },
 
-
-
+        }],
+        extraAdultRate:[{
+          extraAdultRate:{
+            type: String,
+            default: "",
+          },
+          logId: {
+            type: String,
+            default: ""
+           },
+         
+        }],
+        extraChildRate:[{
+          extraChildRate:{
+            type: String,
+            default: "",
+          },
+          logId: {
+            type: String,
+            default: ""
+           },
+         
+        }],
+      }
 },
 {
     versionKey: false,

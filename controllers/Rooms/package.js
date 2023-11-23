@@ -229,6 +229,8 @@ export const packageRatePlan = async (req, res) => {
   }
 };
 
+
+
 //patch Package rate plan
 export const updatePackageRatePlan = async (req, res) => {
   try {

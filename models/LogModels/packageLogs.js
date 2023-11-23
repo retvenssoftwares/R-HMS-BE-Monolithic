@@ -180,7 +180,7 @@ const packagePlanLogModel = new mongoose.Schema({
 
       packageRateAdjustment:[{
         packageRateAdjustment:[{
-        adjustment:{
+          adjustment:{
             type: String,
             default: "",
         },
@@ -192,10 +192,10 @@ const packagePlanLogModel = new mongoose.Schema({
           type: String,
           default: "",
         },
-        packageTotal:{
-          type: String,
-          default: "",
-        },
+        changeType: {
+          type: String, //increase or decrease
+          default: ""
+      }, 
         
       }],
       logId: {
@@ -230,10 +230,6 @@ const packagePlanLogModel = new mongoose.Schema({
             default: "",
           },
           inclusionName: {
-            type: String,
-            default: "",
-          },
-          inclusionType: {
             type: String,
             default: "",
           },
@@ -279,62 +275,90 @@ const packagePlanLogModel = new mongoose.Schema({
   
       ],
 
+      barRates:{
+        packageTotal:[{
 
-      inclusionTotal: [{
-        inclusionTotal:{
-          type: String,
+          packageTotal:{
+            type: String,
           default: "",
-        },
-        logId: {
-          type: String,
-          default: ""
-      },
-      modifiedOn: {
-        type: String,
-        default: "",
-      },
-      userId: {
-        type: String,
-        default: "",
-      },
-      ipAddress: {
-        type: String,
-        default: "",
-      },
-      deviceType: {
-        type: String,
-        default: "",
-      },
-     
-       
-      }],
-      ratePlanTotal: [{
-        ratePlanTotal:{
-          type: String,
-          default: "",
-        },
-        logId: {
-          type: String,
-          default: ""
-      },
-      modifiedOn: {
-        type: String,
-        default: "",
-      },
-      userId: {
-        type: String,
-        default: "",
-      },
-      ipAddress: {
-        type: String,
-        default: "",
-      },
-      deviceType: {
-        type: String,
-        default: "",
-      },
-     
-      }],
+          },
+          logId: {
+            type: String,
+            default: ""
+           },
+           modifiedOn: {
+            type: String,
+            default: "",
+          },
+          userId: {
+            type: String,
+            default: "",
+          },
+          ipAddress: {
+            type: String,
+            default: "",
+          },
+          deviceType: {
+            type: String,
+            default: "",
+          },
+
+        }],
+        extraAdultRate:[{
+          extraAdultRate:{
+            type: String,
+            default: "",
+          },
+          logId: {
+            type: String,
+            default: ""
+           },
+           modifiedOn: {
+            type: String,
+            default: "",
+          },
+          userId: {
+            type: String,
+            default: "",
+          },
+          ipAddress: {
+            type: String,
+            default: "",
+          },
+          deviceType: {
+            type: String,
+            default: "",
+          },
+         
+        }],
+        extraChildRate:[{
+          extraChildRate:{
+            type: String,
+            default: "",
+          },
+          logId: {
+            type: String,
+            default: ""
+           },
+           modifiedOn: {
+            type: String,
+            default: "",
+          },
+          userId: {
+            type: String,
+            default: "",
+          },
+          ipAddress: {
+            type: String,
+            default: "",
+          },
+          deviceType: {
+            type: String,
+            default: "",
+          },
+         
+        }],
+      }
 
 },
 {

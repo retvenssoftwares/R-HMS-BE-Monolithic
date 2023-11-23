@@ -1,7 +1,7 @@
 import companyRatePlanModel from "../../models/companyRatePlane.js";
-import discountPlan from "../../models/discountPlan.js"
 import barRatePlan from "../../models/barRatePlan.js"
-import mealPlan from "../../models/mealPlan.js";
+import packageModel from '../../models/package.js'
+import discountPlan from "../../models/discountPlan.js"
 import roomTypeModel from "../../models/roomType.js";
 
 const allRatePlans = async(req,res)=>{
@@ -9,36 +9,81 @@ const allRatePlans = async(req,res)=>{
      const {propertyId}=req.query;
 
      const companyRatePlan=await companyRatePlanModel.find({propertyId}).lean();
-     console.log("company",companyRatePlan)
-     const roomTypeId=companyRatePlan[0].roomTypeId
-     console.log("RoomType",roomTypeId)
-     const roomTypeName= await roomTypeModel.find({roomTypeId},'roomTypeName -_id')
-     console.log("RoomTypeName",roomTypeName)
+    
+ 
+     //CompanyRatePlan
+    //Map roomTypeId from companyRatePlan
+    const roomTypeIds = companyRatePlan.map((item) => item.roomTypeId);
+    const roomTypeData = await roomTypeModel.find({ roomTypeId: { $in: roomTypeIds } });
 
-     if(!companyRatePlan){
-        return res.status(404).json({message: "enter valid propertyId",statuscode:404})
-    }
-    //  const discountPlans = await discountPlan.find({propertyId},'shortCode discountName roomTypeId rateTypeId ratePlanTotal extraAdultRate extraChildRate ratePlanInclusion').lean();
-
-     const mealPlans = await mealPlan.find({propertyId},'shortCode mealPlanName mealPlanId ').lean();
-     
-     const barratePlans = await barRatePlan.find({propertyId},'shortCode ratePlanName roomTypeId rateType mealPlanId ratePlanTotal extraAdultRate extraChildRate inclusion').lean();
-
-     if(companyRatePlan){
-     const ratePlan = companyRatePlan.map((rate)=>{
+    const CompanyratePlan = companyRatePlan.map((rate) => {
+        const matchingRoomTypes = roomTypeData.find((room) => room.roomTypeId === rate.roomTypeId
+        );
+    
+        const roomTypeName = matchingRoomTypes?.roomTypeName[0]?.roomTypeName || '';
         return{
-            ...rate._doc,
+            rateType:rate.rateType || '',
             shortCode: rate.shortCode[0].shortCode || '',
             ratePlanName: rate.ratePlanName[0].ratePlanName || '',
-            roomtypeName:roomTypeName[0].roomTypeName[0].roomTypeName  || '',
+            roomTypeName: roomTypeName,
             inclusion:rate.ratePlanInclusion.length || '',
             extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',
             extraChildRate: rate.barRates.extraChildRate[0].extraChildRate || '',
             ratePlanTotal: rate.barRates.ratePlanTotal[0].ratePlanTotal || '',
         }
-     })
-     return res.status(200).json({data:ratePlan,statuscode:200})
-    }
+    });
+
+
+
+    //BarRatePlan
+    //Map roomTypeId from barRatePlan
+    const barRatePlanData=await barRatePlan.find({propertyId}).lean();
+    const barroomTypeIds = barRatePlanData.map((item) => item.roomType[0].roomTypeId);
+    const roomTypeDatas = await roomTypeModel.find({ roomTypeId: { $in: barroomTypeIds } });
+
+    const barRatePlanResponse = barRatePlanData.map((rate) => {
+        const matchingRoomTypes = roomTypeDatas.find((room) => room.roomTypeId === rate.roomType?.roomTypeId
+        );
+        const roomTypeName = matchingRoomTypes?.roomTypeName[0]?.roomTypeName || '';
+        console.log(roomTypeName)
+        return {
+            rateType: rate.rateType || '',
+            shortCode: rate.shortCode[0].shortCode || '',
+            ratePlanName: rate.ratePlanName[0].ratePlanName || '',
+            roomTypeName: roomTypeName,
+            inclusion: rate.inclusion.length || '',
+            extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',
+            extraChildRate: rate.barRates.extraChildRate[0].extraChildRate || '',
+            ratePlanTotal: rate.barRates.ratePlanTotal[0].ratePlanTotal || '',
+        };
+    });
+
+
+    //PackageRatePlan
+    //Map roomTypeId from packageRatePlan
+    const PackageRatePlanData=await packageModel.find({propertyId}).lean();
+    const packageroomTypeIds = PackageRatePlanData.map((item) => item.roomTypeId);
+    const packageRoomTypeDatas = await roomTypeModel.find({ roomTypeId: { $in: packageroomTypeIds } });
+
+    const packageRatePlanResponse = PackageRatePlanData.map((rate) => {
+        const matchingRoomTypes = packageRoomTypeDatas.find((room) => room.roomTypeId === rate.roomTypeId
+        );
+        const roomTypeName = matchingRoomTypes?.roomTypeName[0]?.roomTypeName || '';
+        console.log(roomTypeName)
+        return {
+            rateType: rate.rateType || '',
+            shortCode: rate.shortCode[0].shortCode || '',
+            ratePlanName: rate.ratePlanName[0].ratePlanName || '',
+            roomTypeName: roomTypeName,
+            inclusion: rate.ratePlanInclusion.length || '',
+            ratePlanTotal:rate.ratePlanTotal[0].ratePlanTotal || '',
+        };
+    });
+
+
+     
+     return res.status(200).json({companyRatePlan:CompanyratePlan,barRatePlan:barRatePlanResponse,packageRatePlan:packageRatePlanResponse,statuscode:200})
+    
 }catch(err){
     console.error(err)
     return res.status(500).json({message: "internal server error",statuscode:500})

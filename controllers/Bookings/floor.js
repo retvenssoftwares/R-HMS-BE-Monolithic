@@ -6,7 +6,6 @@ import verifiedUser from "../../models/verifiedUsers.js"
 import { findUserByUserIdAndToken } from "../../helpers/helper.js"
 
 export const addRoomInfloor = async (req, res) => {
-
   try {
     const { floorDetails, floorInHotel, floorCountStart, propertyId, userId } = req.body;
 
@@ -25,68 +24,58 @@ export const addRoomInfloor = async (req, res) => {
     const floorDataArray = floorDetails.map(floorDetail => {
       const floorId = randomstring.generate({ charset: 'numeric', length: 6 });
 
+      // Auto-generate roomId for each room
+      const roomsWithId = floorDetail.room.map(room => ({
+        ...room,
+        roomId: randomstring.generate({ charset: 'alphanumeric', length: 8 })
+      }));
+
       return {
         floorId: floorId,
         floorName: floorDetail.floorName || '',
         roomsInFloor: floorDetail.roomsInFloor || '',
         roomNumberPrefix: floorDetail.roomNumberPrefix || '',
-        floorType:floorDetail.floorType || '',
+        floorType: floorDetail.floorType || '',
+        room: roomsWithId || [],
         amenities: [] // Set your desired value here
       };
     });
 
-     // Check if propertyId exists in floor model
-     const existingFloor = await floor.findOne({ propertyId: propertyId });
+    const existingFloor = await floor.findOne({ propertyId: propertyId });
 
-     if (existingFloor) {
-       // If propertyId exists, update the existing record by adding floor details
-       existingFloor.floorDetails.push(...floorDataArray);
-       await existingFloor.save();
-     } else {
-       // If propertyId doesn't exist, create a new floor record with floor details
-       const newFloor = new floor({
-         propertyId: propertyId,
-         floorCountStart: [{ floorCountStart: floorCountStart }],
-         floorInHotel: [{ floorInHotel: floorInHotel }],
-         floorDetails: floorDataArray
-       });
- 
-       await newFloor.save();
-     }
-
-  // Creating room models for each floor
-  for (const floorDetail of floorDataArray) {
-    // Check if propertyId exists in roomModel
-    const existingRoom = await roomModel.findOne({ propertyId: propertyId });
-
-    if (existingRoom) {
-      // If propertyId exists, update the existing record by adding floorId
-      existingRoom.floorData.push({ floorId: floorDetail.floorId });
-      await existingRoom.save();
+    if (existingFloor) {
+      existingFloor.floorDetails.push(...floorDataArray);
+      await existingFloor.save();
     } else {
-      // If propertyId doesn't exist, create a new roomModel with floorId
-      const roomSchema = roomModel({
+      const newFloor = new floor({
         propertyId: propertyId,
-        floorData: [{ floorId: floorDetail.floorId }], // Passing the floorId to roomModel
-        // Add other room details as needed
+        floorCountStart: [{ floorCountStart: floorCountStart }],
+        floorInHotel: [{ floorInHotel: floorInHotel }],
+        floorDetails: floorDataArray
       });
 
-      await roomSchema.save();
+      await newFloor.save();
     }
-  }
 
-  
-    
-    return res.status(200).json({ message: "Floors added successfully", statusCode: 200 });
+    for (const floorDetail of floorDataArray) {
+      const existingRoom = await roomModel.findOne({ propertyId: propertyId });
+
+      if (existingRoom) {
+        existingRoom.floorData.push({ floorId: floorDetail.floorId, room: floorDetail.room });
+        await existingRoom.save();
+      } else {
+        const roomSchema = roomModel({
+          propertyId: propertyId,
+          floorData: [{ floorId: floorDetail.floorId, room: floorDetail.room }],
+        });
+
+        await roomSchema.save();
+      }
+    }
+
+    return res.status(200).json({ message: "Floors and room added successfully", statusCode: 200 });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Internal server error", statusCode: 500 });
   }
-
-
-
-
-}
-
-
-
+};

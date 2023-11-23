@@ -53,7 +53,7 @@ const addMMTRecord = async (req, res) => {
             });
 
             await mappedRecord.save()
-            return res.status(200).json({ message: "MMT OTA Mapping successful", statuscode: 200 })
+            return res.status(200).json({ message: "MMT OTA Mapping successful", statuscode: 200, connectionId: mappedRecord.connectionId })
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }

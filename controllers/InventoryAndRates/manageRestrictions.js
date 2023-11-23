@@ -28,6 +28,12 @@ const manageRestrictions = async (req, res, io) => {
                 return res.status(400).json({ message: "startDate must not be older than today's date", statuscode: 400 });
             }
 
+            if (isMaximumLOS && isMinimumLOS) {
+                if (maximumLOS < minimumLOS) {
+                    return res.status(400).json({ message: "maximumLOS cannot be less than minimumLOS", statuscode: 400 });
+                }
+            }
+
             // Find the rate document for the specified roomTypeId
             let findRestrictions = await restrictions.findOne({ roomTypeId: roomTypeId, propertyId: propertyId, ratePlanId: ratePlanId });
 
@@ -73,14 +79,13 @@ const manageRestrictions = async (req, res, io) => {
                 if (isStopSell) {
                     const xmlData = `<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
                 <AvailRateUpdate locatorID="1">
-                    <DateRange from="${startDateObj}" to="${endDateObj}"/>
+                    <DateRange from="${startDate}" to="${endDate}"/>
                     <Rate currencyCode="INR" code="${otaRatePlanCode}" rateType="b2c">
-                        <Restrictions closed="true" closedToArrival="false" closedToDeparture="false" minLOSStaybased="" 
-             maxLOSStaybased="" minLosArrivalbased="" maxLOSArrivalbased="" minAdvancedBookingOffset="" 
-             maxAdvancedBookingOffset="" />
+                        <Restrictions closed="true"/>
                     </Rate>
                 </AvailRateUpdate>
             </AvailRateUpdateRQ>`
+
                     // Set headers
                     const headers = {
                         'Content-Type': 'application/xml',
@@ -103,14 +108,14 @@ const manageRestrictions = async (req, res, io) => {
                 if (isCOA) {
                     const xmlData = `<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
                 <AvailRateUpdate locatorID="1">
-                    <DateRange from="${startDateObj}" to="${endDateObj}"/>
+                    <DateRange from="${startDate}" to="${endDate}"/>
                     <Rate currencyCode="INR" code="${otaRatePlanCode}" rateType="b2c">
-                        <Restrictions closed="false" closedToArrival="true" closedToDeparture="false" minLOSStaybased="" 
-             maxLOSStaybased="" minLosArrivalbased="" maxLOSArrivalbased="" minAdvancedBookingOffset="" 
-             maxAdvancedBookingOffset="" />
+                        <Restrictions  closedToArrival="true"/>
                     </Rate>
                 </AvailRateUpdate>
             </AvailRateUpdateRQ>`
+
+                    // console.log(xmlData)
                     // Set headers
                     const headers = {
                         'Content-Type': 'application/xml',
@@ -133,14 +138,14 @@ const manageRestrictions = async (req, res, io) => {
                 if (isCOD) {
                     const xmlData = `<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
                 <AvailRateUpdate locatorID="1">
-                    <DateRange from="${startDateObj}" to="${endDateObj}"/>
+                    <DateRange from="${startDate}" to="${endDate}"/>
                     <Rate currencyCode="INR" code="${otaRatePlanCode}" rateType="b2c">
-                        <Restrictions closed="false" closedToArrival="false" closedToDeparture="true" minLOSStaybased="" 
-             maxLOSStaybased="" minLosArrivalbased="" maxLOSArrivalbased="" minAdvancedBookingOffset="" 
-             maxAdvancedBookingOffset="" />
+                        <Restrictions closedToDeparture="true"/>
                     </Rate>
                 </AvailRateUpdate>
             </AvailRateUpdateRQ>`
+
+                    // console.log(xmlData)
                     // Set headers
                     const headers = {
                         'Content-Type': 'application/xml',
@@ -162,14 +167,14 @@ const manageRestrictions = async (req, res, io) => {
                 if (isMaximumLOS) {
                     const xmlData = `<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
                 <AvailRateUpdate locatorID="1">
-                    <DateRange from="${startDateObj}" to="${endDateObj}"/>
+                    <DateRange from="${startDate}" to="${endDate}"/>
                     <Rate currencyCode="INR" code="${otaRatePlanCode}" rateType="b2c">
-                        <Restrictions closed="false" closedToArrival="false" closedToDeparture="false" minLOSStaybased="" 
-             maxLOSStaybased="${maximumLOS}" minLosArrivalbased="" maxLOSArrivalbased="" minAdvancedBookingOffset="" 
-             maxAdvancedBookingOffset="" />
+                        <Restrictions maxLOSStaybased="${maximumLOS}" maxLOSArrivalbased="${maximumLOS}" />
                     </Rate>
                 </AvailRateUpdate>
             </AvailRateUpdateRQ>`
+
+                    // console.log(xmlData)
                     // Set headers
                     const headers = {
                         'Content-Type': 'application/xml',
@@ -191,14 +196,14 @@ const manageRestrictions = async (req, res, io) => {
                 if (isMinimumLOS) {
                     const xmlData = `<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
                 <AvailRateUpdate locatorID="1">
-                    <DateRange from="${startDateObj}" to="${endDateObj}"/>
+                    <DateRange from="${startDate}" to="${endDate}"/>
                     <Rate currencyCode="INR" code="${otaRatePlanCode}" rateType="b2c">
-                        <Restrictions closed="false" closedToArrival="false" closedToDeparture="false" minLOSStaybased="${minimumLOS}" 
-             maxLOSStaybased="" minLosArrivalbased="" maxLOSArrivalbased="" minAdvancedBookingOffset="" 
-             maxAdvancedBookingOffset="" />
+                        <Restrictions minLOSStaybased="${minimumLOS}" minLosArrivalbased="${minimumLOS}" />
                     </Rate>
                 </AvailRateUpdate>
             </AvailRateUpdateRQ>`
+
+                    // console.log(xmlData,"bjh")
                     // Set headers
                     const headers = {
                         'Content-Type': 'application/xml',

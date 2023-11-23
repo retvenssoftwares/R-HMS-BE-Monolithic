@@ -18,8 +18,7 @@ const companyType = async (req, res) => {
                 // const convertedDateUTC = convertTimestampToCustomFormat(company.createdOn, targetTimeZone);
                 // const convertedModifiedOn = convertTimestampToCustomFormat(company.modifiedOn[0].modifiedOn, targetTimeZone);
                 return {
-                    ...company._doc,
-                    
+                    ...company._doc,                    
                     propertyId : company.propertyId,
                     companyName: company.companyName[0] || '',
                     companyId : company.companyId,

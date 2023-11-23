@@ -223,13 +223,11 @@ const manageRestrictions = async (req, res, io) => {
                 }
             }
 
-
             // Loop through each day in the date range
             for (let i = 0; i <= dayDifference; i++) {
                 const date = new Date(start);
                 date.setDate(start.getDate() + i);
                 const dateString = date.toISOString().split('T')[0];
-
 
                 // Check if the day of the week is in the excluded list
                 if (days) {
@@ -245,6 +243,10 @@ const manageRestrictions = async (req, res, io) => {
                         existingEntry.stopSell = stopSell;
                     } else {
                         findRestrictions.manageRestrictions.stopSell.push({ date: dateString, stopSell: stopSell });
+                    }
+
+                    if(isStopSell && i===0){
+
                     }
                 }
 
@@ -288,23 +290,23 @@ const manageRestrictions = async (req, res, io) => {
             // Save the updated inventory document
             await findRestrictions.save();
 
-            const emitData = async () => {
-                try {
-                    const getInventoryResponse = await axios.get(`https://api.hotelratna.com/api/getInventory?userId=${userId}&propertyId=${propertyId}&checkInDate=${startDate}&checkOutDate=${endDate}`, {
-                        headers: {
-                            'authcode': authCodeValue
-                        }
-                    });
+            // const emitData = async () => {
+            //     try {
+            //         const getInventoryResponse = await axios.get(`https://api.hotelratna.com/api/getInventory?userId=${userId}&propertyId=${propertyId}&checkInDate=${startDate}&checkOutDate=${endDate}`, {
+            //             headers: {
+            //                 'authcode': authCodeValue
+            //             }
+            //         });
 
-                    // Emit the response to connected clients via Socket.io
-                    io.emit("inventoryUpdated", getInventoryResponse.data);
-                } catch (error) {
-                    console.error(error);
-                }
-            };
+            //         // Emit the response to connected clients via Socket.io
+            //         io.emit("inventoryUpdated", getInventoryResponse.data);
+            //     } catch (error) {
+            //         console.error(error);
+            //     }
+            // };
 
-            // Use the asynchronous function to emit data
-            emitData();
+            // // Use the asynchronous function to emit data
+            // emitData();
 
             return res.status(200).json({ message: "Restrictions updated successfully", statuscode: 200 });
         } else {

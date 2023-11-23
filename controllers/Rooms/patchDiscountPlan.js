@@ -15,7 +15,7 @@ const editDiscountPlan = async (req, res) => {
         if (!findDiscountPlan || !findDiscountPlanLogs || !discountPlanId) {
             return res.status(400).json({ message: "Invalid discountPlanId" })
         }
-        const { discountName, shortCode, deviceType, discountType, discountPercent, blackOutDates, applicableOn, discountPrice, validityPeriodFrom, validityPeriodTo } = req.body
+        const { discountName, shortCode, deviceType, discountType, discountPercent, blackOutDates, applicableOn, discountPrice, validityPeriodFrom, validityPeriodTo,displayStatus } = req.body
         const authCodeValue = req.headers['authcode']
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
         if (result.success) {
@@ -40,6 +40,42 @@ const editDiscountPlan = async (req, res) => {
                             $each: [{
                                 logId: logId,
                                 discountName: discountName,
+                                userId: userId,
+                                modifiedDate: await getCurrentUTCTimestamp(),
+                                ipAddress: clientIp,
+                                deviceType: deviceType,
+                            }],
+                            $position: 0
+                        }
+                    }
+                };
+
+                const updatedDiscountName = await discountPlanModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update1, {
+                    new: true
+                });
+                const updatedDiscountNameLogs = await discountPlanLogModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update2, {
+                    new: true
+                });
+            }
+            if (displayStatus) {
+                const logId = Randomstring.generate(10)
+                const update1 = {
+                    $push: {
+                        displayStatus: {
+                            $each: [{
+                                displayStatus: displayStatus,
+                                logId: logId
+                            }],
+                            $position: 0
+                        }
+                    }
+                };
+                const update2 = {
+                    $push: {
+                        displayStatus: {
+                            $each: [{
+                                logId: logId,
+                                displayStatus: displayStatus,
                                 userId: userId,
                                 modifiedDate: await getCurrentUTCTimestamp(),
                                 ipAddress: clientIp,
@@ -307,9 +343,14 @@ const editDiscountPlan = async (req, res) => {
                     logId: logId
                 };
                 const newBlackOutDateLogObject = {
+                    blackOutDates: blackOutDatesArray,
                     logId: logId,
                     request: requestDataString,
-                    response: responseString
+                    response: responseString,
+                    userId: userId,
+                    modifiedDate: await getCurrentUTCTimestamp(),
+                    ipAddress: clientIp,
+                    deviceType: deviceType
                 }
 
                 // Use unshift to add the new object at the beginning
@@ -340,9 +381,14 @@ const editDiscountPlan = async (req, res) => {
                     logId: logId
                 };
                 const newApplicableOnLogObject = {
+                    applicableOn: applicableOn,
                     logId: logId,
                     request: requestDataString,
-                    response: responseString
+                    response: responseString,
+                    userId: userId,
+                    modifiedDate: await getCurrentUTCTimestamp(),
+                    ipAddress: clientIp,
+                    deviceType: deviceType
                 }
 
                 // Use unshift to add the new object at the beginning

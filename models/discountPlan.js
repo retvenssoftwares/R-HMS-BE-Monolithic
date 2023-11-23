@@ -8,6 +8,10 @@ const discountPlanSchema = new mongoose.Schema({
         discountName: { type: String, default: '' },
         logId: { type: String, default: '' }
     }],
+    displayStatus: [{
+        displayStatus: { type: String, default: '' },
+        logId: { type: String, default: '' }
+    }],
     shortCode: [{
         shortCode: { type: String, default: '' },
         logId: { type: String, default: '' }

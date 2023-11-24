@@ -8,6 +8,10 @@ const discountPlanSchema = new mongoose.Schema({
         discountName: { type: String, default: '' },
         logId: { type: String, default: '' }
     }],
+    displayStatus: [{
+        displayStatus: { type: String, default: '' },
+        logId: { type: String, default: '' }
+    }],
     shortCode: [{
         shortCode: { type: String, default: '' },
         logId: { type: String, default: '' }
@@ -44,7 +48,9 @@ const discountPlanSchema = new mongoose.Schema({
             roomTypeId: { type: String, default: '' },
             ratePlans: [{
                 rateplanId: { type: String, default: '' },
-                newRatePlanPrice: { type: String, default: "" }
+                newRatePlanPrice: { type: String, default: "" },
+                extraAdultRate: { type: String, default: "" },
+                extraChildRate: { type: String, default: "" }
             }]
         }],
         logId: { type: String, default: "" }

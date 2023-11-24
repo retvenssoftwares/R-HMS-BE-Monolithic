@@ -1,4 +1,6 @@
 import restrictions from '../../models/manageRestrictions.js';
+import mmtModel from "../../models/OTAs/mmtModel.js"
+import roomAndRateMap from '../../models/OTAs/mappedRoomsAndRates.js';
 import axios from 'axios';
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
 
@@ -7,6 +9,11 @@ const manageRestrictions = async (req, res, io) => {
         const { userId, propertyId, roomTypeId, startDate, ratePlanId, endDate, source, stopSell, isStopSell, isCOA, COA, isCOD, COD, isMinimumLOS, minimumLOS, isMaximumLOS, maximumLOS, days } = req.body;
         const authCodeValue = req.headers['authcode'];
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
+        const findModel = await mmtModel.findOne({ userId }).lean();
+        if (!findModel) {
+            return res.status(404).json({ message: "Invalid userId entered", statuscode: 404 })
+        }
+        const { mmtHotelCode, accessToken } = findModel
 
         if (result.success) {
             // Get today's date as a string in "yyyy-mm-dd" format
@@ -14,6 +21,7 @@ const manageRestrictions = async (req, res, io) => {
 
             // Parse startDate as a Date object
             const startDateObj = new Date(startDate).toISOString().split('T');
+            const endDateObj = new Date(endDate).toISOString().split('T');
 
             // Check if startDate is older than today's date
             if (startDateObj < today) {
@@ -48,6 +56,168 @@ const manageRestrictions = async (req, res, io) => {
             if (dayDifference < 0) {
                 return res.status(400).json({ message: "End date cannot be before the start date", statuscode: 400 });
             }
+
+            const connectionId = req.body.connectionId
+            const findRecord = await roomAndRateMap.findOne({ otaId: req.body.otaId, connectionId: connectionId })
+            if (!findRecord) {
+                return res.status(404).json({ message: "Incorrect otaId", statuscode: 404 });
+            }
+            const existingEntryIndex = findRecord.mappedRatePlanData.findIndex(
+                (entry) => entry.ratePlanId === ratePlanId
+            );
+
+            const otaRatePlanCode = findRecord.mappedRatePlanData[existingEntryIndex].otaRatePlanCode
+
+            if (req.body.otaId) {
+                const apiUrl = process.env.mmtV3ARI
+                if (isStopSell) {
+                    const xmlData = `<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
+                <AvailRateUpdate locatorID="1">
+                    <DateRange from="${startDateObj}" to="${endDateObj}"/>
+                    <Rate currencyCode="INR" code="${otaRatePlanCode}" rateType="b2c">
+                        <Restrictions closed="true" closedToArrival="false" closedToDeparture="false" minLOSStaybased="" 
+             maxLOSStaybased="" minLosArrivalbased="" maxLOSArrivalbased="" minAdvancedBookingOffset="" 
+             maxAdvancedBookingOffset="" />
+                    </Rate>
+                </AvailRateUpdate>
+            </AvailRateUpdateRQ>`
+                    // Set headers
+                    const headers = {
+                        'Content-Type': 'application/xml',
+                        'channel-token': process.env.mmtChannelToken,
+                        'bearer-token': accessToken,
+                    };
+                    // Make the Axios POST request
+                    axios.post(apiUrl, xmlData, { headers })
+                        .then(response => {
+                            console.log('API Response:', response.data);
+                            // return res.status(200).json({ message: "Connection successfully established", statuscode: 200 })
+                        })
+                        .catch(error => {
+                            console.error('Error making API request:', error.message);
+                            // return res.status(500).json({ message: "Some error occured during connection, please try again later", statuscode: 500 })
+                        });
+
+                }
+
+                if (isCOA) {
+                    const xmlData = `<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
+                <AvailRateUpdate locatorID="1">
+                    <DateRange from="${startDateObj}" to="${endDateObj}"/>
+                    <Rate currencyCode="INR" code="${otaRatePlanCode}" rateType="b2c">
+                        <Restrictions closed="false" closedToArrival="true" closedToDeparture="false" minLOSStaybased="" 
+             maxLOSStaybased="" minLosArrivalbased="" maxLOSArrivalbased="" minAdvancedBookingOffset="" 
+             maxAdvancedBookingOffset="" />
+                    </Rate>
+                </AvailRateUpdate>
+            </AvailRateUpdateRQ>`
+                    // Set headers
+                    const headers = {
+                        'Content-Type': 'application/xml',
+                        'channel-token': process.env.mmtChannelToken,
+                        'bearer-token': accessToken,
+                    };
+                    // Make the Axios POST request
+                    axios.post(apiUrl, xmlData, { headers })
+                        .then(response => {
+                            console.log('API Response:', response.data);
+                            // return res.status(200).json({ message: "Connection successfully established", statuscode: 200 })
+                        })
+                        .catch(error => {
+                            console.error('Error making API request:', error.message);
+                            // return res.status(500).json({ message: "Some error occured during connection, please try again later", statuscode: 500 })
+                        });
+
+                }
+
+                if (isCOD) {
+                    const xmlData = `<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
+                <AvailRateUpdate locatorID="1">
+                    <DateRange from="${startDateObj}" to="${endDateObj}"/>
+                    <Rate currencyCode="INR" code="${otaRatePlanCode}" rateType="b2c">
+                        <Restrictions closed="false" closedToArrival="false" closedToDeparture="true" minLOSStaybased="" 
+             maxLOSStaybased="" minLosArrivalbased="" maxLOSArrivalbased="" minAdvancedBookingOffset="" 
+             maxAdvancedBookingOffset="" />
+                    </Rate>
+                </AvailRateUpdate>
+            </AvailRateUpdateRQ>`
+                    // Set headers
+                    const headers = {
+                        'Content-Type': 'application/xml',
+                        'channel-token': process.env.mmtChannelToken,
+                        'bearer-token': accessToken,
+                    };
+                    // Make the Axios POST request
+                    axios.post(apiUrl, xmlData, { headers })
+                        .then(response => {
+                            console.log('API Response:', response.data);
+                            // return res.status(200).json({ message: "Connection successfully established", statuscode: 200 })
+                        })
+                        .catch(error => {
+                            console.error('Error making API request:', error.message);
+                            // return res.status(500).json({ message: "Some error occured during connection, please try again later", statuscode: 500 })
+                        });
+                }
+
+                if (isMaximumLOS) {
+                    const xmlData = `<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
+                <AvailRateUpdate locatorID="1">
+                    <DateRange from="${startDateObj}" to="${endDateObj}"/>
+                    <Rate currencyCode="INR" code="${otaRatePlanCode}" rateType="b2c">
+                        <Restrictions closed="false" closedToArrival="false" closedToDeparture="false" minLOSStaybased="" 
+             maxLOSStaybased="${maximumLOS}" minLosArrivalbased="" maxLOSArrivalbased="" minAdvancedBookingOffset="" 
+             maxAdvancedBookingOffset="" />
+                    </Rate>
+                </AvailRateUpdate>
+            </AvailRateUpdateRQ>`
+                    // Set headers
+                    const headers = {
+                        'Content-Type': 'application/xml',
+                        'channel-token': process.env.mmtChannelToken,
+                        'bearer-token': accessToken,
+                    };
+                    // Make the Axios POST request
+                    axios.post(apiUrl, xmlData, { headers })
+                        .then(response => {
+                            console.log('API Response:', response.data);
+                            // return res.status(200).json({ message: "Connection successfully established", statuscode: 200 })
+                        })
+                        .catch(error => {
+                            console.error('Error making API request:', error.message);
+                            // return res.status(500).json({ message: "Some error occured during connection, please try again later", statuscode: 500 })
+                        });
+                }
+
+                if (isMinimumLOS) {
+                    const xmlData = `<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
+                <AvailRateUpdate locatorID="1">
+                    <DateRange from="${startDateObj}" to="${endDateObj}"/>
+                    <Rate currencyCode="INR" code="${otaRatePlanCode}" rateType="b2c">
+                        <Restrictions closed="false" closedToArrival="false" closedToDeparture="false" minLOSStaybased="${minimumLOS}" 
+             maxLOSStaybased="" minLosArrivalbased="" maxLOSArrivalbased="" minAdvancedBookingOffset="" 
+             maxAdvancedBookingOffset="" />
+                    </Rate>
+                </AvailRateUpdate>
+            </AvailRateUpdateRQ>`
+                    // Set headers
+                    const headers = {
+                        'Content-Type': 'application/xml',
+                        'channel-token': process.env.mmtChannelToken,
+                        'bearer-token': accessToken,
+                    };
+                    // Make the Axios POST request
+                    axios.post(apiUrl, xmlData, { headers })
+                        .then(response => {
+                            console.log('API Response:', response.data);
+                            // return res.status(200).json({ message: "Connection successfully established", statuscode: 200 })
+                        })
+                        .catch(error => {
+                            console.error('Error making API request:', error.message);
+                            // return res.status(500).json({ message: "Some error occured during connection, please try again later", statuscode: 500 })
+                        });
+                }
+            }
+
 
             // Loop through each day in the date range
             for (let i = 0; i <= dayDifference; i++) {

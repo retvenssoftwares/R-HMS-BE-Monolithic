@@ -1,4 +1,3 @@
-
 import Randomstring from "randomstring";
 import requestIp from "request-ip"
 import discountPlanModel from "../../models/discountPlan.js";
@@ -57,6 +56,10 @@ const createDiscountPlan = async (req, res) => {
                 validityPeriodTo: validityPeriodTo,
                 logId: Randomstring.generate(10)
             };
+            const displayStatusObj = {
+                displayStatus: "1",
+                logId: Randomstring.generate(10)
+            };
 
             var clientIp = requestIp.getClientIp(req)
 
@@ -72,6 +75,7 @@ const createDiscountPlan = async (req, res) => {
                 discountPrice: discountPriceObj,
                 validityPeriodFrom: validityPeriodFromObj,
                 validityPeriodTo: validityPeriodToObj,
+                displayStatus:displayStatusObj,
                 blackOutDates: [{ blackOutDates: blackOutDatesArray, logId: Randomstring.generate(10) }],
                 applicableOn: [{ applicableOn: applicableOn, logId: Randomstring.generate(10) }]
             });
@@ -93,7 +97,7 @@ const createDiscountPlan = async (req, res) => {
             };
             const responseString = JSON.stringify(responseData)
 
-            //logs
+            //save data in logs
             const utcTime = await getCurrentUTCTimestamp()
             const discountPlanLogs = new discountPlanLogsModel({
                 propertyId: propertyId,
@@ -101,6 +105,14 @@ const createDiscountPlan = async (req, res) => {
                 discountName: [{
                     logId: savedDiscountPlan.discountName[0].logId,
                     discountName: discountName,
+                    userId: userId,
+                    modifiedDate: utcTime,
+                    ipAddress: clientIp,
+                    deviceType: deviceType,
+                }],
+                displayStatus: [{
+                    logId: savedDiscountPlan.displayStatus[0].logId,
+                    displayStatus: savedDiscountPlan.displayStatus[0].displayStatus,
                     userId: userId,
                     modifiedDate: utcTime,
                     ipAddress: clientIp,
@@ -156,13 +168,23 @@ const createDiscountPlan = async (req, res) => {
                 }],
                 blackOutDates: [{
                     logId: savedDiscountPlan.blackOutDates[0].logId,
+                    blackOutDates:blackOutDates,
                     request: requestDataString,
-                    response: responseString
+                    response: responseString,
+                    userId: userId,
+                    modifiedDate: utcTime,
+                    ipAddress: clientIp,
+                    deviceType: deviceType,
                 }],
                 applicableOn: [{
                     logId: savedDiscountPlan.applicableOn[0].logId,
+                    applicableOn:applicableOn,
                     request: requestDataString,
-                    response: responseString
+                    response: responseString,
+                    userId: userId,
+                    modifiedDate: utcTime,
+                    ipAddress: clientIp,
+                    deviceType: deviceType,
                 }]
             });
 

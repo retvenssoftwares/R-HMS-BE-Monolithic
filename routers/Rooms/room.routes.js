@@ -94,4 +94,8 @@ router.get("/api/getRoomList",getRoom);
 //roomType
 router.get("/api/getRoomType", getRoomsTypes)
 
+//get all rate plans
+import allRatePlans from "../../controllers/Rooms/getAllRatePlan.js"
+router.get("/api/getAllRatePlans", allRatePlans);
+
 export default router;

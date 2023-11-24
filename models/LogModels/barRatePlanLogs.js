@@ -33,6 +33,16 @@ roomType:[{
         default: ""
     }
 }],
+displayStatus:[{
+    displayStatus: {
+    type:String,
+    default:"",
+    },
+    logId: {
+        type: String,
+        default: ""
+    }
+}],
 
 ratePlanName:[{
     ratePlanName:{

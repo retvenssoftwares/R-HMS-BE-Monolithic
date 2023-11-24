@@ -8,7 +8,6 @@ import user from "../../models/user.js"
 let count = 0
 export const forgetPassword = async (req, res) => {
     const { email} = req.body;
-    
     if (email && count === 0) {
         const data = await verifiedUser.findOne({ email: email })
         count +=1

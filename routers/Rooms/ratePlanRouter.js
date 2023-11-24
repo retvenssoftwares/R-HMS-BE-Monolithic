@@ -15,7 +15,7 @@ const router = express.Router();
 
 router.post("/api/ratePlan", ratePlan);
 router.post("/api/addDiscountPlan", createDiscountPlan);
-router.patch("/api/editDiscountPlan", editDiscountPlan);
+router.patch("/api/editDiscountPlan/:discountPlanId", editDiscountPlan);
 router.get("/api/getDiscountPlanById", discountPlanGet);
 router.get("/api/getCompanyPlans", getCompanyRatePlans);
 router.get("/api/getRatePlansList", getRatePlansList);

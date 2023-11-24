@@ -32,7 +32,7 @@ const getFloorDetails = async (req, res) => {
                 })
                 return res.status(200).json({ data: mappedFloorDetail, statuscode: 200 })
             } else {
-                return res.status(404).json({ message: "No floor Details found", statuscode: 404 })
+                return res.status(200).json({ message: "No floor Details found", statuscode: 200 })
             }
 
         }else {

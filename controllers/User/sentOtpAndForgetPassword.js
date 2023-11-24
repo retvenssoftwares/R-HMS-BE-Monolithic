@@ -4,16 +4,13 @@ import otpModel from "../../models/forgetPassword.js";
 import verifiedUser from "../../models/verifiedUsers.js";
 import user from "../../models/user.js"
 
+
+let count = 0
 export const forgetPassword = async (req, res) => {
-    const { email, userId } = req.body;
-
-    if (!userId) {
-        return res.status(400).json({ message: "Enter your userId", statusCode: 400 })
-    }
-
-    if (email) {
+    const { email} = req.body;
+    if (email && count === 0) {
         const data = await verifiedUser.findOne({ email: email })
-        //console.log(data)
+        count +=1
         if (!data) {
             return res.status(404).json({ message: "data not found", statusCode: 404 })
         }
@@ -33,7 +30,7 @@ export const forgetPassword = async (req, res) => {
             const utcTimestamp = tenMinutesAgo.toISOString();
             const details = await verifiedUser.findOne({ otp: Otp, time: { $lte: utcTimestamp } })
             if (details) {
-                await verifiedUser.updateMany({ userId: userId }, { $set: { otp: "", time: "" } })
+                await verifiedUser.updateMany({ email: email }, { $set: { otp: "", time: "" } })
                 return res.status(200).json({ message: "your otp has expired", statusCode: 200 })
             } else {
                 const details = await verifiedUser.findOne({ otp: Otp })
@@ -55,7 +52,7 @@ export const forgetPassword = async (req, res) => {
                 const encryptedPass = encrypt(password);
                 //console.log(encryptedPass)
                 const updatedPassword = await verifiedUser.updateOne(
-                    { userId: userId },
+                    { email: email },
                     {
                         $push: {
                             password: {
@@ -67,8 +64,10 @@ export const forgetPassword = async (req, res) => {
                 );
 
                 if (updatedPassword) {
-                    await verifiedUser.updateMany({ userId: userId }, { $set: { otp: "", time: "" } })
+                    await verifiedUser.updateMany({ email: email }, { $set: { otp: "", time: "" } })
                 }
+
+                count = 0
 
                 return res.status(200).json({ message: "password updated successfully", statusCode: 200 })
 

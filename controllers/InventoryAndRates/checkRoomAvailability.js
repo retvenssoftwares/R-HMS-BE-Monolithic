@@ -64,8 +64,8 @@ const getRoomAvailability = async (req, res) => {
 
                 const reservations = await bookingModel.find({
                     propertyId,
-                    checkInDate: { $gte: checkInDateISO, $lt: checkOutDateISO },
-                    roomTypeId: roomTypeId
+                    "checkInDate.0.checkInDate": { $gte: checkInDateISO, $lt: checkOutDateISO },
+                    "roomTypeId.0.roomTypeId" : roomTypeId
                 });
 
                 const reducedCount = reservations.length;
@@ -73,8 +73,9 @@ const getRoomAvailability = async (req, res) => {
                     { $match: { propertyId: propertyId, roomTypeId: roomTypeId } }
                 ]);
 
-                const holdBookings = await holdData.find({ propertyId: propertyId, roomTypeId: roomTypeId, checkInDate: { $gte: checkInDateISO, $lt: checkOutDateISO }, });
+                const holdBookings = await holdData.find({ propertyId: propertyId, "roomTypeId.0.roomTypeId": roomTypeId,  "checkInDate.0.checkInDate": { $gte: checkInDateISO, $lt: checkOutDateISO }, });
                 const inventoryValues = holdBookings.map(booking => booking.inventory);
+                
 
                 let currentDate = new Date(checkInDate);
 

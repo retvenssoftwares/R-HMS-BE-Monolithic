@@ -33,7 +33,17 @@ const barRatePlanSchema = new mongoose.Schema({
       default: ""
     }
   }],
-  //
+  displayStatus: [{
+    displayStatus: {
+      type: String,
+      default: "",
+    },
+    logId: {
+      type: String,
+      default: ""
+    }
+  }],
+  
 
   mealPlan: [{
     mealPlanId: {

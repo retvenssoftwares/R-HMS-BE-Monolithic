@@ -11,6 +11,8 @@ import {roomDetails} from '../../controllers/Bookings/roomInFloor.js';
 import {getRoomByFloorId} from "../../controllers/Bookings/getRoomByFloorId.js"
 import { testingReservation } from '../../controllers/Bookings/testing.js';
 import {createCompanyResrvation} from "../../controllers/Bookings/companyReservation.js"
+import { getCompanyReservation } from '../../controllers/Bookings/getCompanyReservation.js';
+import  fetchfloorDetails  from "../../controllers/Bookings/getFloorDetails.js"
 
 router.post("/api/createBooking", createResrvation);
 
@@ -31,5 +33,8 @@ router.get("/api/getRoomDetailsByFloorId",getRoomByFloorId)
 router.get("/api/testing",testingReservation)
 
 router.post("/api/createCompanyBooking",createCompanyResrvation)
+
+router.get("/api/getCompanyReservation",getCompanyReservation)
+router.get("/api/getFloorDetails", fetchfloorDetails)
 
 export default router;

@@ -15,7 +15,7 @@ const geAllDiscountPlans = async (req, res) => {
             if (!result.success) {
                 return res.status(result.statuscode).json({ message: "Invalid propertyId entered", statuscode: result.statuscode })
             }
-            const findDiscountRatePlans = await discountRatePlanModel.find({ propertyId }, 'blackOutDates applicableOn discountType discountName shortCode discountPercent discountPrice validityPeriodFrom validityPeriodTo propertyId discountPlanId -_id').lean();
+            const findDiscountRatePlans = await discountRatePlanModel.find({ propertyId,"displayStatus.0.displayStatus":"1"  }, 'blackOutDates applicableOn discountType discountName shortCode discountPercent discountPrice validityPeriodFrom validityPeriodTo propertyId discountPlanId -_id').sort({_id:-1}).lean();
 
             if (findDiscountRatePlans.length > 0) {
                 const mappedDiscountRatePlans = findDiscountRatePlans.map((plan) => {

@@ -9,7 +9,7 @@ const discountPlanGet = async (req, res) => {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }
 
-        const findPlan = await discountPlanModel.findOne({ discountPlanId }, 'blackOutDates applicableOn discountType discountName shortCode discountPercent discountPrice validityPeriodFrom validityPeriodTo propertyId discountPlanId -_id').lean();
+        const findPlan = await discountPlanModel.findOne({ discountPlanId ,"displayStatus.0.displayStatus":"1"}, 'blackOutDates applicableOn discountType discountName shortCode discountPercent discountPrice validityPeriodFrom validityPeriodTo propertyId discountPlanId -_id').sort({_id:-1}).lean();
         if (!findPlan) {
             return res.status(404).json({ message: "Rate Plan not found", statuscode: 404 })
         }

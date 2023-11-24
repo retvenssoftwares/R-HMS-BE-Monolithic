@@ -259,13 +259,14 @@ export const updatePackageRatePlan = async (req, res) => {
       ratePlanName,
       shortCode,
       ratePlanInclusion,
-      inclusionTotal,
-      ratePlanTotal,
       minimumNights,
       maximumNights,
       packageRateAdjustment,
       deviceType,
       displayStatus,
+      extraAdultRate,
+      extraChildRate,
+      packageTotal,
       ipAddress,
     } = req.body;
 
@@ -298,7 +299,11 @@ export const updatePackageRatePlan = async (req, res) => {
     const minimumNightsLog = Randomstring.generate(10);
     const maximumNightsLog = Randomstring.generate(10);
     const packageRateAdjustmentLog = Randomstring.generate(10);
+    const extraChildRateLog = Randomstring.generate(10); 
+    const extraAdultRateLog= Randomstring.generate(10);
+    const packageTotalLog = Randomstring.generate(10);
     const displayStatusLog = Randomstring.generate(10);
+
 
     if (ratePlanName) {
       const ratePlanNameObject = {
@@ -322,6 +327,60 @@ export const updatePackageRatePlan = async (req, res) => {
       };
       packageRatePlan.shortCode.unshift(shortCodeObject);
     }
+    if (minimumNights) {
+      const minimumNightsObject = {
+        minimumNights: minimumNights,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        logId: minimumNightsLog,
+      };
+      packageRatePlan.minimumNights.unshift(minimumNightsObject);
+    }
+
+    if (maximumNights) {
+      const maximumNightsObject = {
+        maximumNights: maximumNights,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        logId: maximumNightsLog,
+      };
+      packageRatePlan.maximumNights.unshift(maximumNightsObject);
+    }
+
+    if (extraAdultRate) {
+      const extraAdultRateObject = {
+        extraAdultRate: extraAdultRate,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        logId: extraAdultRateLog,
+      };
+      packageRatePlan.barRates.extraAdultRate.unshift(
+        extraAdultRateObject
+      );
+    }
+    if (extraChildRate) {
+      const extraChildRateObject = {
+        extraChildRate: extraChildRate,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        logId: extraChildRateLog,
+      };
+      packageRatePlan.barRates.extraChildRate.unshift(
+        extraChildRateObject
+      );
+    }
+    if (packageTotal) {
+      const packageTotalObject = {
+        packageTotal: packageTotal,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        logId: packageTotalLog,
+      };
+      packageRatePlan.barRates.packageTotal.unshift(
+        packageTotalObject
+      );
+    }
+  
     if (displayStatus) {
       const displayStatusObject = {
         displayStatus: displayStatus,
@@ -343,57 +402,27 @@ export const updatePackageRatePlan = async (req, res) => {
       packageRatePlan.ratePlanInclusion.unshift(ratePlanInclusionObject);
     }
 
-    if (inclusionTotal) {
-      const inclusionTotalObject = {
-        inclusionTotal: inclusionTotal,
-        ipAddress: clientIp,
-        deviceType: deviceType,
-        logId: inclusionTotalLog,
-      };
-      packageRatePlan.inclusionTotal.unshift(inclusionTotalObject);
-    }
+    // if (inclusionTotal) {
+    //   const inclusionTotalObject = {
+    //     inclusionTotal: inclusionTotal,
+    //     ipAddress: clientIp,
+    //     deviceType: deviceType,
+    //     logId: inclusionTotalLog,
+    //   };
+    //   packageRatePlan.inclusionTotal.unshift(inclusionTotalObject);
+    // }
 
-    if (ratePlanTotal) {
-      const ratePlanTotalObject = {
-        ratePlanTotal: ratePlanTotal,
-        ipAddress: clientIp,
-        deviceType: deviceType,
-        logId: ratePlanTotalLog,
-      };
-      packageRatePlan.ratePlanTotal.unshift(ratePlanTotalObject);
-    }
+    // if (ratePlanTotal) {
+    //   const ratePlanTotalObject = {
+    //     ratePlanTotal: ratePlanTotal,
+    //     ipAddress: clientIp,
+    //     deviceType: deviceType,
+    //     logId: ratePlanTotalLog,
+    //   };
+    //   packageRatePlan.ratePlanTotal.unshift(ratePlanTotalObject);
+    // }
 
-    if (minimumNights) {
-      const minimumNightsObject = {
-        minimumNights: minimumNights,
-        ipAddress: clientIp,
-        deviceType: deviceType,
-        logId: minimumNightsLog,
-      };
-      packageRatePlan.minimumNights.unshift(minimumNightsObject);
-    }
-
-    if (maximumNights) {
-      const maximumNightsObject = {
-        maximumNights: maximumNights,
-        ipAddress: clientIp,
-        deviceType: deviceType,
-        logId: maximumNightsLog,
-      };
-      packageRatePlan.maximumNights.unshift(maximumNightsObject);
-    }
-
-    if (packageRateAdjustment) {
-      const packageRateAdjustmentObject = {
-        packageRateAdjustment: packageRateAdjustment,
-        ipAddress: clientIp,
-        deviceType: deviceType,
-        logId: packageRateAdjustmentLog,
-      };
-      packageRatePlan.packageRateAdjustment.unshift(
-        packageRateAdjustmentObject
-      );
-    }
+   
 
     await packageRatePlan.save();
     const requestData = {
@@ -432,6 +461,46 @@ export const updatePackageRatePlan = async (req, res) => {
       };
       addpackageRateLog.displayStatus.unshift(displayStatusObject);
     }
+    if (extraAdultRate) {
+      const extraAdultRateObject = {
+        extraAdultRate: extraAdultRate,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        logId: extraAdultRateLog,
+        modifiedOn: currentUTCTime,
+        userId: userId,
+      };
+      addpackageRateLog.barRates.extraAdultRate.unshift(
+        extraAdultRateObject
+      );
+    }
+    if (extraChildRate) {
+      const extraChildRateObject = {
+        extraChildRate: extraChildRate,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        logId: extraChildRateLog,
+        modifiedOn: currentUTCTime,
+        userId: userId,
+      };
+      addpackageRateLog.barRates.extraChildRate.unshift(
+        extraChildRateObject
+      );
+    }
+    if (packageTotal) {
+      const packageTotalObject = {
+        packageTotal: packageTotal,
+        ipAddress: clientIp,
+        deviceType: deviceType,
+        logId: packageTotalLog,
+        modifiedOn: currentUTCTime,
+        userId: userId,
+      };
+      addpackageRateLog.barRates.packageTotal.unshift(
+        packageTotalObject
+      );
+    }
+  
     if (ratePlanName) {
       const ratePlanNameObject = {
         ratePlanName: ratePlanName,
@@ -456,28 +525,28 @@ export const updatePackageRatePlan = async (req, res) => {
       };
       addpackageRateLog.ratePlanInclusion.unshift(ratePlanInclusionObject);
     }
-    if (inclusionTotal) {
-      const inclusionTotalObject = {
-        inclusionTotal: inclusionTotal,
-        logId: inclusionTotalLog,
-        ipAddress: clientIp,
-        deviceType: deviceType,
-        modifiedOn: currentUTCTime,
-        userId: userId,
-      };
-      addpackageRateLog.inclusionTotal.unshift(inclusionTotalObject);
-    }
-    if (ratePlanTotal) {
-      const ratePlanTotalObject = {
-        ratePlanTotal: ratePlanTotal,
-        logId: ratePlanTotalLog,
-        ipAddress: clientIp,
-        deviceType: deviceType,
-        modifiedOn: currentUTCTime,
-        userId: userId,
-      };
-      addpackageRateLog.ratePlanTotal.unshift(ratePlanTotalObject);
-    }
+    // if (inclusionTotal) {
+    //   const inclusionTotalObject = {
+    //     inclusionTotal: inclusionTotal,
+    //     logId: inclusionTotalLog,
+    //     ipAddress: clientIp,
+    //     deviceType: deviceType,
+    //     modifiedOn: currentUTCTime,
+    //     userId: userId,
+    //   };
+    //   addpackageRateLog.inclusionTotal.unshift(inclusionTotalObject);
+    // }
+    // if (ratePlanTotal) {
+    //   const ratePlanTotalObject = {
+    //     ratePlanTotal: ratePlanTotal,
+    //     logId: ratePlanTotalLog,
+    //     ipAddress: clientIp,
+    //     deviceType: deviceType,
+    //     modifiedOn: currentUTCTime,
+    //     userId: userId,
+    //   };
+    //   addpackageRateLog.ratePlanTotal.unshift(ratePlanTotalObject);
+    // }
     if (minimumNights) {
       const minimumNightsObject = {
         minimumNights: minimumNights,

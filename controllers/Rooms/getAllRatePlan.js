@@ -119,18 +119,14 @@ const allRatePlans = async (req, res) => {
                     return acc.concat(ratePlanObjects);
                 }, []);
             
-                return {
-                    ...rate._doc,
-                    roomTypeNames: roomTypeNames, // Include roomTypeNames in the response
-                  //  applicableOn: rate.applicableOn[0]?.applicableOn || '',
-                };
+                return  roomTypeNames;
             });
             
             // Use Promise.all to wait for all promises to resolve
             const mappedDiscountPlans = await Promise.all(mappedDiscountPlansPromises);
-
+            const flattenedDiscountPlans = mappedDiscountPlans.flat();
             // return res.status(200).json({ companyRatePlan: CompanyratePlan, barRatePlan: barRatePlanResponse, packageRatePlan: packageRatePlanResponse, statuscode: 200 })
-            return res.status(200).json({ companyRatePlan: CompanyratePlan, barRatePlan: barRatePlanResponse, packageRatePlan: packageRatePlanResponse, discountplans: mappedDiscountPlans, statuscode: 200 });
+            return res.status(200).json({ companyRatePlan: CompanyratePlan, barRatePlan: barRatePlanResponse, packageRatePlan: packageRatePlanResponse, discountplans: flattenedDiscountPlans, statuscode: 200 });
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }

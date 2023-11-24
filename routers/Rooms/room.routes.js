@@ -23,6 +23,7 @@ import getFloors from '../../controllers/Rooms/getPropertyFloors.js';
 import { packageRatePlan, updatePackageRatePlan } from '../../controllers/Rooms/package.js';
 import companyRatePlans from '../../controllers/Rooms/getCompanyRatePlan.js';
 import allRatePlans from "../../controllers/Rooms/getAllRatePlan.js"
+import getPackageDetails from '../../controllers/Rooms/getPackageByPackageId.js'
 
 //check room availabilty
 import getRoom from '../../controllers/Rooms/getRoomsList.js';
@@ -83,6 +84,7 @@ router.get('/api/getBarRatePlans',fetchBarRatePlan)
 
 //add package 
 router.post("/api/addPackage", packageRatePlan)
+router.get("/api/getPackage", getPackageDetails)
 
 //update PackageRatePlan
 router.patch("/api/updatePackageRatePlan", updatePackageRatePlan)

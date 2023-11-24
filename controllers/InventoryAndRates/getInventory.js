@@ -67,8 +67,8 @@ const getInventory = async (req, res) => {
 
             const reservations = await bookingModel.find({
                 propertyId,
-                checkInDate: { $gte: checkInDateISO, $lt: checkOutDateISO },
-                roomTypeId: roomTypeId,
+                "checkInDate.0.checkInDate": { $gte: checkInDateISO, $lt: checkOutDateISO },
+                "roomTypeId.0.roomTypeId": roomTypeId,
             });
 
             const reducedCount = reservations.length;
@@ -79,8 +79,8 @@ const getInventory = async (req, res) => {
 
             const holdBookings = await holdData.find({
                 propertyId: propertyId,
-                roomTypeId: roomTypeId,
-                checkInDate: { $gte: checkInDateISO, $lt: checkOutDateISO },
+                "roomTypeId.0.roomTypeId": roomTypeId,
+                "checkInDate.0.checkInDate": { $gte: checkInDateISO, $lt: checkOutDateISO },
             });
             const inventoryValues = holdBookings.map((booking) => booking.inventory);
             // console.log(inventoryValues)

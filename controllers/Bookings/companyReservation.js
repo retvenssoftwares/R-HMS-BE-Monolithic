@@ -17,6 +17,8 @@ import roomType from "../../models/roomType.js"
 import nodeCorn from "node-cron"
 import checkRoomAvailability from "../../controllers/InventoryAndRates/checkRoomAvailability.js"
 import checkRate from "../InventoryAndRates/checkAvailableRates.js";
+import  companyRatePlan  from "../../models/companyRatePlane.js";
+import ratePlan from "../../models/barRatePlan.js";
 
 export const createCompanyResrvation = async (req, res) => {
   const {
@@ -29,9 +31,12 @@ export const createCompanyResrvation = async (req, res) => {
     companyId,
     roomDetails,
     remark,
+    discountReservation,
     reservationSummary,
     applyDiscount,
     paymentDetails,
+    barRateReservation,
+    guestInfo,
     isQuickReseration,
     isGroupBooking,
     cardDetails,
@@ -81,9 +86,102 @@ export const createCompanyResrvation = async (req, res) => {
 
   let userRole = findUser.role[0].role;
 
+  for (let i = 0; i < guestInfo.length; i++) {
+    if (guestInfo[i].guestId) {
+      guestIdArray.push({ guestId: guestInfo[i].guestId });
+    } else {
+      const guestDetails = new guestCollections({
+        guestId: randomString.generate(10),
+
+        salutation: [
+          {
+            salutation: guestInfo[i].salutation,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        guestName: [
+          {
+            guestName: guestInfo[i].guestName,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        phoneNumber: [
+          {
+            phoneNumber: guestInfo[i].phoneNumber,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        emailAddress: [
+          {
+            emailAddress: guestInfo[i].emailAddress,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        addressLine1: [
+          {
+            addressLine1: guestInfo[i].addressLine1,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        addressLine2: [
+          {
+            addressLine2: guestInfo[i].addressLine2,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        country: [
+          {
+            country: guestInfo[i].country,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        state: [
+          {
+            state: guestInfo[i].state,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        city: [
+          {
+            city: guestInfo[i].city,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        pinCode: [
+          {
+            pinCode: guestInfo[i].pinCode,
+            logId: randomString.generate(10),
+          },
+        ],
+
+
+        c_form: [{
+          c_form: guestInfo[i].c_form,
+          logId: randomString.generate(10),
+        }],
+
+      });
+
+      const guest = await guestDetails.save();
+
+
+      // booking details
+      guestIdArray.push({ guestId: guest.guestId });
+    }
+  }
+
   // create reservation
   const createBooking = new bookingsModel({
-    
+    guestId: guestIdArray,
     bookingId: bookingId,
     propertyId: propertyId,
     checkInDate: [
@@ -122,15 +220,17 @@ export const createCompanyResrvation = async (req, res) => {
     isGroupBooking: isGroupBooking,
 
 
-    rateType: [
+    rateTypeId: [
       {
         rateTypeId: rateTypeId,
         logId: randomString.generate(10),
       },
     ],
+  
+
+    companyId : companyId,
 
 
-    companyId: companyId,
 
     roomDetails: [{
       roomDetails: roomDetails,
@@ -173,6 +273,7 @@ export const createCompanyResrvation = async (req, res) => {
 
   const details = await createBooking.save();
 
+  // console.log(details)
 
   const data = details.roomDetails[0].roomDetails;
 
@@ -185,6 +286,7 @@ export const createCompanyResrvation = async (req, res) => {
   }
 
   const booking = await bookingsModel.findOne({ bookingId: details.bookingId });
+ 
   const roomDetailArray = booking.roomDetails[0].roomDetails;
 
 
@@ -215,40 +317,61 @@ export const createCompanyResrvation = async (req, res) => {
 
     }, res);
 
+    console.log(availableRooms)
+
 
     if (availableRooms) {
       const result = {};
+
       for (const room of availableRooms) {
         // console.log(dictionary[room.roomTypeId],room.minimumInventory)
         if (dictionary[room.roomTypeId] > room.minimumInventory) {
           return res.status(200).json({ message: "No Room Left for Reservation", statusCode: 200 });
         }
-
         result[room.roomTypeId] = room.minimumInventory;
       }
 
+      // Function to get guest details by guestId
+      async function getGuestDetails(guestId) {
+        return await guestCollections.findOne({ guestId });
+      }
 
 
       // Function to create and save hold data
-      async function createAndSaveHoldData(booking, inclusion, adult, childs, charge, extraAdult, extraChild, remark, internalNote, roomTypeId, index, ratePlanId, name) {
+      async function createAndSaveHoldData(booking, guestId, c_form, inclusion, adult, childs, charge, extraAdult, extraChild, remark, internalNote, roomTypeId, index, ratePlanId, name, ratePlan, guestDetails) {
 
+        const nightCount = booking.nightCount[0].nightCount
+       
         const company = booking.companyId
-        
+
+        const form = c_form.map((item) => ({
+          c_form: item.c_form,
+          logId: item.logId
+        }))
+
+
         const hold = new holdData({
           bookingId: booking.bookingId || "",
-          companyId :  company || "",
           reservationId: booking.reservationIds && booking.reservationIds[index] || "",
           propertyId: booking.propertyId || "",
           roomTypeId: roomTypeId || "",
-          ratePlanId: ratePlanId || "",
-          rateTypeId: booking.rateTypeId || "",
+          companyId: company || "",
+          rateTypeId: booking.rateTypeId && booking.rateTypeId[0] && booking.rateTypeId[0].rateTypeId || "",
           roomTypeName: name || "",
+          ratePlanId : ratePlanId || "",
+          c_form: form,
+          nightCount : nightCount,
           extraInclusionId: inclusion,
           extraAdultRate: extraAdult,
           extraChildRate: extraChild,
           adults: adult,
-          childs: childs,                                                                                                                                                                                                                                                      
+          childs: childs,
           charge: charge,
+          guestId: guestId || "",
+          guestName: guestDetails.guestName && guestDetails.guestName[0] && guestDetails.guestName[0].guestName || "",
+          salutation: guestDetails.salutation && guestDetails.salutation[0] && guestDetails.salutation[0].salutation || "",
+          phoneNumber: guestDetails.phoneNumber && guestDetails.phoneNumber[0] && guestDetails.phoneNumber[0].phoneNumber || "",
+          emailAddress: guestDetails.emailAddress && guestDetails.emailAddress[0] && guestDetails.emailAddress[0].emailAddress || "",
           bookingTime: await getCurrentUTCTimestamp(),
           checkInDate: booking.checkInDate && booking.checkInDate[0] && booking.checkInDate[0].checkInDate || "",
           reservationNumber: booking.reservationNumber || "",
@@ -256,8 +379,11 @@ export const createCompanyResrvation = async (req, res) => {
           remark: remark || "",
           internalNote: internalNote || "",
           inventory: 1,
-       
+          ratePlanName: ratePlan || '',
+        
         });
+
+        // console.log(hold)
 
         await hold.save();
 
@@ -269,7 +395,16 @@ export const createCompanyResrvation = async (req, res) => {
         const ratePlanId = roomDetail.ratePlanId
         const remark = roomDetail.remark[0].specialRemark;
         const internalNote = roomDetail.remark[0].internalNote
-        
+
+
+        const ratePlanName = await companyRatePlan.findOne({companyRatePlanId : ratePlanId})
+        // console.log(ratePlanName)
+
+        const ratePlan = ratePlanName.ratePlanName[0].ratePlanName || ""
+        // check Rate plan for that room
+
+        const guestId = booking.guestId.length === 1 ? booking.guestId[0].guestId : booking.guestId[index].guestId;
+
 
         // filds require in the room Details 
         const inclusion = roomDetail.extraInclusionId || ""
@@ -279,17 +414,20 @@ export const createCompanyResrvation = async (req, res) => {
         const extraAdult = roomDetail.extraAdult || ""
         const extraChild = roomDetail.extraChild || ""
 
+
         
 
         // check room requriments  
         if (dictionary[roomTypeId] && dictionary[roomTypeId] <= result[roomTypeId]) {
-          // const guestDetails = await getGuestDetails(guestId);
-          // const c_form = guestDetails.c_form
+          const guestDetails = await getGuestDetails(guestId);
+          const c_form = guestDetails.c_form
           const roomTypeName = await roomType.findOne({ roomTypeId: roomTypeId })
           const name = roomTypeName.roomTypeName[0].roomTypeName || ""
+          // console.log(name)
 
-          return createAndSaveHoldData(booking, inclusion, adult, childs, charge, extraAdult, extraChild, remark, internalNote, roomTypeId, index, ratePlanId, name);
+          return createAndSaveHoldData(booking, guestId, c_form, inclusion, adult, childs, charge, extraAdult, extraChild, remark, internalNote, roomTypeId, index, ratePlanId, name, ratePlan,guestDetails);
         }
+        
       }));
 
 

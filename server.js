@@ -10,7 +10,7 @@ const server = http.createServer(app); // Create an HTTP server using the Expres
 const io = new Server(server);
 
 
-// import "./helpers/deletOldBooking.js"
+//import "./helpers/deletOldBooking.js"
 import "./db/conn.js"
 import "./db/conn2.js"
 import propertyRoutes from "./routers/Property/property.routes.js"

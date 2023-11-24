@@ -8,7 +8,7 @@ const getRatePlansList = async (req, res) => {
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
         if (result.success) {
-            const findRatePlans = await barRatePlan.find({ "roomType.roomTypeId": roomTypeId })
+            const findRatePlans = await barRatePlan.find({ "roomType.roomTypeId": roomTypeId,"displayStatus.0.displayStatus":"1" })
                 .select("ratePlanName propertyId barRatePlanId roomType barRates")
                 .lean();
 

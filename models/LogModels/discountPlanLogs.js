@@ -76,19 +76,25 @@ const discountPlanLogsSchema = new mongoose.Schema({
         }],
         logId: { type: String, default: "" },
         request: { type: String, default: '' },
-        response: { type: String, default: '' }
+        response: { type: String, default: '' },
+        userId: { type: String, default: "" },
+        modifiedDate: { type: String, default: "" },
     }],
     applicableOn: [{
         applicableOn: [{
             roomTypeId: { type: String, default: '' },
             ratePlans: [{
                 rateplanId: { type: String, default: '' },
-                newRatePlanPrice: { type: String, default: "" }
+                newRatePlanPrice: { type: String, default: "" },
+                extraAdultRate: { type: String, default: "" },
+                extraChildRate: { type: String, default: "" }
             }]
         }],
         logId: { type: String, default: "" },
         request: { type: String, default: '' },
-        response: { type: String, default: '' }
+        response: { type: String, default: '' },
+        userId: { type: String, default: "" },
+        modifiedDate: { type: String, default: "" },
     }]
 },
     {

@@ -29,7 +29,7 @@ const allRatePlans = async (req, res) => {
                     shortCode: rate.shortCode[0].shortCode || '',
                     ratePlanName: rate.ratePlanName[0].ratePlanName || '',
                     roomTypeName: roomTypeName,
-                    inclusion: rate.ratePlanInclusion.length || '',
+                    inclusion: rate.ratePlanInclusion[0].ratePlanInclusion.length || 0,
                     extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',
                     extraChildRate: rate.barRates.extraChildRate[0].extraChildRate || '',
                     ratePlanTotal: rate.barRates.ratePlanTotal[0].ratePlanTotal || '',
@@ -54,7 +54,7 @@ const allRatePlans = async (req, res) => {
                     shortCode: rate.shortCode[0].shortCode || '',
                     ratePlanName: rate.ratePlanName[0].ratePlanName || '',
                     roomTypeName: roomTypeName,
-                    // inclusion: rate.inclusion.inclusionPlan.length || '0',
+                    inclusion: rate.inclusion[0].inclusionPlan.length || 0,
                     extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',
                     extraChildRate: rate.barRates.extraChildRate[0].extraChildRate || '',
                     ratePlanTotal: rate.barRates.ratePlanTotal[0].ratePlanTotal || '',
@@ -79,12 +79,16 @@ const allRatePlans = async (req, res) => {
                     shortCode: rate.shortCode[0].shortCode || '',
                     ratePlanName: rate.ratePlanName[0].ratePlanName || '',
                     roomTypeName: roomTypeName,
-                    inclusion: rate.ratePlanInclusion.length || '',
+                    inclusion: rate.ratePlanInclusion[0].ratePlanInclusion.length || 0,
                     ratePlanTotal: rate.barRates.packageTotal[0].packageTotal || '',
                     extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',
                     extraChildRate: rate.barRates.extraChildRate[0].extraChildRate || '',
                 };
             });
+
+
+            //discountPlan
+            
 
             const discountRatePlans = await discountPlan.find({ propertyId }, 'discountPlanId shortCode discountName -_id applicableOn').lean();
 

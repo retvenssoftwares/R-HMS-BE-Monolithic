@@ -23,11 +23,14 @@ const postBarRatePlan = async (req, res) => {
       roundUp,
       extraAdultRate,
       extraChildRate,
-      ratePlanTotal
+      ratePlanTotal,
+      deviceType,
+      ipAddress,
     } = req.body;
 
     const authCodeValue = req.headers["authcode"];
     const findUser = await verifiedUser.findOne({ userId });
+    const currentUTCTime=await getCurrentUTCTimestamp()
     if (!findUser) {
       return res
         .status(400)
@@ -44,6 +47,12 @@ const postBarRatePlan = async (req, res) => {
       shortCode: [
         {
           shortCode: shortCode,
+          logId: Randomstring.generate(10),
+        },
+      ],
+      displayStatus: [
+        {
+          displayStatus: "1",
           logId: Randomstring.generate(10),
         },
       ],
@@ -113,24 +122,130 @@ const postBarRatePlan = async (req, res) => {
       createdOn: await getCurrentUTCTimestamp(),
     });
 
-    await newBarRatePlan.save();
+   const savedBarRatePlan= await newBarRatePlan.save();
 
 
     //save data in logs model
     const barRatePlanLogs = new barPlanLogsModel({
       
-      ratePlanName: req.body,
-       barRatePlanId: barRatePlanId,
-      shortCode:req.body,
+      barRatePlanId: barRatePlanId,
       rateType:rateType,
       propertyId:propertyId,
-      roomType:req.body,
-      ratePlanName:req.body,
       createdBy: userRole,
       createdOn: await getCurrentUTCTimestamp(),
-      inclusion: {
-        ...req.body, // Include all fields from req.body
-      },
+      shortCode: [
+        {
+          shortCode: shortCode,
+          logId:savedBarRatePlan.shortCode[0].logId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          userId:userId,
+          modifiedOn:currentUTCTime
+        },
+      ],
+      displayStatus: [
+        {
+          displayStatus: savedBarRatePlan.displayStatus[0].displayStatus[0],
+          logId:savedBarRatePlan.shortCode[0].logId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          userId:userId,
+          modifiedOn:currentUTCTime
+        },
+      ],
+      ratePlanName: [
+        {
+          ratePlanName: ratePlanName,
+          logId:savedBarRatePlan.ratePlanName[0].logId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          userId:userId,
+          modifiedOn:currentUTCTime
+        }],
+        roomType: [{
+          roomTypeId: roomTypeId,
+          logId:savedBarRatePlan.roomType[0].logId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          userId:userId,
+          modifiedOn:currentUTCTime
+        }],
+        mealPlan: [{
+          mealPlanId: mealPlanId,
+          logId:savedBarRatePlan.mealPlan[0].logId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          userId:userId,
+          modifiedOn:currentUTCTime
+        }],
+        inclusion: [{
+          inclusionPlan: inclusionPlan,
+          logId:savedBarRatePlan.inclusion[0].logId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          userId:userId,
+          modifiedOn:currentUTCTime
+        }],
+        barRates: {
+          roomBaseRate: [{
+            logId: savedBarRatePlan.barRates.roomBaseRate[0].logId,
+            roomBaseRate:savedBarRatePlan.barRates.roomBaseRate[0].roomBaseRate,
+            deviceType: deviceType,
+            ipAddress: ipAddress,
+            userId: userId,
+            modifiedOn:currentUTCTime
+          }],
+          mealCharge: [{
+            logId: savedBarRatePlan.barRates.mealCharge[0].logId,
+            mealCharge:savedBarRatePlan.barRates.mealCharge[0].mealCharge,
+            deviceType: deviceType,
+            ipAddress: ipAddress,
+            userId: userId,
+            modifiedOn:currentUTCTime
+          }],
+  
+          inclusionCharge: [{
+            logId: savedBarRatePlan.barRates.inclusionCharge[0].logId,
+            inclusionCharge:savedBarRatePlan.barRates.inclusionCharge[0].inclusionCharge,
+            deviceType: deviceType,
+            ipAddress: ipAddress,
+            userId: userId,
+            modifiedOn:currentUTCTime
+          }],
+          roundUp: [{
+            logId: savedBarRatePlan.barRates.roundUp[0].logId,
+            roundUp:savedBarRatePlan.barRates.roundUp[0].roundUp,
+            deviceType: deviceType,
+            ipAddress: ipAddress,
+            userId: userId,
+            modifiedOn:currentUTCTime
+          }],
+          extraAdultRate: [{
+            logId: savedBarRatePlan.barRates.extraAdultRate[0].logId,
+            extraAdultRate:savedBarRatePlan.barRates.extraAdultRate[0].extraAdultRate,
+            deviceType: deviceType,
+            ipAddress: ipAddress,
+            userId: userId,
+            modifiedOn:currentUTCTime
+          }],
+          extraChildRate: [{
+            logId: savedBarRatePlan.barRates.extraChildRate[0].logId,
+            extraAdultRate:savedBarRatePlan.barRates.extraChildRate[0].extraChildRate,
+            deviceType: deviceType,
+            ipAddress: ipAddress,
+            userId: userId,
+            modifiedOn:currentUTCTime
+          }],
+          ratePlanTotal: [{
+            logId: savedBarRatePlan.barRates.ratePlanTotal[0].logId,
+            ratePlanTotal:savedBarRatePlan.barRates.ratePlanTotal[0].ratePlanTotal,
+            deviceType: deviceType,
+            ipAddress: ipAddress,
+            userId: userId,
+            modifiedOn:currentUTCTime
+          }],
+        },
+  
     });
     await barRatePlanLogs.save();
 

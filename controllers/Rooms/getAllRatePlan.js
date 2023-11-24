@@ -90,76 +90,43 @@ const allRatePlans = async (req, res) => {
             //discountPlan
             
 
-            const discountRatePlans = await discountPlan.find({ propertyId }, 'discountPlanId shortCode discountName -_id applicableOn').lean();
-
+            const discountRatePlans = await discountPlan.find({ propertyId }, 'shortCode discountName discountPlanId -_id applicableOn').lean();
             const mappedDiscountPlansPromises = discountRatePlans.map(async (rate) => {
+                // Get all roomTypeId values from the innermost applicableOn array
                 const innerApplicableOn = rate.applicableOn[0]?.applicableOn || [];
                 const roomTypeIds = innerApplicableOn.map(applicableOn => applicableOn.roomTypeId);
-                const ratePlanIds = rate.applicableOn
-                    .flatMap(applicableOn => applicableOn.applicableOn)
-                    .flatMap(roomType => roomType.ratePlans.map(ratePlan => ratePlan.rateplanId));
-
-                const findRoomTypes = await roomTypeModel.find({ roomTypeId: { $in: roomTypeIds } }).select('roomTypeId roomTypeName').lean();
-
-                const roomTypeNamesPromises = findRoomTypes.map(async (roomType) => {
-                    // const ratePlans = innerApplicableOn.find(applicableOn => applicableOn.roomTypeId === roomType.roomTypeId)?.ratePlans || [];
-
-                    const ratePlanObjects = await Promise.all(ratePlanIds.map(async (ratePlan) => {
-                        // Fetch the count of inclusionPlan for each rate plan by matching ratePlanId with barRatePlan collection
-                        // console.log(ratePlan, "adfsd")
-                        // console.log(roomType.roomTypeId, "fsdaf")
-                        const inclusionCount = await barRatePlan.find({
-                            propertyId: propertyId,
-                            'roomType.roomTypeId': roomType.roomTypeId,
-                            barRatePlanId: ratePlan
-                        }, 'inclusion.inclusionPlan').lean();
-
-                        let count = 0;
-
-                        if (inclusionCount[0] && inclusionCount[0].inclusion) {
-                            inclusionCount[0].inclusion.map((item) => {
-                                count += 1;
-                                // console.log(item);
-                            });
-                        }
-
-                        // console.log(count);
-
-                        const inclusionPlanCount = inclusionCount && inclusionCount[0] && inclusionCount[0].inclusion && inclusionCount[0].inclusion.inclusionPlan
-                            ? inclusionCount[0].inclusion.inclusionPlan.length
-                            : 0;
-
-                        // console.log(inclusionPlanCount, "vghvg");
-                        return {
-                            roomTypeName: roomType.roomTypeName[0]?.roomTypeName || '',
-                            discountName: rate.discountName[0]?.discountName || '',
-                            discountPlanId: rate.discountPlanId,
-                            rateType: "Discount",
-                            ratePlanPrice: ratePlan.newRatePlanPrice || '',
-                            newRatePlanName: ratePlan.newRatePlanName || "",
-                            extraAdultRate: ratePlan.extraAdultRate || '',
-                            extraChildRate: ratePlan.extraChildRate || '',
-                            shortCode: rate.shortCode[0]?.shortCode || '',
-                            inclusionCount: count || 0,
-                        };
+                
+                // Find roomType documents based on roomTypeIds
+                const findRoomTypes = await roomTypeModel.find({ roomTypeId: { $in: roomTypeIds } });
+            
+                // Create an array of objects with the desired structure
+                const roomTypeNames = findRoomTypes.reduce((acc, roomType) => {
+                    // Get rate plans for the current roomTypeId
+                    const ratePlans = innerApplicableOn.find(applicableOn => applicableOn.roomTypeId === roomType.roomTypeId)?.ratePlans || [];
+            
+                    // Create an object for each rate plan
+                    const ratePlanObjects = ratePlans.map(ratePlan => ({
+                        ratePlanId:ratePlan.rateplanId || '',
+                        roomTypeName: roomType.roomTypeName[0]?.roomTypeName || '',
+                        discountPlanId:rate.discountPlanId,
+                        discountName: rate.discountName[0]?.discountName || '',
+                        ratePlanTotal: ratePlan.newRatePlanTotal || '',
+                        extraAdult: ratePlan.extraAdult || '',
+                        extraChild: ratePlan.extraChild || '',
+                        shortCode: rate.shortCode[0]?.shortCode || '',
                     }));
-
-                    return ratePlanObjects;
-                });
-
-                const roomTypeNames = (await Promise.all(roomTypeNamesPromises)).flat();
-
-                return {
-                    ...rate._doc,
-                    roomTypeNames: roomTypeNames,
-                };
+            
+                    return acc.concat(ratePlanObjects);
+                }, []);
+            
+                return  roomTypeNames;
             });
-
+            
             // Use Promise.all to wait for all promises to resolve
             const mappedDiscountPlans = await Promise.all(mappedDiscountPlansPromises);
-
+            const flattenedDiscountPlans = mappedDiscountPlans.flat();
             // return res.status(200).json({ companyRatePlan: CompanyratePlan, barRatePlan: barRatePlanResponse, packageRatePlan: packageRatePlanResponse, statuscode: 200 })
-            return res.status(200).json({ companyRatePlan: CompanyratePlan, barRatePlan: barRatePlanResponse, packageRatePlan: packageRatePlanResponse, discountplans: mappedDiscountPlans, statuscode: 200 });
+            return res.status(200).json({ companyRatePlan: CompanyratePlan, barRatePlan: barRatePlanResponse, packageRatePlan: packageRatePlanResponse, discountplans: flattenedDiscountPlans, statuscode: 200 });
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }

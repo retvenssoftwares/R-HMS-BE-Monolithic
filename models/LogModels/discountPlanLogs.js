@@ -12,6 +12,14 @@ const discountPlanLogsSchema = new mongoose.Schema({
         ipAddress: { type: String, default: "" },
         deviceType: { type: String, default: "" },
     }],
+    displayStatus: [{
+        logId: { type: String, default: "" },
+        displayStatus: { type: String, default: "" },
+        userId: { type: String, default: "" },
+        modifiedDate: { type: String, default: "" },
+        ipAddress: { type: String, default: "" },
+        deviceType: { type: String, default: "" },
+    }],
     shortCode: [{
         logId: { type: String, default: "" },
         shortCode: { type: String, default: "" },
@@ -62,11 +70,22 @@ const discountPlanLogsSchema = new mongoose.Schema({
     }],
 
     blackOutDates: [{
+        blackOutDates: [{
+            type: String,
+            default: ''
+        }],
         logId: { type: String, default: "" },
         request: { type: String, default: '' },
         response: { type: String, default: '' }
     }],
     applicableOn: [{
+        applicableOn: [{
+            roomTypeId: { type: String, default: '' },
+            ratePlans: [{
+                rateplanId: { type: String, default: '' },
+                newRatePlanPrice: { type: String, default: "" }
+            }]
+        }],
         logId: { type: String, default: "" },
         request: { type: String, default: '' },
         response: { type: String, default: '' }

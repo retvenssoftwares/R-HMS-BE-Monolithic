@@ -88,7 +88,7 @@ const booking = new mongoose.Schema({
 
     }],
 
-    rateType: [{
+    rateTypeId: [{
         //change to rateTypeId
         rateTypeId: {
             type: String,
@@ -106,7 +106,7 @@ const booking = new mongoose.Schema({
     // company Reservation
     // change to companyId
 
-        companyId: {
+    companyId: {
             type: String,
             default: ""
         },

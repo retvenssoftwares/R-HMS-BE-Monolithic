@@ -40,6 +40,7 @@ const manageRates = async (req, res, io) => {
 
             // Parse startDate as a Date object
             const startDateObj = new Date(startDate).toISOString().split('T')[0];
+    
 
             // Parse startDate as a Date object
             const endDateObj = new Date(endDate).toISOString().split('T')[0];

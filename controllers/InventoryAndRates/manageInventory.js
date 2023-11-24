@@ -27,17 +27,7 @@ const manageInventory = async (req, res, io) => {
 
 
     //
-    const mapModel = await mapData.findOne({ userId }).lean();
-    if (!mapModel) {
-      return res.status(404).json({ message: "Incorrect userId", statuscode: 404 });
-    }
-    const existingEntryIndex = mapModel.mappedOTARoomData.findIndex(
-      (entry) => entry.roomTypeId === roomTypeId
-    );
-    if (existingEntryIndex === -1) {
-      return res.status(400).json({ message: "Invalid otaRoomTypeCode", statuscode: "400" });
-    }
-    const otaRoomTypeCode = mapModel.mappedOTARoomData[existingEntryIndex].otaRoomTypeCode
+
     // console.log(findRecord.mappedRatePlanData[existingEntryIndex].otaRatePlanCode)
 
     if (result.success) {
@@ -97,6 +87,18 @@ const manageInventory = async (req, res, io) => {
 
       //
       if (req.body.otaId) {
+
+        const mapModel = await mapData.findOne({ userId }).lean();
+        if (!mapModel) {
+          return res.status(404).json({ message: "Incorrect userId", statuscode: 404 });
+        }
+        const existingEntryIndex = mapModel.mappedOTARoomData.findIndex(
+          (entry) => entry.roomTypeId === roomTypeId
+        );
+        if (existingEntryIndex === -1) {
+          return res.status(400).json({ message: "Invalid otaRoomTypeCode", statuscode: "400" });
+        }
+        const otaRoomTypeCode = mapModel.mappedOTARoomData[existingEntryIndex].otaRoomTypeCode
 
         //
         const findModel = await mmtModel.findOne({ userId }).lean();

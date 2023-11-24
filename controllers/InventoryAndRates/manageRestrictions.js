@@ -13,11 +13,14 @@ const manageRestrictions = async (req, res, io) => {
 
         if (result.success) {
             // Get today's date as a string in "yyyy-mm-dd" format
-            const today = new Date().toISOString().split('T');
-
+            const today = new Date()
+            today.setHours(0, 0, 0, 0);
+            const newToday = today.toISOString().split('T');
             // Parse startDate as a Date object
             const startDateObj = new Date(startDate).toISOString().split('T');
             const endDateObj = new Date(endDate).toISOString().split('T');
+            // console.log(newToday, "today")
+            // console.log(startDateObj, "star")
 
             // Check if startDate is older than today's date
             if (startDateObj < today) {

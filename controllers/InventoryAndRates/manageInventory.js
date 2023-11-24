@@ -24,8 +24,6 @@ const manageInventory = async (req, res, io) => {
 
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
-
-
     //
 
     // console.log(findRecord.mappedRatePlanData[existingEntryIndex].otaRatePlanCode)
@@ -108,20 +106,32 @@ const manageInventory = async (req, res, io) => {
         const { mmtHotelCode, accessToken } = findModel
         // Check if it's for making the API request
         if (isAddedInventory) {
-          const daysArray = req.body.days
-
+          const daysArray = req.body.days;
+          console.log(daysArray)
           const validDays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-          const filteredDaysArray = daysArray.filter(day => validDays.includes(day.toLowerCase()));
+          let daysString;
 
-          // Create a string representing the "sun", "mon", etc. values based on the sanitizedDaysArray
-          const daysString = validDays.map(day => {
-            const isPresent = filteredDaysArray.includes(day.toLowerCase());
-            return `${day.toLowerCase()}="${isPresent ? 'true' : 'false'}"`;
-          }).join(" ");
+          if (!req.body.days || !Array.isArray(daysArray)) {
+            console.log(1123)
+            // If daysArray is not provided or not an array, initialize all days to "false"
+            daysString = validDays.map(day => `${day.toLowerCase()}="false"`).join(" ");
+          } else {
+            // Your existing logic for processing daysArray
+            const filteredDaysArray = daysArray.map(day => day.toLowerCase().substring(0, 3)).filter(day => validDays.includes(day));
+            console.log(filteredDaysArray);
+            // Create a string representing the "sun", "mon", etc. values based on the sanitizedDaysArray
+            daysString = validDays.map(day => {
+              const isPresent = filteredDaysArray.includes(day.toLowerCase());
+              return `${day.toLowerCase()}="${isPresent ? 'true' : 'false'}"`;
+            }).join(" ");
+          }
+
+          // Use daysString as needed
+          console.log(daysString);
           const xmlData = `<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
       <AvailRateUpdate locatorID="1">
           <DateRange from="${startDate}" to="${endDate}" ${daysString}/>
-          <Availability code="${otaRoomTypeCode}" count="${inventory}" closed="${isAddedInventory}" />
+          <Availability code="${otaRoomTypeCode}" count="${inventory}" closed="${!isAddedInventory}" />
       </AvailRateUpdate>
   </AvailRateUpdateRQ>`;
 
@@ -131,6 +141,8 @@ const manageInventory = async (req, res, io) => {
             'channel-token': process.env.mmtChannelToken,
             'bearer-token': accessToken,
           };
+
+          console.log(xmlData)
 
           // Make the Axios POST request
           axios.post(apiUrl, xmlData, { headers })
@@ -145,23 +157,32 @@ const manageInventory = async (req, res, io) => {
         }
 
         if (isBlockedInventory) {
-          const daysArray = req.body.days
-
+          const daysArray = req.body.days;
+          console.log(daysArray)
           const validDays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-          const filteredDaysArray = daysArray.filter(day => validDays.includes(day.toLowerCase()));
+          let daysString;
 
-          // Create a string representing the "sun", "mon", etc. values based on the sanitizedDaysArray
-          const daysString = validDays.map(day => {
-            const isPresent = filteredDaysArray.includes(day.toLowerCase());
-            return `${day.toLowerCase()}="${isPresent ? 'true' : 'false'}"`;
-          }).join(" ");
+          if (!req.body.days || !Array.isArray(daysArray)) {
+            console.log(1123)
+            // If daysArray is not provided or not an array, initialize all days to "false"
+            daysString = validDays.map(day => `${day.toLowerCase()}="false"`).join(" ");
+          } else {
+            // Your existing logic for processing daysArray
+            const filteredDaysArray = daysArray.map(day => day.toLowerCase().substring(0, 3)).filter(day => validDays.includes(day));
+            console.log(filteredDaysArray);
+            // Create a string representing the "sun", "mon", etc. values based on the sanitizedDaysArray
+            daysString = validDays.map(day => {
+              const isPresent = filteredDaysArray.includes(day.toLowerCase());
+              return `${day.toLowerCase()}="${isPresent ? 'true' : 'false'}"`;
+            }).join(" ");
+          }
           const xmlData = `<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
           <AvailRateUpdate locatorID="1">
               <DateRange from="${startDate}" to="${endDate}" ${daysString}/>
               <Availability code="${otaRoomTypeCode}" count="${inventory}" closed="${isBlockedInventory}" />
           </AvailRateUpdate>
       </AvailRateUpdateRQ>`;
-
+          console.log(xmlData)
           // Set headers
           const headers = {
             'Content-Type': 'application/xml',
@@ -285,10 +306,15 @@ const manageInventory = async (req, res, io) => {
 
       // const resData =  getInventoryResponse.data.availableRooms
       // console.log(resData, "payloadpayloadpayloadpayload")
+      if (req.query.status) {
+        console.log(1)
+      } else {
+        return res
+          .status(200)
+          .json({ message: "Inventory updated successfully", statuscode: 200 });
+      }
 
-      return res
-        .status(200)
-        .json({ message: "Inventory updated successfully", statuscode: 200 });
+
     } else {
       return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
     }

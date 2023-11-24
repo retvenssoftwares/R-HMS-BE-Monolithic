@@ -40,7 +40,7 @@ const manageRates = async (req, res, io) => {
 
             // Parse startDate as a Date object
             const startDateObj = new Date(startDate).toISOString().split('T')[0];
-    
+
 
             // Parse startDate as a Date object
             const endDateObj = new Date(endDate).toISOString().split('T')[0];
@@ -139,16 +139,25 @@ const manageRates = async (req, res, io) => {
 
                         if (isBaseRate && i === 0) {
                             // console.log(111)
-                            const daysArray = req.body.days
-
+                            const daysArray = req.body.days;
+                            console.log(daysArray)
                             const validDays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-                            const filteredDaysArray = daysArray.filter(day => validDays.includes(day.toLowerCase()));
+                            let daysString;
 
-                            // Create a string representing the "sun", "mon", etc. values based on the sanitizedDaysArray
-                            const daysString = validDays.map(day => {
-                                const isPresent = filteredDaysArray.includes(day.toLowerCase());
-                                return `${day.toLowerCase()}="${isPresent ? 'true' : 'false'}"`;
-                            }).join(" ");
+                            if (!req.body.days || !Array.isArray(daysArray)) {
+                                console.log(1123)
+                                // If daysArray is not provided or not an array, initialize all days to "false"
+                                daysString = validDays.map(day => `${day.toLowerCase()}="false"`).join(" ");
+                            } else {
+                                // Your existing logic for processing daysArray
+                                const filteredDaysArray = daysArray.map(day => day.toLowerCase().substring(0, 3)).filter(day => validDays.includes(day));
+                                console.log(filteredDaysArray);
+                                // Create a string representing the "sun", "mon", etc. values based on the sanitizedDaysArray
+                                daysString = validDays.map(day => {
+                                    const isPresent = filteredDaysArray.includes(day.toLowerCase());
+                                    return `${day.toLowerCase()}="${isPresent ? 'true' : 'false'}"`;
+                                }).join(" ");
+                            }
 
                             // console.log(daysString)
                             const xmlData = `<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
@@ -195,17 +204,25 @@ const manageRates = async (req, res, io) => {
                         }
 
                         if (isExtraAdultRate && i === 0) {
-                            const daysArray = req.body.days
-
+                            const daysArray = req.body.days;
+                            console.log(daysArray)
                             const validDays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-                            const filteredDaysArray = daysArray.filter(day => validDays.includes(day.toLowerCase()));
+                            let daysString;
 
-                            // Create a string representing the "sun", "mon", etc. values based on the sanitizedDaysArray
-                            const daysString = validDays.map(day => {
-                                const isPresent = filteredDaysArray.includes(day.toLowerCase());
-                                return `${day.toLowerCase()}="${isPresent ? 'true' : 'false'}"`;
-                            }).join(" ");
-
+                            if (!req.body.days || !Array.isArray(daysArray)) {
+                                console.log(1123)
+                                // If daysArray is not provided or not an array, initialize all days to "false"
+                                daysString = validDays.map(day => `${day.toLowerCase()}="false"`).join(" ");
+                            } else {
+                                // Your existing logic for processing daysArray
+                                const filteredDaysArray = daysArray.map(day => day.toLowerCase().substring(0, 3)).filter(day => validDays.includes(day));
+                                console.log(filteredDaysArray);
+                                // Create a string representing the "sun", "mon", etc. values based on the sanitizedDaysArray
+                                daysString = validDays.map(day => {
+                                    const isPresent = filteredDaysArray.includes(day.toLowerCase());
+                                    return `${day.toLowerCase()}="${isPresent ? 'true' : 'false'}"`;
+                                }).join(" ");
+                            }
                             const xmlData = `<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
                                     <AvailRateUpdate locatorID="1">
                                         <DateRange from="${startDateObj}" to="${endDateObj}" ${daysString}/>
@@ -247,16 +264,25 @@ const manageRates = async (req, res, io) => {
                         }
 
                         if (isExtraChildRate && i === 0) {
-                            const daysArray = req.body.days
-
+                            const daysArray = req.body.days;
+                            console.log(daysArray)
                             const validDays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-                            const filteredDaysArray = daysArray.filter(day => validDays.includes(day.toLowerCase()));
+                            let daysString;
 
-                            // Create a string representing the "sun", "mon", etc. values based on the sanitizedDaysArray
-                            const daysString = validDays.map(day => {
-                                const isPresent = filteredDaysArray.includes(day.toLowerCase());
-                                return `${day.toLowerCase()}="${isPresent ? 'true' : 'false'}"`;
-                            }).join(" ");
+                            if (!req.body.days || !Array.isArray(daysArray)) {
+                                console.log(1123)
+                                // If daysArray is not provided or not an array, initialize all days to "false"
+                                daysString = validDays.map(day => `${day.toLowerCase()}="false"`).join(" ");
+                            } else {
+                                // Your existing logic for processing daysArray
+                                const filteredDaysArray = daysArray.map(day => day.toLowerCase().substring(0, 3)).filter(day => validDays.includes(day));
+                                console.log(filteredDaysArray);
+                                // Create a string representing the "sun", "mon", etc. values based on the sanitizedDaysArray
+                                daysString = validDays.map(day => {
+                                    const isPresent = filteredDaysArray.includes(day.toLowerCase());
+                                    return `${day.toLowerCase()}="${isPresent ? 'true' : 'false'}"`;
+                                }).join(" ");
+                            }
 
                             const xmlData = `<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
                             <AvailRateUpdate locatorID="1">

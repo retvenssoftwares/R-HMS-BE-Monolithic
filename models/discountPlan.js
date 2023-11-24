@@ -45,6 +45,7 @@ const discountPlanSchema = new mongoose.Schema({
             ratePlans: [{
                 rateplanId: { type: String, default: '' },
                 newRatePlanPrice: { type: String, default: "" },
+                newRatePlanName: { type: String, default: '' },
                 extraAdultRate: { type: String, default: "" },
                 extraChildRate: { type: String, default: "" }
             }]

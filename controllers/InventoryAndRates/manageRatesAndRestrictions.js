@@ -33,11 +33,6 @@ const manageRates = async (req, res, io) => {
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
-        const findModel = await mmtModel.findOne({ userId }).lean();
-        if (!findModel) {
-            return res.status(404).json({ message: "Invalid userId entered", statuscode: 404 })
-        }
-        const { mmtHotelCode, accessToken } = findModel
 
         if (result.success) {
             // Get today's date as a string in "yyyy-mm-dd" format
@@ -61,6 +56,12 @@ const manageRates = async (req, res, io) => {
             // console.log(occupancy, typeof occupancy)
             //update ota rates
             if (req.body.otaId) {
+                const findModel = await mmtModel.findOne({ userId }).lean();
+                if (!findModel) {
+                    return res.status(404).json({ message: "Invalid userId entered", statuscode: 404 })
+                }
+
+                const { mmtHotelCode, accessToken } = findModel
                 const connectionId = req.body.connectionId
                 // console.log("mmt")
                 // Find the rate document for the specified roomTypeId

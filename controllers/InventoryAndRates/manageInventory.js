@@ -24,12 +24,7 @@ const manageInventory = async (req, res, io) => {
 
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
-    //
-    const findModel = await mmtModel.findOne({ userId }).lean();
-    if (!findModel) {
-      return res.status(404).json({ message: "Invalid userId entered", statuscode: 404 })
-    }
-    const { mmtHotelCode, accessToken } = findModel
+
 
     //
     const mapModel = await mapData.findOne({ userId }).lean();
@@ -102,6 +97,13 @@ const manageInventory = async (req, res, io) => {
 
       //
       if (req.body.otaId) {
+
+        //
+        const findModel = await mmtModel.findOne({ userId }).lean();
+        if (!findModel) {
+          return res.status(404).json({ message: "Invalid userId entered", statuscode: 404 })
+        }
+        const { mmtHotelCode, accessToken } = findModel
         // Check if it's for making the API request
         if (isAddedInventory) {
           const daysArray = req.body.days

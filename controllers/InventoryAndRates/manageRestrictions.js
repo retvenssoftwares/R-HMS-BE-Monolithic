@@ -9,11 +9,7 @@ const manageRestrictions = async (req, res, io) => {
         const { userId, propertyId, roomTypeId, startDate, ratePlanId, endDate, source, stopSell, isStopSell, isCOA, COA, isCOD, COD, isMinimumLOS, minimumLOS, isMaximumLOS, maximumLOS, days } = req.body;
         const authCodeValue = req.headers['authcode'];
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
-        const findModel = await mmtModel.findOne({ userId }).lean();
-        if (!findModel) {
-            return res.status(404).json({ message: "Invalid userId entered", statuscode: 404 })
-        }
-        const { mmtHotelCode, accessToken } = findModel
+    
 
         if (result.success) {
             // Get today's date as a string in "yyyy-mm-dd" format
@@ -75,6 +71,13 @@ const manageRestrictions = async (req, res, io) => {
             const otaRatePlanCode = findRecord.mappedRatePlanData[existingEntryIndex].otaRatePlanCode
 
             if (req.body.otaId) {
+                //
+                const findModel = await mmtModel.findOne({ userId }).lean();
+                if (!findModel) {
+                    return res.status(404).json({ message: "Invalid userId entered", statuscode: 404 })
+                }
+                const { mmtHotelCode, accessToken } = findModel
+
                 const apiUrl = process.env.mmtV3ARI
                 if (isStopSell) {
                     const xmlData = `<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
@@ -245,7 +248,7 @@ const manageRestrictions = async (req, res, io) => {
                         findRestrictions.manageRestrictions.stopSell.push({ date: dateString, stopSell: stopSell });
                     }
 
-                    if(isStopSell && i===0){
+                    if (isStopSell && i === 0) {
 
                     }
                 }

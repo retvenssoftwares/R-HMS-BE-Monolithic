@@ -112,11 +112,10 @@ const packagePlan = new mongoose.Schema({
           type: String,
           default: "",
         },
-        packageTotal:{
-          type: String,
-          default: "",
-        },
-        
+        changeType: {
+          type: String, //increase or decrease
+          default: ""
+      }, 
       }],
       logId: {
         type: String,
@@ -131,10 +130,6 @@ const packagePlan = new mongoose.Schema({
             default: "",
           },
           inclusionName: {
-            type: String,
-            default: "",
-          },
-          inclusionType: {
             type: String,
             default: "",
           },
@@ -160,32 +155,43 @@ const packagePlan = new mongoose.Schema({
         },
   
       ],
+  
+      barRates:{
+        packageTotal:[{
 
-
-      inclusionTotal: [{
-        inclusionTotal:{
-          type: String,
+          packageTotal:{
+            type: String,
           default: "",
-        },
-        logId: {
-          type: String,
-          default: ""
-      },
-     
-       
-      }],
-      ratePlanTotal: [{
-        ratePlanTotal:{
-          type: String,
-          default: "",
-        },
-        logId: {
-          type: String,
-          default: ""
-      },
-     
-      }],
+          },
+          logId: {
+            type: String,
+            default: ""
+           },
 
+        }],
+        extraAdultRate:[{
+          extraAdultRate:{
+            type: String,
+            default: "",
+          },
+          logId: {
+            type: String,
+            default: ""
+           },
+         
+        }],
+        extraChildRate:[{
+          extraChildRate:{
+            type: String,
+            default: "",
+          },
+          logId: {
+            type: String,
+            default: ""
+           },
+         
+        }],
+      }
 },
 {
     versionKey: false,

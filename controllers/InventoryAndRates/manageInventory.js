@@ -3,7 +3,8 @@ import manageInventoryModel from "../../models/manageInventory.js";
 import roomType from "../../models/roomType.js";
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
 import getInventory from "../InventoryAndRates/getInventory.js";
-
+import mmtModel from "../../models/OTAs/mmtModel.js"
+import mapData from "../../models/OTAs/mappedRoomsAndRates.js"
 const manageInventory = async (req, res, io) => {
   try {
     const {
@@ -22,12 +23,39 @@ const manageInventory = async (req, res, io) => {
 
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
+    //
+    const findModel = await mmtModel.findOne({ userId }).lean();
+    if (!findModel) {
+        return res.status(404).json({ message: "Invalid userId entered", statuscode: 404 })
+    }
+    const { mmtHotelCode, accessToken } = findModel
+
+//
+    const mapModel = await mapData.findOne({ userId }).lean();
+    if (!mapModel) {
+      return res.status(404).json({ message: "Incorrect userId", statuscode: 404 });
+  }
+  const existingEntryIndex = mapModel.mappedOTARoomData.findIndex(
+      (entry) => entry.roomTypeId === roomTypeId
+  );
+
+  const otaRoomTypeCode = mapModel.mappedOTARoomData[existingEntryIndex].otaRoomTypeCode
+  // console.log(findRecord.mappedRatePlanData[existingEntryIndex].otaRatePlanCode)
+
+  if (existingEntryIndex === -1) {
+      return res.status(400).json({ message: "Invalid otaRoomTypeCode", statuscode: "400" });
+  }
+
+
     if (result.success) {
       // Get today's date as a string in "yyyy-mm-dd" format
       const today = new Date().toISOString().split("T")[0];
 
       // Parse startDate as a Date object
       const startDateObj = new Date(startDate).toISOString().split("T")[0];
+
+        // Parse startDate as a Date object
+        const endDateObj = new Date(endDate).toISOString().split('T')[0];
 
       // Check if startDate is older than today's date
       if (startDateObj < today) {
@@ -72,6 +100,65 @@ const manageInventory = async (req, res, io) => {
           statuscode: 400,
         });
       }
+      const apiUrl = process.env.mmtV3ARI
+
+      //
+      if(isAddedInventory){
+        const xmlData =`<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
+        <AvailRateUpdate locatorID="1">
+            <DateRange from="${startDateObj}" to="${endDateObj}" sun="true" mon="false" tue="false" wed="false" thu="false" fri="true" sat="true"/>
+            <Availability code="${otaRoomTypeCode}" count="${inventory}" closed="${isAddedInventory}" />
+        </AvailRateUpdate>
+    </AvailRateUpdateRQ>`;
+    
+      // Set headers
+      const headers = {
+        'Content-Type': 'application/xml',
+        'channel-token': process.env.mmtChannelToken,
+        'bearer-token': accessToken,
+    };
+     // Make the Axios POST request
+     axios.post(apiUrl, xmlData, { headers })
+     .then(response => {
+         console.log('API Response:', response.data);
+         // return res.status(200).json({ message: "Connection successfully established", statuscode: 200 })
+     })
+     .catch(error => {
+         console.error('Error making API request:', error.message);
+         // return res.status(500).json({ message: "Some error occured during connection, please try again later", statuscode: 500 })
+     });
+
+      }
+
+      //
+      if(isBlockedInventory){
+
+        const xmlData =`<AvailRateUpdateRQ hotelCode="${mmtHotelCode}" timeStamp="">
+        <AvailRateUpdate locatorID="1">
+            <DateRange from="${startDateObj}" to="${endDateObj}" sun="true" mon="false" tue="false" wed="false" thu="false" fri="true" sat="true"/>
+            <Availability code="${otaRoomTypeCode}" count="${inventory}" closed="${isBlockedInventory}" />
+        </AvailRateUpdate>
+    </AvailRateUpdateRQ>`;
+    
+      // Set headers
+      const headers = {
+        'Content-Type': 'application/xml',
+        'channel-token': process.env.mmtChannelToken,
+        'bearer-token': accessToken,
+    };
+     // Make the Axios POST request
+     axios.post(apiUrl, xmlData, { headers })
+     .then(response => {
+         console.log('API Response:', response.data);
+         // return res.status(200).json({ message: "Connection successfully established", statuscode: 200 })
+     })
+     .catch(error => {
+         console.error('Error making API request:', error.message);
+         // return res.status(500).json({ message: "Some error occured during connection, please try again later", statuscode: 500 })
+     });
+
+      }
+
 
       for (let i = 0; i <= dayDifference; i++) {
         const date = new Date(start);

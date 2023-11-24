@@ -75,6 +75,7 @@ const getRoomAvailability = async (req, res) => {
 
                 const holdBookings = await holdData.find({ propertyId: propertyId, "roomTypeId.0.roomTypeId": roomTypeId,  "checkInDate.0.checkInDate": { $gte: checkInDateISO, $lt: checkOutDateISO }, });
                 const inventoryValues = holdBookings.map(booking => booking.inventory);
+                
 
                 let currentDate = new Date(checkInDate);
 

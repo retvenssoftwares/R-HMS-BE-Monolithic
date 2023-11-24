@@ -59,6 +59,8 @@ export const getCompanyReservation = async (req, res) => {
                     reservation.ratePlanName[0] &&
                     reservation.ratePlanName[0].ratePlanName || "",
 
+                employeeId : reservation.employeeId || "",
+                roomNo : reservation.roomNo || ""
                 
             };
             reservationData.push(data);

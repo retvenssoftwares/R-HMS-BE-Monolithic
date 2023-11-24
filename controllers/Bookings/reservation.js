@@ -328,7 +328,7 @@ export const createResrvation = async (req, res) => {
       }
     }, res);
 
-  //  console.log(availableRooms)
+  console.log(availableRooms)
 
     if (availableRooms){
       const result = {};

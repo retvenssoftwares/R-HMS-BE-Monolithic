@@ -145,7 +145,7 @@ const postBarRatePlan = async (req, res) => {
       ],
       displayStatus: [
         {
-          displayStatus: savedBarRatePlan.displayStatus[0].displayStatus[0],
+          displayStatus: savedBarRatePlan.displayStatus[0].displayStatus,
           logId:savedBarRatePlan.shortCode[0].logId,
           deviceType: deviceType,
           ipAddress:ipAddress,
@@ -153,6 +153,14 @@ const postBarRatePlan = async (req, res) => {
           modifiedOn:currentUTCTime
         },
       ],
+      mealPlan: [{
+        mealPlanId: mealPlanId,
+        logId:savedBarRatePlan.mealPlan[0].logId,
+        deviceType: deviceType,
+        ipAddress:ipAddress,
+        userId:userId,
+        modifiedOn:currentUTCTime
+      }],
       ratePlanName: [
         {
           ratePlanName: ratePlanName,
@@ -165,14 +173,6 @@ const postBarRatePlan = async (req, res) => {
         roomType: [{
           roomTypeId: roomTypeId,
           logId:savedBarRatePlan.roomType[0].logId,
-          deviceType: deviceType,
-          ipAddress:ipAddress,
-          userId:userId,
-          modifiedOn:currentUTCTime
-        }],
-        mealPlan: [{
-          mealPlanId: mealPlanId,
-          logId:savedBarRatePlan.mealPlan[0].logId,
           deviceType: deviceType,
           ipAddress:ipAddress,
           userId:userId,
@@ -191,7 +191,7 @@ const postBarRatePlan = async (req, res) => {
             logId: savedBarRatePlan.barRates.roomBaseRate[0].logId,
             roomBaseRate:savedBarRatePlan.barRates.roomBaseRate[0].roomBaseRate,
             deviceType: deviceType,
-            ipAddress: clientIp,
+            ipAddress: ipAddress,
             userId: userId,
             modifiedOn:currentUTCTime
           }],
@@ -199,7 +199,7 @@ const postBarRatePlan = async (req, res) => {
             logId: savedBarRatePlan.barRates.mealCharge[0].logId,
             mealCharge:savedBarRatePlan.barRates.mealCharge[0].mealCharge,
             deviceType: deviceType,
-            ipAddress: clientIp,
+            ipAddress: ipAddress,
             userId: userId,
             modifiedOn:currentUTCTime
           }],
@@ -208,7 +208,7 @@ const postBarRatePlan = async (req, res) => {
             logId: savedBarRatePlan.barRates.inclusionCharge[0].logId,
             inclusionCharge:savedBarRatePlan.barRates.inclusionCharge[0].inclusionCharge,
             deviceType: deviceType,
-            ipAddress: clientIp,
+            ipAddress: ipAddress,
             userId: userId,
             modifiedOn:currentUTCTime
           }],
@@ -216,7 +216,7 @@ const postBarRatePlan = async (req, res) => {
             logId: savedBarRatePlan.barRates.roundUp[0].logId,
             roundUp:savedBarRatePlan.barRates.roundUp[0].roundUp,
             deviceType: deviceType,
-            ipAddress: clientIp,
+            ipAddress: ipAddress,
             userId: userId,
             modifiedOn:currentUTCTime
           }],
@@ -224,15 +224,15 @@ const postBarRatePlan = async (req, res) => {
             logId: savedBarRatePlan.barRates.extraAdultRate[0].logId,
             extraAdultRate:savedBarRatePlan.barRates.extraAdultRate[0].extraAdultRate,
             deviceType: deviceType,
-            ipAddress: clientIp,
+            ipAddress: ipAddress,
             userId: userId,
             modifiedOn:currentUTCTime
           }],
           extraChildRate: [{
             logId: savedBarRatePlan.barRates.extraChildRate[0].logId,
-            extraAdultRate:savedBarRatePlan.barRates.extraChildRate[0].extraChildRate,
+            extraChildRate:savedBarRatePlan.barRates.extraChildRate[0].extraChildRate,
             deviceType: deviceType,
-            ipAddress: clientIp,
+            ipAddress: ipAddress,
             userId: userId,
             modifiedOn:currentUTCTime
           }],
@@ -240,7 +240,7 @@ const postBarRatePlan = async (req, res) => {
             logId: savedBarRatePlan.barRates.ratePlanTotal[0].logId,
             ratePlanTotal:savedBarRatePlan.barRates.ratePlanTotal[0].ratePlanTotal,
             deviceType: deviceType,
-            ipAddress: clientIp,
+            ipAddress: ipAddress,
             userId: userId,
             modifiedOn:currentUTCTime
           }],

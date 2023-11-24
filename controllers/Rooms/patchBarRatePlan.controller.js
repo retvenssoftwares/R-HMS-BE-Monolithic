@@ -5,7 +5,7 @@ import barPlanLogsModel from "../../models/LogModels/barRatePlanLogs.js";
 import Randomstring from "randomstring";
 const patchBarRatePlan = async (req, res) => {
     try {
-        const { userId, shortCode, ratePlanName, inclusion,inclusionPlan,roomBaseRate,mealCharge,inclusionCharge,roundUp,extraAdultRate,extraChildRate,ratePlanTotal} = req.body;
+        const { userId, shortCode, ratePlanName, inclusion,inclusionPlan,roomBaseRate,mealCharge,inclusionCharge,roundUp,extraAdultRate,extraChildRate,ratePlanTotal,displayStatus,deviceType,ipAddress} = req.body;
         const barRatePlanId = req.params.barRatePlanId;
         const authCodeValue = req.headers['authcode'];
         const findUser = await verifiedUser.findOne({ userId });
@@ -58,6 +58,13 @@ const patchBarRatePlan = async (req, res) => {
                 logId:inclusionPlanLog
             };
             findBarRatePlan.inclusion.unshift(inclusionObject);
+        }
+        if (displayStatus) {
+            const displayStatusObject = {
+                displayStatus: displayStatus,
+                logId:Randomstring.generate(10)
+            };
+            findBarRatePlan.displayStatus.unshift(displayStatusObject);
         }
 
         if (roomBaseRate) {
@@ -121,7 +128,7 @@ const patchBarRatePlan = async (req, res) => {
         ///
         const requestData = {
             body: req.body,
-            headers: req.headers, // If needed, you can include headers
+           // headers: req.headers, // If needed, you can include headers
             // Add other request data you want to store
         };
         const requestDataString = JSON.stringify(requestData)
@@ -130,8 +137,10 @@ const patchBarRatePlan = async (req, res) => {
 
 
         const responseData = {
-            message: res.statusMessage, // Store the response message
-            statuscode: res.statusCode, // Store the response status code
+            message: "inclusion plan updated",
+            statuscode: res.statusCode,
+               // Store the response message
+              // Store the response status code
             // Add other response data you want to store
         };
         const responseString = JSON.stringify(responseData)
@@ -143,7 +152,9 @@ const patchBarRatePlan = async (req, res) => {
                 shortCode:shortCode,
                 logId:shortcodeLog,
                 modifiedOn:currentUTCTime,
-                userId:req.body.userId
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
             };
             logBarRatePlan.shortCode.unshift(shortCodeObject)
         }
@@ -153,9 +164,22 @@ const patchBarRatePlan = async (req, res) => {
                 ratePlanName:ratePlanName,
                 logId:ratePlanNameLog,
                 modifiedOn:currentUTCTime,
-                userId:req.body.userId
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
             };
             logBarRatePlan.ratePlanName.unshift(ratePlanNameObject)
+        }
+        if(displayStatus){
+            const displayStatusObject ={
+                displayStatus:displayStatus,
+                logId:updatedratePlan.displayStatus[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            logBarRatePlan.displayStatus.unshift(displayStatusObject)
         }
 
         if (inclusionPlan) {
@@ -165,10 +189,88 @@ const patchBarRatePlan = async (req, res) => {
                 modifiedOn:currentUTCTime,
                 userId:req.body.userId,
                 request: requestDataString,
-                response: responseString
-
+                response: responseString,
+                deviceType:deviceType,
+                ipAddress:ipAddress
             };
             logBarRatePlan.inclusion.unshift(inclusionObject);
+        }
+        if (roomBaseRate) {
+            const roomBaseRateObject = {
+                roomBaseRate: roomBaseRate,
+                logId:updatedratePlan.barRates.roomBaseRate[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            logBarRatePlan.barRates.roomBaseRate.unshift(roomBaseRateObject);
+        }
+        if (mealCharge) {
+            const mealChargeObject = {
+                mealCharge: mealCharge,
+                logId:updatedratePlan.barRates.mealCharge[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            logBarRatePlan.barRates.mealCharge.unshift(mealChargeObject);
+        }
+        if (inclusionCharge) {
+            const inclusionChargeObject = {
+                inclusionCharge: inclusionCharge,
+                logId:updatedratePlan.barRates.inclusionCharge[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            logBarRatePlan.barRates.inclusionCharge.unshift(inclusionChargeObject);
+        }
+        if (roundUp) {
+            const roundUpObject = {
+                roundUp: roundUp,
+                logId:updatedratePlan.barRates.roundUp[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            logBarRatePlan.barRates.roundUp.unshift(roundUpObject);
+        }
+        if (extraAdultRate) {
+            const extraAdultRateObject = {
+                extraAdultRate: extraAdultRate,
+                logId:updatedratePlan.barRates.extraAdultRate[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            logBarRatePlan.barRates.extraAdultRate.unshift(extraAdultRateObject);
+        }
+        if (extraChildRate) {
+            const extraChildRateObject = {
+                extraChildRate: extraChildRate,
+                logId:updatedratePlan.barRates.extraChildRate[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            logBarRatePlan.barRates.extraChildRate.unshift(extraChildRateObject);
+        }
+        if (ratePlanTotal) {
+            const ratePlanTotalObject = {
+                ratePlanTotal: ratePlanTotal,
+                logId:updatedratePlan.barRates.ratePlanTotal[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            logBarRatePlan.barRates.ratePlanTotal.unshift(ratePlanTotalObject);
         }
 
 

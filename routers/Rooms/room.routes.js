@@ -22,6 +22,7 @@ import updateBarRatePlan from '../../controllers/Rooms/patchBarRatePlan.controll
 import getFloors from '../../controllers/Rooms/getPropertyFloors.js';
 import { packageRatePlan, updatePackageRatePlan } from '../../controllers/Rooms/package.js';
 import companyRatePlans from '../../controllers/Rooms/getCompanyRatePlan.js';
+import allRatePlans from "../../controllers/Rooms/getAllRatePlan.js"
 
 //check room availabilty
 import getRoom from '../../controllers/Rooms/getRoomsList.js';
@@ -95,7 +96,7 @@ router.get("/api/getRoomList",getRoom);
 router.get("/api/getRoomType", getRoomsTypes)
 
 //get all rate plans
-import allRatePlans from "../../controllers/Rooms/getAllRatePlan.js"
+
 router.get("/api/getAllRatePlans", allRatePlans);
 
 export default router;

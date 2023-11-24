@@ -13,9 +13,9 @@ const getRatePlansList = async (req, res) => {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }
 
-        const findRatePlans = await barRatePlan.find({ "roomType.roomTypeId": roomTypeId })
+        const findRatePlans = await barRatePlan.find({ "roomType.roomTypeId": roomTypeId,"displayStatus.0.displayStatus":"1"})
             .select("ratePlanName propertyId barRatePlanId roomType barRates")
-            .lean();
+            .lean(); 
 
         if (findRatePlans.length === 0) {
             return res.status(200).json({ message: "No rateplans found", status: 200 });

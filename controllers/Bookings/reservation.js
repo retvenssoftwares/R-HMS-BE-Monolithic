@@ -358,6 +358,8 @@ export const createResrvation = async (req, res) => {
 
         const created = booking.createdBy[0].createdBy || ""
 
+        console.log(baseRates)
+
         if(baseRates){
           var flattenedBaseRates = baseRates.map(item => ({
             date: item.date,

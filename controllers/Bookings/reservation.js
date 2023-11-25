@@ -84,101 +84,105 @@ export const createResrvation = async (req, res) => {
 
   let userRole = findUser.role[0].role;
 
-  for (let i = 0; i < guestInfo.length; i++) {
-    if (guestInfo[i].guestId) {
-      guestIdArray.push({ guestId: guestInfo[i].guestId });
-    } else {
-      const guestDetails = new guestCollections({
-        guestId: randomString.generate(10),
+  try{
 
-        salutation: [
-          {
-            salutation: guestInfo[i].salutation,
+    for (let i = 0; i < guestInfo.length; i++) {
+      if (guestInfo[i].guestId) {
+        guestIdArray.push({ guestId: guestInfo[i].guestId });
+      } else {
+        const guestDetails = new guestCollections({
+          guestId: randomString.generate(10),
+  
+          salutation: [
+            {
+              salutation: guestInfo[i].salutation,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          guestName: [
+            {
+              guestName: guestInfo[i].guestName,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          phoneNumber: [
+            {
+              phoneNumber: guestInfo[i].phoneNumber,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          emailAddress: [
+            {
+              emailAddress: guestInfo[i].emailAddress,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          addressLine1: [
+            {
+              addressLine1: guestInfo[i].addressLine1,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          addressLine2: [
+            {
+              addressLine2: guestInfo[i].addressLine2,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          country: [
+            {
+              country: guestInfo[i].country,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          state: [
+            {
+              state: guestInfo[i].state,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          city: [
+            {
+              city: guestInfo[i].city,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          pinCode: [
+            {
+              pinCode: guestInfo[i].pinCode,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          c_form: [{
+            c_form: guestInfo[i].c_form,
             logId: randomString.generate(10),
-          },
-        ],
-
-        guestName: [
-          {
-            guestName: guestInfo[i].guestName,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        phoneNumber: [
-          {
-            phoneNumber: guestInfo[i].phoneNumber,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        emailAddress: [
-          {
-            emailAddress: guestInfo[i].emailAddress,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        addressLine1: [
-          {
-            addressLine1: guestInfo[i].addressLine1,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        addressLine2: [
-          {
-            addressLine2: guestInfo[i].addressLine2,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        country: [
-          {
-            country: guestInfo[i].country,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        state: [
-          {
-            state: guestInfo[i].state,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        city: [
-          {
-            city: guestInfo[i].city,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        pinCode: [
-          {
-            pinCode: guestInfo[i].pinCode,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        
-
-
-        c_form: [{
-          c_form: guestInfo[i].c_form,
-          logId: randomString.generate(10),
-        }],
-
-      });
-
-      const guest = await guestDetails.save();
-
-
-      // booking details
-      guestIdArray.push({ guestId: guest.guestId });
+          }],
+  
+        });
+  
+        const guest = await guestDetails.save();
+  
+  
+        // booking details
+        guestIdArray.push({ guestId: guest.guestId });
+      }
     }
+  
+  }catch{
+    console.log("gfchvjbknlm;") 
   }
 
+  
   // create reservation
   const createBooking = new bookingsModel({
     guestId: guestIdArray,
@@ -287,6 +291,7 @@ export const createResrvation = async (req, res) => {
   const details = await createBooking.save();
 
 
+
   const data = details.roomDetails[0].roomDetails;
 
   //add reservation ids
@@ -328,7 +333,7 @@ export const createResrvation = async (req, res) => {
       }
     }, res);
 
-  console.log(availableRooms)
+ 
 
     if (availableRooms){
       const result = {};
@@ -341,8 +346,6 @@ export const createResrvation = async (req, res) => {
         result[room.roomTypeId] = room.minimumInventory;
       }
 
-
-
       // Function to get guest details by guestId
       async function getGuestDetails(guestId) {
         return await guestCollections.findOne({ guestId });
@@ -351,6 +354,8 @@ export const createResrvation = async (req, res) => {
 
       // Function to create and save hold data
       async function createAndSaveHoldData(booking, c_form, inclusion, adult, childs, charge, extraAdult, extraChild, guestId, remark, internalNote, ratePlanName, roomTypeId, index, ratePlan, name, baseRates, guestDetails) {
+
+        const created = booking.createdBy[0].createdBy || ""
 
         const flattenedBaseRates = baseRates.map(item => ({
           date: item.date,
@@ -365,19 +370,42 @@ export const createResrvation = async (req, res) => {
           bookingSourceId: item.barRateReservation[0].bookingSourceId
         }));
 
+        const reservationSummaryDetails = booking.reservationRate.map((item)=>({
+          roomCharges : item.roomCharges[0].roomCharges || "",
+          extras : item.roomCharges[0].extras || "",
+          taxes : item.roomCharges[0].taxes || "",
+          from : item.roomCharges[0].from || "",
+          to : item.roomCharges[0].to || "",
+          grandTotal : item.roomCharges[0].grandTotal || ""
+        }))
+
+        const payment = booking.paymentDetails.map((item)=>({
+          billTo : item.billTo,
+          paymentNote : item.paymentNote
+        }))
+
+        // const cardDeatils = booking.cardDeatils.map((item)=>({
+        //   nameOnCard : item.cardDeatils[0].nameOnCard || "",
+        //   cardNumber : item.cardDeatils[0].cardNumber || "",
+        //   cvv : item.cvv[0].cvv || "",
+        //   expiryDate : item.expiryDate[0].expiryDate || ""
+        // }))
+
 
         const nightCount = booking.nightCount[0].nightCount
-       
+
         const form = c_form.map((item) => ({
           c_form: item.c_form,
           logId: item.logId
         }))
 
 
+
         const hold = new holdData({
           bookingId: booking.bookingId || "",
           reservationId: booking.reservationIds && booking.reservationIds[index] || "",
           propertyId: booking.propertyId || "",
+      
 
 
           roomTypeId: [{
@@ -401,12 +429,16 @@ export const createResrvation = async (req, res) => {
             barRateReservation: bar,
             logId : randomString.generate(10)
           }],
+          
           c_form: form,
+
+
 
           nightCount :[{
             nightCount : nightCount || "",
             logId : randomString.generate(10)
           }],
+
           extraInclusionId: inclusion || "",
 
           extraAdultRate:[{
@@ -523,11 +555,37 @@ export const createResrvation = async (req, res) => {
             ratePlanName : ratePlanName || '',
             logId: randomString.generate(10)
           }],
-          
+
+          createdBy : [{
+            createdBy : created,
+            logId : randomString.generate(10)
+          }],
+
           baseRates: [{
             baseRates: flattenedBaseRates,
             logId : randomString.generate(10)
           }],
+
+          reservationRate : [{
+            roomCharges : reservationSummaryDetails,
+            logId : randomString.generate(10)
+          }],
+
+          applyDiscount :[{
+            applyDiscount : booking.applyDiscount[0].applyDiscount || "",
+            logId : randomString.generate(10)
+          }],
+
+          paymentDetails : [{
+            paymentDetails : payment,
+            logId : randomString.generate(10)
+          }],
+
+          // cardDetails : [{
+          //   cardDetails : cardDeatils,
+          //   logId : randomString.generate(10)
+          // }]
+          
         });
 
         await hold.save();
@@ -538,8 +596,8 @@ export const createResrvation = async (req, res) => {
       await Promise.all(roomDetailArray.map(async (roomDetail, index) => {
         const roomTypeId = roomDetail.roomTypeId;
         const ratePlanId = roomDetail.ratePlanId
-        const remark = roomDetail.remark[0].specialRemark;
-        const internalNote = roomDetail.remark[0].internalNote
+        const remark = roomDetail.remark[0]?.specialRemark || "";
+        const internalNote = roomDetail.remark[0]?.internalNote || ""
 
 
         // check Rate plan for that room
@@ -560,13 +618,13 @@ export const createResrvation = async (req, res) => {
        
       // room rate extra adult extra child rate 
      
-        const ratePlan = filteredRateResponse[0].barRatePlanId
-        const ratePlanName = filteredRateResponse[0].ratePlanName
-        const baseRates = filteredRateResponse[0].baseRates
+        const ratePlan = filteredRateResponse[0]?.barRatePlanId || ""
+        const ratePlanName = filteredRateResponse[0]?.ratePlanName || ""
+        const baseRates = filteredRateResponse[0]?.baseRates || ""
 
 
 
-        const guestId = booking.guestId.length === 1 ? booking.guestId[0].guestId : booking.guestId[index].guestId;
+        const guestId = booking.guestId.length === 1 ? booking.guestId[0]?.guestId : booking.guestId[index]?.guestId || "";
 
 
         // filds require in the room Details 
@@ -583,8 +641,8 @@ export const createResrvation = async (req, res) => {
         // check room requriments  
         if (dictionary[roomTypeId] && dictionary[roomTypeId] <= result[roomTypeId]) {
           const guestDetails = await getGuestDetails(guestId);
-          const c_form = guestDetails.c_form
-          const roomTypeName = await roomType.findOne({ roomTypeId: roomTypeId })
+          const c_form = guestDetails.c_form || ""
+          const roomTypeName = await roomType.findOne({ roomTypeId: roomTypeId})
           const name = roomTypeName.roomTypeName[0].roomTypeName || ""
 
           return createAndSaveHoldData(booking, c_form, inclusion, adult, childs, charge, extraAdult, extraChild, guestId, remark, internalNote, ratePlanName, roomTypeId, index, ratePlan, name, baseRates, guestDetails);

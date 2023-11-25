@@ -10,7 +10,7 @@ const allRatePlans = async (req, res) => {
         const authCodeValue = req.headers['authcode']
 
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
-        const companyRatePlan = await companyRatePlanModel.find({ propertyId }).lean();
+        const companyRatePlan = await companyRatePlanModel.find({ propertyId,"displayStatus.0.displayStatus":"1" }).sort({_id:-1}).lean();
 
         if (result.success) {
             //CompanyRatePlan
@@ -39,7 +39,7 @@ const allRatePlans = async (req, res) => {
 
             //BarRatePlan
             //Map roomTypeId from barRatePlan
-            const barRatePlanData = await barRatePlan.find({ propertyId }).lean();
+            const barRatePlanData = await barRatePlan.find({ propertyId,"displayStatus.0.displayStatus":"1" }).sort({_id:-1}).lean();
             const barroomTypeIds = barRatePlanData.map((item) => item.roomType[0].roomTypeId);
             const roomTypeDatas = await roomTypeModel.find({ roomTypeId: { $in: barroomTypeIds } });
 
@@ -64,7 +64,7 @@ const allRatePlans = async (req, res) => {
 
             //PackageRatePlan
             //Map roomTypeId from packageRatePlan
-            const PackageRatePlanData = await packageModel.find({ propertyId }).lean();
+            const PackageRatePlanData = await packageModel.find({ propertyId,"displayStatus.0.displayStatus":"1" }).sort({_id:-1}).lean();
             const packageroomTypeIds = PackageRatePlanData.map((item) => item.roomTypeId);
             const packageRoomTypeDatas = await roomTypeModel.find({ roomTypeId: { $in: packageroomTypeIds } });
 
@@ -88,45 +88,31 @@ const allRatePlans = async (req, res) => {
 
 
             //discountPlan
-            
+             //Map roomTypeId from discountRatePlan
+             const discountRatePlanData = await discountPlan.find({ propertyId,"displayStatus.0.displayStatus":"1" }).sort({_id:-1}).lean();
+             const discountroomTypeIds = discountRatePlanData.map((item) => item.roomTypeId);
+             const discountRoomTypeDatas = await roomTypeModel.find({ roomTypeId: { $in: discountroomTypeIds } });
+ 
+             // console.log(new Date().getSeconds())
+             const discountRatePlanResponse = discountRatePlanData.map((rate) => {
+                 const matchingRoomTypes = discountRoomTypeDatas.find((room) => room.roomTypeId === rate.roomTypeId
+                 );
+                 const roomTypeName = matchingRoomTypes?.roomTypeName[0]?.roomTypeName || '';
+                 // console.log(roomTypeName)
+                 return {
+                     rateType: rate.rateType || '',
+                     shortCode: rate.shortCode[0].shortCode || '',
+                     ratePlanName: rate.discountName[0].discountName || '',
+                     roomTypeName: roomTypeName,
+                     inclusion: rate.ratePlanInclusion[0].ratePlanInclusion.length || 0,
+                     ratePlanTotal: rate.barRates.discountTotal[0].discountTotal || '',
+                     extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',
+                     extraChildRate: rate.barRates.extraChildRate[0].extraChildRate || '',
+                 };
+             });
 
-            const discountRatePlans = await discountPlan.find({ propertyId }, 'shortCode discountName discountPlanId -_id applicableOn').lean();
-            const mappedDiscountPlansPromises = discountRatePlans.map(async (rate) => {
-                // Get all roomTypeId values from the innermost applicableOn array
-                const innerApplicableOn = rate.applicableOn[0]?.applicableOn || [];
-                const roomTypeIds = innerApplicableOn.map(applicableOn => applicableOn.roomTypeId);
-                
-                // Find roomType documents based on roomTypeIds
-                const findRoomTypes = await roomTypeModel.find({ roomTypeId: { $in: roomTypeIds } });
-            
-                // Create an array of objects with the desired structure
-                const roomTypeNames = findRoomTypes.reduce((acc, roomType) => {
-                    // Get rate plans for the current roomTypeId
-                    const ratePlans = innerApplicableOn.find(applicableOn => applicableOn.roomTypeId === roomType.roomTypeId)?.ratePlans || [];
-            
-                    // Create an object for each rate plan
-                    const ratePlanObjects = ratePlans.map(ratePlan => ({
-                        ratePlanId:ratePlan.rateplanId || '',
-                        roomTypeName: roomType.roomTypeName[0]?.roomTypeName || '',
-                        discountPlanId:rate.discountPlanId,
-                        discountName: rate.discountName[0]?.discountName || '',
-                        ratePlanTotal: ratePlan.newRatePlanTotal || '',
-                        extraAdult: ratePlan.extraAdult || '',
-                        extraChild: ratePlan.extraChild || '',
-                        shortCode: rate.shortCode[0]?.shortCode || '',
-                    }));
-            
-                    return acc.concat(ratePlanObjects);
-                }, []);
-            
-                return  roomTypeNames;
-            });
-            
-            // Use Promise.all to wait for all promises to resolve
-            const mappedDiscountPlans = await Promise.all(mappedDiscountPlansPromises);
-            const flattenedDiscountPlans = mappedDiscountPlans.flat();
-            // return res.status(200).json({ companyRatePlan: CompanyratePlan, barRatePlan: barRatePlanResponse, packageRatePlan: packageRatePlanResponse, statuscode: 200 })
-            return res.status(200).json({ companyRatePlan: CompanyratePlan, barRatePlan: barRatePlanResponse, packageRatePlan: packageRatePlanResponse, discountplans: flattenedDiscountPlans, statuscode: 200 });
+          
+            return res.status(200).json({ companyRatePlan: CompanyratePlan, barRatePlan: barRatePlanResponse, packageRatePlan: packageRatePlanResponse, discountplans: discountRatePlanResponse, statuscode: 200 });
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }

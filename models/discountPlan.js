@@ -3,7 +3,31 @@ import db1 from "../db/conn.js"
 
 const discountPlanSchema = new mongoose.Schema({
     propertyId: { type: String, default: "" },
+
     discountPlanId: { type: String, default: "" },
+
+    rateType:{
+        type: String,
+        default: "",
+    },
+    createdBy:{
+        type:String,
+        default:""
+    },
+    createdOn:{
+        type:String,
+        default:""
+    },
+    roomTypeId:{
+        type: String,
+        default: "",
+    },
+
+    ratePlanId:{
+        type: String,
+        default: "",
+    },
+
     discountName: [{
         discountName: { type: String, default: '' },
         logId: { type: String, default: '' }
@@ -12,6 +36,8 @@ const discountPlanSchema = new mongoose.Schema({
         displayStatus: { type: String, default: '' },
         logId: { type: String, default: '' }
     }],
+
+    //
     shortCode: [{
         shortCode: { type: String, default: '' },
         logId: { type: String, default: '' }
@@ -43,19 +69,77 @@ const discountPlanSchema = new mongoose.Schema({
         }],
         logId: { type: String, default: '' }
     }],
-    applicableOn: [{
-        applicableOn: [{
-            roomTypeId: { type: String, default: '' },
-            ratePlans: [{
-                rateplanId: { type: String, default: '' },
-                newRatePlanPrice: { type: String, default: "" },
-                newRatePlanName: { type: String, default: '' },
-                extraAdultRate: { type: String, default: "" },
-                extraChildRate: { type: String, default: "" }
-            }]
+
+
+  ratePlanInclusion: [{
+        ratePlanInclusion:[{
+          inclusionId: {
+            type: String,
+            default: "",
+          },
+          inclusionName: {
+            type: String,
+            default: "",
+          },
+          postingRule: {
+            type: String,
+            default: "",
+          },
+          chargeRule: {
+            type: String,
+            default: "",
+          },
+          rate: {
+            type: String,
+            default: "",
+          },
         }],
-        logId: { type: String, default: "" }
-    }]
+  
+        logId: {
+          type: String,
+          default: ""
+         },
+        
+        },
+      ],
+      
+    barRates:{
+        discountTotal:[{
+
+            discountTotal:{
+            type: String,
+          default: "",
+          },
+          logId: {
+            type: String,
+            default: ""
+           },
+
+        }],
+        extraAdultRate:[{
+          extraAdultRate:{
+            type: String,
+            default: "",
+          },
+          logId: {
+            type: String,
+            default: ""
+           },
+         
+        }],
+        extraChildRate:[{
+          extraChildRate:{
+            type: String,
+            default: "",
+          },
+          logId: {
+            type: String,
+            default: ""
+           },
+         
+        }],
+      }
+   
 }, {
     versionKey: false
 });

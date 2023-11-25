@@ -1,402 +1,325 @@
 import Randomstring from "randomstring"
 import requestIp from "request-ip"
+import verifiedUser from '../../models/verifiedUsers.js'
 import { findUserByUserIdAndToken, getCurrentUTCTimestamp } from "../../helpers/helper.js";
 import discountPlanModel from "../../models/discountPlan.js";
 import discountPlanLogModel from "../../models/LogModels/discountPlanLogs.js";
 
 const editDiscountPlan = async (req, res) => {
     try {
-        var clientIp = requestIp.getClientIp(req)
-        const { userId, discountPlanId } = req.query
+        const {userId, discountName, shortCode, deviceType, discountType, discountPercent, blackOutDates, discountPrice, validityPeriodFrom, validityPeriodTo,discountTotal,extraAdultRate,extraChildRate,ratePlanInclusion,displayStatus,ipAddress } = req.body
+        const {  discountPlanId } = req.params
+        const authCodeValue = req.headers['authcode'];
+        const findUser = await verifiedUser.findOne({ userId });
 
-        //add validations
+        if (!findUser) {
+            return res.status(404).json({ message: "User not found or invalid userid", statuscode: 404 })
+        }
+        const result = await findUserByUserIdAndToken(userId, authCodeValue)
+
+        
+        if (result.success) {
+              //add validations
         const findDiscountPlan = await discountPlanModel.findOne({ discountPlanId })
+
         const findDiscountPlanLogs = await discountPlanLogModel.findOne({ discountPlanId })
-        if (!findDiscountPlan || !findDiscountPlanLogs || !discountPlanId) {
+        if (!findDiscountPlan || !findDiscountPlanLogs ) {
             return res.status(400).json({ message: "Invalid discountPlanId" })
         }
-        const { discountName, shortCode, deviceType, discountType, discountPercent, blackOutDates, applicableOn, discountPrice, validityPeriodFrom, validityPeriodTo,displayStatus } = req.body
-        const authCodeValue = req.headers['authcode']
-        const result = await findUserByUserIdAndToken(userId, authCodeValue)
-        if (result.success) {
+        const currentUTCTime = await getCurrentUTCTimestamp();
+      
 
-            //edit fields
-            if (discountName) {
-                const logId = Randomstring.generate(10)
-                const update1 = {
-                    $push: {
-                        discountName: {
-                            $each: [{
-                                discountName: discountName,
-                                logId: logId
-                            }],
-                            $position: 0
-                        }
-                    }
-                };
-                const update2 = {
-                    $push: {
-                        discountName: {
-                            $each: [{
-                                logId: logId,
-                                discountName: discountName,
-                                userId: userId,
-                                modifiedDate: await getCurrentUTCTimestamp(),
-                                ipAddress: clientIp,
-                                deviceType: deviceType,
-                            }],
-                            $position: 0
-                        }
-                    }
-                };
+        if(discountName){
+            const discountNameObject ={
+                discountName:discountName,
+                logId: Randomstring.generate(10),
+            };
+            findDiscountPlan.discountName.unshift(discountNameObject)
+        }
+        if(shortCode){
+            const shortCodeObject ={
+                shortCode:shortCode,
+                logId: Randomstring.generate(10),
+            };
+            findDiscountPlan.shortCode.unshift(shortCodeObject)
+        }
+        if(discountType){
+            const discountTypeObject ={
+                discountType:discountType,
+                logId: Randomstring.generate(10),
+            };
+            findDiscountPlan.discountType.unshift(discountTypeObject)
+        }
 
-                const updatedDiscountName = await discountPlanModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update1, {
-                    new: true
-                });
-                const updatedDiscountNameLogs = await discountPlanLogModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update2, {
-                    new: true
-                });
-            }
-            if (displayStatus) {
-                const logId = Randomstring.generate(10)
-                const update1 = {
-                    $push: {
-                        displayStatus: {
-                            $each: [{
-                                displayStatus: displayStatus,
-                                logId: logId
-                            }],
-                            $position: 0
-                        }
-                    }
-                };
-                const update2 = {
-                    $push: {
-                        displayStatus: {
-                            $each: [{
-                                logId: logId,
-                                displayStatus: displayStatus,
-                                userId: userId,
-                                modifiedDate: await getCurrentUTCTimestamp(),
-                                ipAddress: clientIp,
-                                deviceType: deviceType,
-                            }],
-                            $position: 0
-                        }
-                    }
-                };
+        if(displayStatus){
+            const displayStatusObject ={
+                displayStatus:displayStatus,
+                logId: Randomstring.generate(10),
+            };
+            findDiscountPlan.displayStatus.unshift(displayStatusObject)
+        }
 
-                const updatedDiscountName = await discountPlanModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update1, {
-                    new: true
-                });
-                const updatedDiscountNameLogs = await discountPlanLogModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update2, {
-                    new: true
-                });
-            }
+        if(discountPercent){
+            const discountPercentObject ={
+                discountPercent:discountPercent,
+                logId: Randomstring.generate(10),
+            };
+            findDiscountPlan.discountPercent.unshift(discountPercentObject)
+        }
 
-            if (shortCode) {
-                const logId = Randomstring.generate(10)
-                const update1 = {
-                    $push: {
-                        shortCode: {
-                            $each: [{
-                                shortCode: shortCode,
-                                logId: logId
-                            }],
-                            $position: 0
-                        }
-                    }
-                };
+        if(discountPrice){
+            const discountPriceObject ={
+                discountPrice:discountPrice,
+                logId: Randomstring.generate(10),
+            };
+            findDiscountPlan.discountPrice.unshift(discountPriceObject)
+        }
+ // Check for blackOutDates existence and validity
+  const blackOutDatesArray = [];
+ if (blackOutDates && Array.isArray(blackOutDates)) {
+     blackOutDatesArray = blackOutDates.map(dateString => dateString.trim());
+ }
+        if(blackOutDatesArray){
+            const blackOutDatesObject ={
+                blackOutDates:blackOutDatesArray,
+                logId: Randomstring.generate(10),
+            };
+            findDiscountPlan.blackOutDates.unshift(blackOutDatesObject)
+        }
 
-                const update2 = {
-                    $push: {
-                        shortCode: {
-                            $each: [{
-                                logId: logId,
-                                shortCode: shortCode,
-                                userId: userId,
-                                modifiedDate: await getCurrentUTCTimestamp(),
-                                ipAddress: clientIp,
-                                deviceType: deviceType,
-                            }],
-                            $position: 0
-                        }
-                    }
-                };
+        if(validityPeriodFrom){
+            const validityPeriodFromObject ={
+                validityPeriodFrom:validityPeriodFrom,
+                logId: Randomstring.generate(10),
+            };
+            findDiscountPlan.validityPeriodFrom.unshift(validityPeriodFromObject)
+        }
 
-                const updatedShortCode = await discountPlanModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update1, {
-                    new: true
-                });
-                const updatedShortCodeLogs = await discountPlanLogModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update2, {
-                    new: true
-                });
-            }
+        if(validityPeriodTo){
+            const validityPeriodToObject ={
+                validityPeriodTo:validityPeriodTo,
+                logId: Randomstring.generate(10),
+            };
+            findDiscountPlan.validityPeriodTo.unshift(validityPeriodToObject)
+        }
 
-            if (discountType) {
-                const logId = Randomstring.generate(10)
-                const update1 = {
-                    $push: {
-                        discountType: {
-                            $each: [{
-                                discountType: discountType,
-                                logId: logId
-                            }],
-                            $position: 0
-                        }
-                    }
-                };
 
-                const update2 = {
-                    $push: {
-                        discountType: {
-                            $each: [{
-                                logId: logId,
-                                discountType: discountType,
-                                userId: userId,
-                                modifiedDate: await getCurrentUTCTimestamp(),
-                                ipAddress: clientIp,
-                                deviceType: deviceType,
-                            }],
-                            $position: 0
-                        }
-                    }
-                };
+        if (ratePlanInclusion) {
+            const inclusionObject = {
+                ratePlanInclusion: ratePlanInclusion,
+                logId:Randomstring.generate(10),
+            };
+            findDiscountPlan.ratePlanInclusion.unshift(inclusionObject);
+        }
 
-                const updatedDiscountType = await discountPlanModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update1, {
-                    new: true
-                });
-                const updatedDiscountTypeLogs = await discountPlanLogModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update2, {
-                    new: true
-                });
-            }
+        if (extraAdultRate) {
+            const extraAdultRateObject = {
+                extraAdultRate: extraAdultRate,
+                logId: Randomstring.generate(10),
+            };
+            findDiscountPlan.barRates.extraAdultRate.unshift(extraAdultRateObject);
+        }
 
-            if (discountPercent) {
-                const logId = Randomstring.generate(10)
-                const update1 = {
-                    $push: {
-                        discountPercent: {
-                            $each: [{
-                                discountPercent: discountPercent,
-                                logId: logId
-                            }],
-                            $position: 0
-                        }
-                    }
-                };
+        if (extraChildRate) {
+            const extraChildRateObject = {
+                extraChildRate: extraChildRate,
+                logId: Randomstring.generate(10),
+            };
+            findDiscountPlan.barRates.extraChildRate.unshift(extraChildRateObject);
+        }
 
-                const update2 = {
-                    $push: {
-                        discountPercent: {
-                            $each: [{
-                                logId: logId,
-                                discountPercent: discountPercent,
-                                userId: userId,
-                                modifiedDate: await getCurrentUTCTimestamp(),
-                                ipAddress: clientIp,
-                                deviceType: deviceType,
-                            }],
-                            $position: 0
-                        }
-                    }
-                };
+        if (discountTotal) {
+            const discountTotalObject = {
+                discountTotal: discountTotal,
+                logId: Randomstring.generate(10),
+            };
+            findDiscountPlan.barRates.discountTotal.unshift(discountTotalObject);
+        }
 
-                const updateddiscountPercent = await discountPlanModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update1, {
-                    new: true
-                });
-                const updateddiscountPercentLogs = await discountPlanLogModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update2, {
-                    new: true
-                });
-            }
 
-            if (discountPrice) {
-                const logId = Randomstring.generate(10)
-                const update1 = {
-                    $push: {
-                        discountPrice: {
-                            $each: [{
-                                discountPrice: discountPrice,
-                                logId: logId
-                            }],
-                            $position: 0
-                        }
-                    }
-                };
+          ////////////
+          const requestData = {
+            body: req.body,
+           // headers: req.headers, // If needed, you can include headers
+            // Add other request data you want to store
+        };
+        const requestDataString = JSON.stringify(requestData)
 
-                const update2 = {
-                    $push: {
-                        discountPrice: {
-                            $each: [{
-                                logId: logId,
-                                discountPrice: discountPrice,
-                                userId: userId,
-                                modifiedDate: await getCurrentUTCTimestamp(),
-                                ipAddress: clientIp,
-                                deviceType: deviceType,
-                            }],
-                            $position: 0
-                        }
-                    }
-                };
+        const updatedratePlan = await findDiscountPlan.save();
 
-                const updateddiscountPrice = await discountPlanModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update1, {
-                    new: true
-                });
-                const updateddiscountPriceLogs = await discountPlanLogModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update2, {
-                    new: true
-                });
-            }
 
-            if (validityPeriodFrom) {
-                const logId = Randomstring.generate(10)
-                const update1 = {
-                    $push: {
-                        validityPeriodFrom: {
-                            $each: [{
-                                validityPeriodFrom: validityPeriodFrom,
-                                logId: logId
-                            }],
-                            $position: 0
-                        }
-                    }
-                };
+        const responseData = {
+            message: "inclusion plan updated",
+            statuscode: res.statusCode,
+               // Store the response message
+              // Store the response status code
+            // Add other response data you want to store
+        };
+        const responseString = JSON.stringify(responseData)
 
-                const update2 = {
-                    $push: {
-                        validityPeriodFrom: {
-                            $each: [{
-                                logId: logId,
-                                validityPeriodFrom: validityPeriodFrom,
-                                userId: userId,
-                                modifiedDate: await getCurrentUTCTimestamp(),
-                                ipAddress: clientIp,
-                                deviceType: deviceType,
-                            }],
-                            $position: 0
-                        }
-                    }
-                };
+     
 
-                const updatedvalidityPeriodFrom = await discountPlanModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update1, {
-                    new: true
-                });
-                const updatedvalidityPeriodFromLogs = await discountPlanLogModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update2, {
-                    new: true
-                });
-            }
+        ///save log
+        if(discountName){
+            const discountNameObject ={
+                discountName:discountName,
+                logId:updatedratePlan.discountName[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            findDiscountPlanLogs.discountName.unshift(discountNameObject)
+        }
+        if(shortCode){
+            const shortCodeObject ={
+                shortCode:shortCode,
+                logId:updatedratePlan.shortCode[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            findDiscountPlanLogs.shortCode.unshift(shortCodeObject)
+        }
+        if(discountType){
+            const discountTypeObject ={
+                discountType:discountType,
+                logId:updatedratePlan.discountType[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            findDiscountPlanLogs.discountType.unshift(discountTypeObject)
+        }
 
-            if (validityPeriodTo) {
-                const logId = Randomstring.generate(10)
-                const update1 = {
-                    $push: {
-                        validityPeriodTo: {
-                            $each: [{
-                                validityPeriodTo: validityPeriodTo,
-                                logId: logId
-                            }],
-                            $position: 0
-                        }
-                    }
-                };
+        if(discountPercent){
+            const discountPercentObject ={
+                discountPercent:discountPercent,
+                logId:updatedratePlan.discountPercent[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            findDiscountPlanLogs.discountPercent.unshift(discountPercentObject)
+        }
 
-                const update2 = {
-                    $push: {
-                        validityPeriodTo: {
-                            $each: [{
-                                logId: logId,
-                                validityPeriodTo: validityPeriodTo,
-                                userId: userId,
-                                modifiedDate: await getCurrentUTCTimestamp(),
-                                ipAddress: clientIp,
-                                deviceType: deviceType,
-                            }],
-                            $position: 0
-                        }
-                    }
-                };
+        if(discountPrice){
+            const discountPriceObject ={
+                discountPrice:discountPrice,
+                logId:updatedratePlan.discountPrice[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            findDiscountPlanLogs.discountPrice.unshift(discountPriceObject)
+        }
 
-                const updatedvalidityPeriodTo = await discountPlanModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update1, {
-                    new: true
-                });
-                const updatedvalidityPeriodToLogs = await discountPlanLogModel.findOneAndUpdate({ discountPlanId: discountPlanId }, update2, {
-                    new: true
-                });
-            }
+        if(blackOutDatesArray){
+            const blackOutDatesObject ={
+                blackOutDates:blackOutDatesArray,
+                logId:updatedratePlan.blackOutDates[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                request: requestDataString,
+                response: responseString,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            findDiscountPlanLogs.blackOutDates.unshift(blackOutDatesObject)
+        }
 
-            if (blackOutDates) {
-                // Create an object to represent the entire request
-                const requestData = {
-                    body: req.body,
-                    // headers: req.headers
-                };
-                const requestDataString = JSON.stringify(requestData)
-                // Create an object to represent the entire response
-                const responseData = {
-                    message: "Discount rate plan created",
-                    statuscode: res.statusCode,
-                };
-                const responseString = JSON.stringify(responseData)
-                const blackOutDatesArray = blackOutDates.map(dateString => dateString.trim());
-                // console.log(blackOutDatesArray)
-                const logId = Randomstring.generate(10)
-                const newBlackoutObject = {
-                    blackOutDates: blackOutDatesArray,
-                    logId: logId
-                };
-                const newBlackOutDateLogObject = {
-                    blackOutDates: blackOutDatesArray,
-                    logId: logId,
-                    request: requestDataString,
-                    response: responseString,
-                    userId: userId,
-                    modifiedDate: await getCurrentUTCTimestamp(),
-                    ipAddress: clientIp,
-                    deviceType: deviceType
-                }
+        if(validityPeriodFrom){
+            const validityPeriodFromObject ={
+                validityPeriodFrom:validityPeriodFrom,
+                logId:updatedratePlan.validityPeriodFrom[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            findDiscountPlanLogs.validityPeriodFrom.unshift(validityPeriodFromObject)
+        }
 
-                // Use unshift to add the new object at the beginning
-                findDiscountPlan.blackOutDates.unshift(newBlackoutObject);
-                findDiscountPlanLogs.blackOutDates.unshift(newBlackOutDateLogObject)
-                await findDiscountPlan.save();
-                await findDiscountPlanLogs.save();
-            }
+        if(validityPeriodTo){
+            const validityPeriodToObject ={
+                validityPeriodTo:validityPeriodTo,
+                logId:updatedratePlan.validityPeriodTo[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            findDiscountPlanLogs.validityPeriodTo.unshift(validityPeriodToObject)
+        }
 
-            if (applicableOn) {
-                // Create an object to represent the entire request
-                const requestData = {
-                    body: req.body,
-                    // headers: req.headers
-                };
-                const requestDataString = JSON.stringify(requestData)
-                // Create an object to represent the entire response
-                const responseData = {
-                    message: "Discount rate plan created",
-                    statuscode: res.statusCode,
-                };
-                const responseString = JSON.stringify(responseData)
-                const blackOutDatesArray = blackOutDates.map(dateString => dateString.trim());
-                // console.log(blackOutDatesArray)
-                const logId = Randomstring.generate(10)
-                const newApplicableOnObject = {
-                    applicableOn: applicableOn,
-                    logId: logId
-                };
-                const newApplicableOnLogObject = {
-                    applicableOn: applicableOn,
-                    logId: logId,
-                    request: requestDataString,
-                    response: responseString,
-                    userId: userId,
-                    modifiedDate: await getCurrentUTCTimestamp(),
-                    ipAddress: clientIp,
-                    deviceType: deviceType
-                }
+        if(displayStatus){
+            const displayStatusObject ={
+                displayStatus:displayStatus,
+                logId:updatedratePlan.displayStatus[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            findDiscountPlanLogs.displayStatus.unshift(displayStatusObject)
+        }
 
-                // Use unshift to add the new object at the beginning
-                findDiscountPlan.applicableOn.unshift(newApplicableOnObject);
-                findDiscountPlanLogs.applicableOn.unshift(newApplicableOnLogObject)
-                await findDiscountPlan.save();
-                await findDiscountPlanLogs.save();
-            }
+        if (ratePlanInclusion) {
+            const inclusionObject = {
+                ratePlanInclusion: ratePlanInclusion,
+                logId:updatedratePlan.ratePlanInclusion[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                request: requestDataString,
+                response: responseString,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            findDiscountPlanLogs.ratePlanInclusion.unshift(inclusionObject);
+        }
+
+        if (extraAdultRate) {
+            const extraAdultRateObject = {
+                extraAdultRate: extraAdultRate,
+                logId:updatedratePlan.barRates.extraAdultRate[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            findDiscountPlanLogs.barRates.extraAdultRate.unshift(extraAdultRateObject);
+        }
+
+        if (extraChildRate) {
+            const extraChildRateObject = {
+                extraChildRate: extraChildRate,
+                logId:updatedratePlan.barRates.extraChildRate[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            findDiscountPlanLogs.barRates.extraChildRate.unshift(extraChildRateObject);
+        }
+
+        if (discountTotal) {
+            const discountTotalObject = {
+                discountTotal: discountTotal,
+                logId:updatedratePlan.barRates.discountTotal[0].logId,
+                modifiedOn:currentUTCTime,
+                userId:req.body.userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress
+            };
+            findDiscountPlanLogs.barRates.discountTotal.unshift(discountTotalObject);
+        }
+             
+           
+        await findDiscountPlanLogs.save();
 
             return res.status(200).json({ message: "Rate plan updated successfully" })
 

@@ -9,7 +9,7 @@ const manageRestrictions = async (req, res, io) => {
         const { userId, propertyId, roomTypeId, startDate, ratePlanId, endDate, source, stopSell, isStopSell, isCOA, COA, isCOD, COD, isMinimumLOS, minimumLOS, isMaximumLOS, maximumLOS, days } = req.body;
         const authCodeValue = req.headers['authcode'];
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
-    
+
 
         if (result.success) {
             // Get today's date as a string in "yyyy-mm-dd" format
@@ -91,7 +91,7 @@ const manageRestrictions = async (req, res, io) => {
                     </Rate>
                 </AvailRateUpdate>
             </AvailRateUpdateRQ>`
-
+                    console.log(xmlData)
                     // Set headers
                     const headers = {
                         'Content-Type': 'application/xml',
@@ -179,7 +179,7 @@ const manageRestrictions = async (req, res, io) => {
                     </Rate>
                 </AvailRateUpdate>
             </AvailRateUpdateRQ>`
-
+                    console.log(xmlData)
                     // console.log(xmlData)
                     // Set headers
                     const headers = {
@@ -208,7 +208,7 @@ const manageRestrictions = async (req, res, io) => {
                     </Rate>
                 </AvailRateUpdate>
             </AvailRateUpdateRQ>`
-
+                    console.log(xmlData)
                     // console.log(xmlData,"bjh")
                     // Set headers
                     const headers = {

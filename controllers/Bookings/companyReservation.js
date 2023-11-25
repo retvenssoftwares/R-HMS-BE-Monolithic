@@ -4,9 +4,6 @@ import guestCollections from "../../models/guestDetails.js";
 import {
   findUserByUserIdAndToken,
   generateFourDigitRandomNumber,
-
-
-
   getCurrentLocalTimestamp,
   getCurrentUTCTimestamp,
 } from "../../helpers/helper.js";
@@ -66,8 +63,6 @@ export const createCompanyResrvation = async (req, res) => {
       .status(400)
       .json({ message: "Invalid authentication token", statuscode: 400 });
   }
-
-
 
   // Validate the date format
   const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;

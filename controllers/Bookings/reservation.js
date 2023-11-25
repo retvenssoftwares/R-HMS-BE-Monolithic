@@ -358,14 +358,16 @@ export const createResrvation = async (req, res) => {
 
         const created = booking.createdBy[0].createdBy || ""
 
-        if(baseRates){
+        console.log(baseRates)
+
+      
           var flattenedBaseRates = baseRates.map(item => ({
             date: item.date,
             baseRate: item.baseRate,
             extraAdultRate: item.extraAdultRate,
             extraChildRate: item.extraChildRate
           }));
-        }
+        
 
         const bar = booking.barRateReservation.map((item) => ({
           bookingTypeId: item.barRateReservation[0].bookingTypeId,
@@ -472,62 +474,62 @@ export const createResrvation = async (req, res) => {
           guestId: guestId || "",
 
           guestName: [{
-            guestName: guestDetails.guestName && guestDetails.guestName[0] && guestDetails.guestName[0]?.guestName || "",
+            guestName: guestDetails.guestName && guestDetails.guestName[0] && guestDetails.guestName[0].guestName || "",
             logId: randomString.generate(10)
           }],
 
           salutation: [{
-            salutation: guestDetails.salutation && guestDetails.salutation[0] && guestDetails.salutation[0]?.salutation || "",
+            salutation: guestDetails.salutation && guestDetails.salutation[0] && guestDetails.salutation[0].salutation || "",
             logId: randomString.generate(10)
           }],
 
           guestProfile: [{
-            guestProfile: guestDetails.guestProfile && guestDetails.guestProfile[0] && guestDetails.guestProfile[0]?.guestProfile || "",
+            guestProfile: guestDetails.guestProfile && guestDetails.guestProfile[0] && guestDetails.guestProfile[0].guestProfile || "",
             logId: randomString.generate(10)
           }],
 
           phoneNumber: [{
-            phoneNumber: guestDetails.phoneNumber && guestDetails.phoneNumber[0] && guestDetails.phoneNumber[0]?.phoneNumber || "",
+            phoneNumber: guestDetails.phoneNumber && guestDetails.phoneNumber[0] && guestDetails.phoneNumber[0].phoneNumber || "",
             logId: randomString.generate(10)
           }],
 
           emailAddress: [{
-            emailAddress: guestDetails.emailAddress && guestDetails.emailAddress[0] && guestDetails.emailAddress[0]?.emailAddress || "",
+            emailAddress: guestDetails.emailAddress && guestDetails.emailAddress[0] && guestDetails.emailAddress[0].emailAddress || "",
             logId: randomString.generate(10)
           }],
 
           addressLine1 : [{
-            addressLine1 : guestDetails.addressLine1 && guestDetails.addressLine1[0] && guestDetails.addressLine1[0]?.addressLine1 || "",
+            addressLine1 : guestDetails.addressLine1 && guestDetails.addressLine1[0] && guestDetails.addressLine1[0].addressLine1 || "",
             logId: randomString.generate(10)
           }],
 
           addressLine2 : [{
-            addressLine2 : guestDetails.addressLine2 && guestDetails.addressLine2[0] && guestDetails.addressLine2[0]?.addressLine2 || "",
+            addressLine2 : guestDetails.addressLine2 && guestDetails.addressLine2[0] && guestDetails.addressLine2[0].addressLine2 || "",
             logId: randomString.generate(10)
           }],
 
           country : [{
-            country : guestDetails.country && guestDetails.country[0] && guestDetails.country[0]?.country || "",
+            country : guestDetails.country && guestDetails.country[0] && guestDetails.country[0].country || "",
             logId: randomString.generate(10)
           }],
 
           state : [{
-            state : guestDetails.state && guestDetails.state[0] && guestDetails.state[0]?.state || "",
+            state : guestDetails.state && guestDetails.state[0] && guestDetails.state[0].state || "",
             logId: randomString.generate(10)
           }],
 
           city : [{
-            city : guestDetails.city && guestDetails.city[0] && guestDetails.city[0]?.city || "",
+            city : guestDetails.city && guestDetails.city[0] && guestDetails.city[0].city || "",
             logId: randomString.generate(10)
           }],
 
           pinCode : [{
-            pinCode : guestDetails.pinCode && guestDetails.pinCode[0] && guestDetails.pinCode[0]?.pinCode || "",
+            pinCode : guestDetails.pinCode && guestDetails.pinCode[0] && guestDetails.pinCode[0].pinCode || "",
             logId: randomString.generate(10)
           }],  
 
           checkInDate: [{
-            checkInDate: booking.checkInDate && booking.checkInDate[0] && booking.checkInDate[0]?.checkInDate || "",
+            checkInDate: booking.checkInDate && booking.checkInDate[0] && booking.checkInDate[0].checkInDate || "",
             logId: randomString.generate(10)
           }],
           
@@ -599,8 +601,8 @@ export const createResrvation = async (req, res) => {
       await Promise.all(roomDetailArray.map(async (roomDetail, index) => {
         const roomTypeId = roomDetail.roomTypeId;
         const ratePlanId = roomDetail.ratePlanId
-        const remark = roomDetail.remark[0]?.specialRemark || "";
-        const internalNote = roomDetail.remark[0]?.internalNote || ""
+        const remark = roomDetail.remark[0].specialRemark || "";
+        const internalNote = roomDetail.remark[0].internalNote || ""
 
 
         // check Rate plan for that room
@@ -623,13 +625,13 @@ export const createResrvation = async (req, res) => {
        
       // room rate extra adult extra child rate 
      
-        const ratePlan = filteredRateResponse[0]?.barRatePlanId || ""
-        const ratePlanName = filteredRateResponse[0]?.ratePlanName || ""
-        const baseRates = filteredRateResponse[0]?.baseRates || ""
+        const ratePlan = filteredRateResponse[0].barRatePlanId || ""
+        const ratePlanName = filteredRateResponse[0].ratePlanName || ""
+        const baseRates = filteredRateResponse[0].baseRates || ""
 
        
 
-        const guestId = booking.guestId.length === 1 ? booking.guestId[0]?.guestId : booking.guestId[index]?.guestId || "";
+        const guestId = booking.guestId.length === 1 ? booking.guestId[0].guestId : booking.guestId[index].guestId || "";
 
 
         // filds require in the room Details 

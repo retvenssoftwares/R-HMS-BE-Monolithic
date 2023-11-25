@@ -175,6 +175,18 @@ const booking = new mongoose.Schema({
     }],
 
 
+    roomTypeName : [{
+        roomTypeName : {
+            type: String,
+            default: ""
+        },
+
+        logId:{
+            type: String,
+            default: ""
+        }
+    }],
+
 
     roomDetails: [{
 
@@ -278,31 +290,6 @@ const booking = new mongoose.Schema({
 
 
     }],
-
-
-
-    // remark: [{
-    //     remark: [{
-    //         specialRemark: {
-    //             type: String,
-    //             default: ""
-    //         },
-
-
-    //         internalNote: {
-    //             type: String,
-    //             default: ""
-    //         },
-
-    //     }],
-
-    //     logId: {
-    //         type: String,
-    //         default: ""
-    //     }
-
-
-    // }],
 
 
 

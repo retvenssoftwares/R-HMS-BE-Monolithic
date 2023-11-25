@@ -358,8 +358,6 @@ export const createResrvation = async (req, res) => {
 
         const created = booking.createdBy[0].createdBy || ""
 
-        console.log(baseRates)
-
 
           var flattenedBaseRates = baseRates.map(item => ({
             date: item.date,
@@ -620,8 +618,8 @@ export const createResrvation = async (req, res) => {
         }, res);
 
         const filteredRateResponse = checkRateResponse.filter(response => response.barRatePlanId === ratePlanId);
-
       
+        console.log(filteredRateResponse[0].barRatePlanId )
        
       // room rate extra adult extra child rate 
      
@@ -629,7 +627,7 @@ export const createResrvation = async (req, res) => {
         const ratePlanName = filteredRateResponse[0].ratePlanName || ""
         const baseRates = filteredRateResponse[0].baseRates || ""
 
-       
+      
 
         const guestId = booking.guestId.length === 1 ? booking.guestId[0].guestId : booking.guestId[index].guestId || "";
 

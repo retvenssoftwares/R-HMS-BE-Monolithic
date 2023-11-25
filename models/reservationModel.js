@@ -218,6 +218,18 @@ const booking = new mongoose.Schema({
 
     }],
 
+    ratePlanName:[{
+        ratePlanName :{
+            type: String,
+            default: ""
+        },
+
+        logId:{
+            type: String,
+            default: ""
+        }
+    }],
+
 
 
     roomDetails: [{

@@ -618,25 +618,16 @@ export const createResrvation = async (req, res) => {
         }, res);
 
         const filteredRateResponse = checkRateResponse.filter(response => response.barRatePlanId === ratePlanId);
-        
- 
-        console.log(filteredRateResponse)
+      
        
       // room rate extra adult extra child rate 
      
-      if (filteredRateResponse[0]) {
-        var ratePlan = filteredRateResponse[0]?.barRatePlanId || "";
-        var ratePlanName = filteredRateResponse[0].ratePlanName || "";
-        var baseRates = filteredRateResponse[0].baseRates || "";
-      
-        console.log(baseRates);
-      
-        // ... (rest of your code)
-      
-        // Continue using ratePlan, ratePlanName, and baseRates in your logic
-      }
+        const ratePlan = filteredRateResponse[0].barRatePlanId || ""
+        const ratePlanName = filteredRateResponse[0].ratePlanName || ""
+        const baseRates = filteredRateResponse[0].baseRates || ""
 
-      
+        
+
 
         const guestId = booking.guestId.length === 1 ? booking.guestId[0].guestId : booking.guestId[index].guestId || "";
 

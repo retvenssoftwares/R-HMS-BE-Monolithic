@@ -360,7 +360,7 @@ export const createResrvation = async (req, res) => {
 
         console.log(baseRates)
 
-      
+
           var flattenedBaseRates = baseRates.map(item => ({
             date: item.date,
             baseRate: item.baseRate,

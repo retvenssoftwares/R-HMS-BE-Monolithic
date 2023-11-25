@@ -114,6 +114,50 @@ const booking = new mongoose.Schema({
         },
     
 
+    baseRate:[{
+        baseRate :[{
+            date : {
+                type: String,
+                default: ""
+            },
+
+            baseRate :{
+                type: String,
+                default: ""
+            },
+
+            extraAdultRate : {
+                type: String,
+                default: ""
+            },
+
+            extraChildRate :{
+                type: String,
+                default: ""
+            }
+
+        }],
+
+        logId:{
+            type: String,
+            default: ""
+        }
+    }],
+
+
+    roomTypeName :[{
+        roomTypeName : {
+            type: String,
+            default: ""
+        },
+
+
+        logId:{
+            type: String,
+            default: ""
+        }
+    }],
+
 
     // bar reservation
     barRateReservation: [{
@@ -174,18 +218,6 @@ const booking = new mongoose.Schema({
 
     }],
 
-
-    roomTypeName : [{
-        roomTypeName : {
-            type: String,
-            default: ""
-        },
-
-        logId:{
-            type: String,
-            default: ""
-        }
-    }],
 
 
     roomDetails: [{
@@ -290,6 +322,31 @@ const booking = new mongoose.Schema({
 
 
     }],
+
+
+
+    // remark: [{
+    //     remark: [{
+    //         specialRemark: {
+    //             type: String,
+    //             default: ""
+    //         },
+
+
+    //         internalNote: {
+    //             type: String,
+    //             default: ""
+    //         },
+
+    //     }],
+
+    //     logId: {
+    //         type: String,
+    //         default: ""
+    //     }
+
+
+    // }],
 
 
 

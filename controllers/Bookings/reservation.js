@@ -618,7 +618,7 @@ export const createResrvation = async (req, res) => {
         }, res);
 
         const filteredRateResponse = checkRateResponse.filter(response => response.barRatePlanId === ratePlanId);
-      
+        
  
        
       // room rate extra adult extra child rate 
@@ -627,8 +627,7 @@ export const createResrvation = async (req, res) => {
         const ratePlanName = filteredRateResponse[0].ratePlanName || ""
         const baseRates = filteredRateResponse[0].baseRates || ""
 
-
-
+        console.log(baseRates)
 
       
 
@@ -651,7 +650,8 @@ export const createResrvation = async (req, res) => {
           const guestDetails = await getGuestDetails(guestId);
           const c_form = guestDetails.c_form || ""
           const roomTypeName = await roomType.findOne({ roomTypeId: roomTypeId})
-          const name = roomTypeName.roomTypeName[0]?.roomTypeName || ""
+          const name = roomTypeName.roomTypeName[0].roomTypeName || ""
+
 
           return createAndSaveHoldData(booking, c_form, inclusion, adult, childs, charge, extraAdult, extraChild, guestId, remark, internalNote, ratePlanName, roomTypeId, index, ratePlan, name, baseRates, guestDetails);
         }

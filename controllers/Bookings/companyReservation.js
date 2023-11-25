@@ -357,8 +357,6 @@ export const createCompanyResrvation = async (req, res) => {
           grandTotal : item.roomCharges[0].grandTotal || ""
         }))
 
-        console.log(reservationSummaryDetails)
-
         const payment = booking.paymentDetails.map((item)=>({
           billTo : item.billTo,
           paymentNote : item.paymentNote

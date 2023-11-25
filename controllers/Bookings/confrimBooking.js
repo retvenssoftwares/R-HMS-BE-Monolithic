@@ -38,12 +38,9 @@ export const addConfirmBooking = async (req, res) => {
 
 
     var reservationIds = []
-    console.log(data)
     data.forEach(async (item) => {
       
       const { guestId, guestName, salutation, phoneNumber, emailAddress, addressLine1, addressLine2, country, state, city, pinCode,  reservationId, propertyId, bookingId, roomTypeId, checkInDate, checkOutDate, ratePlanName, nightCount, bookingTime, inventory, reservationNumber, extraAdultRate, extraChildRate, ratePlanId, adults,childs,charge, barRateReservation,roomTypeName,remark,internalNote,baseRates,c_form,companyId,extraInclusionId } = item;
-
-      
       reservationIds.push(reservationId)
       // Here, you can create a new object or perform any operation with the extracted fields and store it in another collection
       // For example, you can use a new model and save the extracted fields to another collection
@@ -178,8 +175,9 @@ export const addConfirmBooking = async (req, res) => {
           logId : randomString.generate(10)
         }],
 
+        
         barRateReservation : [{
-          barRateReservation : barRateReservation[0].barRateReservation || "",
+          barRateReservation : barRateReservation[0]?.barRateReservation || "",
           logId : randomString.generate(10)
         }],
 
@@ -200,7 +198,7 @@ export const addConfirmBooking = async (req, res) => {
         }],
 
         baseRates : [{
-          baseRates :baseRates[0].baseRates || "",
+          baseRates :baseRates[0]?.baseRates || "",
           logId : randomString.generate(10)
         }],
 

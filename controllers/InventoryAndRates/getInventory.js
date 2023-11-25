@@ -3,6 +3,7 @@ import holdData from "../../models/holdBooking.js";
 import roomTypeModel from "../../models/roomType.js";
 import verifiedUser from "../../models/verifiedUsers.js";
 import manageInventory from "../../models/manageInventory.js";
+import reservationModel from "../../models/reservationType.js"
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const getInventory = async (req, res) => {
@@ -71,7 +72,25 @@ const getInventory = async (req, res) => {
                 "roomTypeId.0.roomTypeId": roomTypeId,
             });
 
-            const reducedCount = reservations.length;
+
+            const confirmBookingTypeIds = reservations.flatMap(booking =>
+                booking.barRateReservation[0]?.barRateReservation.map(
+                    reservation => reservation.bookingTypeId
+                )
+            );
+
+            // Convert reservation name to lowercase if it's 'confirmed'
+            const matchingReservations = await reservationModel.find({
+                reservationTypeId: { $in: confirmBookingTypeIds },
+            });
+            const reservationNames = matchingReservations.map(booking => booking.reservationName[0]?.reservationName.toLowerCase());
+
+            const isConfirmedReservation = reservationNames.includes('confirmed');
+            console.log("Matching Reservation Names:", reservationNames);
+            // If reservation name is 'confirmed', set reducedCount to the actual count
+            const reducedCount = isConfirmedReservation ? reservations.length : 0;
+
+            console.log(reducedCount, "14")
 
             const manageInventoryData = await manageInventory.aggregate([
                 { $match: { propertyId: propertyId, roomTypeId: roomTypeId } },
@@ -82,6 +101,40 @@ const getInventory = async (req, res) => {
                 "roomTypeId.0.roomTypeId": roomTypeId,
                 "checkInDate.0.checkInDate": { $gte: checkInDateISO, $lt: checkOutDateISO },
             });
+
+            const holdBookingTypeIds = holdBookings.flatMap(booking =>
+                booking.barRateReservation[0]?.barRateReservation.map(
+                    reservation => reservation.bookingTypeId
+                )
+            );
+
+            // Convert reservation name to lowercase if it's 'confirmed'
+            const matchingReservationsHolds = await reservationModel.find({
+                reservationTypeId: { $in: holdBookingTypeIds },
+            });
+            const reservationNamesHolds = matchingReservationsHolds.map(booking => booking.reservationName[0]?.reservationName.toLowerCase());
+
+            const isConfirmedReservationHold = reservationNamesHolds.includes('confirmed');
+            let holdBookingsCount = 0;
+            if (inventoryValues.length > 0) {
+                // console.log(inventoryValues.length, "length");
+                holdBookingsCount = inventoryValues.reduce((sum, value) => sum + value, 0);
+                // console.log(holdBookingsCount);
+            }
+
+            // If reservation is 'confirmed', set holdBookingsCount to 0; otherwise, use the actual count
+            holdBookingsCount = isConfirmedReservationHold ? 0 : holdBookingsCount;
+            // // Combine and return the unique bookingTypeIds
+            // const allBookingTypeIds = [...new Set([...holdBookingTypeIds, ...confirmBookingTypeIds])];
+
+            // console.log("Booking Type Ids:", allBookingTypeIds);
+            // Fetch reservation records with matching reservationTypeId
+
+
+            // Extract reservationNames from the 0th object of the reservationName array
+            // const reservationNames = matchingReservations.map(reservation => reservation.reservationName[0]?.reservationName);
+
+
             const inventoryValues = holdBookings.map((booking) => booking.inventory);
             // console.log(inventoryValues)
 
@@ -111,12 +164,7 @@ const getInventory = async (req, res) => {
                 ),
             ];
 
-            let holdBookingsCount = 0;
-            if (inventoryValues.length > 0) {
-                // console.log(inventoryValues.length, "length");
-                holdBookingsCount = inventoryValues.reduce((sum, value) => sum + value, 0);
-                // console.log(holdBookingsCount);
-            }
+
 
             const allDates = [
                 ...new Set([...addedInventoryDates, ...blockedInventoryDates]),

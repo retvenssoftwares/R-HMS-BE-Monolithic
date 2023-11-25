@@ -9,6 +9,7 @@ import {
   uploadMultipleImagesToS3
 } from "../../helpers/helper.js";
 
+
 const addCompany = async (req, res) => {
   try {
     const { userId } = req.body
@@ -165,7 +166,10 @@ const addCompany = async (req, res) => {
 
       })
 
-      await addCompanyRecord.save()
+      const companyData = await addCompanyRecord.save()
+
+      
+      // const ledgerData = new
       return res.status(200).json({ message: "Company added successfully", statuscode: 200 })
 
     } else {

@@ -9,11 +9,14 @@ const getBarRatePlanById = async (req, res) => {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }
 
-        const findPlan = await ratePlan.findOne({ barRatePlanId }, 'roomType mealPlan ratePlanName shortCode inclusion barRates propertyId barRatePlanId -_id').lean();
-        if (!findPlan) {
-            return res.status(404).json({ message: "Rate Plan not found", statuscode: 404 })
+        const barRatePlanIds = await ratePlan.findOne({barRatePlanId})
+        if (!barRatePlanIds) {
+            return res.status(404).json({ message: "Enter valid bar Rate plan Id ", statuscode: 404 })
         }
+        const findPlan = await ratePlan.findOne({ barRatePlanId,"displayStatus.0.displayStatus":"1" }, 'roomType mealPlan ratePlanName shortCode inclusion barRates propertyId barRatePlanId -_id').sort({_id:-1}).lean();
+     
         // Fetch the 0th object for array fields
+        if(findPlan) {
         const planData = {
             ...findPlan,
             roomTypeId: findPlan.roomType.length > 0 ? findPlan.roomType[0].roomTypeId : "",
@@ -31,11 +34,15 @@ const getBarRatePlanById = async (req, res) => {
                 ratePlanTotal: findPlan.barRates.ratePlanTotal.length > 0 ? findPlan.barRates.ratePlanTotal[0].ratePlanTotal : "",
             },
         };
-
+        
         delete planData.roomType;
         delete planData.mealPlan;
-
         return res.status(200).json({ data: planData, statuscode: 200 });
+    }else{
+        return res.status(404).json({ message: "Rate plan not found ", statuscode: 404 }) 
+    }
+
+
     } catch (error) {
         console.log(error)
         return res.status(500).json({ message: "Internal Server Error", statuscode: 500 })

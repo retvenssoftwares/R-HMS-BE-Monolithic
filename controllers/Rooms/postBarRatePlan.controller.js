@@ -145,7 +145,7 @@ const postBarRatePlan = async (req, res) => {
       ],
       displayStatus: [
         {
-          displayStatus: savedBarRatePlan.displayStatus[0].displayStatus[0],
+          displayStatus: savedBarRatePlan.displayStatus[0].displayStatus,
           logId:savedBarRatePlan.shortCode[0].logId,
           deviceType: deviceType,
           ipAddress:ipAddress,
@@ -153,6 +153,14 @@ const postBarRatePlan = async (req, res) => {
           modifiedOn:currentUTCTime
         },
       ],
+      mealPlan: [{
+        mealPlanId: mealPlanId,
+        logId:savedBarRatePlan.mealPlan[0].logId,
+        deviceType: deviceType,
+        ipAddress:ipAddress,
+        userId:userId,
+        modifiedOn:currentUTCTime
+      }],
       ratePlanName: [
         {
           ratePlanName: ratePlanName,
@@ -165,14 +173,6 @@ const postBarRatePlan = async (req, res) => {
         roomType: [{
           roomTypeId: roomTypeId,
           logId:savedBarRatePlan.roomType[0].logId,
-          deviceType: deviceType,
-          ipAddress:ipAddress,
-          userId:userId,
-          modifiedOn:currentUTCTime
-        }],
-        mealPlan: [{
-          mealPlanId: mealPlanId,
-          logId:savedBarRatePlan.mealPlan[0].logId,
           deviceType: deviceType,
           ipAddress:ipAddress,
           userId:userId,
@@ -230,7 +230,7 @@ const postBarRatePlan = async (req, res) => {
           }],
           extraChildRate: [{
             logId: savedBarRatePlan.barRates.extraChildRate[0].logId,
-            extraAdultRate:savedBarRatePlan.barRates.extraChildRate[0].extraChildRate,
+            extraChildRate:savedBarRatePlan.barRates.extraChildRate[0].extraChildRate,
             deviceType: deviceType,
             ipAddress: ipAddress,
             userId: userId,

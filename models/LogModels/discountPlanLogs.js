@@ -2,8 +2,31 @@ import mongoose from "mongoose"
 import db2 from "../../db/conn2.js"
 
 const discountPlanLogsSchema = new mongoose.Schema({
-    propertyId: String,
+    propertyId: { type: String, default: "" },
+
     discountPlanId: { type: String, default: "" },
+
+    rateType:{
+        type: String,
+        default: "",
+    },
+    createdBy:{
+        type:String,
+        default:""
+    },
+    createdOn:{
+        type:String,
+        default:""
+    },
+    roomTypeId:{
+        type: String,
+        default: "",
+    },
+
+    ratePlanId:{
+        type: String,
+        default: "",
+    },
     discountName: [{
         logId: { type: String, default: "" },
         discountName: { type: String, default: "" },
@@ -76,20 +99,88 @@ const discountPlanLogsSchema = new mongoose.Schema({
         }],
         logId: { type: String, default: "" },
         request: { type: String, default: '' },
-        response: { type: String, default: '' }
+        response: { type: String, default: '' },
+        userId: { type: String, default: "" },
+        ipAddress: { type: String, default: "" },
+        deviceType: { type: String, default: "" },
+        modifiedDate: { type: String, default: "" },
     }],
-    applicableOn: [{
-        applicableOn: [{
-            roomTypeId: { type: String, default: '' },
-            ratePlans: [{
-                rateplanId: { type: String, default: '' },
-                newRatePlanPrice: { type: String, default: "" }
-            }]
+   
+
+    ratePlanInclusion: [{
+        ratePlanInclusion:[{
+          inclusionId: {
+            type: String,
+            default: "",
+          },
+          inclusionName: {
+            type: String,
+            default: "",
+          },
+          postingRule: {
+            type: String,
+            default: "",
+          },
+          chargeRule: {
+            type: String,
+            default: "",
+          },
+          rate: {
+            type: String,
+            default: "",
+          },
         }],
+  
         logId: { type: String, default: "" },
         request: { type: String, default: '' },
-        response: { type: String, default: '' }
-    }]
+        response: { type: String, default: '' },
+        userId: { type: String, default: "" },
+        ipAddress: { type: String, default: "" },
+        deviceType: { type: String, default: "" },
+        modifiedDate: { type: String, default: "" },
+        
+        },
+      ],
+      
+    barRates:{
+        discountTotal:[{
+
+            discountTotal:{
+            type: String,
+          default: "",
+          },
+          logId: { type: String, default: "" },
+          userId: { type: String, default: "" },
+          ipAddress: { type: String, default: "" },
+          deviceType: { type: String, default: "" },
+          modifiedDate: { type: String, default: "" },
+
+        }],
+        extraAdultRate:[{
+          extraAdultRate:{
+            type: String,
+            default: "",
+          },
+          logId: { type: String, default: "" },
+          userId: { type: String, default: "" },
+          ipAddress: { type: String, default: "" },
+          deviceType: { type: String, default: "" },
+          modifiedDate: { type: String, default: "" },
+         
+        }],
+        extraChildRate:[{
+          extraChildRate:{
+            type: String,
+            default: "",
+          },
+          logId: { type: String, default: "" },
+          userId: { type: String, default: "" },
+          ipAddress: { type: String, default: "" },
+          deviceType: { type: String, default: "" },
+          modifiedDate: { type: String, default: "" },
+         
+        }],
+      }
 },
     {
         versionKey: false

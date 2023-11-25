@@ -8,9 +8,11 @@ import manageRestrictions from '../../controllers/InventoryAndRates/manageRestri
 import checkInventoryAvailability from "../../controllers/InventoryAndRates/checkRoomAvailability.js"
 import checkRateAvailability from '../../controllers/InventoryAndRates/checkAvailableRates.js';
 import blockedRooms from '../../controllers/InventoryAndRates/manageRooms.js';
+import multipleUpdatesARI from '../../controllers/InventoryAndRates/multipleUpdates.js';
 import { io } from '../../server.js'
 
 router.patch("/api/updateInventory", (req, res) => manageInventory(req, res, io));
+router.patch("/api/updateARI", multipleUpdatesARI);
 router.patch("/api/updateRates", (req, res) => manageRates(req, res, io));
 router.patch("/api/updateRestrictions", (req, res) => manageRestrictions(req, res, io));
 router.get("/api/getInventory", getInventory)

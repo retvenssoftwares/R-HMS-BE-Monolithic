@@ -15,7 +15,7 @@ const getBarRatePlans = async (req, res) => {
             if (!result.success) {
                 return res.status(result.statuscode).json({ message: "Invalid propertyId entered", statuscode: result.statuscode })
             }
-            const findBarRatePlans = await barRatePlanModel.find({ propertyId }, 'propertyId barRatePlanId rateType roomType mealPlan ratePlanName inclusion barRates mealCharge inclusionCharge roundUp extraAdultRate extraChildRate ratePlanTotal shortCode createdBy').lean();
+            const findBarRatePlans = await barRatePlanModel.find({ propertyId,"displayStatus.0.displayStatus":"1" }, 'propertyId barRatePlanId rateType roomType mealPlan ratePlanName inclusion barRates mealCharge inclusionCharge roundUp extraAdultRate extraChildRate ratePlanTotal shortCode createdBy').sort({_id:-1}).lean();
 
             if (findBarRatePlans.length > 0) {
                 const mappedBarRatePlans = findBarRatePlans.map((plan) => {

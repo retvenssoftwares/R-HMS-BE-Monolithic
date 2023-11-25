@@ -3,121 +3,136 @@ import barRatePlan from "../../models/barRatePlan.js"
 import packageModel from '../../models/package.js'
 import discountPlan from "../../models/discountPlan.js"
 import roomTypeModel from "../../models/roomType.js";
-import {findUserByUserIdAndToken,  } from "../../helpers/helper.js";
-const allRatePlans = async(req,res)=>{
-    try{
-     const {propertyId,userId}=req.query;
-     const authCodeValue = req.headers['authcode']
+import { findUserByUserIdAndToken, } from "../../helpers/helper.js";
+const allRatePlans = async (req, res) => {
+    try {
+        const { propertyId, userId } = req.query;
+        const authCodeValue = req.headers['authcode']
 
-     const result = await findUserByUserIdAndToken(userId, authCodeValue)
-     const companyRatePlan=await companyRatePlanModel.find({propertyId}).lean();
-    
- if(result.success){
-     //CompanyRatePlan
-    //Map roomTypeId from companyRatePlan
-    const roomTypeIds = companyRatePlan.map((item) => item.roomTypeId);
-    const roomTypeData = await roomTypeModel.find({ roomTypeId: { $in: roomTypeIds } });
+        const result = await findUserByUserIdAndToken(userId, authCodeValue)
+        const companyRatePlan = await companyRatePlanModel.find({ propertyId }).lean();
 
-    const CompanyratePlan = companyRatePlan.map((rate) => {
-        const matchingRoomTypes = roomTypeData.find((room) => room.roomTypeId === rate.roomTypeId
-        );
-    
-        const roomTypeName = matchingRoomTypes?.roomTypeName[0]?.roomTypeName || '';
-        return{
-            rateType:rate.rateType || '',
-            shortCode: rate.shortCode[0].shortCode || '',
-            ratePlanName: rate.ratePlanName[0].ratePlanName || '',
-            roomTypeName: roomTypeName,
-            inclusion:rate.ratePlanInclusion.length || '',
-            extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',
-            extraChildRate: rate.barRates.extraChildRate[0].extraChildRate || '',
-            ratePlanTotal: rate.barRates.ratePlanTotal[0].ratePlanTotal || '',
+        if (result.success) {
+            //CompanyRatePlan
+            //Map roomTypeId from companyRatePlan
+            const roomTypeIds = companyRatePlan.map((item) => item.roomTypeId);
+            const roomTypeData = await roomTypeModel.find({ roomTypeId: { $in: roomTypeIds } });
+
+            // console.log(new Date().getSeconds())
+            const CompanyratePlan = companyRatePlan.map((rate) => {
+                const matchingRoomTypes = roomTypeData.find((room) => room.roomTypeId === rate.roomTypeId
+                );
+
+                const roomTypeName = matchingRoomTypes?.roomTypeName[0]?.roomTypeName || '';
+                return {
+                    rateType: rate.rateType || '',
+                    shortCode: rate.shortCode[0].shortCode || '',
+                    ratePlanName: rate.ratePlanName[0].ratePlanName || '',
+                    roomTypeName: roomTypeName,
+                    inclusion: rate.ratePlanInclusion[0].ratePlanInclusion.length || 0,
+                    extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',
+                    extraChildRate: rate.barRates.extraChildRate[0].extraChildRate || '',
+                    ratePlanTotal: rate.barRates.ratePlanTotal[0].ratePlanTotal || '',
+                }
+            });
+
+
+            //BarRatePlan
+            //Map roomTypeId from barRatePlan
+            const barRatePlanData = await barRatePlan.find({ propertyId }).lean();
+            const barroomTypeIds = barRatePlanData.map((item) => item.roomType[0].roomTypeId);
+            const roomTypeDatas = await roomTypeModel.find({ roomTypeId: { $in: barroomTypeIds } });
+
+            // console.log(new Date().getSeconds())
+            const barRatePlanResponse = barRatePlanData.map((rate) => {
+                const matchingRoomTypes = roomTypeDatas.find((room) => room.roomTypeId === rate.roomType?.roomTypeId
+                );
+                const roomTypeName = matchingRoomTypes?.roomTypeName[0]?.roomTypeName || '';
+                // console.log(roomTypeName, "segfe")
+                return {
+                    rateType: rate.rateType || '',
+                    shortCode: rate.shortCode[0].shortCode || '',
+                    ratePlanName: rate.ratePlanName[0].ratePlanName || '',
+                    roomTypeName: roomTypeName,
+                    inclusion: rate.inclusion[0].inclusionPlan.length || 0,
+                    extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',
+                    extraChildRate: rate.barRates.extraChildRate[0].extraChildRate || '',
+                    ratePlanTotal: rate.barRates.ratePlanTotal[0].ratePlanTotal || '',
+                };
+            });
+
+
+            //PackageRatePlan
+            //Map roomTypeId from packageRatePlan
+            const PackageRatePlanData = await packageModel.find({ propertyId }).lean();
+            const packageroomTypeIds = PackageRatePlanData.map((item) => item.roomTypeId);
+            const packageRoomTypeDatas = await roomTypeModel.find({ roomTypeId: { $in: packageroomTypeIds } });
+
+            // console.log(new Date().getSeconds())
+            const packageRatePlanResponse = PackageRatePlanData.map((rate) => {
+                const matchingRoomTypes = packageRoomTypeDatas.find((room) => room.roomTypeId === rate.roomTypeId
+                );
+                const roomTypeName = matchingRoomTypes?.roomTypeName[0]?.roomTypeName || '';
+                // console.log(roomTypeName)
+                return {
+                    rateType: rate.rateType || '',
+                    shortCode: rate.shortCode[0].shortCode || '',
+                    ratePlanName: rate.ratePlanName[0].ratePlanName || '',
+                    roomTypeName: roomTypeName,
+                    inclusion: rate.ratePlanInclusion[0].ratePlanInclusion.length || 0,
+                    ratePlanTotal: rate.barRates.packageTotal[0].packageTotal || '',
+                    extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',
+                    extraChildRate: rate.barRates.extraChildRate[0].extraChildRate || '',
+                };
+            });
+
+
+            //discountPlan
+            
+
+            const discountRatePlans = await discountPlan.find({ propertyId }, 'shortCode discountName discountPlanId -_id applicableOn').lean();
+            const mappedDiscountPlansPromises = discountRatePlans.map(async (rate) => {
+                // Get all roomTypeId values from the innermost applicableOn array
+                const innerApplicableOn = rate.applicableOn[0]?.applicableOn || [];
+                const roomTypeIds = innerApplicableOn.map(applicableOn => applicableOn.roomTypeId);
+                
+                // Find roomType documents based on roomTypeIds
+                const findRoomTypes = await roomTypeModel.find({ roomTypeId: { $in: roomTypeIds } });
+            
+                // Create an array of objects with the desired structure
+                const roomTypeNames = findRoomTypes.reduce((acc, roomType) => {
+                    // Get rate plans for the current roomTypeId
+                    const ratePlans = innerApplicableOn.find(applicableOn => applicableOn.roomTypeId === roomType.roomTypeId)?.ratePlans || [];
+            
+                    // Create an object for each rate plan
+                    const ratePlanObjects = ratePlans.map(ratePlan => ({
+                        ratePlanId:ratePlan.rateplanId || '',
+                        roomTypeName: roomType.roomTypeName[0]?.roomTypeName || '',
+                        discountPlanId:rate.discountPlanId,
+                        discountName: rate.discountName[0]?.discountName || '',
+                        ratePlanTotal: ratePlan.newRatePlanTotal || '',
+                        extraAdult: ratePlan.extraAdult || '',
+                        extraChild: ratePlan.extraChild || '',
+                        shortCode: rate.shortCode[0]?.shortCode || '',
+                    }));
+            
+                    return acc.concat(ratePlanObjects);
+                }, []);
+            
+                return  roomTypeNames;
+            });
+            
+            // Use Promise.all to wait for all promises to resolve
+            const mappedDiscountPlans = await Promise.all(mappedDiscountPlansPromises);
+            const flattenedDiscountPlans = mappedDiscountPlans.flat();
+            // return res.status(200).json({ companyRatePlan: CompanyratePlan, barRatePlan: barRatePlanResponse, packageRatePlan: packageRatePlanResponse, statuscode: 200 })
+            return res.status(200).json({ companyRatePlan: CompanyratePlan, barRatePlan: barRatePlanResponse, packageRatePlan: packageRatePlanResponse, discountplans: flattenedDiscountPlans, statuscode: 200 });
+        } else {
+            return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }
-    });
-
-
-
-    //BarRatePlan
-    //Map roomTypeId from barRatePlan
-    const barRatePlanData=await barRatePlan.find({propertyId}).lean();
-    const barroomTypeIds = barRatePlanData.map((item) => item.roomType[0].roomTypeId);
-    const roomTypeDatas = await roomTypeModel.find({ roomTypeId: { $in: barroomTypeIds } });
-
-    const barRatePlanResponse = barRatePlanData.map((rate) => {
-        const matchingRoomTypes = roomTypeDatas.find((room) => room.roomTypeId === rate.roomType?.roomTypeId
-        );
-        const roomTypeName = matchingRoomTypes?.roomTypeName[0]?.roomTypeName || '';
-        console.log(roomTypeName)
-        return {
-            rateType: rate.rateType || '',
-            shortCode: rate.shortCode[0].shortCode || '',
-            ratePlanName: rate.ratePlanName[0].ratePlanName || '',
-            roomTypeName: roomTypeName,
-            inclusion: rate.inclusion.length || '',
-            extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',
-            extraChildRate: rate.barRates.extraChildRate[0].extraChildRate || '',
-            ratePlanTotal: rate.barRates.ratePlanTotal[0].ratePlanTotal || '',
-        };
-    });
-
-
-    //PackageRatePlan
-    //Map roomTypeId from packageRatePlan
-    const PackageRatePlanData=await packageModel.find({propertyId}).lean();
-    const packageroomTypeIds = PackageRatePlanData.map((item) => item.roomTypeId);
-    const packageRoomTypeDatas = await roomTypeModel.find({ roomTypeId: { $in: packageroomTypeIds } });
-
-    const packageRatePlanResponse = PackageRatePlanData.map((rate) => {
-        const matchingRoomTypes = packageRoomTypeDatas.find((room) => room.roomTypeId === rate.roomTypeId
-        );
-        const roomTypeName = matchingRoomTypes?.roomTypeName[0]?.roomTypeName || '';
-       // console.log(roomTypeName)
-        return {
-            rateType: rate.rateType || '',
-            shortCode: rate.shortCode[0].shortCode || '',
-            ratePlanName: rate.ratePlanName[0].ratePlanName || '',
-            roomTypeName: roomTypeName,
-            inclusion: rate.ratePlanInclusion.length || '',
-            ratePlanTotal:rate.barRates.packageTotal[0].packageTotal || '',
-            extraAdultRate:rate.barRates.extraAdultRate[0].extraAdultRate || '',
-            extraChildRate:rate.barRates.extraChildRate[0].extraChildRate || '',
-        };
-    });
-
-    //discountPlan
-    //Map roomTypeId from discountPlan
-//     const discountRatePlanData=await discountPlan.find({propertyId}).lean();
-//     //console.log(discountRatePlanData)
- 
-//   // Extract roomTypeIds from the nested structure within applicableOn
-// const roomTypeIdsInApplicableOn = discountRatePlanData.flatMap((item) => item.applicableOn[0].applicableOn.map((applicable) => applicable.roomTypeId));
-// //console.log(roomTypeIdsInApplicableOn)
-// // Fetch room type data based on the extracted roomTypeIds
-// const discountRoomTypeDatas = await roomTypeModel.find({ roomTypeId: { $in: roomTypeIdsInApplicableOn } });
-// //console.log(discountRoomTypeDatas)
-// const rateType ="discount"
-//     const discountRatePlanResponse = discountRatePlanData.map((rate) => {
-//         const matchingRoomTypes = discountRoomTypeDatas.find((room) => room.roomTypeId === rate.roomTypeId
-//         );
-//         const roomTypeName = matchingRoomTypes?.roomTypeName[0]?.roomTypeName || '';
-//         console.log(roomTypeName)
-//         return {
-//             rateType: rateType || '',
-//             shortCode: rate.shortCode[0].shortCode || '',
-//             ratePlanName:rate.discountName[0].discountName || '',
-//             applicableOn:rate.applicableOn[0].applicableOn || '',
-//         };
-//     });
-
-
-     
-  return res.status(200).json({companyRatePlan:CompanyratePlan,barRatePlan:barRatePlanResponse,packageRatePlan:packageRatePlanResponse,statuscode:200})
-}else{
-    return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
-}
-}catch(err){
-    console.error(err)
-    return res.status(500).json({message: "internal server error",statuscode:500})
-}
+    } catch (err) {
+        console.error(err)
+        return res.status(500).json({ message: "Internal server error", statuscode: 500 })
+    }
 }
 export default allRatePlans

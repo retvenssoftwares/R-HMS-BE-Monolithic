@@ -26,7 +26,7 @@ const companyType = async (req, res) => {
                     companyId: company.companyId,
                     contactPerson: company.contactPerson[0].contactPerson || '',
                     expiration: company.expiration[0].expiration || '',
-                    ratePlans: ratePlan || '0'
+                    ratePlans: ratePlan || 0
                 };
             }));
             return res.status(200).json({ data: convertedCompany, statuscode: 200 });

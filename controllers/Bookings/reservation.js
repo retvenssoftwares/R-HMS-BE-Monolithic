@@ -619,16 +619,16 @@ export const createResrvation = async (req, res) => {
 
         const filteredRateResponse = checkRateResponse.filter(response => response.barRatePlanId === ratePlanId);
       
-        console.log(filteredRateResponse[0].barRatePlanId )
+ 
        
       // room rate extra adult extra child rate 
      
-        const ratePlan = filteredRateResponse[0]?.barRatePlanId || ""
-        const ratePlanName = filteredRateResponse[0]?.ratePlanName || ""
-        const baseRates = filteredRateResponse[0]?.baseRates || ""
+        const ratePlan = filteredRateResponse[0].barRatePlanId || ""
+        const ratePlanName = filteredRateResponse[0].ratePlanName || ""
+        const baseRates = filteredRateResponse[0].baseRates || ""
 
 
-        console.log("ratePlanName",ratePlanName)
+
 
       
 

@@ -377,12 +377,12 @@ export const createResrvation = async (req, res) => {
           paymentNote : item.paymentNote
         }))
 
-        const cardDeatils = booking.cardDeatils.map((item)=>({
-          nameOnCard : item.cardDeatils[0].nameOnCard || "",
-          cardNumber : item.cardDeatils[0].cardNumber || "",
-          cvv : item.cvv[0].cvv || "",
-          expiryDate : item.expiryDate[0].expiryDate || ""
-        }))
+        // const cardDeatils = booking.cardDeatils.map((item)=>({
+        //   nameOnCard : item.cardDeatils[0].nameOnCard || "",
+        //   cardNumber : item.cardDeatils[0].cardNumber || "",
+        //   cvv : item.cvv[0].cvv || "",
+        //   expiryDate : item.expiryDate[0].expiryDate || ""
+        // }))
 
 
         const nightCount = booking.nightCount[0].nightCount
@@ -574,10 +574,10 @@ export const createResrvation = async (req, res) => {
             logId : randomString.generate(10)
           }],
 
-          cardDetails : [{
-            cardDetails : cardDeatils,
-            logId : randomString.generate(10)
-          }]
+          // cardDetails : [{
+          //   cardDetails : cardDeatils,
+          //   logId : randomString.generate(10)
+          // }]
           
         });
 

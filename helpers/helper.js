@@ -32,7 +32,7 @@ async function findUserByUserIdAndToken(userId, token) {
   try {
     // Find the user by userId
     const user = await verifiedUser.findOne({ userId });
-    // console.log("user")
+    console.log("user",user)
 
     if (!user) {
       return { success: false, message: "User not found or invalid userId", statuscode: 400 };

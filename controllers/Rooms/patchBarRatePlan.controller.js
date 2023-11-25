@@ -44,6 +44,7 @@ const patchBarRatePlan = async (req, res) => {
 
         }
 
+        //
         if (ratePlanName) {
             const ratePlanNameObject = {
                 ratePlanName: ratePlanName,

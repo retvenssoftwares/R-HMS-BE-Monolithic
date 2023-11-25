@@ -1,7 +1,7 @@
 import Randomstring from "randomstring";
 import company from "../../models/company.js";
-import { uploadImageToS3, findUserByUserIdAndToken } from "../../helpers/helper.js";
-
+import { uploadImageToS3, findUserByUserIdAndToken, getCurrentUTCTimestamp } from "../../helpers/helper.js";
+import companyLedger from "../../models/companyLedger.js"
 const addCompany = async (req, res) => {
     try {
         const { userId } = req.query;
@@ -45,9 +45,9 @@ const addCompany = async (req, res) => {
                 openingBalance: [{
                     openingBalance: req.body.openingBalance
                 }],
-                creditLimit: [{
-                    creditLimit: req.body.creditLimit
-                }],
+                // creditLimit: [{
+                //     creditLimit: req.body.creditLimit
+                // }],
                 contactPerson: [{
                     contactPerson: req.body.contactPerson
                 }],
@@ -105,7 +105,47 @@ const addCompany = async (req, res) => {
                 }]
             })
 
-            addCompanyRecord.save();
+
+            // comapny ledger
+
+            const companyData = await addCompanyRecord.save();
+
+            const {  totalBalance, ledger  } = req.body
+
+            const addComapnyLedger = companyLedger({
+
+                companyId: companyData.companyId,
+
+                propertyId: companyData.propertyId|| "",
+
+                date : await getCurrentUTCTimestamp(),
+
+                openingBalance : [{
+                    openingBalance : companyData.openingBalance[0].openingBalance || "",
+                    logId: Randomstring.generate(10)
+                }],
+
+                creditLimit: [{
+                    creditLimit: companyData.creditLimit[0].creditLimit || "",
+                    logId: Randomstring.generate(10)
+                }],
+
+                totalBalance: [{
+                    totalBalance: totalBalance,
+                    logId: Randomstring.generate(10)
+                }],
+
+                ledger: [{
+                    ledger: ledger,
+                    logId: Randomstring.generate(10)
+                }],
+
+
+
+            })
+
+            await addComapnyLedger.save()
+
             return res.status(200).json({ message: "Company successfully added", statuscode: 200 })
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

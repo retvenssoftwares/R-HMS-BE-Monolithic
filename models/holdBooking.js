@@ -7,6 +7,19 @@ const holdDetails = new mongoose.Schema({
         default: ""
     },
 
+    guestProfile : [{
+        guestProfile : {
+            type: String,
+            default: ""
+        },
+
+        logId: {
+            type: String,
+            default: ""
+        }
+
+    }],
+
     guestName: [{
 
         guestName: {
@@ -20,6 +33,19 @@ const holdDetails = new mongoose.Schema({
         }
 
     }],
+
+    employeeId: [{
+        employeeId: {
+          type: String,
+          default: "",
+        },
+    
+        logId: {
+          type: String,
+          default: "",
+        }
+      }],
+    
 
     salutation: [
         {
@@ -451,6 +477,125 @@ const holdDetails = new mongoose.Schema({
         type: String,
         default: ""
     },
+
+
+    reservationRate: [{
+        roomCharges: [{
+            roomCharges: {
+                type: String,
+                default: ""
+            },
+
+            extras: {
+                type: String,
+                default: ""
+            },
+
+
+            taxes: {
+                type: String,
+                default: ""
+            },
+
+            from: {
+                type: String,
+                default: ""
+            },
+
+
+            to: {
+                type: String,
+                default: ""
+            },
+
+            grandTotal: {
+                type: String,
+                default: ""
+            },
+
+        }],
+
+        logId: {
+            type: String,
+            default: ""
+        }
+
+    }],
+
+    applyDiscount: [{
+        applyDiscount: {
+            type: String,
+            default: ""
+        },
+
+        logId: {
+            type: String,
+            default: ""
+        }
+
+    }],
+
+    paymentDetails: [{
+        paymentDetails: [{
+            billTo: {
+                type: String,
+                default: ""
+            },
+
+
+            paymentNote: {
+                type: String,
+                default: ""
+            },
+        }],
+
+
+        logId: {
+            type: String,
+            default: ""
+        }
+
+
+    }],
+
+
+    isQuickReseration: {
+        type: String,
+        default: "false"
+    },
+
+    isGroupBooking: {
+        type: String,
+        default: "false"
+    },
+
+    cardDetails: [{
+        cardDetails: [{
+            nameOnCard: {
+                type: String,
+                default: ""
+            },
+            cardNumber: {
+                type: String,
+                default: ""
+            },
+
+            cvv: {
+                type: String,
+                default: ""
+            },
+
+            expiryDate: {
+                type: String,
+                default: ""
+            }
+        }],
+
+        logId: {
+            type: String,
+            default: ""
+        }
+    }],
 
 
     c_form: [

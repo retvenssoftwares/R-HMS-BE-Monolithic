@@ -8,6 +8,9 @@ const createDiscountPlan = async (req, res) => {
     try {
         const { userId } = req.query
         const {
+            rateType,
+            roomTypeId,
+            ratePlanId,
             propertyId,
             discountName,
             shortCode,
@@ -17,8 +20,12 @@ const createDiscountPlan = async (req, res) => {
             validityPeriodFrom,
             validityPeriodTo,
             blackOutDates,
-            applicableOn,
-            deviceType
+            ratePlanInclusion,
+            discountTotal,
+            extraAdultRate,
+            extraChildRate,
+            deviceType,
+            ipAddress
         } = req.body;
         const authCodeValue = req.headers['authcode']
 
@@ -26,169 +33,247 @@ const createDiscountPlan = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 })
         }
+        let userRole = user.role[0].role;
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
+        const discountPlanId = Randomstring.generate(10);
+        const currentUTCTime= await getCurrentUTCTimestamp();
+        const blackOutDatesArray = blackOutDates.map(dateString => dateString.trim());
         if (result.success) {
-            const discountNameObj = {
-                discountName: discountName,
-                logId: Randomstring.generate(10)
-            };
-            const shortCodeObj = {
-                shortCode: shortCode,
-                logId: Randomstring.generate(10)
-            };
-            const discountTypeObj = {
-                discountType: discountType,
-                logId: Randomstring.generate(10)
-            };
-            const discountPercentObj = {
-                discountPercent: discountPercent,
-                logId: Randomstring.generate(10)
-            };
-            const discountPriceObj = {
-                discountPrice: discountPrice,
-                logId: Randomstring.generate(10)
-            };
-            const validityPeriodFromObj = {
-                validityPeriodFrom: validityPeriodFrom,
-                logId: Randomstring.generate(10)
-            };
-            const validityPeriodToObj = {
-                validityPeriodTo: validityPeriodTo,
-                logId: Randomstring.generate(10)
-            };
-            const displayStatusObj = {
-                displayStatus: "1",
-                logId: Randomstring.generate(10)
-            };
-
-            var clientIp = requestIp.getClientIp(req)
-
-            const blackOutDatesArray = blackOutDates.map(dateString => dateString.trim());
-            const discountPlanId = Randomstring.generate(8)
-            const discountPlan = new discountPlanModel({
+            const discountRatePlan = new discountPlanModel({
                 propertyId: propertyId,
-                discountName: discountNameObj,
+        
                 discountPlanId: discountPlanId,
-                shortCode: shortCodeObj,
-                discountType: discountTypeObj,
-                discountPercent: discountPercentObj,
-                discountPrice: discountPriceObj,
-                validityPeriodFrom: validityPeriodFromObj,
-                validityPeriodTo: validityPeriodToObj,
-                displayStatus:displayStatusObj,
-                blackOutDates: [{ blackOutDates: blackOutDatesArray, logId: Randomstring.generate(10) }],
-                applicableOn: [{ applicableOn: applicableOn, logId: Randomstring.generate(10) }]
-            });
-
-            // Create an object to represent the entire request
-            const requestData = {
-                body: req.body,
-                // headers: req.headers
-            };
-            const requestDataString = JSON.stringify(requestData)
-
-
-            const savedDiscountPlan = await discountPlan.save();
-
-            // Create an object to represent the entire response
-            const responseData = {
-                message: "Discount rate plan created",
-                statuscode: res.statusCode,
-            };
-            const responseString = JSON.stringify(responseData)
-
-            //save data in logs
-            const utcTime = await getCurrentUTCTimestamp()
-            const discountPlanLogs = new discountPlanLogsModel({
-                propertyId: propertyId,
-                discountPlanId: discountPlanId,
-                discountName: [{
-                    logId: savedDiscountPlan.discountName[0].logId,
+        
+                rateType: rateType,
+        
+                roomTypeId: roomTypeId,
+        
+                createdBy: userRole,
+        
+                ratePlanId: ratePlanId,
+        
+                createdOn: currentUTCTime,
+        
+                discountName: [
+                  {
                     discountName: discountName,
-                    userId: userId,
-                    modifiedDate: utcTime,
-                    ipAddress: clientIp,
-                    deviceType: deviceType,
-                }],
-                displayStatus: [{
-                    logId: savedDiscountPlan.displayStatus[0].logId,
-                    displayStatus: savedDiscountPlan.displayStatus[0].displayStatus,
-                    userId: userId,
-                    modifiedDate: utcTime,
-                    ipAddress: clientIp,
-                    deviceType: deviceType,
-                }],
-                shortCode: [{
-                    logId: savedDiscountPlan.shortCode[0].logId,
+                    logId: Randomstring.generate(10),
+                  },
+                ],
+        
+                shortCode: [
+                  {
                     shortCode: shortCode,
-                    userId: userId,
-                    modifiedDate: utcTime,
-                    ipAddress: clientIp,
-                    deviceType: deviceType,
-                }],
-                discountType: [{
-                    logId: savedDiscountPlan.discountType[0].logId,
+                    logId: Randomstring.generate(10),
+                  },
+                ],
+        
+                discountType: [
+                  {
                     discountType: discountType,
-                    userId: userId,
-                    modifiedDate: utcTime,
-                    ipAddress: clientIp,
-                    deviceType: deviceType,
-                }],
-                discountPercent: [{
-                    logId: savedDiscountPlan.discountPercent[0].logId,
+                    logId: Randomstring.generate(10),
+                  },
+                ],
+        
+                discountPercent: [
+                  {
                     discountPercent: discountPercent,
-                    userId: userId,
-                    modifiedDate: utcTime,
-                    ipAddress: clientIp,
-                    deviceType: deviceType,
-                }],
-                discountPrice: [{
-                    logId: savedDiscountPlan.discountPrice[0].logId,
+                    logId: Randomstring.generate(10),
+                  },
+                ],
+        
+                discountPrice: [
+                  {
                     discountPrice: discountPrice,
-                    userId: userId,
-                    modifiedDate: utcTime,
-                    ipAddress: clientIp,
-                    deviceType: deviceType,
-                }],
-                validityPeriodFrom: [{
-                    logId: savedDiscountPlan.validityPeriodFrom[0].logId,
-                    validityPeriodFrom: validityPeriodFrom,
-                    userId: userId,
-                    modifiedDate: utcTime,
-                    ipAddress: clientIp,
-                    deviceType: deviceType,
-                }],
-                validityPeriodTo: [{
-                    logId: savedDiscountPlan.validityPeriodTo[0].logId,
-                    validityPeriodTo: validityPeriodTo,
-                    userId: userId,
-                    modifiedDate: utcTime,
-                    ipAddress: clientIp,
-                    deviceType: deviceType,
-                }],
-                blackOutDates: [{
-                    logId: savedDiscountPlan.blackOutDates[0].logId,
-                    blackOutDates:blackOutDates,
-                    request: requestDataString,
-                    response: responseString,
-                    userId: userId,
-                    modifiedDate: utcTime,
-                    ipAddress: clientIp,
-                    deviceType: deviceType,
-                }],
-                applicableOn: [{
-                    logId: savedDiscountPlan.applicableOn[0].logId,
-                    applicableOn:applicableOn,
-                    request: requestDataString,
-                    response: responseString,
-                    userId: userId,
-                    modifiedDate: utcTime,
-                    ipAddress: clientIp,
-                    deviceType: deviceType,
-                }]
-            });
+                    logId: Randomstring.generate(10),
+                  },
+                ],
 
-            await discountPlanLogs.save();
+                validityPeriodFrom: [
+                    {
+                        validityPeriodFrom: validityPeriodFrom,
+                      logId: Randomstring.generate(10),
+                    },
+                  ],
+                  validityPeriodTo: [
+                    {
+                        validityPeriodTo: validityPeriodTo,
+                      logId: Randomstring.generate(10),
+                    },
+                  ],
+
+                  blackOutDates: [
+                    {
+                        blackOutDates: blackOutDatesArray,
+                      logId: Randomstring.generate(10),
+                    },
+                  ],
+        
+            
+                barRates: {
+                 
+                  extraAdultRate: [{
+                    extraAdultRate: extraAdultRate,
+                    logId: Randomstring.generate(10),
+                  }],
+                  extraChildRate: [{
+                    extraChildRate: extraChildRate,
+                    logId: Randomstring.generate(10),
+                  }],
+        
+                  discountTotal: [{
+                    discountTotal: discountTotal,
+                    logId: Randomstring.generate(10),
+                  }],
+                },
+             
+        
+                displayStatus: [{
+                  displayStatus: "1", 
+                  logId: Randomstring.generate(10) 
+                 }],
+        
+        
+                ratePlanInclusion: [
+                  {
+                    ratePlanInclusion: ratePlanInclusion,
+                    logId: Randomstring.generate(10),
+                  },
+                ],
+              });
+              const discountPlan = await discountRatePlan.save();
+
+              //save logs
+                 //save data in logs
+
+      const discountLogs=new discountPlanLogsModel({
+        propertyId: propertyId,
+
+        discountPlanId: discountPlanId,
+
+        rateType: rateType,
+
+        roomTypeId: roomTypeId,
+
+        createdBy: userRole,
+
+        ratePlanId: ratePlanId,
+
+        createdOn: currentUTCTime,
+
+        discountName:[{
+            discountName:discountPlan.discountName[0].discountName,
+            logId:discountPlan.discountName[0].logId,
+            userId: userId,
+            deviceType: deviceType,
+            ipAddress:ipAddress,
+            modifiedOn:currentUTCTime,
+        }],        
+        shortCode: [{
+          shortCode: discountPlan.shortCode[0].shortCode,
+          logId: discountPlan.shortCode[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+        displayStatus: [{
+          displayStatus: discountPlan.displayStatus[0].displayStatus,
+          logId: discountPlan.displayStatus[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+      discountType: [{
+        discountType: discountPlan.discountType[0].discountType,
+          logId: discountPlan.discountType[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+      discountPercent: [{
+        discountPercent: discountPlan.discountPercent[0].discountPercent,
+          logId: discountPlan.discountPercent[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+      discountPrice: [{
+        discountPrice: discountPlan.discountPrice[0].discountPrice,
+          logId: discountPlan.discountPrice[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+      validityPeriodFrom: [{
+        validityPeriodFrom: discountPlan.validityPeriodFrom[0].validityPeriodFrom,
+          logId: discountPlan.validityPeriodFrom[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+      validityPeriodTo: [{
+        validityPeriodTo: discountPlan.validityPeriodTo[0].validityPeriodTo,
+          logId: discountPlan.validityPeriodTo[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+
+      blackOutDates: [{
+        blackOutDates: discountPlan.blackOutDates[0].blackOutDates,
+          logId: discountPlan.blackOutDates[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+      
+      barRates: {
+        extraAdultRate: [{
+          logId: discountPlan.barRates.extraAdultRate[0].logId,
+          extraAdultRate:discountPlan.barRates.extraAdultRate[0].extraAdultRate,
+          deviceType: deviceType,
+          ipAddress: ipAddress,
+          userId: userId,
+          modifiedOn:currentUTCTime
+        }],
+        extraChildRate: [{
+          logId: discountPlan.barRates.extraChildRate[0].logId,
+          extraChildRate:discountPlan.barRates.extraChildRate[0].extraChildRate,
+          deviceType: deviceType,
+          ipAddress: ipAddress,
+          userId: userId,
+          modifiedOn:currentUTCTime
+        }],
+
+        discountTotal: [{
+          logId: discountPlan.barRates.discountTotal[0].logId,
+          discountTotal:discountPlan.barRates.discountTotal[0].discountTotal,
+          deviceType: deviceType,
+          ipAddress: ipAddress,
+          userId: userId,
+          modifiedOn:currentUTCTime
+        }],
+      },
+   
+      ratePlanInclusion: [{
+        ratePlanInclusion: discountPlan.ratePlanInclusion[0].ratePlanInclusion,
+          logId: discountPlan.ratePlanInclusion[0].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime,
+      }],
+      })
+
+      await discountLogs.save();
 
             return res.status(200).json({ message: "Discount rate plan created", statuscode: 200 });
         } else {
@@ -199,7 +284,6 @@ const createDiscountPlan = async (req, res) => {
         console.log(err);
         return res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
     }
-
 };
 
 export default createDiscountPlan;

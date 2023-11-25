@@ -204,7 +204,7 @@ export const packageRatePlan = async (req, res) => {
           logId: packageplan.barRates.extraAdultRate[0].logId,
           extraAdultRate:packageplan.barRates.extraAdultRate[0].extraAdultRate,
           deviceType: deviceType,
-          ipAddress: clientIp,
+          ipAddress: ipAddress,
           userId: userId,
           modifiedOn:currentUTCTime
         }],
@@ -212,7 +212,7 @@ export const packageRatePlan = async (req, res) => {
           logId: packageplan.barRates.extraChildRate[0].logId,
           extraChildRate:packageplan.barRates.extraChildRate[0].extraChildRate,
           deviceType: deviceType,
-          ipAddress: clientIp,
+          ipAddress: ipAddress,
           userId: userId,
           modifiedOn:currentUTCTime
         }],
@@ -221,7 +221,7 @@ export const packageRatePlan = async (req, res) => {
           logId: packageplan.barRates.packageTotal[0].logId,
           packageTotal:packageplan.barRates.packageTotal[0].packageTotal,
           deviceType: deviceType,
-          ipAddress: clientIp,
+          ipAddress: ipAddress,
           userId: userId,
           modifiedOn:currentUTCTime
         }],
@@ -402,29 +402,10 @@ export const updatePackageRatePlan = async (req, res) => {
       packageRatePlan.ratePlanInclusion.unshift(ratePlanInclusionObject);
     }
 
-    // if (inclusionTotal) {
-    //   const inclusionTotalObject = {
-    //     inclusionTotal: inclusionTotal,
-    //     ipAddress: clientIp,
-    //     deviceType: deviceType,
-    //     logId: inclusionTotalLog,
-    //   };
-    //   packageRatePlan.inclusionTotal.unshift(inclusionTotalObject);
-    // }
-
-    // if (ratePlanTotal) {
-    //   const ratePlanTotalObject = {
-    //     ratePlanTotal: ratePlanTotal,
-    //     ipAddress: clientIp,
-    //     deviceType: deviceType,
-    //     logId: ratePlanTotalLog,
-    //   };
-    //   packageRatePlan.ratePlanTotal.unshift(ratePlanTotalObject);
-    // }
-
-   
 
     await packageRatePlan.save();
+
+    
     const requestData = {
       body: req.body,
     };

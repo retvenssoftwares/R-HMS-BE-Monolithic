@@ -161,9 +161,6 @@ export const createResrvation = async (req, res) => {
           },
         ],
 
-        
-
-
         c_form: [{
           c_form: guestInfo[i].c_form,
           logId: randomString.generate(10),
@@ -287,6 +284,7 @@ export const createResrvation = async (req, res) => {
   const details = await createBooking.save();
 
 
+
   const data = details.roomDetails[0].roomDetails;
 
   //add reservation ids
@@ -328,7 +326,7 @@ export const createResrvation = async (req, res) => {
       }
     }, res);
 
-  console.log(availableRooms)
+ 
 
     if (availableRooms){
       const result = {};
@@ -341,8 +339,6 @@ export const createResrvation = async (req, res) => {
         result[room.roomTypeId] = room.minimumInventory;
       }
 
-
-
       // Function to get guest details by guestId
       async function getGuestDetails(guestId) {
         return await guestCollections.findOne({ guestId });
@@ -351,6 +347,8 @@ export const createResrvation = async (req, res) => {
 
       // Function to create and save hold data
       async function createAndSaveHoldData(booking, c_form, inclusion, adult, childs, charge, extraAdult, extraChild, guestId, remark, internalNote, ratePlanName, roomTypeId, index, ratePlan, name, baseRates, guestDetails) {
+
+        const created = booking.createdBy[0].createdBy || ""
 
         const flattenedBaseRates = baseRates.map(item => ({
           date: item.date,
@@ -365,19 +363,42 @@ export const createResrvation = async (req, res) => {
           bookingSourceId: item.barRateReservation[0].bookingSourceId
         }));
 
+        const reservationSummaryDetails = booking.reservationRate.map((item)=>({
+          roomCharges : item.roomCharges[0].roomCharges || "",
+          extras : item.roomCharges[0].extras || "",
+          taxes : item.roomCharges[0].taxes || "",
+          from : item.roomCharges[0].from || "",
+          to : item.roomCharges[0].to || "",
+          grandTotal : item.roomCharges[0].grandTotal || ""
+        }))
+
+        const payment = booking.paymentDetails.map((item)=>({
+          billTo : item.billTo,
+          paymentNote : item.paymentNote
+        }))
+
+        const cardDeatils = booking.cardDeatils.map((item)=>({
+          nameOnCard : item.cardDeatils[0].nameOnCard || "",
+          cardNumber : item.cardDeatils[0].cardNumber || "",
+          cvv : item.cvv[0].cvv || "",
+          expiryDate : item.expiryDate[0].expiryDate || ""
+        }))
+
 
         const nightCount = booking.nightCount[0].nightCount
-       
+
         const form = c_form.map((item) => ({
           c_form: item.c_form,
           logId: item.logId
         }))
 
 
+
         const hold = new holdData({
           bookingId: booking.bookingId || "",
           reservationId: booking.reservationIds && booking.reservationIds[index] || "",
           propertyId: booking.propertyId || "",
+      
 
 
           roomTypeId: [{
@@ -401,12 +422,16 @@ export const createResrvation = async (req, res) => {
             barRateReservation: bar,
             logId : randomString.generate(10)
           }],
+          
           c_form: form,
+
+
 
           nightCount :[{
             nightCount : nightCount || "",
             logId : randomString.generate(10)
           }],
+
           extraInclusionId: inclusion || "",
 
           extraAdultRate:[{
@@ -523,11 +548,37 @@ export const createResrvation = async (req, res) => {
             ratePlanName : ratePlanName || '',
             logId: randomString.generate(10)
           }],
-          
+
+          createdBy : [{
+            createdBy : created,
+            logId : randomString.generate(10)
+          }],
+
           baseRates: [{
             baseRates: flattenedBaseRates,
             logId : randomString.generate(10)
           }],
+
+          reservationRate : [{
+            roomCharges : reservationSummaryDetails,
+            logId : randomString.generate(10)
+          }],
+
+          applyDiscount :[{
+            applyDiscount : booking.applyDiscount[0].applyDiscount || "",
+            logId : randomString.generate(10)
+          }],
+
+          paymentDetails : [{
+            paymentDetails : payment,
+            logId : randomString.generate(10)
+          }],
+
+          cardDetails : [{
+            cardDetails : cardDeatils,
+            logId : randomString.generate(10)
+          }]
+          
         });
 
         await hold.save();

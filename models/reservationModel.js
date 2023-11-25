@@ -102,6 +102,8 @@ const booking = new mongoose.Schema({
 
     }],
 
+    
+
 
     // company Reservation
     // change to companyId

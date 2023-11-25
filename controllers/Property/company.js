@@ -8,7 +8,7 @@ import {
   uploadImageToS3,
   uploadMultipleImagesToS3
 } from "../../helpers/helper.js";
-import companyLedger from "../../models/companyLedger.js"
+
 
 const addCompany = async (req, res) => {
   try {
@@ -168,33 +168,7 @@ const addCompany = async (req, res) => {
 
       const companyData = await addCompanyRecord.save()
 
-      const {creditLimit, totalBalance, ledger} = req.body
-
-      const addComapnyLedger = companyLedger ({
-
-        companyId : companyData.companyId,
-
-        hotelCode : companyData.hotelCode[0].hotelCode || "",
-
-        creditLimit: [{
-          creditLimit : creditLimit,
-          logId : randomString.generate(10)
-        }],
-
-        totalBalance:[{
-          totalBalance : totalBalance,
-          logId : randomString.generate(10)
-        }],
-
-        ledger : [{
-          ledger : ledger,
-          logId : randomString.generate(10)
-        }],
-        
-      })
-
-      await addComapnyLedger.save()
-
+      
       // const ledgerData = new
       return res.status(200).json({ message: "Company added successfully", statuscode: 200 })
 

@@ -626,8 +626,8 @@ export const createResrvation = async (req, res) => {
       // room rate extra adult extra child rate 
      
         const ratePlan = filteredRateResponse[0]?.barRatePlanId || ""
-        const ratePlanName = filteredRateResponse[0].ratePlanName || ""
-        const baseRates = filteredRateResponse[0].baseRates || ""
+        const ratePlanName = filteredRateResponse[0]?.ratePlanName || ""
+        const baseRates = filteredRateResponse[0]?.baseRates || ""
 
        
 

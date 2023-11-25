@@ -601,8 +601,8 @@ export const createResrvation = async (req, res) => {
       await Promise.all(roomDetailArray.map(async (roomDetail, index) => {
         const roomTypeId = roomDetail.roomTypeId;
         const ratePlanId = roomDetail.ratePlanId
-        const remark = roomDetail.remark[0].specialRemark || "";
-        const internalNote = roomDetail.remark[0].internalNote || ""
+        const remark = roomDetail.remark[0]?.specialRemark || "";
+        const internalNote = roomDetail.remark[0]?.internalNote || ""
 
 
         // check Rate plan for that room

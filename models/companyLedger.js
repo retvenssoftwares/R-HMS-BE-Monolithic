@@ -8,10 +8,27 @@ const company = new mongoose.Schema({
         default: ""
     },
 
-    hotelCode: {
+    propertyId: {
         type: String,
         default: ""
     },
+
+    date:{
+        type: String,
+        default: ""
+    },
+
+    openingBalance : [{
+        openingBalance : {
+            type: String,
+            default: ""
+        },
+
+        logId:{
+            type: String,
+            default: ""
+        }
+    }],
 
     creditLimit: [{
 
@@ -43,11 +60,6 @@ const company = new mongoose.Schema({
     ledger: [{
         ledger: [{
 
-            createdOn: {
-                type: String,
-                default: ""
-            },
-
             particular: {
                 type: String,
                 default: ""
@@ -65,20 +77,15 @@ const company = new mongoose.Schema({
                 }
             }],
 
-
-        }],
-
-        amount: [{
-            credit: {
-                type: String,
-                default: ""
+            amount : {
+                type:String,
+                default:""
             },
 
-            debit: {
-                type: String,
-                default: ""
-            }
+
         }],
+
+        
 
 
         logId: {

@@ -32,7 +32,7 @@ export const createCompanyResrvation = async (req, res) => {
     roomDetails,
     remark,
     discountReservation,
-    reservationSummary,
+    roomCharges,
     applyDiscount,
     paymentDetails,
     barRateReservation,
@@ -41,6 +41,7 @@ export const createCompanyResrvation = async (req, res) => {
     isGroupBooking,
     cardDetails,
     createTask,
+    
   } = req.body
 
 
@@ -99,6 +100,11 @@ export const createCompanyResrvation = async (req, res) => {
             logId: randomString.generate(10),
           },
         ],
+
+        employeeId :[{
+          employeeId: guestInfo[i].employeeId,
+          logId: randomString.generate(10),
+        }],
 
         guestName: [
           {
@@ -241,8 +247,8 @@ export const createCompanyResrvation = async (req, res) => {
 
 
 
-    reservationSummary: [{
-      reservationSummary: reservationSummary,
+    reservationRate: [{
+      roomCharges: roomCharges,
       logId: randomString.generate(10),
     }],
 
@@ -272,8 +278,6 @@ export const createCompanyResrvation = async (req, res) => {
   });
 
   const details = await createBooking.save();
-
-  // console.log(details)
 
   const data = details.roomDetails[0].roomDetails;
 
@@ -317,9 +321,7 @@ export const createCompanyResrvation = async (req, res) => {
 
     }, res);
 
-    console.log(availableRooms)
-
-
+ 
     if (availableRooms) {
       const result = {};
 
@@ -340,10 +342,35 @@ export const createCompanyResrvation = async (req, res) => {
       // Function to create and save hold data
       async function createAndSaveHoldData(booking, guestId, c_form, inclusion, adult, childs, charge, extraAdult, extraChild, remark, internalNote, roomTypeId, index, ratePlanId, name, ratePlan, guestDetails) {
 
-        const nightCount = booking.nightCount[0].nightCount
+        const nightCount = booking.nightCount[0].nightCount || ""
        
-        const company = booking.companyId
+        const company = booking.companyId || ""
 
+        const created = booking.createdBy[0].createdBy || ""
+
+        const reservationSummaryDetails = booking.reservationRate.map((item)=>({
+          roomCharges : item.roomCharges[0].roomCharges || "",
+          extras : item.roomCharges[0].extras || "",
+          taxes : item.roomCharges[0].taxes || "",
+          from : item.roomCharges[0].from || "",
+          to : item.roomCharges[0].to || "",
+          grandTotal : item.roomCharges[0].grandTotal || ""
+        }))
+
+        console.log(reservationSummaryDetails)
+
+        const payment = booking.paymentDetails.map((item)=>({
+          billTo : item.billTo,
+          paymentNote : item.paymentNote
+        }))
+
+        // const cardDeatils = booking.cardDeatils.map((item)=>({
+        //   nameOnCard : item.cardDeatils[0].nameOnCard || "",
+        //   cardNumber : item.cardDeatils[0].cardNumber || "",
+        //   cvv : item.cvv[0].cvv || "",
+        //   expiryDate : item.expiryDate[0].expiryDate || ""
+        // }))
+    
         const form = c_form.map((item) => ({
           c_form: item.c_form,
           logId: item.logId
@@ -354,32 +381,179 @@ export const createCompanyResrvation = async (req, res) => {
           bookingId: booking.bookingId || "",
           reservationId: booking.reservationIds && booking.reservationIds[index] || "",
           propertyId: booking.propertyId || "",
-          roomTypeId: roomTypeId || "",
           companyId: company || "",
+
+          roomTypeId: [{
+            roomTypeId: roomTypeId || "",
+            logId: randomString.generate(10)
+          }],
+
+          
+          employeeId : [{
+            employeeId : guestDetails.employeeId && guestDetails.employeeId[0] && guestDetails.employeeId[0].employeeId || "",
+            logId: randomString.generate(10)
+          }],
+
+          ratePlanId: [{
+            ratePlanId : ratePlan || "",
+            logId : randomString.generate(10)
+          }],
+
           rateTypeId: booking.rateTypeId && booking.rateTypeId[0] && booking.rateTypeId[0].rateTypeId || "",
-          roomTypeName: name || "",
-          ratePlanId : ratePlanId || "",
+
+          roomTypeName:[{
+            roomTypeName : name || "",
+            logId : randomString.generate(10)
+          }],
+
+      
           c_form: form,
-          nightCount : nightCount,
-          extraInclusionId: inclusion,
-          extraAdultRate: extraAdult,
-          extraChildRate: extraChild,
-          adults: adult,
-          childs: childs,
-          charge: charge,
+
+          nightCount :[{
+            nightCount : nightCount || "",
+            logId : randomString.generate(10)
+          }],
+          extraInclusionId: inclusion || "",
+
+          extraAdultRate:[{
+            extraAdultRate : extraAdult || "",
+            logId : randomString.generate(10)
+          }],
+
+          extraChildRate:[{
+            extraChildRate : extraChild || "",
+            logId : randomString.generate(10)
+          }],
+
+          adults:[{
+            adults : adult || "",
+            logId : randomString.generate(10)
+          }],
+
+          childs:[{
+            childs : childs || "",
+            logId : randomString.generate(10)
+          }],
+
+          charge:[{
+            charge : charge || "",
+            logId : randomString.generate(10)
+          }],
+
           guestId: guestId || "",
-          guestName: guestDetails.guestName && guestDetails.guestName[0] && guestDetails.guestName[0].guestName || "",
-          salutation: guestDetails.salutation && guestDetails.salutation[0] && guestDetails.salutation[0].salutation || "",
-          phoneNumber: guestDetails.phoneNumber && guestDetails.phoneNumber[0] && guestDetails.phoneNumber[0].phoneNumber || "",
-          emailAddress: guestDetails.emailAddress && guestDetails.emailAddress[0] && guestDetails.emailAddress[0].emailAddress || "",
+
+          guestName: [{
+            guestName: guestDetails.guestName && guestDetails.guestName[0] && guestDetails.guestName[0].guestName || "",
+            logId: randomString.generate(10)
+          }],
+
+          salutation: [{
+            salutation: guestDetails.salutation && guestDetails.salutation[0] && guestDetails.salutation[0].salutation || "",
+            logId: randomString.generate(10)
+          }],
+
+          guestProfile: [{
+            guestProfile: guestDetails.guestProfile && guestDetails.guestProfile[0] && guestDetails.guestProfile[0].guestProfile || "",
+            logId: randomString.generate(10)
+          }],
+
+          phoneNumber: [{
+            phoneNumber: guestDetails.phoneNumber && guestDetails.phoneNumber[0] && guestDetails.phoneNumber[0].phoneNumber || "",
+            logId: randomString.generate(10)
+          }],
+
+          emailAddress: [{
+            emailAddress: guestDetails.emailAddress && guestDetails.emailAddress[0] && guestDetails.emailAddress[0].emailAddress || "",
+            logId: randomString.generate(10)
+          }],
+
+          addressLine1 : [{
+            addressLine1 : guestDetails.addressLine1 && guestDetails.addressLine1[0] && guestDetails.addressLine1[0].addressLine1 || "",
+            logId: randomString.generate(10)
+          }],
+
+          addressLine2 : [{
+            addressLine2 : guestDetails.addressLine2 && guestDetails.addressLine2[0] && guestDetails.addressLine2[0].addressLine2 || "",
+            logId: randomString.generate(10)
+          }],
+
+          country : [{
+            country : guestDetails.country && guestDetails.country[0] && guestDetails.country[0].country || "",
+            logId: randomString.generate(10)
+          }],
+
+          state : [{
+            state : guestDetails.state && guestDetails.state[0] && guestDetails.state[0].state || "",
+            logId: randomString.generate(10)
+          }],
+
+          city : [{
+            city : guestDetails.city && guestDetails.city[0] && guestDetails.city[0].city || "",
+            logId: randomString.generate(10)
+          }],
+
+          pinCode : [{
+            pinCode : guestDetails.pinCode && guestDetails.pinCode[0] && guestDetails.pinCode[0].pinCode || "",
+            logId: randomString.generate(10)
+          }],  
+
+          checkInDate: [{
+            checkInDate: booking.checkInDate && booking.checkInDate[0] && booking.checkInDate[0].checkInDate || "",
+            logId: randomString.generate(10)
+          }],
+          
+
+          checkOutDate: [{
+            checkOutDate: booking.checkOutDate && booking.checkOutDate[0] && booking.checkOutDate[0].checkOutDate || "",
+            logId: randomString.generate(10)
+          }],
+
+
           bookingTime: await getCurrentUTCTimestamp(),
-          checkInDate: booking.checkInDate && booking.checkInDate[0] && booking.checkInDate[0].checkInDate || "",
+          //checkInDate: booking.checkInDate && booking.checkInDate[0] && booking.checkInDate[0].checkInDate || "",
           reservationNumber: booking.reservationNumber || "",
-          checkOutDate: booking.checkOutDate && booking.checkOutDate[0] && booking.checkOutDate[0].checkOutDate || "",
-          remark: remark || "",
-          internalNote: internalNote || "",
+          //checkOutDate: booking.checkOutDate && booking.checkOutDate[0] && booking.checkOutDate[0].checkOutDate || "",
+          remark:[{
+            remark : remark || "",
+            logId: randomString.generate(10)
+          }],
+
+          internalNote:[{
+            internalNote : internalNote || "",
+            logId: randomString.generate(10)
+          }],
+
           inventory: 1,
-          ratePlanName: ratePlan || '',
+          
+          ratePlanName:[{
+            ratePlanName : ratePlan || '',
+            logId: randomString.generate(10)
+          }],
+
+          createdBy : [{
+            createdBy : created,
+            logId : randomString.generate(10)
+          }],
+
+          reservationRate : [{
+            roomCharges : reservationSummaryDetails,
+            logId : randomString.generate(10)
+          }],
+
+          applyDiscount :[{
+            applyDiscount : booking.applyDiscount[0].applyDiscount || "",
+            logId : randomString.generate(10)
+          }],
+
+          paymentDetails : [{
+            paymentDetails : payment,
+            logId : randomString.generate(10)
+          }],
+
+          // cardDetails : [{
+          //   cardDetails : cardDeatils,
+          //   logId : randomString.generate(10)
+          // }]
         
         });
 

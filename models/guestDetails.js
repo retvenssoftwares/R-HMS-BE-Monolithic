@@ -91,6 +91,18 @@ const guestDetails = new mongoose.Schema({
     },
   ],
 
+  employeeId: [{
+    employeeId: {
+      type: String,
+      default: "",
+    },
+
+    logId: {
+      type: String,
+      default: "",
+    }
+  }],
+
   addressLine2: [
     {
       addressLine2: {

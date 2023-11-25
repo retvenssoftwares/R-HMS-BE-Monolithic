@@ -596,8 +596,8 @@ export const createResrvation = async (req, res) => {
       await Promise.all(roomDetailArray.map(async (roomDetail, index) => {
         const roomTypeId = roomDetail.roomTypeId;
         const ratePlanId = roomDetail.ratePlanId
-        const remark = roomDetail.remark[0].specialRemark;
-        const internalNote = roomDetail.remark[0].internalNote
+        const remark = roomDetail.remark[0]?.specialRemark || "";
+        const internalNote = roomDetail.remark[0]?.internalNote || ""
 
 
         // check Rate plan for that room
@@ -618,13 +618,13 @@ export const createResrvation = async (req, res) => {
        
       // room rate extra adult extra child rate 
      
-        const ratePlan = filteredRateResponse[0].barRatePlanId
-        const ratePlanName = filteredRateResponse[0].ratePlanName
-        const baseRates = filteredRateResponse[0].baseRates
+        const ratePlan = filteredRateResponse[0]?.barRatePlanId || ""
+        const ratePlanName = filteredRateResponse[0]?.ratePlanName || ""
+        const baseRates = filteredRateResponse[0]?.baseRates || ""
 
 
 
-        const guestId = booking.guestId.length === 1 ? booking.guestId[0].guestId : booking.guestId[index].guestId;
+        const guestId = booking.guestId.length === 1 ? booking.guestId[0]?.guestId : booking.guestId[index]?.guestId || "";
 
 
         // filds require in the room Details 
@@ -641,8 +641,8 @@ export const createResrvation = async (req, res) => {
         // check room requriments  
         if (dictionary[roomTypeId] && dictionary[roomTypeId] <= result[roomTypeId]) {
           const guestDetails = await getGuestDetails(guestId);
-          const c_form = guestDetails.c_form
-          const roomTypeName = await roomType.findOne({ roomTypeId: roomTypeId })
+          const c_form = guestDetails.c_form || ""
+          const roomTypeName = await roomType.findOne({ roomTypeId: roomTypeId})
           const name = roomTypeName.roomTypeName[0].roomTypeName || ""
 
           return createAndSaveHoldData(booking, c_form, inclusion, adult, childs, charge, extraAdult, extraChild, guestId, remark, internalNote, ratePlanName, roomTypeId, index, ratePlan, name, baseRates, guestDetails);

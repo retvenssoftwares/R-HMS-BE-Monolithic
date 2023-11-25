@@ -624,11 +624,17 @@ export const createResrvation = async (req, res) => {
        
       // room rate extra adult extra child rate 
      
-        const ratePlan = filteredRateResponse[0]?.barRatePlanId || ""
-        const ratePlanName = filteredRateResponse[0].ratePlanName || ""
-        const baseRates = filteredRateResponse[0].baseRates || ""
-
-        console.log(baseRates)
+      if (filteredRateResponse[0]) {
+        var ratePlan = filteredRateResponse[0]?.barRatePlanId || "";
+        var ratePlanName = filteredRateResponse[0].ratePlanName || "";
+        var baseRates = filteredRateResponse[0].baseRates || "";
+      
+        console.log(baseRates);
+      
+        // ... (rest of your code)
+      
+        // Continue using ratePlan, ratePlanName, and baseRates in your logic
+      }
 
       
 

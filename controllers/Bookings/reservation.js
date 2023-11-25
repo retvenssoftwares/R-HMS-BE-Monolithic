@@ -84,98 +84,105 @@ export const createResrvation = async (req, res) => {
 
   let userRole = findUser.role[0].role;
 
-  for (let i = 0; i < guestInfo.length; i++) {
-    if (guestInfo[i].guestId) {
-      guestIdArray.push({ guestId: guestInfo[i].guestId });
-    } else {
-      const guestDetails = new guestCollections({
-        guestId: randomString.generate(10),
+  try{
 
-        salutation: [
-          {
-            salutation: guestInfo[i].salutation,
+    for (let i = 0; i < guestInfo.length; i++) {
+      if (guestInfo[i].guestId) {
+        guestIdArray.push({ guestId: guestInfo[i].guestId });
+      } else {
+        const guestDetails = new guestCollections({
+          guestId: randomString.generate(10),
+  
+          salutation: [
+            {
+              salutation: guestInfo[i].salutation,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          guestName: [
+            {
+              guestName: guestInfo[i].guestName,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          phoneNumber: [
+            {
+              phoneNumber: guestInfo[i].phoneNumber,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          emailAddress: [
+            {
+              emailAddress: guestInfo[i].emailAddress,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          addressLine1: [
+            {
+              addressLine1: guestInfo[i].addressLine1,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          addressLine2: [
+            {
+              addressLine2: guestInfo[i].addressLine2,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          country: [
+            {
+              country: guestInfo[i].country,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          state: [
+            {
+              state: guestInfo[i].state,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          city: [
+            {
+              city: guestInfo[i].city,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          pinCode: [
+            {
+              pinCode: guestInfo[i].pinCode,
+              logId: randomString.generate(10),
+            },
+          ],
+  
+          c_form: [{
+            c_form: guestInfo[i].c_form,
             logId: randomString.generate(10),
-          },
-        ],
-
-        guestName: [
-          {
-            guestName: guestInfo[i].guestName,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        phoneNumber: [
-          {
-            phoneNumber: guestInfo[i].phoneNumber,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        emailAddress: [
-          {
-            emailAddress: guestInfo[i].emailAddress,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        addressLine1: [
-          {
-            addressLine1: guestInfo[i].addressLine1,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        addressLine2: [
-          {
-            addressLine2: guestInfo[i].addressLine2,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        country: [
-          {
-            country: guestInfo[i].country,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        state: [
-          {
-            state: guestInfo[i].state,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        city: [
-          {
-            city: guestInfo[i].city,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        pinCode: [
-          {
-            pinCode: guestInfo[i].pinCode,
-            logId: randomString.generate(10),
-          },
-        ],
-
-        c_form: [{
-          c_form: guestInfo[i].c_form,
-          logId: randomString.generate(10),
-        }],
-
-      });
-
-      const guest = await guestDetails.save();
-
-
-      // booking details
-      guestIdArray.push({ guestId: guest.guestId });
+          }],
+  
+        });
+  
+        const guest = await guestDetails.save();
+  
+  
+        // booking details
+        guestIdArray.push({ guestId: guest.guestId });
+      }
     }
+  
+  }catch{
+    console.log("gfchvjbknlm;") 
   }
 
+  
   // create reservation
   const createBooking = new bookingsModel({
     guestId: guestIdArray,

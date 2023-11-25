@@ -4,7 +4,7 @@ import verifiedUser from "../../models/verifiedUsers.js";
 
 export const getCompanyReservation = async (req, res) => {
     try {
-        const { companyId , userId } = req.query;
+        const { companyId , userId } = req.query
 
         const findUser = await verifiedUser.findOne({ userId: userId });
 

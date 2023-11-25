@@ -11,7 +11,7 @@ const getPackage = async (req, res) => {
         }
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
         if (result.success) {
-            const packageData = await packageModel.find({packageId: packageId }).lean();
+            const packageData = await packageModel.find({packageId: packageId,"displayStatus.0.displayStatus":"1" }).sort({_id:-1}).lean();
             // console.log("packageDate", packageData);
             if (!packageData || !packageId) {
                 return res.status(400).json({ message: "Please enter packageId", statuscode: 400 })

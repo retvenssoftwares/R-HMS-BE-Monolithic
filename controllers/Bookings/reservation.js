@@ -358,12 +358,14 @@ export const createResrvation = async (req, res) => {
 
         const created = booking.createdBy[0].createdBy || ""
 
-        const flattenedBaseRates = baseRates.map(item => ({
-          date: item.date,
-          baseRate: item.baseRate,
-          extraAdultRate: item.extraAdultRate,
-          extraChildRate: item.extraChildRate
-        }));
+        if(baseRates){
+          var flattenedBaseRates = baseRates.map(item => ({
+            date: item.date,
+            baseRate: item.baseRate,
+            extraAdultRate: item.extraAdultRate,
+            extraChildRate: item.extraChildRate
+          }));
+        }
 
         const bar = booking.barRateReservation.map((item) => ({
           bookingTypeId: item.barRateReservation[0].bookingTypeId,
@@ -625,10 +627,7 @@ export const createResrvation = async (req, res) => {
         const ratePlanName = filteredRateResponse[0]?.ratePlanName || ""
         const baseRates = filteredRateResponse[0]?.baseRates || ""
 
-        console.log("hbjnkm",baseRates)
-
-
-
+       
 
         const guestId = booking.guestId.length === 1 ? booking.guestId[0]?.guestId : booking.guestId[index]?.guestId || "";
 

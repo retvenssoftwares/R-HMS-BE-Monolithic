@@ -14,7 +14,6 @@ import inclusion from '../../controllers/Rooms/postInclusion.controller.js';
 import getInclusion from '../../controllers/Rooms/getInclusion.js';
 import patchInclusions from '../../controllers/Rooms/patchInclusion.js';
 import getRoomsTypes from '../../controllers/Rooms/getRoomType.js';
-
 import { companyRatePlan, updateCompanyRatePlan } from '../../controllers/Rooms/companyRatePlan.js';
 import BarRatePlan from '../../controllers/Rooms/postBarRatePlan.controller.js'
 import fetchBarRatePlan from '../../controllers/Rooms/getBarRatePlan.js'

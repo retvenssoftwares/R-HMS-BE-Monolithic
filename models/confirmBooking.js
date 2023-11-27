@@ -227,6 +227,11 @@ const confirmBookingDetails = new mongoose.Schema({
         }
     }],
 
+    cancelStatus: {
+        type: String,
+        default: "false"
+    },
+
     bookingTime: {
         type: String,
         default: ""

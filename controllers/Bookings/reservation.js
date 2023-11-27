@@ -4,9 +4,6 @@ import guestCollections from "../../models/guestDetails.js";
 import {
   findUserByUserIdAndToken,
   generateFourDigitRandomNumber,
-
-
-
   getCurrentLocalTimestamp,
   getCurrentUTCTimestamp,
 } from "../../helpers/helper.js";
@@ -230,6 +227,7 @@ export const createResrvation = async (req, res) => {
         logId: randomString.generate(10),
       },
     ],
+    
     // companyReservation: [
     //   {
     //     companyId: companyId,

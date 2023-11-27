@@ -14,6 +14,7 @@ import {createCompanyResrvation} from "../../controllers/Bookings/companyReserva
 import { getCompanyReservation } from '../../controllers/Bookings/getCompanyReservation.js';
 import  fetchfloorDetails  from "../../controllers/Bookings/getFloorDetails.js"
 import { getReservationDetails } from '../../controllers/Bookings/getReservationDetails.js';
+import {cancelBooking} from "../../controllers/Bookings/cancleBooking.js"
 
 router.post("/api/createBooking", createResrvation);
 
@@ -40,5 +41,7 @@ router.get("/api/getCompanyReservation",getCompanyReservation)
 router.get("/api/getFloorDetails", fetchfloorDetails)
 
 router.get("/api/getBookingDetails",getReservationDetails)
+
+router.patch("/api/canacleBooking",cancelBooking)
 
 export default router;

@@ -1,6 +1,7 @@
 import propertyModel from "../../models/property.js";
 import { findUserByUserIdAndToken } from "../../helpers/helper.js"
 import amenitiesModel from '../../models/amenity.js'
+//import adminAmenityModel from '../../models/superAdmin/amenities.js'
 import propertyImage from '../../models/propertyImages.js'
 const getPropertyById = async (req, res) => {
     try {
@@ -22,16 +23,18 @@ const getPropertyById = async (req, res) => {
         if (findProperty.amenities && findProperty.amenities.length > 0) {
             amenities = findProperty.amenities[0].amenities;
             const allAmenities = amenities.map((item) => item.amenityId)
-          //  console.log(allAmenities)
-            const foundAmenity = await amenitiesModel.find({ amenityId: { $in: allAmenities } });
-             amenityNames = foundAmenity.map((foundAmenity) => ({
-                amenityName: foundAmenity.amenityName[0].amenityName,
-                amenityIconLink: foundAmenity.amenityIconLink[0].amenityIconLink,
-                amenityId: foundAmenity.amenityId,
-                amenityType: foundAmenity.amenityType[0].amenityType
-            }))
-          //  console.log(amenityNames)
-        }
+           console.log(allAmenities)
+          const foundAmenity = await amenitiesModel.find({ amenityId: { $in: allAmenities } });
+         console.log(foundAmenity);
+          
+          amenityNames = foundAmenity.map((amenity) => ({
+              amenityName: amenity.amenityName[0]?.amenityName,
+              amenityIconLink: amenity.amenityIconLink[0]?.amenityIconLink,
+              amenityId: amenity.amenityId,
+              amenityType: amenity.amenityType[0]?.amenityType
+          }));
+         // console.log(amenityNames);
+        }          
 
             // propertyImages
             const filteredPropertyImages = propertyImages.filter(img => img.propertyId === propertyId);

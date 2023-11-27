@@ -300,6 +300,8 @@ export const createCompanyResrvation = async (req, res) => {
     }
   }
 
+  console.log(dictionary)
+
 
   try {
     const availableRooms = await checkRoomAvailability({
@@ -315,7 +317,6 @@ export const createCompanyResrvation = async (req, res) => {
       }
 
     }, res);
-
  
     if (availableRooms) {
       const result = {};
@@ -332,6 +333,8 @@ export const createCompanyResrvation = async (req, res) => {
       async function getGuestDetails(guestId) {
         return await guestCollections.findOne({ guestId });
       }
+
+      console.log(result)
 
 
       // Function to create and save hold data
@@ -550,7 +553,7 @@ export const createCompanyResrvation = async (req, res) => {
         
         });
 
-        // console.log(hold)
+        console.log(hold)
 
         await hold.save();
 
@@ -562,7 +565,6 @@ export const createCompanyResrvation = async (req, res) => {
         const ratePlanId = roomDetail.ratePlanId
         const remark = roomDetail.remark[0].specialRemark;
         const internalNote = roomDetail.remark[0].internalNote
-
 
         const ratePlanName = await companyRatePlan.findOne({companyRatePlanId : ratePlanId})
         // console.log(ratePlanName)
@@ -584,6 +586,7 @@ export const createCompanyResrvation = async (req, res) => {
 
         
 
+        console.log(result[roomTypeId])
         // check room requriments  
         if (dictionary[roomTypeId] && dictionary[roomTypeId] <= result[roomTypeId]) {
           const guestDetails = await getGuestDetails(guestId);
@@ -593,6 +596,8 @@ export const createCompanyResrvation = async (req, res) => {
           // console.log(name)
 
           return createAndSaveHoldData(booking, guestId, c_form, inclusion, adult, childs, charge, extraAdult, extraChild, remark, internalNote, roomTypeId, index, ratePlanId, name, ratePlan,guestDetails);
+        }else{
+          console.log("gfhvjbknlm")
         }
         
       }));

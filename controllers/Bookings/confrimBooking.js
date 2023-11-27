@@ -34,7 +34,20 @@ export const addConfirmBooking = async (req, res) => {
       reservationNumber: reservationNumber,
     });
 
-    let dev = await comapnyLedger.findOneAndUpdate(
+
+
+    const balanceDetails = await comapnyLedger.findOne({ companyId: companyId.companyId, propertyId: companyId.propertyId })
+
+
+    if (Math.abs(balanceDetails.totalBalance[0].totalBalance) >= parseInt(balanceDetails.creditLimit[0].creditLimit)) {
+
+      return res.status(200).json({ message: "You Dont have sufficient Balance" })
+
+    }
+
+
+    // Calculate updatedTotalBalance based on the changes made above
+    const updatedTotalBalance = await comapnyLedger.findOneAndUpdate(
       {
         $and: [
           { companyId: companyId.companyId },
@@ -43,8 +56,20 @@ export const addConfirmBooking = async (req, res) => {
       },
       {
         $inc: {
-          [`totalBalance.${0}.totalBalance`]:
-            -companyId.reservationRate[0].roomCharges[0].grandTotal,
+          [`totalBalance.${0}.totalBalance`]: -companyId.reservationRate[0].roomCharges[0].grandTotal,
+        },
+        $push: {
+          ledger: {
+            $each: [
+              {
+                particular: reservationNumber,
+                dr: companyId.reservationRate[0].roomCharges[0].grandTotal,
+                balance: '0', // Assuming balance should be a string
+                date: new Date(),
+              },
+            ],
+            $position: 0,
+          },
         },
       },
       {
@@ -52,7 +77,26 @@ export const addConfirmBooking = async (req, res) => {
       }
     );
 
-    console.log(dev, "devdevdevdevdev");
+    // Get the updated value of totalBalance.${0}.totalBalance
+    const updatedTotalBalanceValue = updatedTotalBalance.totalBalance[0].totalBalance;
+
+    // Update the balance field in the ledger at position 0
+    await comapnyLedger.updateOne(
+      {
+        $and: [
+          { companyId: companyId.companyId },
+          { propertyId: companyId.propertyId },
+        ],
+      },
+      {
+        $set: {
+          'ledger.0.balance': String(updatedTotalBalanceValue),
+        },
+      }
+    );
+
+
+
 
     if (!data) {
       return res
@@ -61,7 +105,7 @@ export const addConfirmBooking = async (req, res) => {
     }
 
     var reservationIds = [];
-   
+
     data.forEach(async (item) => {
       const {
         guestId,
@@ -92,6 +136,7 @@ export const addConfirmBooking = async (req, res) => {
         adults,
         childs,
         charge,
+        reservationRate,
         barRateReservation,
         roomTypeName,
         remark,
@@ -219,6 +264,11 @@ export const addConfirmBooking = async (req, res) => {
           },
         ],
 
+        reservationRate: [{
+          roomCharges: reservationRate[0].roomCharges[0] || "",
+          logId: randomString.generate(10),
+        }],
+
         nightCount: [
           {
             nightCount: nightCount[0].nightCount || "",
@@ -270,12 +320,25 @@ export const addConfirmBooking = async (req, res) => {
           },
         ],
 
-        barRateReservation: [
-          {
-            barRateReservation: barRateReservation[0]?.barRateReservation || "",
-            logId: randomString.generate(10),
-          },
-        ],
+        barRateReservation: Array.isArray(barRateReservation) && barRateReservation.length > 0
+          ? [
+            {
+              barRateReservation: barRateReservation[0]?.barRateReservation[0] || "",
+              logId: randomString.generate(10),
+            },
+          ]
+          : [],
+
+
+        baseRates: Array.isArray(baseRates) && baseRates.length > 0
+          ? [
+            {
+              baseRates: baseRates[0]?.baseRates || "",
+              logId: randomString.generate(10),
+            },
+          ]
+          : [],
+
 
         roomTypeName: [
           {
@@ -298,17 +361,7 @@ export const addConfirmBooking = async (req, res) => {
           },
         ],
 
-        baseRates: [
-          {
-            baseRates: baseRates[0].baseRates || "",
-            logId: randomString.generate(10),
-          },
-        ],
 
-        baseRates : [{
-          baseRates :baseRates[0]?.baseRates || "",
-          logId : randomString.generate(10)
-        }],
         c_form: [
           {
             c_form: c_form[0].c_form || "",
@@ -324,7 +377,8 @@ export const addConfirmBooking = async (req, res) => {
       await newData.save();
     });
 
-    // const deleteData = await holdData.deleteMany({ reservationNumber: reservationNumber })
+
+     const deleteData = await holdData.deleteMany({ reservationNumber: reservationNumber })
 
     return res.status(200).json({
       message: "Booking created successfully",

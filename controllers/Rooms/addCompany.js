@@ -193,7 +193,6 @@ const addCompany = async (req, res) => {
           },
         ],
 
-        ledger: [],
       });
 
       await addComapnyLedger.save();

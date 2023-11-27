@@ -30,7 +30,7 @@ export const createResrvation = async (req, res) => {
     roomDetails,
     remark,
     discountReservation,
-    reservationSummary,
+    roomCharges,
     applyDiscount,
     paymentDetails,
     barRateReservation,
@@ -179,7 +179,7 @@ export const createResrvation = async (req, res) => {
     }
   
   }catch{
-    console.log("gfchvjbknlm;") 
+    return res.status(500).json({message :"somrthing went wrong", statusCode: 500})
   }
 
   
@@ -258,8 +258,8 @@ export const createResrvation = async (req, res) => {
 
 
 
-    reservationSummary: [{
-      reservationSummary: reservationSummary,
+    reservationRate: [{
+      roomCharges: roomCharges,
       logId: randomString.generate(10),
     }],
 
@@ -289,6 +289,9 @@ export const createResrvation = async (req, res) => {
   });
 
   const details = await createBooking.save();
+
+
+  // console.log(details.reservationRate)
 
 
 
@@ -357,6 +360,15 @@ export const createResrvation = async (req, res) => {
 
         const created = booking.createdBy[0].createdBy || ""
 
+        // const reservationRate = booking.reservationRate[0].roomCharges[0].map((item)=>({
+        //   roomCharges : item.roomCharges,
+        //   extras : item.extras,
+        //   taxes : item.taxes,
+        //   from : item.from,
+        //   to : item.to,
+        //   grandTotal : item.grandTotal
+        // }))
+
         const flattenedBaseRates = baseRates.map(item => ({
           date: item.date,
           baseRate: item.baseRate,
@@ -378,6 +390,8 @@ export const createResrvation = async (req, res) => {
           to : item.roomCharges[0].to || "",
           grandTotal : item.roomCharges[0].grandTotal || ""
         }))
+
+        // console.log("gvhbjnk",reservationSummaryDetails)
 
         const payment = booking.paymentDetails.map((item)=>({
           billTo : item.billTo,

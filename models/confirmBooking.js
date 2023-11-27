@@ -398,6 +398,49 @@ const confirmBookingDetails = new mongoose.Schema({
 
     }],
 
+    reservationRate: [{
+        roomCharges: [{
+            roomCharges: {
+                type: String,
+                default: ""
+            },
+
+            extras: {
+                type: String,
+                default: ""
+            },
+
+
+            taxes: {
+                type: String,
+                default: ""
+            },
+
+            from: {
+                type: String,
+                default: ""
+            },
+
+
+            to: {
+                type: String,
+                default: ""
+            },
+
+            grandTotal: {
+                type: String,
+                default: ""
+            },
+
+        }],
+
+        logId: {
+            type: String,
+            default: ""
+        }
+
+    }],
+
     baseRates: [{
 
         baseRates: [{

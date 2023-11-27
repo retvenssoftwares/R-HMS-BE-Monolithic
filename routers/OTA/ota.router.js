@@ -11,7 +11,7 @@ import getChannelLogs from '../../controllers/OTA/MMT/channelLogs.js';
 router.patch("/api/mapRoomType", mapRoomData);
 router.patch("/api/mapRatePlan", mapRateData);
 router.patch("/api/patchRateRule", rateRuleUpdate);
-router.get("/api/getChanelLogs", getChannelLogs)
+router.get("/api/getChannelLogs", getChannelLogs)
 
 
 export default router;

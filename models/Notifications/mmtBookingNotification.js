@@ -1,6 +1,15 @@
 import { Schema, model } from 'mongoose';
 import db1 from '../../db/conn.js'
 const bookingNotificationSchema = new Schema({
+    otaId: {
+        type: String,
+        default: ''
+    },
+    propertyId: {
+        type: String,
+        default: ''
+    },
+
     Booking: {
         bookingId: {
             type: String,
@@ -13,6 +22,10 @@ const bookingNotificationSchema = new Schema({
         noOfRooms: {
             type: Number,
             default: 0
+        },
+        hotelCode: {
+            type: String,
+            default: ""
         },
         noOfNights: {
             type: Number,

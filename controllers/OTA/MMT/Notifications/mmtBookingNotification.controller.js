@@ -1,69 +1,50 @@
-import { parseString, Builder } from 'xml2js';
+import { parseStringPromise } from 'xml2js';
 import BookingNotificationMMT from '../../../../models/Notifications/mmtBookingNotification.js';
-
+import roomAndRateMap from '../../../../models/OTAs/mappedRoomsAndRates.js';
 const pushBookingNotificationMMT = async (req, res) => {
-    const xmlData = `
-    <?xml version="1.0" encoding="UTF-8"?>
-    <Booking HotelCode="1000000025">
-      <BookingId>0000057475</BookingId>
-      <CustomerName>Vaddy Jain</CustomerName>
-      <NoOfRooms>1</NoOfRooms>
-      <NoOfNights>1</NoOfNights>
-      <RoomTypeName>Deluxe Room</RoomTypeName>
-      <CheckInDate>2017-11-15</CheckInDate>
-      <Status>booked</Status>
-      <PayAtHotelFlag>False</PayAtHotelFlag>
-      <BookingTime>2017-10-26 18:15:43</BookingTime>
-      <BookingVendorName>Goibibo</BookingVendorName>
-    </Booking>
-  `;
+    try {
+        const { otaId, propertyId } = req.query;
+        const xmlData = req.body; // Assuming the XML data is in the request body
+        // console.log(xmlData,"hgcgh")
+        // Convert XML to JSON using promises
+        const result = await parseStringPromise(xmlData, { explicitArray: false, mergeAttrs: true });
 
-    // Convert XML to JSON
-    parseString(xmlData, { explicitArray: false, mergeAttrs: true }, (err, result) => {
-        if (err) {
-            console.error('Error parsing XML:', err);
-        } else {
-            const bookingData = result.Booking;
-            console.log(result)
+        const bookingData = result.Booking;
+        // console.log(typeof bookingData.HotelCode)
+        // console.log(bookingData.HotelCode)
+        // console.log(result);
 
-            // Create a new document using Mongoose model
-            const newBookingNotification = new BookingNotificationMMT({
-                Booking: {
-                    bookingId: bookingData.BookingId,
-                    customerName: bookingData.CustomerName,
-                    noOfRooms: parseInt(bookingData.NoOfRooms),
-                    noOfNights: parseInt(bookingData.NoOfNights),
-                    roomTypeName: bookingData.RoomTypeName,
-                    checkInDate: bookingData.CheckInDate,
-                    status: bookingData.Status,
-                    payAtHotelFlag: bookingData.PayAtHotelFlag === 'True',
-                    bookingTime: new Date(bookingData.BookingTime),
-                    bookingVendorName: bookingData.BookingVendorName
-                }
-            });
+        const getIds = await roomAndRateMap.findOne({ OTAHotelCode: bookingData.HotelCode }, 'otaId propertyId').lean()
+        // console.log(getIds, "asda")
+        // console.log(getIds.propertyId, getIds.otaId)
+        // Create a new document using Mongoose model
+        const newBookingNotification = new BookingNotificationMMT({
+            propertyId: getIds.propertyId || "",
+            otaId: getIds.otaId || "",
+            Booking: {
+                bookingId: bookingData.BookingId,
+                customerName: bookingData.CustomerName,
+                noOfRooms: parseInt(bookingData.NoOfRooms),
+                noOfNights: parseInt(bookingData.NoOfNights),
+                roomTypeName: bookingData.RoomTypeName,
+                checkInDate: bookingData.CheckInDate,
+                status: bookingData.Status,
+                hotelCode: bookingData.HotelCode,
+                payAtHotelFlag: bookingData.PayAtHotelFlag === 'True',
+                bookingTime: new Date(bookingData.BookingTime),
+                bookingVendorName: bookingData.BookingVendorName
+            }
+        });
 
-            // Save the document to the database
-            newBookingNotification.save()
-                .then(savedBooking => {
-                    console.log('Booking notification saved:');
-                })
-                .catch(error => {
-                    console.error('Error saving booking notification:', error);
-                });
-        }
+        // Save the document to the database
+        const savedBooking = await newBookingNotification.save();
+        // console.log('Booking notification saved:', savedBooking);
 
-        // Function to convert JSON to XML
-        const convertJsonToXml = (jsonData) => {
-            const builder = new Builder({ headless: true, renderOpts: { pretty: false } });
-            const xmlData = builder.buildObject({ root: jsonData });
+        return res.status(200).json({ message: 'Booking notification saved successfully', statuscode: 200 });
+    } catch (error) {
+        console.error('Error parsing XML:', error);
+        return res.status(500).json({ message: 'Internal Server Error', statuscode: 500 });
+    }
+};
 
-            return xmlData;
-        };
-
-        const xmlData = convertJsonToXml(result);
-        console.log(xmlData);
-    });
-
-}
-export default pushBookingNotificationMMT
-
+export default pushBookingNotificationMMT;

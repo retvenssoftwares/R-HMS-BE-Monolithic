@@ -3,6 +3,7 @@ import holdData from "../../models/holdBooking.js";
 import roomTypeModel from "../../models/roomType.js";
 import verifiedUser from "../../models/verifiedUsers.js";
 import manageInventory from "../../models/manageInventory.js";
+import reservationModel from "../../models/reservationType.js";
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const getInventory = async (req, res) => {
@@ -16,6 +17,8 @@ const getInventory = async (req, res) => {
             .json({ message: "User not found or invalid userId", statuscode: 400 });
     }
 
+    const getReservationTypeName = await reservationModel.findOne({ "reservationName.0.reservationName": "Confirmed" }).select('reservationName reservationTypeId')
+    const reservationId = getReservationTypeName.reservationTypeId
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
     if (!result.success) {
         return res
@@ -29,15 +32,10 @@ const getInventory = async (req, res) => {
         const endDateObj = new Date(checkOutDate);
         const checkOutDateISO = endDateObj.toISOString();
 
-        // if (checkInDate === checkOutDate) {
-        //     // console.log(checkInDate, checkOutDate)
-        //     return res.status(400).json({ message: "Check-in date cannot be equal to check-out date", statuscode: 400 });
-        // }
         if (checkInDate > checkOutDate) {
             return res.status(400).json({ message: "Check-in date cannot be greater than check-out date", statuscode: 400 });
         }
 
-        // Validate the date format
         const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
         if (!dateFormatRegex.test(checkInDate) || !dateFormatRegex.test(checkOutDate)) {
             return res.status(400).json({ message: "Please enter the date in the correct format (yyyy-mm-dd)", statuscode: 400 });
@@ -67,23 +65,51 @@ const getInventory = async (req, res) => {
 
             const reservations = await bookingModel.find({
                 propertyId,
-                "checkInDate.0.checkInDate": { $gte: checkInDateISO, $lt: checkOutDateISO },
                 "roomTypeId.0.roomTypeId": roomTypeId,
+                "barRateReservation.0.barRateReservation.0.bookingTypeId": reservationId,
+                $or: [
+                    {
+                        $and: [
+                            { "checkInDate.0.checkInDate": { $gte: checkInDateISO } },
+                            { "checkInDate.0.checkInDate": { $lt: checkOutDateISO } }
+                        ]
+                    },
+                    {
+                        $and: [
+                            { "checkInDate.0.checkInDate": { $lt: checkInDateISO } },
+                            { "checkOutDate.0.checkOutDate": { $gt: checkInDateISO } }
+                        ]
+                    }
+                ]
             });
 
-            const reducedCount = reservations.length;
+            const holdBookings = await holdData.find({
+                propertyId: propertyId,
+                "roomTypeId.0.roomTypeId": roomTypeId,
+                "barRateReservation.0.barRateReservation.0.bookingTypeId": reservationId,
+                $or: [
+                    {
+                        $and: [
+                            { "checkInDate.0.checkInDate": { $gte: checkInDateISO } },
+                            { "checkInDate.0.checkInDate": { $lt: checkOutDateISO } }
+                        ]
+                    },
+                    {
+                        $and: [
+                            { "checkInDate.0.checkInDate": { $lt: checkInDateISO } },
+                            { "checkOutDate.0.checkOutDate": { $gt: checkInDateISO } }
+                        ]
+                    }
+                ]
+            });
+
+            const reducedCount = reservations.length + holdBookings.length;
 
             const manageInventoryData = await manageInventory.aggregate([
                 { $match: { propertyId: propertyId, roomTypeId: roomTypeId } },
             ]);
 
-            const holdBookings = await holdData.find({
-                propertyId: propertyId,
-                "roomTypeId.0.roomTypeId": roomTypeId,
-                "checkInDate.0.checkInDate": { $gte: checkInDateISO, $lt: checkOutDateISO },
-            });
             const inventoryValues = holdBookings.map((booking) => booking.inventory);
-            // console.log(inventoryValues)
 
             const addedInventoryDates = [
                 ...new Set(
@@ -113,9 +139,7 @@ const getInventory = async (req, res) => {
 
             let holdBookingsCount = 0;
             if (inventoryValues.length > 0) {
-                // console.log(inventoryValues.length, "length");
                 holdBookingsCount = inventoryValues.reduce((sum, value) => sum + value, 0);
-                // console.log(holdBookingsCount);
             }
 
             const allDates = [
@@ -127,6 +151,19 @@ const getInventory = async (req, res) => {
 
             while (currentDate <= endDateObj) {
                 const dateISO = currentDate.toISOString().split("T")[0];
+
+                const isDateBooked = reservations.some(
+                    (booking) =>
+                        new Date(booking.checkInDate[0].checkInDate) <= currentDate &&
+                        new Date(booking.checkOutDate[0].checkOutDate) > currentDate
+                );
+
+                const isDateHoldBooked = holdBookings.some(
+                    (holdBooking) =>
+                        new Date(holdBooking.checkInDate[0].checkInDate) <= currentDate &&
+                        new Date(holdBooking.checkOutDate[0].checkOutDate) > currentDate
+                );
+
                 const blockedInventoryTotal = manageInventoryData.reduce(
                     (total, item) => {
                         const blockedItem = item.manageInventory.blockedInventory.find(
@@ -137,39 +174,49 @@ const getInventory = async (req, res) => {
                     0
                 );
 
-                const roomTypeInventory =
-                    roomType.numberOfRooms -
-                    blockedInventoryTotal -
-                    reducedCount -
-                    holdBookingsCount;
+                const addedInventoryTotal = manageInventoryData.reduce(
+                    (total, item) => {
+                        const addedItem = item.manageInventory.addedInventory.find(
+                            (added) => added.date === dateISO
+                        );
+                        return total + (addedItem ? addedItem.addedInventory : 0);
+                    },
+                    0
+                );
 
-                if (!allDates.includes(dateISO)) {
-                    calculatedInventoryData.push({
-                        date: dateISO,
-                        inventory: roomTypeInventory,
-                    });
+                const holdBookingsCount = holdBookings.filter(
+                    (holdBooking) =>
+                        new Date(holdBooking.checkInDate[0].checkInDate) <= currentDate &&
+                        new Date(holdBooking.checkOutDate[0].checkOutDate) > currentDate
+                ).length;
+
+                const bookingsCount = reservations.filter(
+                    (holdBooking) =>
+                        new Date(holdBooking.checkInDate[0].checkInDate) <= currentDate &&
+                        new Date(holdBooking.checkOutDate[0].checkOutDate) > currentDate
+                ).length;
+
+                // console.log(holdBookingsCount, bookingsCount)
+
+                let inventory;
+
+                if (!isDateBooked && !isDateHoldBooked) {
+                    inventory = roomType.numberOfRooms;
                 } else {
-                    const addedInventoryTotal = manageInventoryData.reduce(
-                        (total, item) => {
-                            const addedItem = item.manageInventory.addedInventory.find(
-                                (added) => added.date === dateISO
-                            );
-                            return total + (addedItem ? addedItem.addedInventory : 0);
-                        },
-                        0
+                    inventory = Math.abs(
+                        roomType.numberOfRooms +
+                        addedInventoryTotal -
+                        blockedInventoryTotal -
+                        holdBookingsCount -
+                        bookingsCount
                     );
-
-                    calculatedInventoryData.push({
-                        date: dateISO,
-                        inventory: Math.abs(
-                            roomType.numberOfRooms +
-                            addedInventoryTotal -
-                            blockedInventoryTotal -
-                            reducedCount -
-                            holdBookingsCount
-                        ),
-                    });
                 }
+
+                calculatedInventoryData.push({
+                    date: dateISO,
+                    inventory,
+                    // /isBlocked: blockedInventoryTotal > 0 ? "true" : "false",
+                });
 
                 currentDate.setDate(currentDate.getDate() + 1);
             }

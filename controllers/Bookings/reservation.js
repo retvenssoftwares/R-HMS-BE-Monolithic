@@ -334,6 +334,7 @@ export const createResrvation = async (req, res) => {
     }, res);
 
  
+    //console.log(availableRooms)
 
     if (availableRooms){
       const result = {};
@@ -357,12 +358,14 @@ export const createResrvation = async (req, res) => {
 
         const created = booking.createdBy[0].createdBy || ""
 
-        const flattenedBaseRates = baseRates.map(item => ({
-          date: item.date,
-          baseRate: item.baseRate,
-          extraAdultRate: item.extraAdultRate,
-          extraChildRate: item.extraChildRate
-        }));
+
+          var flattenedBaseRates = baseRates.map(item => ({
+            date: item.date,
+            baseRate: item.baseRate,
+            extraAdultRate: item.extraAdultRate,
+            extraChildRate: item.extraChildRate
+          }));
+        
 
         const bar = booking.barRateReservation.map((item) => ({
           bookingTypeId: item.barRateReservation[0].bookingTypeId,
@@ -418,7 +421,7 @@ export const createResrvation = async (req, res) => {
             logId : randomString.generate(10)
           }],
 
-          rateTypeId: booking.rateTypeId && booking.rateTypeId[0] && booking.rateTypeId[0].rateTypeId || "",
+          rateTypeId: booking.rateTypeId && booking.rateTypeId[0] && booking.rateTypeId[0]?.rateTypeId || "",
 
           roomTypeName:[{
             roomTypeName : name || "",
@@ -615,16 +618,18 @@ export const createResrvation = async (req, res) => {
         }, res);
 
         const filteredRateResponse = checkRateResponse.filter(response => response.barRatePlanId === ratePlanId);
+      
        
       // room rate extra adult extra child rate 
      
-        const ratePlan = filteredRateResponse[0]?.barRatePlanId || ""
-        const ratePlanName = filteredRateResponse[0]?.ratePlanName || ""
-        const baseRates = filteredRateResponse[0]?.baseRates || ""
+        const ratePlan = filteredRateResponse[0].barRatePlanId || ""
+        const ratePlanName = filteredRateResponse[0].ratePlanName || ""
+        const baseRates = filteredRateResponse[0].baseRates || ""
+
+        
 
 
-
-        const guestId = booking.guestId.length === 1 ? booking.guestId[0]?.guestId : booking.guestId[index]?.guestId || "";
+        const guestId = booking.guestId.length === 1 ? booking.guestId[0].guestId : booking.guestId[index].guestId || "";
 
 
         // filds require in the room Details 
@@ -644,6 +649,7 @@ export const createResrvation = async (req, res) => {
           const c_form = guestDetails.c_form || ""
           const roomTypeName = await roomType.findOne({ roomTypeId: roomTypeId})
           const name = roomTypeName.roomTypeName[0].roomTypeName || ""
+
 
           return createAndSaveHoldData(booking, c_form, inclusion, adult, childs, charge, extraAdult, extraChild, guestId, remark, internalNote, ratePlanName, roomTypeId, index, ratePlan, name, baseRates, guestDetails);
         }

@@ -25,6 +25,7 @@ const addMMTRecord = async (req, res) => {
             const mmtRecord = new mmtModel({
                 otaId: otaId,
                 connectionId: randomstring.generate(15),
+                propertyId: propertyId,
                 mmtHotelCode: mmtHotelCode,
                 userId: userId,
                 hotelRcode: hotelRcode,
@@ -44,6 +45,7 @@ const addMMTRecord = async (req, res) => {
                 connectionId: mmtRecord.connectionId,
                 OTAHotelCode: mmtHotelCode,
                 userId: userId,
+                propertyId: propertyId,
                 hotelRcode: hotelRcode,
                 accessToken: accessToken,
                 createdOn: await getCurrentUTCTimestamp(),

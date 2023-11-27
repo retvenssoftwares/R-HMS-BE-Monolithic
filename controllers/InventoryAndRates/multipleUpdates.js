@@ -20,6 +20,15 @@ const multipleUpdatesARI = async (req, res) => {
             inventory,
             source,
             otaId,
+            rateValues,
+            ratePlanIds,
+            extraAdultRates,
+            extraChildRates,
+            closed,
+            COA,
+            COD,
+            minLOS,
+            maxLOS,
             days } = req.body;
         const apiUrl = process.env.mmtV3ARI
         if (isInventoryUpdate) {
@@ -43,23 +52,40 @@ const multipleUpdatesARI = async (req, res) => {
                 }, req, res)
                 console.log(updateInventory)
                 console.log("done")
-                const xmlData = `<AvailRateUpdateRQ hotelCode="1000282881" timeStamp="">
-                <AvailRateUpdate locatorID="1">
-                <DateRange from="2023-11-19" to="2023-11-30"/>
-               <Availability code="45000485844" count="6" closed="false" />
-                <Rate currencyCode="INR" code="990001678682" rateType="b2c">
-                <PerOccupancyRates>
-                <PerOccupancy occupancy="1" rate="${baseRate}" />
-               
-                </PerOccupancyRates>
-                <AdditionalGuestRates>
-                <AdditionalGuestRate type="Adult" rate="${extraAdultRate}" />
-               
-                </AdditionalGuestRates>
-                </Rate>
-                </AvailRateUpdate>
-               </AvailRateUpdateRQ>`;
-                console.log(xmlData)
+                // const ratePlanIds = ['rate1', 'rate2']; // Example array of ratePlanIds
+                let xmlData = `<AvailRateUpdateRQ hotelCode="1000282881" timeStamp="">
+    <AvailRateUpdate locatorID="1">
+        <DateRange from="${startDate}" to="${endDate}"/>`;
+
+                // Iterate over ratePlanIds
+                for (let i = 0; i < ratePlanIds.length; i++) {
+                    const ratePlanId = ratePlanIds[i];
+                    const rateValue = rateValues[i];
+                    const extraChildValue = extraChildRates[i]
+                    const extraAdultValue = extraAdultRates[i]
+                    // Example XML structure for each ratePlanId
+                    const ratePlanXml = `
+        <Rate currencyCode="INR" code="${ratePlanId}" rateType="b2c">
+            <PerOccupancyRates>
+                <PerOccupancy occupancy="1" rate="${rateValue}" />
+            </PerOccupancyRates>
+            <AdditionalGuestRates>
+                <AdditionalGuestRate type="Adult" rate="${extraAdultValue}" />
+                <AdditionalGuestRate type="Child" ageRange="1" rate="${extraChildValue}" />
+            </AdditionalGuestRates>
+            <Restrictions closed="${closed}" closedToArrival="${COA}" closedToDeparture="${COD}" minLOSStaybased="${minLOS}" 
+ maxLOSStaybased="${maxLOS}" />
+        </Rate>`;
+
+                    // Append the ratePlanXml to the main XML data
+                    xmlData += ratePlanXml;
+                }
+
+                // Close the XML structure
+                xmlData += `</AvailRateUpdate>
+</AvailRateUpdateRQ>`;
+
+                console.log(xmlData);
                 // Set headers
                 const headers = {
                     'Content-Type': 'application/xml',

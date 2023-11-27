@@ -62,18 +62,18 @@ const manageRestrictions = async (req, res, io) => {
                 return res.status(400).json({ message: "End date cannot be before the start date", statuscode: 400 });
             }
 
-            const connectionId = req.body.connectionId
-            const findRecord = await roomAndRateMap.findOne({ otaId: req.body.otaId, connectionId: connectionId })
-            if (!findRecord) {
-                return res.status(404).json({ message: "Incorrect otaId", statuscode: 404 });
-            }
-            const existingEntryIndex = findRecord.mappedRatePlanData.findIndex(
-                (entry) => entry.ratePlanId === ratePlanId
-            );
-
-            const otaRatePlanCode = findRecord.mappedRatePlanData[existingEntryIndex].otaRatePlanCode
-
             if (req.body.otaId) {
+
+                const connectionId = req.body.connectionId
+                const findRecord = await roomAndRateMap.findOne({ otaId: req.body.otaId, connectionId: connectionId })
+                if (!findRecord) {
+                    return res.status(404).json({ message: "Incorrect otaId", statuscode: 404 });
+                }
+                const existingEntryIndex = findRecord.mappedRatePlanData.findIndex(
+                    (entry) => entry.ratePlanId === ratePlanId
+                );
+
+                const otaRatePlanCode = findRecord.mappedRatePlanData[existingEntryIndex].otaRatePlanCode
                 //
                 const findModel = await mmtModel.findOne({ userId }).lean();
                 if (!findModel) {

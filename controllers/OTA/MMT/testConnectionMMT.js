@@ -4,7 +4,7 @@ import { findUserByUserIdAndToken } from '../../../helpers/helper.js'
 
 const testMMTConnection = async (req, res) => {
     try {
-        const { userId } = req.query
+        const { userId, otaHotelCode } = req.query
         const authCodeValue = req.headers['authcode']
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
         if (!result.success) {
@@ -15,13 +15,13 @@ const testMMTConnection = async (req, res) => {
         if (!findModel) {
             return res.status(404).json({ message: "Invalid userId entered", statuscode: 404 })
         }
-        const { mmtHotelCode, accessToken } = findModel
-   
+        const { accessToken } = findModel
+
         const apiUrl = 'https://ppin-mmt.goibibo.com/api/chmv2/gethotellisting'
         // Your XML data
         const xmlData = `<?xml version="1.0" encoding="UTF-8"?>
-        <Website Name="ingoibibo" HotelCode= "${mmtHotelCode}">
-         <HotelCode>${mmtHotelCode}</HotelCode>
+        <Website Name="ingoibibo" HotelCode= "${otaHotelCode}">
+         <HotelCode>${otaHotelCode}</HotelCode>
          <IsOccupancyRequired>false</IsOccupancyRequired>
         </Website>`;
 

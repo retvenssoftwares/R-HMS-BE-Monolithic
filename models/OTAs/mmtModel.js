@@ -6,6 +6,10 @@ const mmtSchema = mongoose.Schema({
         type: String,
         default: ''
     },
+    propertyId: {
+        type: String,
+        default: ''
+    },
     connectionId: {
         type: String,
         default: ''

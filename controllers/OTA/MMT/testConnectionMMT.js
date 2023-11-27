@@ -43,7 +43,7 @@ const testMMTConnection = async (req, res) => {
                 return res.status(200).json({ message: "Connection successfully established", statuscode: 200 })
             })
             .catch(error => {
-                console.error('Error making API request:', error.message);
+                console.error('Error making API request:', error);
                 return res.status(500).json({ message: "Some error occured during connection, please try again later", statuscode: 500 })
             });
     } catch (error) {

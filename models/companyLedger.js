@@ -65,6 +65,8 @@ const company = new mongoose.Schema({
         default: "",
       },
 
+      date: Date,
+
       voucher: {
         voucherNo: {
           type: String,
@@ -77,12 +79,20 @@ const company = new mongoose.Schema({
         },
       },
 
-      dr: {
-        type: Number,
-      },
       cr: {
-        type: Number,
+        type: String,
+        default : "0"
       },
+
+      dr : {
+        type: String,
+        default:""
+      },
+
+      balance : {
+        type: String,
+        required : true
+      }
     },
   ],
 },{

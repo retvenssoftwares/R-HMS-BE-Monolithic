@@ -3,7 +3,7 @@ import companyLedger from "../../models/companyLedger.js";
 
 export const companyLedgerDetails = async(req,res)=>{
 
-    const {userId,companyId} = req.query
+    const {userId,companyId,propertyId} = req.query
 
     const authCodeValue = req.headers['authcode']
 
@@ -13,35 +13,13 @@ export const companyLedgerDetails = async(req,res)=>{
         return res.status(404).json({message : "Invalid token" , statusCode : 404})
     }
 
-    const company = await companyLedger.findOne({companyId :companyId})
+    const company = await companyLedger.findOne({companyId :companyId, propertyId})
 
-    const credit = company.ledger[0].ledger[0].amount || "" 
-
-    const debit = "0"
-                                                                    
-    const total = credit - debit
-    
-
-    const companyDetails  = {
-
-        date : company.date,    
-
-        particular : company.ledger[0].ledger[0].particular || "",
-
-        voucherNo :  company.ledger[0].ledger[0].voucher[0].voucherNo || "",
-
-        vocherLink : company.ledger[0].ledger[0].voucher[0].vocherLink || "",
-
-        creadit : company.ledger[0].ledger[0].amount || "",
-
-        debit : "",
-
-        totalBalance : total.toString()
-
-
+    if(!company){
+        return res.status(404).json({message : "Data not found" , statusCode : 404})
     }
 
-    return res.status(200).json({data : companyDetails , statusCode : 200})
+    return res.status(200).json({data : company.ledger , statusCode : 200})
 
 
 }

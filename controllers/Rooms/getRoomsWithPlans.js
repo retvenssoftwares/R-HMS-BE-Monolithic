@@ -25,12 +25,15 @@ const getRatePlansListWithRooms = async (req, res) => {
                     const roomType = await roomTypeModel.findOne({ roomTypeId }).select('roomTypeName').lean();
 
                     const barRatePlans = await barRatePlanModel.find({ propertyId, 'roomType.roomTypeId': roomTypeId,"displayStatus.0.displayStatus":"1" })
-                        .select("ratePlanName propertyId barRatePlanId barRates").lean();
+                        .select("ratePlanName propertyId barRatePlanId barRates inclusion").lean();
 
                     const formattedBarRatePlans = barRatePlans.map((barRatePlan) => ({
                         ratePlanName: barRatePlan.ratePlanName[0].ratePlanName || "",
                         barRatePlanId: barRatePlan.barRatePlanId || "",
-                        ratePlanTotal: barRatePlan.barRates.ratePlanTotal[0].ratePlanTotal || ""
+                        ratePlanTotal: barRatePlan.barRates.ratePlanTotal[0].ratePlanTotal || "",
+                        inclusion:barRatePlan.inclusion[0].inclusionPlan || "",
+                        extraAdultRate:barRatePlan.barRates.extraAdultRate[0].extraAdultRate || "",
+                        extraChildRate:barRatePlan.barRates.extraChildRate[0].extraChildRate || "",
                     }));
 
                     return {

@@ -34,24 +34,21 @@ const XMLData = async (req, res) => {
             .json({ message: "Error parsing XML", statuscode: 500 });
         } else {
           const roomTypeCodes = result.HotelListing.RoomList.Room.map(
-            (item) => item.RoomTypeCode
-          );
+            (item) => item.RoomTypeCode);
+            
           var room = [];
 
           roomTypeCodes.forEach((roomTypeCode) => {
               if (roomTypeCode) {
-                  // Find the room data
-                  const roomData = result.HotelListing.RoomList.Room.find(
-                      (roomListItem) => roomListItem.RoomTypeCode === roomTypeCode
-                  );
+
+                const roomData = result.HotelListing.RoomList.Room.find(
+                      (roomListItem) => roomListItem.RoomTypeCode === roomTypeCode);
           
                   if (roomData) {
-                      // Find the rate plans for the current room type
-                      const ratePlans = result.HotelListing.RatePlanList.RatePlan.filter(
-                          (ratePlanItem) => ratePlanItem.RoomTypeCode === roomTypeCode
-                      );
+
+                    const ratePlans = result.HotelListing.RatePlanList.RatePlan.filter(
+                          (ratePlanItem) => ratePlanItem.RoomTypeCode === roomTypeCode);
           
-                      // Create the room object with the associated rate plans
                       const roomObject = {
                           RoomTypeName: roomData.RoomTypeName,
                           RoomTypeCode: roomData.RoomTypeCode,
@@ -59,14 +56,10 @@ const XMLData = async (req, res) => {
                           ratePlan: ratePlans,
                       };
           
-                      // Push the room object to the room array
                       room.push(roomObject);
                   }
               }
-          });
-          
-          console.log("room", room);
-          
+          });          
         
           return res.status(200).json({ data: room, statuscode: 200 });
         }

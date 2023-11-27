@@ -14,7 +14,7 @@ const companyType = async (req, res) => {
                 return res.status(404).json({ message: "Please enter valid propertyId", statuscode: 404 })
             }
         if (findProperty) {
-            const userCompany = await companyModel.find({ propertyId }).select('propertyId companyId companyName contactPerson expiration').sort({_id:-1}).lean();
+            const userCompany = await companyModel.find({ propertyId,"displayStatus.0.displayStatus":"1" }).select('propertyId companyId companyName contactPerson expiration').sort({_id:-1}).lean();
             const convertedCompany = await Promise.all(userCompany.map(async (company) => {
                 const companyId = company.companyId;            
                 const ratePlan = await companyRatePlanModel.countDocuments({ companyId });

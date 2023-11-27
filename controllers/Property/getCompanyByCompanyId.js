@@ -20,7 +20,7 @@ const fetchCompanyDetails = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
         if (result.success) {
     if (findProperty ) {
-                const userCompanys = await companyIdModel.find({companyId}).select('propertyId effectiveFrom zipCode city state country addressLine2 addressLine1 contractPdf personDesignation phoneNumber billingCycle creditLimit openingBalance taxId registrationNumber shortCode companyWebsite companyEmail companyLogo companyId companyName contactPerson expiration ').sort({_id:-1}).lean();
+                const userCompanys = await companyIdModel.find({companyId,"displayStatus.0.displayStatus":"1"}).select('propertyId effectiveFrom zipCode city state country addressLine2 addressLine1 contractPdf personDesignation phoneNumber billingCycle creditLimit openingBalance taxId registrationNumber shortCode companyWebsite companyEmail companyLogo companyId companyName contactPerson expiration ').sort({_id:-1}).lean();
         const convertedCompanyId = userCompanys.map(company => {
         
             return {

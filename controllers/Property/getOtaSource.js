@@ -14,7 +14,7 @@ const getOtaSource = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success) {
-            const findAllOtaSources = await otaSource.find({ propertyId }, 'propertyId otaId otaName').lean();
+            const findAllOtaSources = await otaSource.find({ propertyId }, 'propertyId otaId otaName').sort({_id:-1}).lean();
 
             if (findAllOtaSources.length > 0) {
                 const mappedOtaSource = findAllOtaSources.map((source) => {

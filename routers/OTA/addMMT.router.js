@@ -13,7 +13,7 @@ router.post("/api/addOTA", addMMTRecord);
 router.get("/api/getOtaDetails", getOta);
 router.get("/api/fetchSource", getSource);
 router.post("/api/testOTAConnection", testMMTConnection)
-router.get("/api/getXMLData",XMLData)
+router.get("/api/getOTARoomsAndRates", XMLData)
 
 
 export default router;

@@ -1,9 +1,20 @@
 import { parseString } from "xml2js";
 import axios from "axios";
-
+import mmtModel from '../../../models/OTAs/mmtModel.js'
+import { findUserByUserIdAndToken } from "../../../helpers/helper.js";
 const XMLData = async (req, res) => {
   try {
-    // Set headers directly in the Axios config
+    const {userId,otaHotelCode}=req.query
+    console.log("erthfgbv",userId,otaHotelCode)
+    const authCodeValue = req.headers['authcode']
+
+    const result = await findUserByUserIdAndToken(userId, authCodeValue);
+    console.log("sdfg",result)
+    if(result.status){
+      // const findModel = await mmtModel.findOne({ userId }).lean();
+      // if (!findModel) {
+      //     return res.status(404).json({ message: "Invalid userId entered", statuscode: 404 })
+      // }
     const headers = {
       "Content-Type": "application/xml",
       "channel-token": "5f9belx9jn",
@@ -11,8 +22,8 @@ const XMLData = async (req, res) => {
     };
 
     const data = `<?xml version="1.0" encoding="UTF-8"?>
-      <Website Name="ingoibibo" HotelCode="1000282881">
-       <HotelCode>1000282881</HotelCode>
+      <Website Name="ingoibibo" HotelCode="${otaHotelCode}">
+       <HotelCode>"${otaHotelCode}"</HotelCode>
        <IsOccupancyRequired>false</IsOccupancyRequired>
       </Website>`.trim(); // Trim the XML string
 
@@ -22,6 +33,7 @@ const XMLData = async (req, res) => {
       { headers }
     );
 
+    console.log("ol,oo",response);
     // Convert XML to JSON
     parseString(
       response.data,
@@ -65,8 +77,9 @@ const XMLData = async (req, res) => {
         }
       }
     );
+    }
   } catch (err) {
-    console.error("err", err);
+    console.error("Error making API request:", err.message);    
     return res
       .status(500)
       .json({ message: "Internal Server Error", statuscode: 500 });

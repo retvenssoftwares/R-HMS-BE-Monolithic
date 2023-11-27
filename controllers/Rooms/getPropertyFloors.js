@@ -18,7 +18,7 @@ const getFloors = async (req, res) => {
             if (!result.success) {
                 return res.status(result.statuscode).json({ message: "Invalid propertyId entered", statuscode: result.statuscode })
             }
-            const getAllFloors = await floorData.find({ propertyId: propertyId }, '-_id');
+            const getAllFloors = await floorData.find({ propertyId: propertyId }, '-_id').sort({_id:-1});
             if (getAllFloors) {
                 const floorIds = [];
                 const mappedFloors = getAllFloors.map(async (floor) => {

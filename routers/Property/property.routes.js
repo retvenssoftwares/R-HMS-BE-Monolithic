@@ -76,10 +76,15 @@ import otaSourcePlan from "../../controllers/Property/getOtaSource.js";
 //companyId
 import getCompanyId from "../../controllers/Property/getCompanyByCompanyId.js";
 
-router.post(
-  "/api/createProperty",
-  upload.fields([{ name: "hotelLogo", maxCount: 1 }]),
-  postProperty
+//guestType
+import addGuestType from '../../controllers/Property/guestTypeController.js'
+import patchGuestType from '../../controllers/Property/updateGuestType.controller.js'
+import fetchGuestType from '../../controllers/Property/getGuestType.controller.js'
+
+router.post( 
+    '/api/createProperty',
+    upload.fields([{ name: 'hotelLogo', maxCount: 1 }]),
+    postProperty
 );
 router.get("/api/getPropertyById", getPropertyById);
 
@@ -175,5 +180,10 @@ router.get("/api/getOtaSource", otaSourcePlan);
 
 //companyId
 router.get("/api/fetchCompanyDetails", getCompanyId);
+
+//guestType
+router.post("/api/addGuestType", addGuestType)
+router.patch("/api/updateGuestType", patchGuestType)
+router.get("/api/getGuestTypes", fetchGuestType)
 
 export default router;

@@ -3,6 +3,7 @@ import holdData from "../../models/holdBooking.js";
 import roomTypeModel from "../../models/roomType.js";
 import verifiedUser from "../../models/verifiedUsers.js";
 import manageInventory from '../../models/manageInventory.js';
+import reservationModel from "../../models/reservationType.js";
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
 
 const getRoomAvailability = async (req, res) => {
@@ -37,7 +38,8 @@ const getRoomAvailability = async (req, res) => {
             const checkInDateISO = startDateObj.toISOString()
             const endDateObj = new Date(checkOutDate)
             const checkOutDateISO = endDateObj.toISOString();
-
+            const getReservationTypeName = await reservationModel.findOne({ "reservationName.0.reservationName": "Confirmed" }).select('reservationName reservationTypeId')
+            const reservationId = getReservationTypeName.reservationTypeId
             const roomTypes = await roomTypeModel.aggregate([
                 { $match: { propertyId } },
                 {
@@ -56,7 +58,7 @@ const getRoomAvailability = async (req, res) => {
 
             if (!roomTypes || roomTypes.length === 0) {
                 return res.status(400).json({ message: "No room types found", statuscode: 400 });
-                
+
             }
 
             const availableRooms = await Promise.all(roomTypes.map(async (roomType) => {
@@ -65,7 +67,8 @@ const getRoomAvailability = async (req, res) => {
                 const reservations = await bookingModel.find({
                     propertyId,
                     "checkInDate.0.checkInDate": { $gte: checkInDateISO, $lt: checkOutDateISO },
-                    "roomTypeId.0.roomTypeId" : roomTypeId
+                    "roomTypeId.0.roomTypeId": roomTypeId,
+                    "barRateReservation.0.barRateReservation.0.bookingTypeId": reservationId,
                 });
 
                 const reducedCount = reservations.length;
@@ -73,9 +76,9 @@ const getRoomAvailability = async (req, res) => {
                     { $match: { propertyId: propertyId, roomTypeId: roomTypeId } }
                 ]);
 
-                const holdBookings = await holdData.find({ propertyId: propertyId, "roomTypeId.0.roomTypeId": roomTypeId,  "checkInDate.0.checkInDate": { $gte: checkInDateISO, $lt: checkOutDateISO }, });
+                const holdBookings = await holdData.find({ propertyId: propertyId, "roomTypeId.0.roomTypeId": roomTypeId, "barRateReservation.0.barRateReservation.0.bookingTypeId": reservationId, "checkInDate.0.checkInDate": { $gte: checkInDateISO, $lt: checkOutDateISO }, });
                 const inventoryValues = holdBookings.map(booking => booking.inventory);
-                
+
 
                 let currentDate = new Date(checkInDate);
 

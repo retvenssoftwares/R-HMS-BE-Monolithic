@@ -9,18 +9,23 @@ const getRatePlansList = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
         if (result.success) {
             const findRatePlans = await barRatePlan.find({ "roomType.roomTypeId": roomTypeId,"displayStatus.0.displayStatus":"1" })
-                .select("ratePlanName propertyId barRatePlanId roomType barRates")
+                .select("ratePlanName propertyId barRatePlanId roomType barRates inclusion")
                 .lean();
 
             if (findRatePlans.length > 0) {
                 const foundRateData = await Promise.all(findRatePlans.map(async (rateData) => {
                     const roomTypeName = await roomTypeModel.findOne({ roomTypeId: roomTypeId }).select('roomTypeName');
 
-                    const barRates = rateData.barRates || {};
+                    const barRates = rateData.barRates || '';
+                    const inclusionArray = rateData.inclusion[0] || '';
+                   // console.log(inclusionArray)
                     const ratePlanTotal = (barRates.ratePlanTotal && barRates.ratePlanTotal[0].ratePlanTotal) || '';
                     const extraChildRate = (barRates.extraChildRate && barRates.extraChildRate[0].extraChildRate) || '';
                     const extraAdultRate = (barRates.extraAdultRate && barRates.extraAdultRate[0].extraAdultRate) || '';
                     const ratePlanName = rateData.ratePlanName.length > 0 ? rateData.ratePlanName[0].ratePlanName : '';
+                   // Fetch all objects from the inclusionPlan array
+                   const inclusionPlans = (inclusionArray.inclusionPlan && inclusionArray.inclusionPlan) || '';
+                    //const inclusionPlans = rateData.inclusion[0].map(inclusionObj => inclusionObj.inclusionPlan).flat();
                     return {
                         ...rateData._doc,
                         propertyId: rateData.propertyId || "",
@@ -28,6 +33,7 @@ const getRatePlansList = async (req, res) => {
                         roomTypeName: roomTypeName.roomTypeName[0].roomTypeName || '',
                         barRatePlanId: rateData.barRatePlanId || "",
                         ratePlanTotal,
+                        inclusion:inclusionPlans,
                         extraChildRate,
                         extraAdultRate,
                         ratePlanName

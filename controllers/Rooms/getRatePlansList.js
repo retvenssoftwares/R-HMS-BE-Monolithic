@@ -9,12 +9,11 @@ const getRatePlansList = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
         if (result.success) {
             const findRatePlans = await barRatePlan.find({ "roomType.roomTypeId": roomTypeId,"displayStatus.0.displayStatus":"1" })
-                .select("ratePlanName propertyId barRatePlanId roomType barRates inclusion")
-                .lean();
+                .select("ratePlanName propertyId barRatePlanId roomType barRates inclusion").sort({_id:-1}).lean();
 
             if (findRatePlans.length > 0) {
                 const foundRateData = await Promise.all(findRatePlans.map(async (rateData) => {
-                    const roomTypeName = await roomTypeModel.findOne({ roomTypeId: roomTypeId }).select('roomTypeName');
+                    const roomTypeName = await roomTypeModel.findOne({ roomTypeId: roomTypeId }).select('roomTypeName').sort({_id:-1}).lean();
 
                     const barRates = rateData.barRates || '';
                     const inclusionArray = rateData.inclusion[0] || '';
@@ -30,10 +29,10 @@ const getRatePlansList = async (req, res) => {
                         ...rateData._doc,
                         propertyId: rateData.propertyId || "",
                         roomTypeId: roomTypeId || '',
-                        roomTypeName: roomTypeName.roomTypeName[0].roomTypeName || '',
+                        roomTypeName: roomTypeName || '',
                         barRatePlanId: rateData.barRatePlanId || "",
                         ratePlanTotal,
-                        inclusion:inclusionPlans,
+                        inclusion:inclusionPlans || '',
                         extraChildRate,
                         extraAdultRate,
                         ratePlanName

@@ -30,7 +30,8 @@ export const forgetPassword = async (req, res) => {
             const utcTimestamp = tenMinutesAgo.toISOString();
             const details = await verifiedUser.findOne({ otp: Otp, time: { $lte: utcTimestamp } })
             if (details) {
-                await verifiedUser.updateMany({ email: email }, { $set: { otp: "", time: "" } })
+                await verifiedUser.updateOne({ otp: Otp }, { $set: { otp: "", time: "" } })
+                count = 0
                 return res.status(200).json({ message: "your otp has expired", statusCode: 200 })
             } else {
                 const details = await verifiedUser.findOne({ otp: Otp })
@@ -64,7 +65,7 @@ export const forgetPassword = async (req, res) => {
                 );
 
                 if (updatedPassword) {
-                    await verifiedUser.updateMany({ email: email }, { $set: { otp: "", time: "" } })
+                    await verifiedUser.updateOne({ email: email }, { $set: { otp: "", time: "" } })
                 }
 
                 count = 0

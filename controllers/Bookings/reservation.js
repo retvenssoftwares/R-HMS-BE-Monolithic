@@ -361,14 +361,14 @@ export const createResrvation = async (req, res) => {
 
         const created = booking.createdBy[0].createdBy || ""
 
-        const reservationRate = booking.reservationRate[0].roomCharges[0].map((item)=>({
-          roomCharges : item.roomCharges,
-          extras : item.extras,
-          taxes : item.taxes,
-          from : item.from,
-          to : item.to,
-          grandTotal : item.grandTotal
-        }))
+        // const reservationRate = booking.reservationRate[0].roomCharges[0].map((item)=>({
+        //   roomCharges : item.roomCharges,
+        //   extras : item.extras,
+        //   taxes : item.taxes,
+        //   from : item.from,
+        //   to : item.to,
+        //   grandTotal : item.grandTotal
+        // }))
 
         const flattenedBaseRates = baseRates.map(item => ({
           date: item.date,
@@ -590,13 +590,13 @@ export const createResrvation = async (req, res) => {
           }],
 
           reservationRate : [{
-            roomCharges : reservationRate,
+            roomCharges : reservationSummaryDetails,
             logId : randomString.generate(10)
           }],
 
           applyDiscount :[{
             applyDiscount : booking.applyDiscount[0].applyDiscount || "",
-            logId : randomString.generate(10)
+            logId : randomString.generate(10)                 
           }],
 
           paymentDetails : [{

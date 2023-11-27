@@ -1,9 +1,10 @@
 import { parseStringPromise } from 'xml2js';
 import BookingNotificationMMT from '../../../../models/Notifications/mmtBookingNotification.js';
 import roomAndRateMap from '../../../../models/OTAs/mappedRoomsAndRates.js';
+import { getCurrentUTCTimestamp } from '../../../../helpers/helper.js';
 const pushBookingNotificationMMT = async (req, res) => {
     try {
-        const { otaId, propertyId } = req.query;
+        // const { otaId, propertyId } = req.query;
         const xmlData = req.body; // Assuming the XML data is in the request body
         // console.log(xmlData,"hgcgh")
         // Convert XML to JSON using promises
@@ -21,6 +22,7 @@ const pushBookingNotificationMMT = async (req, res) => {
         const newBookingNotification = new BookingNotificationMMT({
             propertyId: getIds.propertyId || "",
             otaId: getIds.otaId || "",
+            createdOn: await getCurrentUTCTimestamp(),
             Booking: {
                 bookingId: bookingData.BookingId,
                 customerName: bookingData.CustomerName,

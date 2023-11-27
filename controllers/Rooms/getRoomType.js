@@ -13,7 +13,7 @@ const getRoomType = async (req, res)=>{
             if (!propertyId) {
                 return res.status(400).json({ message: "Please enter propertyId", statuscode: 400 })
             }
-            const room = await roomTypeModel.find({ propertyId: propertyId });
+            const room = await roomTypeModel.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1"  });
             if (room.length > 0) {
                 const roomProperties = room.map(room => {
                  

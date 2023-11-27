@@ -14,7 +14,7 @@ const editProperty = async (req, res) => {
 
   try {
     const { userId, propertyId } = req.query
-    const { country, propertyAddress1, propertyAddress2, city, state, propertyName, amenityIds, propertyEmail, propertyType, websiteUrl, baseCurrency, phone, reservationPhone, propertyRating, propertyDescription } = req.body
+    const { country, propertyAddress1, propertyAddress2, city, state, propertyName, amenityIds, propertyEmail, propertyType, websiteUrl, baseCurrency, phone, reservationPhone, propertyRating, propertyDescription,displayStatus } = req.body
     const authCodeValue = req.headers['authcode'];
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
     if (!result.success) {
@@ -157,6 +157,8 @@ const editProperty = async (req, res) => {
         logId: Randomstring.generate(10)
       };
 
+      
+ 
       // Find the propertyImage document by propertyId and push the new image object at position 0
       await propertyModel.findOneAndUpdate(
         { propertyId: propertyId },
@@ -171,6 +173,29 @@ const editProperty = async (req, res) => {
         { new: true }
       );
     }
+
+    if (displayStatus) {
+      // Create the image object
+      const displayStatusObject = {
+        displayStatus: displayStatus,
+        logId: Randomstring.generate(10)
+      };
+
+
+        // Find the propertyImage document by propertyId and push the new image object at position 0
+        await propertyModel.findOneAndUpdate(
+          { propertyId: propertyId },
+          {
+            $push: {
+              displayStatus: {
+                $each: [displayStatusObject],
+                $position: 0,
+              },
+            },
+          },
+          { new: true }
+        );
+      }
 
     if (propertyEmail) {
       // Create the image object

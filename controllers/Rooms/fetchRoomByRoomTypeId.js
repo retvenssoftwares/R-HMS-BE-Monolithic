@@ -16,11 +16,11 @@ const fetchRoom = async (req, res) => {
 
         if (result.success) {
 
-            const roomImages = await roomImage.find({ roomTypeId: roomTypeId });
+            const roomImages = await roomImage.find({ roomTypeId: roomTypeId});
             // const barrate = await barRatePlan.find({ 'roomType.roomTypeId': roomTypeId });
             //console.log(barrate)
 
-            const rooms = await roomModel.find({ roomTypeId: roomTypeId });
+            const rooms = await roomModel.find({ roomTypeId: roomTypeId, "displayStatus.0.displayStatus": "1"  });
             if (!rooms) {
                 return res.status(400).json({ message: "Please enter roomTypeId", statuscode: 400 })
             }

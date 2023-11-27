@@ -19,7 +19,7 @@ const userProperty = async (req, res) => {
             if (!result.success) {
                 return res.status(result.statuscode).json({ message: "Invalid propertyId entered", statuscode: result.statuscode })
             }
-            const rooms = await roomModel.find({ propertyId: propertyId });
+            const rooms = await roomModel.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1"  });
 
             if (rooms.length > 0) {
                 // Map and modify each room object to only include the first element of the arrays

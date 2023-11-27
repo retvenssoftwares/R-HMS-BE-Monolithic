@@ -6,6 +6,7 @@ const roomType = new mongoose.Schema({
         type: String,
         default: "",
     },
+    displayStatus: [{ displayStatus: { type: String, default: '1', enum: ['0', '1'], }, logId: { type: String, default: "" } }],
     roomTypeId: {
         type: String,
         default: "",
@@ -38,6 +39,7 @@ const roomType = new mongoose.Schema({
 
 
     }],
+
 
     roomDescription: [{
         roomDescription: {

@@ -9,7 +9,10 @@ const bookingNotificationSchema = new Schema({
         type: String,
         default: ''
     },
-
+    createdOn: {
+        type: String,
+        default: ''
+    },
     Booking: {
         bookingId: {
             type: String,

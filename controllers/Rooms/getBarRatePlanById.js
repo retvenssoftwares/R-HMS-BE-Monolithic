@@ -23,7 +23,7 @@ const getBarRatePlanById = async (req, res) => {
             mealPlanId: findPlan.mealPlan.length > 0 ? findPlan.mealPlan[0].mealPlanId : "",
             ratePlanName: findPlan.ratePlanName.length > 0 ? findPlan.ratePlanName[0].ratePlanName : "",
             shortCode: findPlan.shortCode.length > 0 ? findPlan.shortCode[0].shortCode : "",
-            inclusion: findPlan.inclusion.length > 0 ? findPlan.inclusion[0].inclusionPlan[0] : "",
+            inclusion: findPlan.inclusion.length > 0 ? findPlan.inclusion[0].inclusionPlan : "",
             barRates: {
                 roomBaseRate: findPlan.barRates.roomBaseRate.length > 0 ? findPlan.barRates.roomBaseRate[0].roomBaseRate : "",
                 mealCharge: findPlan.barRates.mealCharge.length > 0 ? findPlan.barRates.mealCharge[0].mealCharge : "",

@@ -10,40 +10,43 @@ const getRatePlansListWithRooms = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
         const results = await validateHotelCode(userId, propertyId)
         if (!results.success) {
-          return res.status(results.statuscode).json({ message: "Invalid propertyId entered", statuscode: results.statuscode })
+            return res.status(results.statuscode).json({ message: "Invalid propertyId entered", statuscode: results.statuscode })
         }
         if (result.success) {
             if (!propertyId) {
                 return res.status(400).json({ message: "Please enter propertyId", statuscode: 400 });
             }
-        
-            // Find unique roomTypeIds for the given propertyId
-            const uniqueRoomTypeIds = await barRatePlanModel.distinct('roomType.roomTypeId', { propertyId,"displayStatus.0.displayStatus":"1" });
 
+            // Find unique roomTypeIds for the given propertyId
+            const uniqueRoomTypeIds = await barRatePlanModel.distinct('roomType.roomTypeId', { propertyId, "displayStatus.0.displayStatus": "1" });
+            // console.log(uniqueRoomTypeIds, "dfa")
             if (uniqueRoomTypeIds.length > 0) {
                 const foundRateData = await Promise.all(uniqueRoomTypeIds.map(async (roomTypeId) => {
                     const roomType = await roomTypeModel.findOne({ roomTypeId }).select('roomTypeName').lean();
 
                     const barRatePlans = await barRatePlanModel.find({ propertyId, 'roomType.roomTypeId': roomTypeId,"displayStatus.0.displayStatus":"1" })
-                        .select("ratePlanName propertyId barRatePlanId barRates").lean();
+                        .select("ratePlanName propertyId barRatePlanId barRates inclusion").lean();
 
                     const formattedBarRatePlans = barRatePlans.map((barRatePlan) => ({
                         ratePlanName: barRatePlan.ratePlanName[0].ratePlanName || "",
                         barRatePlanId: barRatePlan.barRatePlanId || "",
-                        ratePlanTotal: barRatePlan.barRates.ratePlanTotal[0].ratePlanTotal || ""
+                        ratePlanTotal: barRatePlan.barRates.ratePlanTotal[0].ratePlanTotal || "",
+                        inclusion:barRatePlan.inclusion[0].inclusionPlan || "",
+                        extraAdultRate:barRatePlan.barRates.extraAdultRate[0].extraAdultRate || "",
+                        extraChildRate:barRatePlan.barRates.extraChildRate[0].extraChildRate || "",
                     }));
 
                     return {
                         propertyId,
-                        roomTypeId,
-                        roomTypeName: roomType.roomTypeName[0].roomTypeName || '',
+                        roomTypeId: roomTypeId,
+                        roomTypeName: roomType?.roomTypeName?.[0]?.roomTypeName || '',
                         barRatePlans: formattedBarRatePlans
                     };
                 }));
 
                 return res.status(200).json({ data: foundRateData, statuscode: 200 });
             } else {
-                return res.status(200).json({ message: "No rateplans found",count:"0", status: 200 });
+                return res.status(200).json({ message: "No rateplans found", count: "0", status: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

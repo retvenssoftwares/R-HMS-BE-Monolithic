@@ -16,6 +16,7 @@ export const getCompanyReservation = async (req, res) => {
         }
 
         const authCodeValue = req.headers["authcode"];
+        
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
         if (result.success === false) {

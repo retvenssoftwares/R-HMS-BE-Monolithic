@@ -10,7 +10,7 @@ const userProperty = async (req, res) => {
         const userId = req.query.userId;
 
         const authCodeValue = req.headers['authcode']
-        const userProperties = await propertyModel.find({ userId: userId }, 'hotelRcode propertyName propertyType city country propertyRating hotelLogo amenities -_id createdOn propertyId').sort({ createdOn: -1 }).lean();
+        const userProperties = await propertyModel.find({ userId: userId ,"displayStatus.0.displayStatus": "1"}, 'hotelRcode propertyName propertyType city country propertyRating hotelLogo amenities -_id createdOn propertyId').sort({ createdOn: -1 }).lean();
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
         // console.log(userProperties);
 

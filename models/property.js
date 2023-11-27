@@ -6,6 +6,7 @@ const propertySchema = new Schema({
         default: "",
         type: String
     },
+    displayStatus: [{ displayStatus: { type: String, default: '1', enum: ['0', '1'], }, logId: { type: String, default: "" } }],
     propertyId: {
         default: "",
         type: String

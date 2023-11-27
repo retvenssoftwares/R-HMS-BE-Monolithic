@@ -31,6 +31,7 @@ const patchRoom = async (req,res)=>{
             extraChildRate,
             noOfBeds,
             deviceType, 
+            displayStatus,
           } = req.body;
 
           const roomTypeId = req.params.roomTypeId;
@@ -112,6 +113,9 @@ const patchRoom = async (req,res)=>{
         }
         if (extraChildRate) {
             findRoomType.extraChildRate.unshift({ extraChildRate, logId:Randomstring.generate(10) });
+        }
+        if (displayStatus) {
+            findRoomType.displayStatus.unshift({ displayStatus, logId:Randomstring.generate(10) });
         }
         if (noOfBeds) {
             findRoomType.noOfBeds.unshift({ noOfBeds, logId:Randomstring.generate(10) });

@@ -31,7 +31,8 @@ const postProperty = async (req, res) => {
       reservationPhone,
       propertyEmail,
       latitude,
-      longitude
+      longitude,
+      displayStatus
     } = req.body;
 
     var hotelLogoId = randomstring.generate(8);
@@ -96,6 +97,9 @@ const postProperty = async (req, res) => {
             logId: randomstring.generate(10),
           },
         ],
+        
+        displayStatus: [{ displayStatus: "1", logId: randomstring.generate(10) }],
+       
         state: [
           {
             state: state,

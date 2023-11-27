@@ -34,6 +34,7 @@ const postRoom = async (req, res) => {
       extraChildRate,
       noOfBeds,
       deviceType,
+      displayStatus
     } = req.body;
 
     const authCodeValue = req.headers['authcode']
@@ -110,7 +111,7 @@ const postRoom = async (req, res) => {
           bedType: bedTypeObjects,
           logId: Randomstring.generate(10),
         }],
-
+        displayStatus: [{ displayStatus: "1", logId: Randomstring.generate(10) }],
 
         roomTypeName: [
           {

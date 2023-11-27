@@ -22,7 +22,7 @@ const getRatePlansListWithRooms = async (req, res) => {
             // console.log(uniqueRoomTypeIds, "dfa")
             if (uniqueRoomTypeIds.length > 0) {
                 const foundRateData = await Promise.all(uniqueRoomTypeIds.map(async (roomTypeId) => {
-                    const roomType = await roomTypeModel.findOne({ roomTypeId }).select('roomTypeName').lean();
+                    const roomType = await roomTypeModel.findOne({ roomTypeId, "displayStatus.0.displayStatus": "1"  }).select('roomTypeName').lean();
 
                     const barRatePlans = await barRatePlanModel.find({ propertyId, 'roomType.roomTypeId': roomTypeId,"displayStatus.0.displayStatus":"1" })
                         .select("ratePlanName propertyId barRatePlanId barRates inclusion").lean();

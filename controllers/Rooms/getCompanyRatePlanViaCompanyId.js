@@ -68,7 +68,7 @@ const fetchRoom = async (req, res) => {
 
                 return res.status(200).json({ data: convertedProperties, statuscode: 200 });
             } else {
-                return res.status(200).json({ message: "No room found", statuscode: 200 });
+                return res.status(200).json({ message: "No company rate Plan found", statuscode: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

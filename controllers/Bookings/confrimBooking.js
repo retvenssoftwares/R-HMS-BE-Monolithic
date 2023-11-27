@@ -29,80 +29,82 @@ export const addConfirmBooking = async (req, res) => {
         .json({ message: "Invalid authentication token", statuscode: 400 });
     }
 
+    
     const data = await holdData.find({ reservationNumber: reservationNumber });
+    
+    if(!data){
+      return res.status(404).json({message : "data not found", statusCode : 404})
+    }
+
     const companyId = await holdData.findOne({
       reservationNumber: reservationNumber,
     });
 
-
-
     const balanceDetails = await comapnyLedger.findOne({ companyId: companyId.companyId, propertyId: companyId.propertyId })
 
+    if(balanceDetails !== null){
+      console.log("hbjnkm,    ")
+      if (Array.isArray(balanceDetails.totalBalance) && balanceDetails.totalBalance.length > 0) {
+        // Check if totalBalance[0].totalBalance is greater than or equal to creditLimit
+        if (Math.abs(balanceDetails.totalBalance[0].totalBalance) >= parseInt(balanceDetails.creditLimit[0].creditLimit)) {
+          return res.status(200).json({ message: "You don't have sufficient balance" });
+        }
+      }
 
-    if (Math.abs(balanceDetails.totalBalance[0].totalBalance) >= parseInt(balanceDetails.creditLimit[0].creditLimit)) {
 
-      return res.status(200).json({ message: "You Dont have sufficient Balance" })
-
-    }
-
-
-    // Calculate updatedTotalBalance based on the changes made above
-    const updatedTotalBalance = await comapnyLedger.findOneAndUpdate(
-      {
-        $and: [
-          { companyId: companyId.companyId },
-          { propertyId: companyId.propertyId },
-        ],
-      },
-      {
-        $inc: {
-          [`totalBalance.${0}.totalBalance`]: -companyId.reservationRate[0].roomCharges[0].grandTotal,
+      const updatedTotalBalance = await comapnyLedger.findOneAndUpdate(
+        {
+          $and: [
+            { companyId: companyId.companyId },
+            { propertyId: companyId.propertyId },
+          ],
         },
-        $push: {
-          ledger: {
-            $each: [
-              {
-                particular: reservationNumber,
-                dr: companyId.reservationRate[0].roomCharges[0].grandTotal,
-                balance: '0', // Assuming balance should be a string
-                date: new Date(),
-              },
-            ],
-            $position: 0,
+        {
+          $inc: {
+            [`totalBalance.${0}.totalBalance`]: -companyId.reservationRate[0].roomCharges[0].grandTotal,
+          },
+          $push: {
+            ledger: {
+              $each: [
+                {
+                  particular: reservationNumber,
+                  dr: companyId.reservationRate[0].roomCharges[0].grandTotal,
+                  balance: '0', // Assuming balance should be a string
+                  date: new Date(),
+                },
+              ],
+              $position: 0,
+            },
           },
         },
-      },
-      {
-        new: true,
-      }
-    );
-
-    // Get the updated value of totalBalance.${0}.totalBalance
-    const updatedTotalBalanceValue = updatedTotalBalance.totalBalance[0].totalBalance;
-
-    // Update the balance field in the ledger at position 0
-    await comapnyLedger.updateOne(
-      {
-        $and: [
-          { companyId: companyId.companyId },
-          { propertyId: companyId.propertyId },
-        ],
-      },
-      {
-        $set: {
-          'ledger.0.balance': String(updatedTotalBalanceValue),
+        {
+          new: true,
+        }
+      );
+  
+      // Get the updated value of totalBalance.${0}.totalBalance
+      const updatedTotalBalanceValue = updatedTotalBalance.totalBalance[0].totalBalance;
+  
+      // Update the balance field in the ledger at position 0
+      await comapnyLedger.updateOne(
+        {
+          $and: [
+            { companyId: companyId.companyId },
+            { propertyId: companyId.propertyId },
+          ],
         },
-      }
-    );
+        {
+          $set: {
+            'ledger.0.balance': String(updatedTotalBalanceValue),
+          },
+        }
+      );
+  
 
-
-
-
-    if (!data) {
-      return res
-        .status(404)
-        .json({ message: "data not found", statusCode: 404 });
     }
+
+  
+   
 
     var reservationIds = [];
 

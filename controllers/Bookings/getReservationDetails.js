@@ -12,8 +12,6 @@ export const getReservationDetails = async (req, res) => {
         return res.status(404).json({ message: "data not found", statusCode: 404 })
     }
 
-    if(confirmBookingDetails)
-
 
     if (confirmBookingDetails) {
         var reservationIdsArray = confirmBookingDetails.map((item) => ({
@@ -24,7 +22,10 @@ export const getReservationDetails = async (req, res) => {
             arrivalDetails: item.checkInDate && item.checkInDate[0] && item.checkInDate[0].checkInDate || "",
             departureDate: item.checkOutDate && item.checkOutDate[0] && item.checkOutDate[0].checkOutDate || "",
             total: item.reservationRate && item.reservationRate[0] && item.reservationRate[0].roomCharges[0] && item.reservationRate[0].roomCharges[0].grandTotal || "",
-            balance: "0"
+            adult : item.adults && item.adults[0] && item.adults[0].adults || "",
+            child : item.childs && item.childs[0] && item.childs[0].childs || "",
+            nightCount : item.nightCount && item.nightCount[0] && item.nightCount[0].nightCount || "",
+            balance: "0" 
         }));
 
     }

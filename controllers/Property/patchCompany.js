@@ -74,7 +74,7 @@ const updateCompany = async (req, res) => {
       if (contractPdfFiles) {
         contractPdfs = await uploadMultipleImagesToS3(contractPdfFiles);
       }
-
+console.log("Uploading", contractPdfs)
       let imageUrl = "";
       if (req.files["companyLogo"]) {
         imageUrl = await uploadImageToS3(req.files["companyLogo"][0]);
@@ -272,14 +272,12 @@ const updateCompany = async (req, res) => {
         };
         companys.contractTerms.unshift(contractTermsObject);
       }
-      if (contractPdf) {
-        const contractPdfObject = {
-          contractPdf: contractPdfs.map((contractPdfUrl) => ({
+      if (contractPdfs) {
+        const contractPdfObjects =  contractPdfs.map((contractPdfUrl) => ({
             contractPdf: contractPdfUrl,
             logId: randomString.generate(10),
-          })),
-        };
-        companys.contractPdf.unshift(contractPdfObject);
+          }));
+        companys.contractPdf = contractPdfObjects.concat(companys.contractPdf);
       }
       const updatedCompany = await companys.save();
       await companyData.save();

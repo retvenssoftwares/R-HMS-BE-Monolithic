@@ -34,9 +34,8 @@ import patchHoliday from "../../controllers/Property/updateHoliday.controller.js
 import getHoliday from "../../controllers/Property/getHoliday.controller.js";
 
 //company
-import addCompany from "../../controllers/Property/company.js";
+
 import getCompany from "../../controllers/Property/getCompany.js";
-import updateCompany from "../../controllers/Property/patchCompany.js";
 
 //amenities
 import amenityType from "../../controllers/Amenities/postAmenity.js";
@@ -128,14 +127,7 @@ router.patch(
 
 //company
 // router.post("/api/addCompany", upload.fields([{ name: "companyLogo", maxCount: 1 }, { name: "contractPdf", maxCount: 3 }]), addCompany)
-router.patch(
-  "/api/updateCompany",
-  upload.fields([
-    { name: "contractPdf", maxCount: 5 },
-    { name: "companyLogo", maxCount: 1 },
-  ]),
-  updateCompany
-);
+
 
 //payment types
 router.post("/api/addPaymentType", addPaymentType);

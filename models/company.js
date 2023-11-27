@@ -10,9 +10,27 @@ const companySchema = new mongoose.Schema({
         type: String,
         default: "",
     },
+    createdOn: {
+        type: String,
+        default: "",
+    },
+    createdBy: {
+        type: String,
+        default: "",
+    },
 
     companyLogo: [{
         companyLogo: {
+            type: String,
+            default: "",
+        },
+        logId: {
+            type: String,
+            default: "",
+        }
+    }],
+    displayStatus: [{
+        displayStatus: {
             type: String,
             default: "",
         },
@@ -99,18 +117,6 @@ const companySchema = new mongoose.Schema({
 
     openingBalance: [{
         openingBalance: {
-            type: String,
-            default: "",
-        },
-
-        logId: {
-            type: String,
-            default: "",
-        }
-    }],
-
-    creditLimit: [{
-        creditLimit: {
             type: String,
             default: "",
         },
@@ -318,6 +324,28 @@ const companySchema = new mongoose.Schema({
 
     contractTerms: [{
         contractTerms: {
+            type: String,
+            default: "",
+        },
+      
+        logId: {
+            type: String,
+            default: "",
+        }
+    }],
+    modifiedOn: [{
+        modifiedOn: {
+            type: String,
+            default: "",
+        },
+      
+        logId: {
+            type: String,
+            default: "",
+        }
+    }],
+    modifiedBy: [{
+        modifiedBy: {
             type: String,
             default: "",
         },

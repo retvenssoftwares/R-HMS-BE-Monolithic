@@ -12,7 +12,7 @@ const getPropertyById = async (req, res) => {
         }
         const propertyImages = await propertyImage.find({ propertyId: propertyId ,"displayStatus.0.displayStatus": "1"});
         //console.log(propertyImages)
-        const findProperty = await propertyModel.findOne({ propertyId }, 'propertyId propertyType starCategory propertyDescription createdOn country propertyAddress1 propertyEmail propertyAddress2 city postCode propertyName rating amenities hotelLogo state -_id').lean();
+        const findProperty = await propertyModel.findOne({ propertyId }, 'propertyId propertyType starCategory propertyDescription createdOn country propertyAddress1 propertyEmail propertyAddress2 city postCode propertyName rating amenities hotelLogo state -_id').sort({_id:-1}).lean();
         if (!findProperty) {
             return res.status(404).json({ message: "Property not found", statuscode: 404 });
         }

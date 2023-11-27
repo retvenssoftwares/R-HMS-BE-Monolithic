@@ -18,14 +18,14 @@ const getRatePlansListWithRooms = async (req, res) => {
             }
 
             // Find unique roomTypeIds for the given propertyId
-            const uniqueRoomTypeIds = await barRatePlanModel.distinct('roomType.roomTypeId', { propertyId, "displayStatus.0.displayStatus": "1" });
+            const uniqueRoomTypeIds = await barRatePlanModel.distinct('roomType.roomTypeId', { propertyId, "displayStatus.0.displayStatus": "1" }).sort({_id:-1});
             // console.log(uniqueRoomTypeIds, "dfa")
             if (uniqueRoomTypeIds.length > 0) {
                 const foundRateData = await Promise.all(uniqueRoomTypeIds.map(async (roomTypeId) => {
-                    const roomType = await roomTypeModel.findOne({ roomTypeId, "displayStatus.0.displayStatus": "1"  }).select('roomTypeName').lean();
+                    const roomType = await roomTypeModel.findOne({ roomTypeId, "displayStatus.0.displayStatus": "1"  }).select('roomTypeName').sort({_id:-1}).lean();
 
                     const barRatePlans = await barRatePlanModel.find({ propertyId, 'roomType.roomTypeId': roomTypeId,"displayStatus.0.displayStatus":"1" })
-                        .select("ratePlanName propertyId barRatePlanId barRates inclusion").lean();
+                        .select("ratePlanName propertyId barRatePlanId barRates inclusion").sort({_id:-1}).lean();
 
                     const formattedBarRatePlans = barRatePlans.map((barRatePlan) => ({
                         ratePlanName: barRatePlan.ratePlanName[0].ratePlanName || "",

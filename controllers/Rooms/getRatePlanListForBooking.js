@@ -14,15 +14,14 @@ const getRatePlansList = async (req, res) => {
         }
 
         const findRatePlans = await barRatePlan.find({ "roomType.roomTypeId": roomTypeId,"displayStatus.0.displayStatus":"1"})
-            .select("ratePlanName propertyId barRatePlanId roomType barRates")
-            .lean(); 
+            .select("ratePlanName propertyId barRatePlanId roomType barRates").sort({_id:-1}).lean(); 
 
         if (findRatePlans.length === 0) {
             return res.status(200).json({ message: "No rateplans found", status: 200 });
         }
 
         const foundRateData = await Promise.all(findRatePlans.map(async (rateData) =>               {
-            const roomTypeName = await roomTypeModel.findOne({ roomTypeId: roomTypeId }).select('roomTypeName');
+            const roomTypeName = await roomTypeModel.findOne({ roomTypeId: roomTypeId }).select('roomTypeName').sort({_id:-1}).lean();
 
             let baseRate = 0;
             let extraAdultRates = 0;

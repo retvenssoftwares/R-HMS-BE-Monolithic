@@ -21,7 +21,7 @@ const fetchRoom = async (req, res) => {
             // const barrate = await barRatePlan.find({ 'roomType.roomTypeId': roomTypeId });
             //console.log(barrate)
 
-            const companyRatePlan = await compnayModel.find({ companyId: companyId });
+            const companyRatePlan = await compnayModel.find({ companyId: companyId }).sort({_id:-1});
             if (!companyRatePlan) {
                 return res.status(400).json({ message: "Please enter companyId", statuscode: 400 })
             }

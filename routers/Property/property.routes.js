@@ -73,6 +73,11 @@ import addGuestType from '../../controllers/Property/guestTypeController.js'
 import patchGuestType from '../../controllers/Property/updateGuestType.controller.js'
 import fetchGuestType from '../../controllers/Property/getGuestType.controller.js'
 
+//discountType
+import addDiscountType from  '../../controllers/Property/postDiscountType.js'
+import patchDiscountTypes from '../../controllers/Property/updateDiscountType.js'
+import fetchDiscountType from '../../controllers/Property/getDiscountType.js'
+
 router.post( 
     '/api/createProperty',
     upload.fields([{ name: 'hotelLogo', maxCount: 1 }]),
@@ -163,5 +168,10 @@ router.get("/api/fetchCompanyDetails", getCompanyId)
 router.post("/api/addGuestType", addGuestType)
 router.patch("/api/updateGuestType", patchGuestType)
 router.get("/api/getGuestTypes", fetchGuestType)
+
+//discountType
+router.post("/api/addDiscountType", addDiscountType)
+router.patch("/api/patchDiscountType", patchDiscountTypes)
+router.get("/api/getDiscountTypes", fetchDiscountType)
 
 export default router;

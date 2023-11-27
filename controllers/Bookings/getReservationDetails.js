@@ -12,9 +12,7 @@ export const getReservationDetails = async (req, res) => {
         return res.status(404).json({ message: "data not found", statusCode: 404 })
     }
 
-    if(confirmBookingDetails)
-
-
+    
     if (confirmBookingDetails) {
         var reservationIdsArray = confirmBookingDetails.map((item) => ({
             reservationId: item.reservationId,

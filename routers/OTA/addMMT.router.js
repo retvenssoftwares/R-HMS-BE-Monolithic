@@ -9,10 +9,10 @@ import XMLData from '../../controllers/OTA/MMT/getRoomsAndRates.js';
 
 
 /////////////////////////////////////////////////////////
-router.post("/api/addMMT", addMMTRecord);
+router.post("/api/addOTA", addMMTRecord);
 router.get("/api/getOtaDetails", getOta);
 router.get("/api/fetchSource", getSource);
-router.post("/api/testMMTConnection", testMMTConnection)
+router.post("/api/testOTAConnection", testMMTConnection)
 router.get("/api/getXMLData",XMLData)
 
 

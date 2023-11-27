@@ -13,7 +13,7 @@ const getPropertyById = async (req, res) => {
         }
         const propertyImages = await propertyImage.find({ propertyId: propertyId ,"displayStatus.0.displayStatus": "1"});
         //console.log(propertyImages)
-        const findProperty = await propertyModel.findOne({ propertyId }, 'propertyId propertyType phone reservationPhone  starCategory propertyDescription createdOn country propertyAddress1 propertyEmail location.latitude location.longitude propertyAddress2 city postCode propertyName websiteUrl rating amenities hotelLogo state -_id').lean();
+        const findProperty = await propertyModel.findOne({ propertyId }, 'propertyId propertyType phone reservationPhone propertyRating  starCategory propertyDescription createdOn country propertyAddress1 propertyEmail location.latitude location.longitude propertyAddress2 city postCode propertyName websiteUrl rating amenities hotelLogo state -_id').lean();
         if (!findProperty) {
             return res.status(404).json({ message: "Property not found", statuscode: 404 });
         }
@@ -48,6 +48,7 @@ const getPropertyById = async (req, res) => {
             ...findProperty,
             propertyId: propertyId,
             phone:findProperty.phone || '',
+            propertyRating:findProperty.propertyRating || '',
             reservationPhone:findProperty.reservationPhone || '',
             websiteUrl:findProperty.websiteUrl || '',
             latitude: findProperty.location && findProperty.location.length > 0 ? findProperty.location[0].latitude : '',

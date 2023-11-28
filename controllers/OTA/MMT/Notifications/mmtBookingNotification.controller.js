@@ -2,7 +2,7 @@ import { parseStringPromise } from 'xml2js';
 import randomstring from "randomstring";
 import BookingNotificationMMT from '../../../../models/Notifications/mmtBookingNotification.js';
 import roomAndRateMap from '../../../../models/OTAs/mappedRoomsAndRates.js';
-import holdBooking from '../../../../models/holdBooking.js';
+import confirmBookingModel from '../../../../models/confirmBooking.js';
 import { getCurrentUTCTimestamp } from '../../../../helpers/helper.js';
 const pushBookingNotificationMMT = async (req, res) => {
     try {
@@ -10,13 +10,13 @@ const pushBookingNotificationMMT = async (req, res) => {
         const xmlData = req.body; // Assuming the XML data is in the request body
         const xmlData2 = `<?xml version="1.0" encoding="UTF-8"?>
 <BookingDetail>
-    <Booking Id="0000058821">
+    <Booking Id="0000058827">
         <HotelName>Royal Tycoon Place Hotel </HotelName>
         <HotelCode>1000282881</HotelCode>
-        <GuestName>Ranbir Kapoor</GuestName>
-        <BookingDate>2023-09-13 15:13:30</BookingDate>
-        <CheckInDate>2023-09-18</CheckInDate>
-        <CheckoutDate>2023-08-20</CheckoutDate>
+        <GuestName>Donald Trump</GuestName>
+        <BookingDate>2023-12-05 15:13:30</BookingDate>
+        <CheckInDate>2023-12-15</CheckInDate>
+        <CheckoutDate>2023-12-17</CheckoutDate>
         <NumberOfNights>1</NumberOfNights>
         <RoomTypeName>Deluxe Room</RoomTypeName>
         <RoomTypeCode>45000485844</RoomTypeCode>
@@ -178,7 +178,7 @@ const pushBookingNotificationMMT = async (req, res) => {
         // Create a new document using Mongoose model
         const newBookingNotification = new BookingNotificationMMT({
             propertyId: getIds.propertyId || "",
-            
+
             otaId: getIds.otaId || "",
             createdOn: await getCurrentUTCTimestamp(),
             Booking: {
@@ -197,7 +197,7 @@ const pushBookingNotificationMMT = async (req, res) => {
         });
         const savedBooking = await newBookingNotification.save();
 
-        const saveOTABooking = new holdBooking({
+        const saveOTABooking = new confirmBookingModel({
             guestId: randomstring.generate(8),
             reservationNumber: randomstring.generate({
                 charset: 'numeric',

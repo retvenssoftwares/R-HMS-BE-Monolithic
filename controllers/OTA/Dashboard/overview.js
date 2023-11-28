@@ -1,4 +1,5 @@
 import confirmBookingDetails from '../../../models/confirmBooking.js'
+import { format, utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 import propertyModel from "../../../models/property.js"
 import { findUserByUserIdAndToken } from "../../../helpers/helper.js";
 const overViewData = async (req, res) => {
@@ -19,8 +20,22 @@ const overViewData = async (req, res) => {
         if (!checkPropertyId) {
             return res.status(404).json({ message: "Incorrect propertyId entered", statuscode: 404 })
         }
+        function convertTimestampToCustomFormat(utcTimestamp, targetTimeZone) {
+            // Convert the UTC timestamp to the target time zone
+            const zonedTimestamp = utcToZonedTime(utcTimestamp, targetTimeZone);
 
-        const specificDate = new Date().toISOString().split('T')[0]; // Replace with your specific date
+            // Define the custom format
+            const customFormat = "yyyy-MM-dd";
+
+            // Format the zoned timestamp into the custom format
+            const formattedTimestamp = format(zonedTimestamp, customFormat, {
+                timeZone: targetTimeZone,
+            });
+
+            return formattedTimestamp;
+        }
+        // Replace with your specific date
+        const specificDate = convertTimestampToCustomFormat(new Date().toISOString().split('T')[0], "Asia/Kolkata");
         console.log(specificDate)
         const startOfDay = `${specificDate} 00:00:00`;
         const endOfDay = `${specificDate} 23:59:59`;
@@ -44,7 +59,8 @@ const overViewData = async (req, res) => {
                     reservationRate: 1,
                     propertyId: 1,
                     otaId: 1,
-                    bookingTime: 1
+                    bookingTime: 1,
+                    inventory: 1
                 }
             }
         ]).exec();
@@ -68,9 +84,20 @@ const overViewData = async (req, res) => {
             return sum + revenue;
         }, 0);
 
+        const revenue = totalRevenue.toFixed(2);
+
+        const totalRoomsSold = getBookingData.reduce((sum, inventory) => {
+            const totalRooms = inventory.inventory || 0;
+            return sum + totalRooms;
+        }, 0)
+
+        console.log(totalRoomsSold, "adfsa")
+        const adr = (revenue / totalRoomsSold).toFixed(2);
+        console.log(adr)
         // Prepare the response object
         const responseData = {
-            totalRevenue: totalRevenue.toFixed(2), // Format the totalRevenue to 2 decimal places
+            totalRevenue: revenue, // Format the totalRevenue
+            averageDailyRate: adr || 0.00,
             statuscode: 200
         };
 
@@ -83,4 +110,4 @@ const overViewData = async (req, res) => {
     }
 }
 
-export default overViewData
+export default overViewData;

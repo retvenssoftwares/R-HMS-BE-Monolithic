@@ -2,7 +2,7 @@ import propertyModel from "../../models/property.js";
 import { findUserByUserIdAndToken } from "../../helpers/helper.js"
 import amenitiesModel from '../../models/amenity.js'
 //import adminAmenityModel from '../../models/superAdmin/amenities.js'
-import propertyImage from '../../models/propertyImages.js'
+//import propertyImage from '../../models/propertyImages.js'
 const getPropertyById = async (req, res) => {
     try {
         const { userId, propertyId } = req.query
@@ -11,7 +11,7 @@ const getPropertyById = async (req, res) => {
         if (!result.success) {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }
-        const propertyImages = await propertyImage.find({ propertyId: propertyId ,"displayStatus.0.displayStatus": "1"});
+        //const propertyImages = await propertyImage.find({ propertyId: propertyId ,"displayStatus.0.displayStatus": "1"});
         //console.log(propertyImages)
         const findProperty = await propertyModel.findOne({ propertyId }, 'propertyId propertyType phone reservationPhone propertyRating  starCategory propertyDescription createdOn country propertyAddress1 propertyEmail location.latitude location.longitude propertyAddress2 city postCode propertyName websiteUrl rating amenities hotelLogo state -_id').lean();
         if (!findProperty) {
@@ -37,10 +37,10 @@ const getPropertyById = async (req, res) => {
         }          
 
             // propertyImages
-            const filteredPropertyImages = propertyImages.filter(img => img.propertyId === propertyId);
+            //const filteredPropertyImages = propertyImages.filter(img => img.propertyId === propertyId);
              // console.log(filteredPropertyImages)
               // Extract all images for all rooms into a single array
-           const imagesData = [].concat(...filteredPropertyImages.map(img => img.propertyImages.map(image => ({ image: image.image }))));
+         //  const imagesData = [].concat(...filteredPropertyImages.map(img => img.propertyImages.map(image => ({ image: image.image }))));
 
      
         // Fetch the 0th object for array fields
@@ -66,7 +66,7 @@ const getPropertyById = async (req, res) => {
             propertyName: findProperty.propertyName.length > 0 ? findProperty.propertyName[0].propertyName : "",
             rating: findProperty.rating.length > 0 ? findProperty.rating[0].rating : "",
             amenities: amenityNames || [], 
-            propertyImages:imagesData,
+           // propertyImages:imagesData,
             hotelLogo: findProperty.hotelLogo.length > 0 ? findProperty.hotelLogo[0].hotelLogo : "",
             state: findProperty.state.length > 0 ? findProperty.state[0].state : ""
         };

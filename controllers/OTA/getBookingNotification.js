@@ -24,7 +24,7 @@ const getBookingNotification = async (req, res) => {
         return res.status(400).json({ message: "Incorrect otaId entered", statuscode: 400 })
       }
       const otaLogo = otaModel.otaLogo[0]?.otaLogo || "";
-      const findNotification = await mmtBooking.find({ propertyId: propertyId, otaId: otaId }).lean();
+      const findNotification = await mmtBooking.find({ propertyId: propertyId }).lean();
       if (!findNotification.length > 0) {
         return res.status(404).json({ message: "Please enter valid otaId", statusCode: 404 });
       }

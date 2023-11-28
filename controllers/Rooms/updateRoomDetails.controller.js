@@ -50,25 +50,30 @@ const patchRoom = async (req,res)=>{
             return res.status(404).json({ message: "roomType not found", statuscode: 404 });
         }
 
-        //amennites
-        const amenityIds = req.body.amenityIds;
-        const amenityIdsArray = amenityIds.split(',');
-        const currentUTCTime = await getCurrentUTCTimestamp();
-        const amenityObjects = amenityIdsArray.map((amenityId) => {
-          return {
-            amenityId,
-            addedDate: currentUTCTime,
-          };
-        });
+        
+       // Amenities
+       let amenityObjects = [];
+       if (req.body.amenityIds && typeof req.body.amenityIds === "string") {
+         const amenityIdsArray = req.body.amenityIds.split(",");
+         const currentUTCTime = await getCurrentUTCTimestamp();
+         amenityObjects = amenityIdsArray.map((amenityId) => {
+           return {
+             amenityId,
+             addedDate: currentUTCTime,
+           };
+         });
+       }
 
-         //bedType
-      const bedTypeIds= req.body.bedTypeIds;
-      const bedTypeIdsArray = bedTypeIds.split(',');
-      const bedTypeObjects = bedTypeIdsArray.map((bedTypeId) => {
-        return {
-          bedTypeId,
-        };
-      });
+      // BedType
+let bedTypeObjects = [];
+if (req.body.bedTypeIds && typeof req.body.bedTypeIds === "string") {
+  const bedTypeIdsArray = req.body.bedTypeIds.split(",");
+  bedTypeObjects = bedTypeIdsArray.map((bedTypeId) => {
+    return {
+      bedTypeId,
+    };
+  });
+}
         
 
           // Update the roomType fields
@@ -78,9 +83,12 @@ const patchRoom = async (req,res)=>{
         if (roomDescription) {
             findRoomType.roomDescription.unshift({ roomDescription, logId:Randomstring.generate(10)});
         }
-        if (bedTypeIds) {
-            findRoomType.bedType.unshift({bedType:bedTypeObjects,logId:Randomstring.generate(10)});
-        }
+        if (bedTypeObjects.length > 0) {
+            findRoomType.bedType.unshift({
+              bedType: bedTypeObjects,
+              logId: Randomstring.generate(10),
+            });
+          }
         if (roomTypeName) {
             findRoomType.roomTypeName.unshift({ roomTypeName, logId:Randomstring.generate(10) });
         }
@@ -120,9 +128,12 @@ const patchRoom = async (req,res)=>{
         if (noOfBeds) {
             findRoomType.noOfBeds.unshift({ noOfBeds, logId:Randomstring.generate(10) });
         }
-        if (amenityIds) {
-            findRoomType.amenities.unshift({amenities:amenityObjects, logId:Randomstring.generate(10) });
-        }
+        if (amenityObjects.length > 0) {
+            findRoomType.amenities.unshift({
+              amenities: amenityObjects,
+              logId: Randomstring.generate(10),
+            });
+          }
         // Save the updated document
         const updatedRoom = await findRoomType.save();
 

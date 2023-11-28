@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import roomModel from "../../models/roomType.js";
 import bedType from "../../models/superAdmin/bedType.js"
-import roomImage from "../../models/roomTypeImages.js"
+//import roomImage from "../../models/roomTypeImages.js"
 //import barRatePlan from "../../models/barRatePlan.js"
 import amenitiesModel from '../../models/amenity.js'
 import { convertTimestampToCustomFormat, findUserByUserIdAndToken } from "../../helpers/helper.js";
@@ -16,7 +16,7 @@ const fetchRoom = async (req, res) => {
 
         if (result.success) {
 
-            const roomImages = await roomImage.find({ roomTypeId: roomTypeId});
+           // const roomImages = await roomImage.find({ roomTypeId: roomTypeId});
             // const barrate = await barRatePlan.find({ 'roomType.roomTypeId': roomTypeId });
             //console.log(barrate)
 
@@ -77,10 +77,10 @@ const fetchRoom = async (req, res) => {
                     }))
 
 // roomImages
-const filteredRoomImages = roomImages.filter(img => img.roomTypeId === roomTypeId);
+//const filteredRoomImages = roomImages.filter(img => img.roomTypeId === roomTypeId);
 
 // Extract all images for all rooms into a single array
-const imagesData = [].concat(...filteredRoomImages.map(img => img.roomImages.map(image => ({ image: image.image }))));
+//const imagesData = [].concat(...filteredRoomImages.map(img => img.roomImages.map(image => ({ image: image.image }))));
 
 
 
@@ -105,7 +105,7 @@ const imagesData = [].concat(...filteredRoomImages.map(img => img.roomImages.map
                         extraChildRate: firstExtraChildRate,
                         amenities: amenityNames,
                         roomTypeId: roomTypeId,
-                        roomImages: imagesData,
+                       // roomImages: imagesData,
                         roomTypeId: roomTypeId,
                         // ratePlan:bardata
                     };

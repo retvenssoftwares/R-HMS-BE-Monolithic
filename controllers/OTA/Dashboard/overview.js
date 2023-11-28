@@ -3,7 +3,7 @@ import { format, utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
 import propertyModel from "../../../models/property.js"
 import { findUserByUserIdAndToken } from "../../../helpers/helper.js";
 const overViewData = async (req, res) => {
-    const { userId, propertyId, otaId } = req.query
+    const { userId, propertyId, otaId, timeZone } = req.query
     try {
         const authCodeValue = req.headers['authcode']
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
@@ -35,7 +35,7 @@ const overViewData = async (req, res) => {
             return formattedTimestamp;
         }
         // Replace with your specific date
-        const specificDate = convertTimestampToCustomFormat(new Date().toISOString().split('T')[0], "Asia/Kolkata");
+        const specificDate = convertTimestampToCustomFormat(new Date().toISOString().split('T')[0], timeZone);
         console.log(specificDate)
         const startOfDay = `${specificDate} 00:00:00`;
         const endOfDay = `${specificDate} 23:59:59`;

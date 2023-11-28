@@ -1,4 +1,5 @@
 import { parseStringPromise } from 'xml2js';
+import randomstring from "randomstring";
 import BookingNotificationMMT from '../../../../models/Notifications/mmtBookingNotification.js';
 import roomAndRateMap from '../../../../models/OTAs/mappedRoomsAndRates.js';
 import bookingDetails from '../../../../models/confirmBooking.js';
@@ -195,7 +196,38 @@ const pushBookingNotificationMMT = async (req, res) => {
         // });
 
         const saveOTABooking = new bookingDetails({
-            bookingId: otaBookingData.Booking.Id || ""
+            bookingId: otaBookingData.Booking.Id || "",
+            propertyId: "",
+            guestName: [{ guestName: otaBookingData.Booking.GuestName || "", logId: randomstring.generate(10) }],
+            adults: [{
+                adults: otaBookingData.Booking.RoomStay.Room.Adult || "",
+                logId: randomstring.generate(10)
+            }],
+            childs: [{
+                childs: otaBookingData.Booking.RoomStay.Room.Child || "",
+                logId: randomstring.generate(10)
+            }],
+            nightCount: [{
+                nightCount: otaBookingData.Booking.NumberOfNights || "",
+                logId: randomstring.generate(10)
+            }],
+            bookingTime: otaBookingData.Booking.BookingDate || "",
+            checkInDate: [{
+                checkInDate: otaBookingData.Booking.CheckInDate || "",
+                logId: randomstring.generate(10)
+            }],
+            checkOutDate: [{
+                checkOutDate: otaBookingData.Booking.CheckoutDate || "",
+                logId: randomstring.generate(10)
+            }],
+            reservationRate: [{
+                roomCharges: [{
+                    grandTotal: otaBookingData.Booking.PriceDetails.TotalPayAtHotelAmount || ''
+                }],
+                logId: randomstring.generate(10),
+            }],
+            isOTABooking: "true",
+            otaId: "otaId"
         })
 
         await saveOTABooking.save();

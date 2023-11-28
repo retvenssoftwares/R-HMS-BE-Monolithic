@@ -227,6 +227,11 @@ const confirmBookingDetails = new mongoose.Schema({
         }
     }],
 
+    cancelStatus: {
+        type: String,
+        default: "false"
+    },
+
     bookingTime: {
         type: String,
         default: ""
@@ -319,13 +324,11 @@ const confirmBookingDetails = new mongoose.Schema({
     }],
 
 
-
-
     rateTypeId: {
         type: String,
         default: ""
     },
-    
+
 
     nightCount: [{
         nightCount: {
@@ -385,8 +388,8 @@ const confirmBookingDetails = new mongoose.Schema({
         }
     }],
 
-    internalNote:[{
-        internalNote :{
+    internalNote: [{
+        internalNote: {
             type: String,
             default: ""
         },
@@ -617,17 +620,27 @@ const confirmBookingDetails = new mongoose.Schema({
         },
     ],
 
-    employeeId:{
-        type:String,
-        default:""
+    employeeId: {
+        type: String,
+        default: ""
     },
 
-    roomNo:{
-        type:String,
-        default:""
+    roomNo: {
+        type: String,
+        default: ""
     },
+
+    isOTABooking: {
+        type: String,
+        enum: ["true", "false"],
+        default: "false"
+    },
+    otaId:{
+        type: String,
+        default: ""
+    }
 
 })
 
-const bookingDetails = db1.model("ConfirmBookingDetails",confirmBookingDetails)
+const bookingDetails = db1.model("ConfirmBookingDetails", confirmBookingDetails)
 export default bookingDetails

@@ -6,7 +6,7 @@ import bookingMMTNotifications from '../../../controllers/OTA/MMT/Notifications/
 import bookingNotifications from '../../../controllers/OTA/getBookingNotification.js'
 
 /////////////////////////////////////////////////////////
-router.post("/api/Goibibo/bookingnotification", express.text({ type: 'text/xml' }), bookingMMTNotifications);
+router.get("/api/Goibibo/bookingnotification", express.text({ type: 'text/xml' }), bookingMMTNotifications);
 router.get("/api/getBookingNotification", bookingNotifications);
 
 export default router;

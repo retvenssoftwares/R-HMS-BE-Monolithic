@@ -169,6 +169,7 @@ const getInventory = async (req, res) => {
                         const blockedItem = item.manageInventory.blockedInventory.find(
                             (blocked) => blocked.date === dateISO
                         );
+
                         return total + (blockedItem ? blockedItem.blockedInventory : 0);
                     },
                     0
@@ -179,6 +180,7 @@ const getInventory = async (req, res) => {
                         const addedItem = item.manageInventory.addedInventory.find(
                             (added) => added.date === dateISO
                         );
+
                         return total + (addedItem ? addedItem.addedInventory : 0);
                     },
                     0
@@ -197,12 +199,13 @@ const getInventory = async (req, res) => {
                 ).length;
 
                 // console.log(holdBookingsCount, bookingsCount)
-
+                // console.log(blockedInventoryTotal, addedInventoryTotal)
                 let inventory;
 
                 if (!isDateBooked && !isDateHoldBooked) {
-                    inventory = roomType.numberOfRooms;
+                    inventory = roomType.numberOfRooms + addedInventoryTotal - blockedInventoryTotal;
                 } else {
+                    // console.log("afvasf")
                     inventory = Math.abs(
                         roomType.numberOfRooms +
                         addedInventoryTotal -

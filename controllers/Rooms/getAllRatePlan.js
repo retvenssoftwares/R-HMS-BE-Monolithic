@@ -45,10 +45,10 @@ const allRatePlans = async (req, res) => {
 
             // console.log(new Date().getSeconds())
             const barRatePlanResponse = barRatePlanData.map((rate) => {
-                const matchingRoomTypes = roomTypeDatas.find((room) => room.roomTypeId === rate.roomType?.roomTypeId
+                const matchingRoomTypes = roomTypeDatas.find((room) => room.roomTypeId === rate.roomType[0]?.roomTypeId
                 );
                 const roomTypeName = matchingRoomTypes?.roomTypeName[0]?.roomTypeName || '';
-                // console.log(roomTypeName, "segfe")
+                console.log(roomTypeName)
                 return {
                     rateType: rate.rateType || '',
                     shortCode: rate.shortCode[0].shortCode || '',

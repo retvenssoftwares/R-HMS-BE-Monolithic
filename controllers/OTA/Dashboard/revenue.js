@@ -1,7 +1,8 @@
 import { format, sub, getYear, getMonth } from "date-fns";
-import confirmBooking from "../../../models/confirmBooking.js"
-import { findUserByUserIdAndToken } from "../../../helpers/helper.js"
-import { utcToZonedTime, zonedTimeToUtc } from "date-fns-tz";
+import confirmBooking from "../../../models/confirmBooking.js";
+import { findUserByUserIdAndToken } from "../../../helpers/helper.js";
+import { utcToZonedTime } from "date-fns-tz";
+
 const revenueOTAData = async (req, res) => {
     try {
         const { userId, propertyId, otaId, filter, timeZone } = req.query;
@@ -27,22 +28,30 @@ const revenueOTAData = async (req, res) => {
 
             return formattedTimestamp;
         }
+
         // Get the specific date and one year ago from that date
         const currentDate = new Date();
-        console.log('currentDate: ', currentDate);
         const specificDate = convertTimestampToCustomFormat(
             currentDate.toISOString().split("T")[0],
             timeZone
         );
 
         const oneYearAgo = sub(currentDate, { years: 1 });
-        const startOfYear = convertTimestampToCustomFormat(
-            oneYearAgo.toISOString().split("T")[0],
-            timeZone
-        );
-        console.log(specificDate, oneYearAgo, startOfYear)
-        const endOfDay = `${specificDate} 23:59:59`;
+        const startOfYear = new Date(currentDate.getFullYear(), 0, 1, 0, 0, 0);
+        const endOfDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
 
+        // console.log(startOfYear.toISOString(), endOfDay.toISOString(), "cgffxf");
+
+        // const currentDate = new Date();
+        const startOfPreviousYear = new Date(currentDate.getFullYear() - 1, 0, 1, 0, 0, 0);
+        const endOfPreviousYear = new Date(currentDate.getFullYear(), 0, 0, 23, 59, 59);
+
+        // console.log(startOfPreviousYear.toISOString(), endOfPreviousYear.toISOString(), "vhjvghjvj");
+
+        // const endOfDay = `${specificDate} 23:59:59`;
+        // console.log(startOfYear, endOfDay, "sdfsd")
+
+        // Aggregate for the current year (2023)
         const getBookingData = await confirmBooking.aggregate([
             {
                 $match: {
@@ -51,8 +60,34 @@ const revenueOTAData = async (req, res) => {
                     isOTABooking: "true",
                     $expr: {
                         $and: [
-                            { $gte: [{ $toString: "$bookingTime" }, startOfYear] },
-                            { $lt: [{ $toString: "$bookingTime" }, endOfDay] }
+                            { $gte: [{ $toString: "$bookingTime" }, startOfYear.toISOString()] },
+                            { $lt: [{ $toString: "$bookingTime" }, endOfDay.toISOString()] }
+                        ]
+                    }
+                }
+            },
+            {
+                $project: {
+                    reservationRate: 1,
+                    propertyId: 1,
+                    otaId: 1,
+                    bookingTime: 1,
+                    inventory: 1
+                }
+            }
+        ]).exec();
+
+        // Aggregate for the previous year (2022)
+        const getBookingDataPreviousYear = await confirmBooking.aggregate([
+            {
+                $match: {
+                    propertyId: propertyId,
+                    otaId: otaId,
+                    isOTABooking: "true",
+                    $expr: {
+                        $and: [
+                            { $gte: [{ $toString: "$bookingTime" }, startOfPreviousYear.toISOString()] },
+                            { $lt: [{ $toString: "$bookingTime" }, endOfPreviousYear.toISOString()] }
                         ]
                     }
                 }
@@ -69,60 +104,93 @@ const revenueOTAData = async (req, res) => {
         ]).exec();
 
         if (getBookingData.length < 0) {
-            return res.status(200).json({ message: "No data yet", statuscode: 200 })
+            return res.status(200).json({ message: "No data yet", statuscode: 200 });
         }
-        // Calculate totalRevenue
-        const totalRevenue = getBookingData.reduce((sum, booking) => {
-            const revenue = parseFloat(booking.reservationRate[0].roomCharges[0].grandTotal) || 0;
-            console.log(revenue)
-            return sum + revenue;
-        }, 0);
 
-        const revenue = totalRevenue.toFixed(2);
-        let previousYearRevenue
-        let currentYearRevenue;
-        let totalPreviousYearRevenue
-        let totalCurrentYearRevenue
+        //YTD
         if (filter === "Yearly") {
-            previousYearRevenue = Array(12).fill(0);
-            currentYearRevenue = Array(12).fill(0);
+            // Calculate totalRevenue for the current year
+            const totalRevenue = getBookingData.reduce((sum, booking) => {
+                const revenue = parseFloat(booking.reservationRate[0].roomCharges[0].grandTotal) || 0;
+                return sum + revenue;
+            }, 0);
 
+            const revenue = totalRevenue.toFixed(2);
+
+            // Calculate totalRevenue for the previous year
+            const totalPreviousYearRevenue = getBookingDataPreviousYear.reduce((sum, booking) => {
+                const revenue = parseFloat(booking.reservationRate[0].roomCharges[0].grandTotal) || 0;
+                return sum + revenue;
+            }, 0).toFixed(2);
+
+            // Calculate monthly revenue for the current year
+            let currentYearRevenue = Array(12).fill(0);
             getBookingData.forEach(booking => {
                 const revenue = parseFloat(booking.reservationRate[0].roomCharges[0].grandTotal) || 0;
                 const bookingDate = new Date(booking.bookingTime);
-                const bookingYear = getYear(bookingDate);
                 const bookingMonth = getMonth(bookingDate);
-
-                if (bookingYear === getYear(oneYearAgo)) {
-                    // Previous year's revenue
-                    previousYearRevenue[bookingMonth] += revenue;
-                }
-                if (bookingYear === getYear(currentDate)) {
-                    // Current year's revenue
-                    currentYearRevenue[bookingMonth] += revenue;
-                }
+                currentYearRevenue[bookingMonth] += revenue;
             });
 
-            // Format the totalRevenue
-            totalPreviousYearRevenue = previousYearRevenue.reduce((sum, revenue) => sum + revenue, 0).toFixed(2);
-            totalCurrentYearRevenue = currentYearRevenue.reduce((sum, revenue) => sum + revenue, 0).toFixed(2);
+            // Calculate monthly revenue for the previous year
+            let previousYearRevenue = Array(12).fill(0);
+            getBookingDataPreviousYear.forEach(booking => {
+                const revenue = parseFloat(booking.reservationRate[0].roomCharges[0].grandTotal) || 0;
+                const bookingDate = new Date(booking.bookingTime);
+                const bookingMonth = getMonth(bookingDate);
+                previousYearRevenue[bookingMonth] += revenue;
+            });
+
+            // Format the totalRevenue for the current year
+            const totalCurrentYearRevenue = currentYearRevenue.reduce((sum, revenue) => sum + revenue, 0).toFixed(2);
+
+            // Get month names
+            const monthNames = Array.from({ length: 12 }, (_, i) => {
+                const date = new Date(currentDate.getFullYear(), i, 1);
+                return format(date, 'MMMM');
+            });
+
+            var revenueStatus = "loss"
+            console.log(totalCurrentYearRevenue, totalPreviousYearRevenue)
+            if (parseFloat(totalCurrentYearRevenue) > parseFloat(totalPreviousYearRevenue)) {
+                revenueStatus = "profit"
+            }
+
+            const percentage = ((parseFloat(totalCurrentYearRevenue) - parseFloat(totalPreviousYearRevenue)) / Math.abs(parseFloat(totalPreviousYearRevenue))) * 100;
+            // Prepare the response object
+            const responseData = {
+                totalRevenue: revenue,
+                revenueStatus: revenueStatus,
+                percentage: percentage.toFixed(2),
+                yearlyData: [
+                    {
+                        year: getYear(oneYearAgo),
+                        monthlyRevenue: previousYearRevenue.map((revenue, index) => ({
+                            month: monthNames[index],
+                            revenue: revenue.toFixed(2)
+                        })),
+                        // totalRevenue: totalPreviousYearRevenue
+                    }, {
+                        year: getYear(currentDate),
+                        monthlyRevenue: currentYearRevenue.map((revenue, index) => ({
+                            month: monthNames[index],
+                            revenue: revenue.toFixed(2)
+                        })),
+                        // totalRevenue: totalCurrentYearRevenue
+                    }
+                ],
+            };
+            // console.log(getBookingData)
+            // console.log(getBookingDataPreviousYear, "zdsfasd")
+            // console.log()
+            return res.status(200).json({ data: responseData, statuscode: 200 });
 
         }
 
-        // Prepare the response object
-        const responseData = {
-            totalRevenue: revenue, // Format the totalRevenue
-            monthlyPreviousYearRevenue: previousYearRevenue.map(revenue => revenue.toFixed(2)),
-            monthlyCurrentYearRevenue: currentYearRevenue.map(revenue => revenue.toFixed(2)),
-            statuscode: 200
-        };
-        console.log(getBookingData);
-        return res.status(200).json({ data: responseData, statuscode: 200 });
-
-    }
-    catch (err) {
-        console.log(err)
-        return res.status(500).json({ message: "Internal Server Error", statuscode: 500 })
+        return res.status(400).json({ message: "Please enter a valid filter", statuscode: 400 })
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
     }
 }
 

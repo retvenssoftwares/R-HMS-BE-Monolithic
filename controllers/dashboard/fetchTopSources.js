@@ -1,6 +1,6 @@
 import bookingModel from "../../models/confirmBooking.js";
 import moment from 'moment';
-
+import otaModel from "../../models/superAdmin/otaModel.js"
 const RevenueData = async (req, res) => {
     const { propertyId, filter } = req.query;
 
@@ -40,93 +40,32 @@ const RevenueData = async (req, res) => {
                     $unwind: "$reservationRate.roomCharges"
                 },
                 {
-                    $project: {
-                        month: { $month: { $dateFromString: { dateString: "$checkInDate.checkInDate" } } },
-                        year: { $year: { $dateFromString: { dateString: "$checkInDate.checkInDate" } } },
-                        grandTotal: { $toDouble: "$reservationRate.roomCharges.grandTotal" },
-                    },
-                },
-                {
                     $group: {
-                        _id: { month: "$month", year: "$year" },
-                        totalRevenue: { $sum: "$grandTotal" },
+                        _id: "$otaId", // Grouping by otaId
+                        totalBooking:{$sum:1},
+                        totalRevenue: { $sum: { $toDouble: "$reservationRate.roomCharges.grandTotal" } },
                     },
                 },
                 {
-                    $sort: { "_id.year": 1, "_id.month": 1 },
-                },
-                {
-                    $project: {
-                        month: "$_id.month",
-                        year: "$_id.year",
-                        totalRevenue: 1,
-                        _id: 0, // Exclude _id
-                    },
-                },
-            ]);
-
-            if (revenueData.length === 0) {
-                return res.status(404).json({ message: "No revenue data found for the specified criteria." });
-            }
-
-            return res.status(200).json(revenueData);
-        } else if (filter === 'monthly') {
-            // Get the start and end of the last month
-            const lastMonthStart = moment().subtract(1, 'months').startOf('month');
-            const lastMonthEnd = moment().subtract(1, 'months').endOf('month');
-
-            const revenueData = await bookingModel.aggregate([
-                {
-                    $match: {
-                        "propertyId": propertyId,
-                        "checkInDate.checkInDate": {
-                            $gte: lastMonthStart.toISOString(),
-                            $lte: lastMonthEnd.toISOString(),
-                        },
-                        isOTABooking: "true"
-                    },
-                },
-                {
-                    $unwind: "$checkInDate" // Unwind the checkInDate array
-                },
-                {
-                    $match: {
-                        "checkInDate.checkInDate": {
-                            $gte: lastMonthStart.toISOString(),
-                            $lte: lastMonthEnd.toISOString(),
-                        }
+                    $lookup: {
+                        from: "otas", // Collection name in your database
+                        localField: "_id",
+                        foreignField: "otaId",
+                        as: "otaDetails"
                     }
                 },
                 {
-                    $unwind: "$reservationRate"
-                },
-                {
-                    $unwind: "$reservationRate.roomCharges"
-                },
-                {
                     $project: {
-                        week: { $week: { $dateFromString: { dateString: "$checkInDate.checkInDate" } } },
-                        month: { $month: { $dateFromString: { dateString: "$checkInDate.checkInDate" } } },
-                        grandTotal: { $toDouble: "$reservationRate.roomCharges.grandTotal" },
-                    },
-                },
-                {
-                    $group: {
-                        _id: { month: "$month", week: "$week" },
-                        totalRevenue: { $sum: "$grandTotal" },
-                    },
-                },
-                {
-                    $sort: { "_id": 1 },
-                },
-
-                {
-                    $project: {
-                        month: "$_id.month",
-                        week: "$_id.week",
+                        otaId: "$_id",
                         totalRevenue: 1,
-                        _id: 0, // Exclude _id
-                    },
+                        totalBooking:1,
+                        otaName: { $arrayElemAt: ["$otaDetails.otaName", 0] },
+                        otaLogo: { $arrayElemAt: ["$otaDetails.otaLogo", 0] },
+                        _id: 0
+                    }
+                },
+                {
+                    $sort: { "otaId": 1 }
                 }
             ]);
 
@@ -134,55 +73,42 @@ const RevenueData = async (req, res) => {
                 return res.status(404).json({ message: "No revenue data found for the specified criteria." });
             }
 
-            return res.status(200).json(revenueData);
-        }else if (filter === 'today') {
-            // Get start and end of today
-            const todayStart = moment().startOf('day');
-            const todayEnd = moment().endOf('day');
+            const otaIds = revenueData.map(entry => entry.otaId); // Extracting otaIds from revenueData
 
-            const revenueData = await bookingModel.aggregate([
+            //////
+             const otaDetails = await otaModel.aggregate([
                 {
                     $match: {
-                        "propertyId": propertyId,
-                        "checkInDate.checkInDate": {
-                            $gte: todayStart.toISOString(),
-                            $lte: todayEnd.toISOString(),
-                        },
-                        isOTABooking: "true"
-                    },
-                },
-                {
-                    $unwind: "$checkInDate" // Unwind the checkInDate array
-                },
-                {
-                    $match: {
-                        "checkInDate.checkInDate": {
-                            $gte: todayStart.toISOString(),
-                            $lte: todayEnd.toISOString(),
-                        }
+                        "otaId.otaId": { $in: otaIds }
                     }
                 },
                 {
-                    $unwind: "$reservationRate"
-                },
-                {
-                    $unwind: "$reservationRate.roomCharges"
-                },
-                {
-                    $group: {
-                        _id: "todays", // Group all documents
-                        totalRevenue: { $sum: { $toDouble: "$reservationRate.roomCharges.grandTotal" } },
-                    },
-                },
+                    $project: {
+                        otaId: "$otaId.otaId",
+                        otaName: "$otaName.otaName",
+                        otaLogo: "$otaLogo.otaLogo",
+                        _id: 0
+                    }
+                }
             ]);
+            console.log(otaDetails)
+             // Merging otaDetails with revenueData based on otaId
+                    // Creating a new array with merged data
+        const mergedData = revenueData.map(entry => {
+            const otaDetail = otaDetails.find(ota => ota.otaId?.otaId === entry.otaId);
+            return {
+                otaId: entry.otaId,
+                totalBooking: entry.totalBooking,
+                totalRevenue: entry.totalRevenue,
+                otaName: otaDetail ? otaDetail.otaName : null,
+                otaLogo: otaDetail ? otaDetail.otaLogo : null
+            };
+        });
 
-            if (revenueData.length === 0) {
-                return res.status(404).json({ message: "No revenue data found for the specified criteria." });
-            }
-
-            return res.status(200).json(revenueData);
-        } 
+        return res.status(200).json(mergedData);
         
+
+    }
         else {
             return res.status(400).json({ message: "Invalid filter value provided." });
         }

@@ -11,7 +11,9 @@ import { sessionIn } from '../../controllers/User/sessionIn.js';
 import logoutUser from "../../controllers/User/logoutUser.js";
 import logInUsers from "../../controllers/User/patchLoginUser.js";
 import adminLogin from "../../controllers/User/adminLogin.controller.js"
-import { forgetPassword } from '../../controllers/User/sentOtpAndForgetPassword.js';
+import {sendOtp } from '../../controllers/User/sentEmail.js';
+import { verifyOtp } from '../../controllers/User/verifyOtp.js';
+import { resetPassword } from '../../controllers/User/resetPassword.js';
 
 const router = express.Router();
 
@@ -24,5 +26,7 @@ router.patch("/api/sessionOut",sessionOut)
 router.patch("/api/sessionIn",sessionIn)
 router.post("/api/logout", logoutUser)
 router.patch("/api/loginStatus", logInUsers)
-router.post("/api/forgetPassword",forgetPassword)
+router.post("/api/sendOtp",sendOtp)
+router.post("/api/verifyOtp",verifyOtp)
+router.post("/api/resetPassword",resetPassword)
 export default router;

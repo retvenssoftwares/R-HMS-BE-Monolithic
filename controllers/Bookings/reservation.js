@@ -75,9 +75,10 @@ export const createResrvation = async (req, res) => {
   }
 
   const startDateObj = new Date(checkInDate);
-  const checkInDateISO = startDateObj.toISOString();
+  const checkInDateISO = startDateObj.toISOString().split('T')[0];
+  console.log(checkInDateISO)
   const endDateObj = new Date(checkOutDate);
-  const checkOutDateISO = endDateObj.toISOString();
+  const checkOutDateISO = endDateObj.toISOString().split('T')[0];
 
   let userRole = findUser.role[0].role;
 
@@ -602,6 +603,8 @@ export const createResrvation = async (req, res) => {
             logId : randomString.generate(10)
           }],
 
+          
+
           // cardDetails : [{
           //   cardDetails : cardDeatils,
           //   logId : randomString.generate(10)
@@ -609,7 +612,12 @@ export const createResrvation = async (req, res) => {
           
         });
 
+        
         await hold.save();
+
+
+
+      
 
       }
 

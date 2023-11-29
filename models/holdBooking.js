@@ -569,6 +569,33 @@ const holdDetails = new mongoose.Schema({
         default: "false"
     },
 
+    cancelStatus: {
+        type: String,
+        default: "false"
+    },
+
+    voidReservation:{
+        type: String,
+        default: "false"
+    },
+
+    checkInStatus :{
+        type: String,
+        default: "false"
+    },
+
+    checkOutStatus:{
+        type: String,
+        default: "false"
+    },
+
+    noShow:{
+        type: String,
+        default: "false"
+    },
+
+
+
     cardDetails: [{
         cardDetails: [{
             nameOnCard: {

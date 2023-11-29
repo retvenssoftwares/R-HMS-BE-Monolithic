@@ -344,7 +344,15 @@ const holdDetails = new mongoose.Schema({
         }
     }],
 
-
+    isOTABooking: {
+        type: String,
+        enum: ["true", "false"],
+        default: "false"
+    },
+    otaId:{
+        type: String,
+        default: ""
+    },
 
 
     rateTypeId: {

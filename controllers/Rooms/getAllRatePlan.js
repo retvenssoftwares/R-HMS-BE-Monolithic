@@ -29,7 +29,7 @@ const allRatePlans = async (req, res) => {
                     shortCode: rate.shortCode[0].shortCode || '',
                     ratePlanName: rate.ratePlanName[0].ratePlanName || '',
                     roomTypeName: roomTypeName,
-                    inclusion: rate.ratePlanInclusion[0].ratePlanInclusion.length || 0,
+                    inclusion: rate.ratePlanInclusion[0]?.ratePlanInclusion.length || 0,
                     extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',
                     extraChildRate: rate.barRates.extraChildRate[0].extraChildRate || '',
                     ratePlanTotal: rate.barRates.ratePlanTotal[0].ratePlanTotal || '',
@@ -45,16 +45,16 @@ const allRatePlans = async (req, res) => {
 
             // console.log(new Date().getSeconds())
             const barRatePlanResponse = barRatePlanData.map((rate) => {
-                const matchingRoomTypes = roomTypeDatas.find((room) => room.roomTypeId === rate.roomType?.roomTypeId
+                const matchingRoomTypes = roomTypeDatas.find((room) => room.roomTypeId === rate.roomType[0]?.roomTypeId
                 );
                 const roomTypeName = matchingRoomTypes?.roomTypeName[0]?.roomTypeName || '';
-                // console.log(roomTypeName, "segfe")
+                console.log(roomTypeName)
                 return {
                     rateType: rate.rateType || '',
                     shortCode: rate.shortCode[0].shortCode || '',
                     ratePlanName: rate.ratePlanName[0].ratePlanName || '',
                     roomTypeName: roomTypeName,
-                    inclusion: rate.inclusion[0].inclusionPlan.length || 0,
+                    inclusion: rate.inclusion[0]?.inclusionPlan.length || 0,
                     extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',
                     extraChildRate: rate.barRates.extraChildRate[0].extraChildRate || '',
                     ratePlanTotal: rate.barRates.ratePlanTotal[0].ratePlanTotal || '',
@@ -79,7 +79,7 @@ const allRatePlans = async (req, res) => {
                     shortCode: rate.shortCode[0].shortCode || '',
                     ratePlanName: rate.ratePlanName[0].ratePlanName || '',
                     roomTypeName: roomTypeName,
-                    inclusion: rate.ratePlanInclusion[0].ratePlanInclusion.length || 0,
+                    inclusion: rate.ratePlanInclusion[0]?.ratePlanInclusion.length || 0,
                     ratePlanTotal: rate.barRates.packageTotal[0].packageTotal || '',
                     extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',
                     extraChildRate: rate.barRates.extraChildRate[0].extraChildRate || '',
@@ -104,7 +104,7 @@ const allRatePlans = async (req, res) => {
                      shortCode: rate.shortCode[0].shortCode || '',
                      ratePlanName: rate.discountName[0].discountName || '',
                      roomTypeName: roomTypeName,
-                     inclusion: rate.ratePlanInclusion[0].ratePlanInclusion.length || 0,
+                     inclusion: rate.ratePlanInclusion[0]?.ratePlanInclusion.length || 0,
                      ratePlanTotal: rate.barRates.discountTotal[0].discountTotal || '',
                      extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',
                      extraChildRate: rate.barRates.extraChildRate[0].extraChildRate || '',

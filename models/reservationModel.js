@@ -494,6 +494,11 @@ const booking = new mongoose.Schema({
         default: "false"
     },
 
+    // cancelStatus: {
+    //     type: String,
+    //     default: "false"
+    // },
+
     cardDetails: [{
         cardDetails: [{
             nameOnCard: {

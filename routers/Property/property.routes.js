@@ -85,6 +85,9 @@ import addDiscountType from  '../../controllers/Property/postDiscountType.js'
 import patchDiscountTypes from '../../controllers/Property/updateDiscountType.js'
 import fetchDiscountType from '../../controllers/Property/getDiscountType.js'
 
+
+import addCompany from '../../controllers/Property/company.js';
+import updateCompany from "../../controllers/Property/patchCompany.js";
 router.post( 
     '/api/createProperty',
     upload.fields([{ name: 'hotelLogo', maxCount: 1 }]),
@@ -187,5 +190,16 @@ router.get("/api/getGuestTypes", fetchGuestType)
 router.post("/api/addDiscountType", addDiscountType)
 router.patch("/api/patchDiscountType", patchDiscountTypes)
 router.get("/api/getDiscountTypes", fetchDiscountType)
+
+
+router.post("/api/addCompany", upload.fields([{ name: 'companyLogo', maxCount: 1 }, { name: 'contractPdf', maxCount: 5 }]), addCompany)
+router.patch(
+  "/api/updateCompany",
+  upload.fields([
+    { name: "contractPdf", maxCount: 5 },
+    { name: "companyLogo", maxCount: 1 },
+  ]),
+  updateCompany
+);
 
 export default router;

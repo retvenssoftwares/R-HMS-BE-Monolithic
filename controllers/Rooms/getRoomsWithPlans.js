@@ -18,7 +18,7 @@ const getRatePlansListWithRooms = async (req, res) => {
             }
 
             // Find unique roomTypeIds for the given propertyId
-            const uniqueRoomTypeIds = await barRatePlanModel.distinct('roomType.roomTypeId', { propertyId, "displayStatus.0.displayStatus": "1" }).sort({_id:-1});
+            const uniqueRoomTypeIds = await barRatePlanModel.distinct('roomType.roomTypeId', { propertyId, "displayStatus.0.displayStatus": "1" });
             // console.log(uniqueRoomTypeIds, "dfa")
             if (uniqueRoomTypeIds.length > 0) {
                 const foundRateData = await Promise.all(uniqueRoomTypeIds.map(async (roomTypeId) => {

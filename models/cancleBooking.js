@@ -1,7 +1,7 @@
 import mongoose, { mongo } from "mongoose";
 import db1 from "../db/conn.js";
 
-const confirmBookingDetails = new mongoose.Schema({
+const cancleBookings = new mongoose.Schema({
     guestId: {
         type: String,
         default: ""
@@ -471,9 +471,12 @@ const confirmBookingDetails = new mongoose.Schema({
             default: ""
         }
 
-
-
     }],
+
+    cancelStatus: {
+        type: String,
+        default: "false"
+    },
 
     extraInclusionId: [{
         type: String,
@@ -629,5 +632,5 @@ const confirmBookingDetails = new mongoose.Schema({
 
 })
 
-const bookingDetails = db1.model("ConfirmBookingDetails",confirmBookingDetails)
-export default bookingDetails
+const cancleBookingDetails = db1.model("cancleBookingDetails",cancleBookings)
+export default cancleBookingDetails

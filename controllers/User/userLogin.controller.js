@@ -25,7 +25,7 @@ const userLogin = async (req, res) => {
        const propertyTypeSOC = findProfile.propertyTypeSOC
     
         const decryptedPass = decrypt(findPassword)
-        // console.log(decryptedPass)
+        console.log(decryptedPass)
         // if(propertyTypeSOC==="Single"){
         //     const 
         // }

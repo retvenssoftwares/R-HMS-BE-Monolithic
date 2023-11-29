@@ -54,6 +54,9 @@ const manageInventory = async (req, res, io) => {
       let findRoom = await roomType
         .findOne({ propertyId: propertyId, roomTypeId: roomTypeId })
         .select("numberOfRooms");
+      if (!findRoom) {
+        return res.status(400).json({ message: "Invalid roomTypeId entered", statuscode: 400 })
+      }
       let baseInventory = findRoom.numberOfRooms[0].numberOfRooms;
 
 

@@ -26,6 +26,7 @@ import mmtRoutes from './routers/OTA/addMMT.router.js'
 import bulkUpdateRoutes from './routers/InventoryAndRates/manageInventoryRates.routes.js'
 import mmtBookingNotificationRoutes from './routers/OTA/Notifications/notification.routes.js'
 import otaRoutes from './routers/OTA/ota.router.js'
+import Dashboard   from './routers/dashboard/dashboard.js';
 // import { oldBooking } from "./helpers/deletOldBooking.js";
 
 app.use(cors({
@@ -51,6 +52,7 @@ app.use(bulkUpdateRoutes)
 app.use(otaRoutes)
 app.use(mmtRoutes)
 app.use(superAdminRoutes)
+app.use(Dashboard)
 
 
 app.get("/", (req, res) => {

@@ -1,4 +1,5 @@
 import mongoose, { mongo } from "mongoose";
+import Randomstring from "randomstring";
 import db1 from "../db/conn.js";
 
 const confirmBookingDetails = new mongoose.Schema({
@@ -227,6 +228,36 @@ const confirmBookingDetails = new mongoose.Schema({
         }
     }],
 
+    folioNo:{
+        type: String,
+        default: ""
+    },
+
+    cancelStatus: {
+        type: String,
+        default: "false"
+    },
+
+    voidReservation:{
+        type: String,
+        default: "false"
+    },
+
+    checkInStatus :{
+        type: String,
+        default: "false"
+    },
+
+    checkOutStatus:{
+        type: String,
+        default: "false"
+    },
+
+    noShow:{
+        type: String,
+        default: "false"
+    },
+
     bookingTime: {
         type: String,
         default: ""
@@ -319,13 +350,17 @@ const confirmBookingDetails = new mongoose.Schema({
     }],
 
 
+    folioNo: {
+        type: String,
+        default: ""
+    },
 
 
     rateTypeId: {
         type: String,
         default: ""
     },
-    
+
 
     nightCount: [{
         nightCount: {
@@ -385,8 +420,8 @@ const confirmBookingDetails = new mongoose.Schema({
         }
     }],
 
-    internalNote:[{
-        internalNote :{
+    internalNote: [{
+        internalNote: {
             type: String,
             default: ""
         },
@@ -617,17 +652,27 @@ const confirmBookingDetails = new mongoose.Schema({
         },
     ],
 
-    employeeId:{
-        type:String,
-        default:""
+    employeeId: {
+        type: String,
+        default: ""
     },
 
-    roomNo:{
-        type:String,
-        default:""
+    roomNo: {
+        type: String,
+        default: ""
     },
+
+    isOTABooking: {
+        type: String,
+        enum: ["true", "false"],
+        default: "false"
+    },
+    otaId:{
+        type: String,
+        default: ""
+    }
 
 })
 
-const bookingDetails = db1.model("ConfirmBookingDetails",confirmBookingDetails)
+const bookingDetails = db1.model("ConfirmBookingDetails", confirmBookingDetails)
 export default bookingDetails

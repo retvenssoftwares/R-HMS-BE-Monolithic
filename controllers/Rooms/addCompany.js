@@ -29,6 +29,7 @@ const addCompany = async (req, res) => {
           {
             companyLogo: imageUrl,
           },
+          
         ],
         companyName: [
           {

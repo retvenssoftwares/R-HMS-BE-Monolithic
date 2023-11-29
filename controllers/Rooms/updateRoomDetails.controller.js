@@ -42,6 +42,7 @@ const patchRoom = async (req,res)=>{
             return res.status(404).json({ message: "User not found or invalid userid", statuscode: 404 })
         }
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
+        const currentUTCTime = await getCurrentUTCTimestamp();
         if(result.success){
         const findRoomType = await roomModel.findOne({ roomTypeId });
 
@@ -51,25 +52,30 @@ const patchRoom = async (req,res)=>{
             return res.status(404).json({ message: "roomType not found", statuscode: 404 });
         }
 
-        //amennites
-        const amenityIds = req.body.amenityIds;
-        const amenityIdsArray = amenityIds.split(',');
-        const currentUTCTime = await getCurrentUTCTimestamp();
-        const amenityObjects = amenityIdsArray.map((amenityId) => {
-          return {
-            amenityId,
-            addedDate: currentUTCTime,
-          };
-        });
+        
+       // Amenities
+       let amenityObjects = [];
+       if (req.body.amenityIds && typeof req.body.amenityIds === "string") {
+         const amenityIdsArray = req.body.amenityIds.split(",");
+         const currentUTCTime = await getCurrentUTCTimestamp();
+         amenityObjects = amenityIdsArray.map((amenityId) => {
+           return {
+             amenityId,
+             addedDate: currentUTCTime,
+           };
+         });
+       }
 
-         //bedType
-      const bedTypeIds= req.body.bedTypeIds;
-      const bedTypeIdsArray = bedTypeIds.split(',');
-      const bedTypeObjects = bedTypeIdsArray.map((bedTypeId) => {
-        return {
-          bedTypeId,
-        };
-      });
+      // BedType
+let bedTypeObjects = [];
+if (req.body.bedTypeIds && typeof req.body.bedTypeIds === "string") {
+  const bedTypeIdsArray = req.body.bedTypeIds.split(",");
+  bedTypeObjects = bedTypeIdsArray.map((bedTypeId) => {
+    return {
+      bedTypeId,
+    };
+  });
+}
         
 
           // Update the roomType fields
@@ -102,9 +108,12 @@ const patchRoom = async (req,res)=>{
             }
             logRoomType.roomDescription.unshift(roomDescriptionObject);
         }
-        if (bedTypeIds) {
+        if (bedTypeObjects.length > 0) {
             const logId = Randomstring.generate(10);
-            findRoomType.bedType.unshift({bedType:bedTypeObjects,logId});
+            findRoomType.bedType.unshift({
+              bedType: bedTypeObjects,
+              logId: logId,
+            });
             const bedTypeObject={
                 bedType: bedTypeObjects,
                 logId:logId,
@@ -114,7 +123,7 @@ const patchRoom = async (req,res)=>{
                 modifiedOn:currentUTCTime
             }
             logRoomType.bedType.unshift(bedTypeObject);
-        }
+          }
         if (roomTypeName) {
             const logId = Randomstring.generate(10);
             findRoomType.roomTypeName.unshift({ roomTypeName, logId});
@@ -284,9 +293,12 @@ const patchRoom = async (req,res)=>{
             }
             logRoomType.noOfBeds.unshift(noOfBedsObject);
         }
-        if (amenityIds) {
+        if (amenityObjects.length > 0) {
             const logId = Randomstring.generate(10);
-            findRoomType.amenities.unshift({amenities:amenityObjects, logId});
+            findRoomType.amenities.unshift({
+              amenities: amenityObjects,
+              logId: logId
+            });
             const amenitiesObject={
                 amenities: amenityObjects,
                 logId:logId,
@@ -296,7 +308,7 @@ const patchRoom = async (req,res)=>{
                 modifiedOn:currentUTCTime
             }
             logRoomType.amenities.unshift(amenitiesObject);
-        }
+          }
         // Save the updated document
         const updatedRoom = await findRoomType.save();
         logRoomType.save();

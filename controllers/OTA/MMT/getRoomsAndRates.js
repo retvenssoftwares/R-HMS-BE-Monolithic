@@ -1,6 +1,6 @@
 import { parseString } from "xml2js";
 import axios from "axios";
-import mmtModel from '../../../models/OTAs/mmtModel.js'
+import roomAndRateMap from '../../../models/OTAs/mappedRoomsAndRates.js';
 import { findUserByUserIdAndToken } from "../../../helpers/helper.js";
 const XMLData = async (req, res) => {
   try {
@@ -8,6 +8,12 @@ const XMLData = async (req, res) => {
     if (!accessToken || !otaHotelCode) {
       return res.status(400).json({ message: "Please enter proper otaHotelCode and accessToken", statuscode: 400 })
     }
+
+    const getConnectionId = await roomAndRateMap.findOne({ OTAHotelCode: otaHotelCode, userId: userId }, 'connectionId mappedOTARoomData mappedRatePlanData');
+    if (!getConnectionId) {
+      return res.status(400).json({ message: "Please enter proper otaHotelCode", statuscode: 400 })
+    }
+    // console.log(getConnectionId)
     // console.log("erthfgbv", userId, otaHotelCode)
     const authCodeValue = req.headers['authcode']
 
@@ -25,7 +31,7 @@ const XMLData = async (req, res) => {
     const data = `<?xml version="1.0" encoding="UTF-8"?>
       <Website Name="ingoibibo" HotelCode="${otaHotelCode}">
        <HotelCode>${otaHotelCode}</HotelCode>
-       <IsOccupancyRequired>false</IsOccupancyRequired>
+       <IsOccupancyRequired>true</IsOccupancyRequired>
       </Website>`.trim(); // Trim the XML string
 
     const response = await axios.post(
@@ -58,15 +64,49 @@ const XMLData = async (req, res) => {
                 (roomListItem) => roomListItem.RoomTypeCode === roomTypeCode);
 
               if (roomData) {
-
+                // console.log(roomData.AdultOccupancy.base);
                 const ratePlans = result.HotelListing.RatePlanList.RatePlan.filter(
                   (ratePlanItem) => ratePlanItem.RoomTypeCode === roomTypeCode);
 
+                // Check if the roomTypeCode exists in mappedOTARoomData
+                const isMapped = getConnectionId.mappedOTARoomData.some(mappedRoom => mappedRoom.otaRoomTypeCode === roomTypeCode);
+
+                // Check if RatePlanCode is in mappedRatePlanData
+                const mappedRatePlanStatus = ratePlans.map(ratePlan => {
+                  const mappedRatePlan = getConnectionId.mappedRatePlanData.find(mappedRatePlan => mappedRatePlan.otaRatePlanCode === ratePlan.RatePlanCode);
+                  // console.log(mappedRatePlan)
+                  // If the rate plan is mapped, include rateRule from mappedRatePlanData
+                  if (mappedRatePlan) {
+                    return {
+                      ...ratePlan._doc,
+                      "RoomTypeName": ratePlan.RoomTypeName || "",
+                      "RoomTypeCode": ratePlan.RoomTypeCode || "",
+                      mappedRatePlanStatus: 'true',
+                      "RatePlanCode": ratePlan.RatePlanCode || "",
+                      "RatePlanName": ratePlan.RatePlanName || "",
+                      rateRule: mappedRatePlan.rateRule[0] || "", // Include rateRule from mappedRatePlanData
+                    };
+                  } else {
+                    return {
+                      ...ratePlan._doc,
+                      "RoomTypeName": ratePlan.RoomTypeName || "",
+                      "RoomTypeCode": ratePlan.RoomTypeCode || "",
+                      mappedRatePlanStatus: 'false',
+                      "RatePlanCode": ratePlan.RatePlanCode || "",
+                      "RatePlanName": ratePlan.RatePlanName || "",
+                      rateRule: "", // Set rateRule to default or empty if not mapped
+                    };
+                  }
+                });
+
                 const roomObject = {
-                  RoomTypeName: roomData.RoomTypeName,
-                  RoomTypeCode: roomData.RoomTypeCode,
-                  IsActive: roomData.IsActive,
-                  ratePlan: ratePlans,
+                  RoomTypeName: roomData.RoomTypeName || "",
+                  RoomTypeCode: roomData.RoomTypeCode || "",
+                  baseOccupancy: roomData.AdultOccupancy.base || "0",
+                  mappedRoomStatus: isMapped ? "true" : "false",
+                  // IsActive: roomData.IsActive,
+                  connectionId: getConnectionId.connectionId,
+                  ratePlan: mappedRatePlanStatus,
                 };
 
                 room.push(roomObject);
@@ -80,7 +120,7 @@ const XMLData = async (req, res) => {
     );
 
   } catch (err) {
-    console.error("Error making API request:", err.message);
+    console.error("Error making API request:", err);
     return res
       .status(500)
       .json({ message: "Internal Server Error", statuscode: 500 });

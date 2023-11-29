@@ -53,7 +53,7 @@ const getRatePlansListWithRooms = async (req, res) => {
         }
     } catch (error) {
         console.log("error", error);
-        res.status(500).json({ message: "Internal Server Error", status: 500 });
+        res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
     }
 };
 

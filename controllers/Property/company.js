@@ -253,6 +253,7 @@ const addCompany = async (req, res) => {
       });
 
       const companyData = await addCompanyRecord.save();
+      
 
       //save data in logs
       const addCompanyLogs = new companyLogs({

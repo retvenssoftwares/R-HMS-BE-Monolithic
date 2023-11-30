@@ -1,12 +1,25 @@
 import bookingModel from "../../models/confirmBooking.js";
 import moment from 'moment'; 
 import roomTypeModel from '../../models/roomType.js'
+import verifiedUser from "../../models/verifiedUsers.js";
+import {findUserByUserIdAndToken,validateHotelCode } from "../../helpers/helper.js";
 const RevenueData = async (req, res) => {
-    const { propertyId, filter } = req.query;
-
+    const { propertyId, filter,userId } = req.query;
+    const findUser = await verifiedUser.findOne({ userId });
+    if (!findUser || !userId) {
+      return res
+        .status(404)
+        .json({ message: "User not found or invalid userId", statuscode: 404 });
+    }
+    const authCodeValue = req.headers["authcode"];
+    const result = await findUserByUserIdAndToken(userId, authCodeValue);
     const currentDate = moment().toISOString(); // Get the exact current date in ISO format
-console.log(currentDate)
+    const results = await validateHotelCode(userId, propertyId)
+    if (!results.success) {
+        return res.status(results.statuscode).json({ message: "Invalid propertyId entered", statuscode: results.statuscode })
+    }
     try {
+        if (result.success) {
         if (filter === 'yearly') {
             // Set the start of the last year as January 1st of the previous year for yearly data
             const lastYearStart = moment().subtract(1, 'years')
@@ -46,7 +59,7 @@ console.log(currentDate)
                 },
                 {
                     $group: {
-                        _id: "$roomTypeId.roomTypeId", // Grouping by otaId
+                        _id: "$roomTypeId.roomTypeId", // Grouping by roomTypeId
                         totalBooking:{$sum:1},
                         numberOfNights: { $sum: { $toInt: "$nightCount.nightCount" } } ,// Summing nightCount from the array after converting to integer
                         totalRevenue: { $sum: { $toDouble: "$reservationRate.roomCharges.grandTotal" } },
@@ -55,7 +68,7 @@ console.log(currentDate)
           
                 {
                     $project: {
-                        roomTypeId: "$_id",
+                        roomTypeId: { $arrayElemAt: ["$_id", 0] },
                         totalRevenue: 1,
                         totalBooking:1,
                         numberOfNights:1,// Calculating night count assuming dates are in milliseconds
@@ -63,35 +76,30 @@ console.log(currentDate)
                         _id: 0
                     }
                 },
-                {
-                    $sort: { "otaId": 1 }
-                }
             ]);
            
 
             if (revenueData.length === 0) {
                 return res.status(404).json({ message: "No revenue data found for the specified criteria." });
             }
+            console.log(revenueData)
 
-            const roomTypeIds = revenueData.reduce((acc, entry) => {
-                if (Array.isArray(entry.roomTypeId) && entry.roomTypeId.length > 0) {
-                    acc.push(entry.roomTypeId[0]); // Push the first element of roomTypeId array
-                }
-                return acc;
-            }, []);
-            
+       const roomTypeIds = await revenueData.map((item)=>item.roomTypeId)
+            // console.log(roomTypeIds)
             const roomTypes = await roomTypeModel.find({ roomTypeId: { $in: roomTypeIds } }, { roomTypeId: 1, roomTypeName: 1 });
-            console.log(roomTypes)
+           // console.log(roomTypes)
             const updatedData = revenueData.map(entry => {
-                const roomType = roomTypes.find(room => room.roomTypeId === entry.roomTypeId[0]?.roomTypeId);
-                console.log(roomType)
-                const roomTypeName = roomType ? roomType.roomTypeName : '';
+                const roomType = roomTypes.find(room => room.roomTypeId ===entry.roomTypeId);
+                
+                
+                const roomTypeName = roomType ? roomType.roomTypeName[0].roomTypeName : '';
+                const roomTypeId = roomType ? roomType.roomTypeId : '';
             
-                const { roomTypeId, ...rest } = entry;
+                const {  ...rest } = entry;
             
                 return {
                     ...rest,
-                    roomTypeId: roomTypeId[0]?.roomTypeId || '',
+                    roomTypeId:roomTypeId ,
                     roomTypeName: roomTypeName,
                     numberOfNights: entry.numberOfNights,
                     totalBooking: entry.totalBooking,
@@ -118,7 +126,8 @@ console.log(currentDate)
                         $lte: currentDate.toISOString(),
                         $gte: lastMonthDate.toISOString(),
                     },
-                    isOTABooking: "true"
+                    isOTABooking: "true",
+                    "roomTypeId.roomTypeId": { $exists: true, $ne: null, $ne: "" }
                 },
             },
             {
@@ -132,7 +141,7 @@ console.log(currentDate)
             },
             {
                 $group: {
-                    _id: "$otaId",
+                    _id: "$roomTypeId.roomTypeId", // Grouping by roomTypeId
                     totalBooking:{$sum:1},
                     totalRevenue: { $sum: { $toDouble: "$reservationRate.roomCharges.grandTotal" } },
                     numberOfNights: { $sum: { $toInt: "$nightCount.nightCount" } } ,
@@ -140,12 +149,10 @@ console.log(currentDate)
             },
             {
                 $project: {
-                    otaId: "$_id",
+                    roomTypeId: { $arrayElemAt: ["$_id", 0] },
                     totalBooking:1,
                     totalRevenue: 1,
-                    numberOfNights:1,
-                    otaName: { $arrayElemAt: ["$otaDetails.otaName", 0] },
-                    otaLogo: { $arrayElemAt: ["$otaDetails.otaLogo", 0] },
+                    numberOfNights:1, 
                     los: { $divide: ["$numberOfNights", "$totalBooking"] } ,// Calculate LOs
                     _id: 0,
                 },
@@ -156,38 +163,41 @@ console.log(currentDate)
         if (revenueData.length === 0) {
             return res.status(404).json({ message: "No revenue data found for the specified criteria." });
         }
-        const otaIds = revenueData.map(entry => entry.otaId); // Extracting otaIds from revenueData
-
-        const otaDetailsPromises = otaIds.map(otaId =>
-            otaModel.findOne({ "otaId.otaId": otaId }, { _id: 0, otaId: 1, "otaName.otaName": 1, "otaLogo.otaLogo": 1 })
-        );
-
-        const otaDetails = await Promise.all(otaDetailsPromises);
-
-        // Merging otaDetails with revenueData based on otaId
-        const mergedData = revenueData.map((revenueEntry, index) => {
-            const otaDetail = otaDetails[index];
-
-            if (!otaDetail) {
-                // Handle case where otaDetail is not found for a specific otaId
-                console.log(`No OTA details found for otaId: ${revenueEntry.otaId}`);
-            }
-
+     
+        const roomTypeIds = await revenueData.map((item)=>item.roomTypeId)
+        // console.log(roomTypeIds)
+        const roomTypes = await roomTypeModel.find({ roomTypeId: { $in: roomTypeIds } }, { roomTypeId: 1, roomTypeName: 1 });
+       // console.log(roomTypes)
+        const updatedData = revenueData.map(entry => {
+            const roomType = roomTypes.find(room => room.roomTypeId ===entry.roomTypeId);
+            
+            
+            const roomTypeName = roomType ? roomType.roomTypeName[0].roomTypeName : '';
+            const roomTypeId = roomType ? roomType.roomTypeId : '';
+        
+            const {  ...rest } = entry;
+        
             return {
-                ...revenueEntry,
-                numberOfNights:revenueEntry.numberOfNights,
-                totalBooking: revenueEntry.totalBooking,
-                totalRevenue: revenueEntry.totalRevenue,
-                otaName: otaDetail ? otaDetail.otaName[0]?.otaName : '',
-                otaLogo: otaDetail ? otaDetail.otaLogo[0]?.otaLogo : ''
+                ...rest,
+                roomTypeId:roomTypeId ,
+                roomTypeName: roomTypeName,
+                numberOfNights: entry.numberOfNights,
+                totalBooking: entry.totalBooking,
+                totalRevenue: entry.totalRevenue,
+                // Add other fields you need here
             };
         });
-
-        return res.status(200).json(mergedData);
+        
+        return res.status(200).json(updatedData);
 }
         else {
             return res.status(400).json({ message: "Invalid filter value provided." });
         }
+    }else {
+        return res
+          .status(result.statuscode)
+          .json({ message: result.message, statuscode: result.statuscode });
+      }
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal Server Error", statuscode: 500 });

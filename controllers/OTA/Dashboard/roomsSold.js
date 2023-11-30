@@ -106,10 +106,73 @@ const getRoomsSoldData = async (req, res) => {
                 roomTypeName: roomType.roomTypeName[0].roomTypeName || '',
                 count: roomTypeIdCounts[roomType.roomTypeId] || 0,
                 // month: new Intl.DateTimeFormat('en-US', { month: 'long' }).format(currentDate)
+
+
             }));
+             
 
             return res.status(200).json({ data: responseData, statuscode: 200 });
         }
+
+        if (filter === 'Daily') {
+            // const startDateTime = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1, 0, 0, 0);
+            const startDateTime = new Date();
+            // const currentUTC = await getCurrentUTCTimestamp();
+            
+            startDateTime.setHours(0, 0, 0, 0);
+            
+            const endDateTime = new Date();
+            endDateTime.setHours(23, 59, 59, 999);
+            
+            console.log(startDateTime, endDateTime)
+
+            const bookingData = await confirmBookingDetails.aggregate([
+                {
+                    $match: {
+                        propertyId: propertyId,
+                        otaId: otaId,
+                        $expr: {
+                            $and: [
+                                { $gte: [{ $toDate: "$bookingTime" }, startDateTime] },
+                                { $lt: [{ $toDate: "$bookingTime" }, endDateTime] }
+                            ]
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        roomTypeId: { $arrayElemAt: ["$roomTypeId.roomTypeId", 0] }, // Extract the roomTypeId from the 0th position,
+                        bookingTime: 1
+                    }
+                }
+            ]).exec();
+
+            const roomTypeIds = bookingData.map(entry => entry.roomTypeId);
+            console.log('roomTypeIds: ', roomTypeIds);
+
+            // Fetch roomType details based on the extracted roomTypeIds
+            const roomTypeDetails = await roomTypeModel.find({ roomTypeId: { $in: roomTypeIds } });
+            console.log('roomTypeDetails: ', roomTypeDetails);
+            const roomTypeIdCounts = roomTypeIds.reduce((counts, roomTypeId) => {
+                counts[roomTypeId] = (counts[roomTypeId] || 0) + 1;
+                return counts;
+            }, {});
+            // Prepare the response object
+            const responseData = roomTypeDetails.map(roomType => ({
+                roomTypeId: roomType.roomTypeId,
+                roomTypeName: roomType.roomTypeName[0].roomTypeName || '',
+                count: roomTypeIdCounts[roomType.roomTypeId] || 0,
+                // month: new Intl.DateTimeFormat('en-US', { month: 'long' }).format(currentDate)
+
+
+            }));
+             
+
+            return res.status(200).json({ data: responseData, statuscode: 200 });
+        }
+
+
+
         return res.status(400).json({ message: "Please enter a valid filter", statuscode: 400 });
     } catch (error) {
         console.log(error)

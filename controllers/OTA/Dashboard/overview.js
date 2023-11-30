@@ -100,7 +100,10 @@ const overViewData = async (req, res) => {
         const responseData = {
             totalRevenue: revenue, // Format the totalRevenue
             averageDailyRate: adr || 0.00,
-            statuscode: 200
+            totalNights : totalNights,
+            statuscode: 200 
+            
+        
         };
 
         const totalRevenuePromise = await Promise.all(mappedTotalRevenue)

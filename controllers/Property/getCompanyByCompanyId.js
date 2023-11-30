@@ -46,7 +46,7 @@ const fetchCompanyDetails = async (req, res) => {
                 month : company.billingCycle[0]?.month || '',
                 phoneNumber : company.phoneNumber[0]?.phoneNumber || '',
                 personDesignation : company.personDesignation[0]?.personDesignation || '',
-                contractPdf : company.contractPdf[0]?.contractPdf || '',
+                contractPdf : company.contractPdf || '',
                 addressLine1 : company.addressLine1[0]?.addressLine1 || '',
                 addressLine2 : company.addressLine2[0]?.addressLine2 || '',
                 country : company.country[0]?.country || '',

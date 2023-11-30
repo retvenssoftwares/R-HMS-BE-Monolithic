@@ -2,7 +2,6 @@ import bookingModel from "../../models/confirmBooking.js";
 import moment from 'moment';
 import verifiedUser from "../../models/verifiedUsers.js";
 import {findUserByUserIdAndToken,validateHotelCode } from "../../helpers/helper.js";
-
 const RevenueData = async (req, res) => {
     const { propertyId, filter,userId } = req.query;
     const findUser = await verifiedUser.findOne({ userId });
@@ -13,23 +12,26 @@ const RevenueData = async (req, res) => {
     }
     const authCodeValue = req.headers["authcode"];
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
-
     const currentDate = moment().toISOString(); // Get the exact current date in ISO format
-  const results = await validateHotelCode(userId, propertyId)
-            if (!results.success) {
-                return res.status(results.statuscode).json({ message: "Invalid propertyId entered", statuscode: results.statuscode })
-            }
+// Get the last month of the current year
+const lastMonthOfCurrentYear = moment().endOf('year');
+const results = await validateHotelCode(userId, propertyId)
+if (!results.success) {
+    return res.status(results.statuscode).json({ message: "Invalid propertyId entered", statuscode: results.statuscode })
+}
     try {
         if (result.success) {
         if (filter === 'yearly') {
             const currentYearStart = moment().startOf('year'); // Start of current year
-            console.log(currentYearStart)
+           // console.log(currentYearStart)
             const lastYearStart = moment().subtract(1,'years').startOf('year'); // Start of previous year
-             console.log(lastYearStart)
+           //  console.log(lastYearStart)
             const [currentYearData, lastYearData] = await Promise.all([
-                getYearlyRevenueData(propertyId, currentYearStart, currentDate),
+                getYearlyRevenueData(propertyId, currentYearStart, lastMonthOfCurrentYear.toISOString()),
                 getYearlyRevenueData(propertyId, lastYearStart, currentYearStart.toISOString()),
             ]);
+          //  console.log(currentYearData)
+           // console.log(lastYearData)
 
             if (currentYearData.length === 0 && lastYearData.length === 0) {
                 return res.status(404).json({ message: "No revenue data found for the specified criteria." });
@@ -127,24 +129,33 @@ const getYearlyRevenueData = async (propertyId, startDate, endDate) => {
     }
 };
 
-
-//missing function for yearly
+const monthNames = [
+    "January", "February", "March", "April",
+    "May", "June", "July", "August",
+    "September", "October", "November", "December"
+  ];
+  
+// missing function for yearly
 const fillMissingMonths = (revenueData, yearStart, isLastYear = false) => {
     const months = [];
     const currentYear = moment().year();
     const year = isLastYear ? currentYear - 1 : currentYear;
 
     for (let i = 1; i <= 12; i++) {
-        const foundMonthIndex = revenueData.findIndex(data => data.month === i);
-        if (foundMonthIndex !== -1) {
-            months.push(revenueData[foundMonthIndex]);
+        const foundMonth = revenueData.find(data => data.month === i);
+        if (foundMonth) {
+            // Replace numeric month with month name
+            const monthName = monthNames[i - 1]; // Arrays are zero-indexed
+            months.push({ ...foundMonth, month: monthName });
         } else {
-            months.push({ month: i, year, totalRevenue: 0 });
+            const monthName = monthNames[i - 1];
+            months.push({ month: monthName, year, totalRevenue: 0 });
         }
     }
 
     return months;
 };
+
 
 
 //function for monthly
@@ -165,6 +176,8 @@ const fillMissingMonths = (revenueData, yearStart, isLastYear = false) => {
         }
     };
 
+
+    //function for monthly 
 const getDailyRevenueData = async (propertyId, startDate, endDate) => {
     try {
         const revenueData = await bookingModel.aggregate([
@@ -230,7 +243,7 @@ const getDailyRevenueData = async (propertyId, startDate, endDate) => {
 };
 
 
-
+//monthly
 const fillMissingDays = (revenueData, monthStart, isLastMonth = false) => {
     const daysInMonth = moment(monthStart).daysInMonth();
     const currentYear = moment().year();
@@ -246,11 +259,13 @@ const fillMissingDays = (revenueData, monthStart, isLastMonth = false) => {
 
     const days = [];
     for (let i = 1; i <= daysInMonth; i++) {
-        const foundDayIndex = revenueData.findIndex(data => data.day === i);
-        if (foundDayIndex !== -1) {
-            days.push(revenueData[foundDayIndex]);
+        const foundDay = revenueData.find(data => data.day === i);
+        if (foundDay) {
+            const monthName = monthNames[foundDay.month - 1];
+            days.push({ ...foundDay, month: monthName });
         } else {
-            days.push({ day: i, month: monthToDisplay, year: currentYear, totalRevenue: 0 });
+            const monthName = monthNames[monthToDisplay - 1];
+            days.push({ day: i, month: monthName, year: currentYear, totalRevenue: 0 });
         }
     }
 

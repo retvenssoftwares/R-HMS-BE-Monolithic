@@ -38,7 +38,7 @@ const revenueOTAData = async (req, res) => {
 
         const oneYearAgo = sub(currentDate, { years: 1 });
         const startOfYear = new Date(currentDate.getFullYear(), 0, 1, 0, 0, 0);
-    
+
         const endOfDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
 
         // console.log(startOfYear.toISOString(), endOfDay.toISOString(), "cgffxf");
@@ -304,6 +304,105 @@ const revenueOTAData = async (req, res) => {
 
             return res.status(200).json({ data: responseData, statuscode: 200 });
         }
+        else if (filter === "Daily") {
+            // Calculate the start and end dates for the current day
+            const startOfCurrentDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0);
+            const endOfCurrentDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
+
+            // Calculate the start and end dates for the previous day
+            const startOfPreviousDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 1, 0, 0, 0);
+            const endOfPreviousDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 1, 23, 59, 59);
+
+            // Aggregate for the current day
+            const getBookingDataCurrentDay = await confirmBooking.aggregate([
+                {
+                    $match: {
+                        propertyId: propertyId,
+                        otaId: otaId,
+                        isOTABooking: "true",
+                        $expr: {
+                            $and: [
+                                { $gte: ["$bookingTime", startOfCurrentDay.toISOString()] },
+                                { $lt: ["$bookingTime", endOfCurrentDay.toISOString()] }
+                            ]
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        reservationRate: 1,
+                        propertyId: 1,
+                        otaId: 1,
+                        bookingTime: 1,
+                        inventory: 1
+                    }
+                }
+            ]).exec();
+
+            // Aggregate for the previous day
+            const getBookingDataPreviousDay = await confirmBooking.aggregate([
+                {
+                    $match: {
+                        propertyId: propertyId,
+                        otaId: otaId,
+                        isOTABooking: "true",
+                        $expr: {
+                            $and: [
+                                { $gte: ["$bookingTime", startOfPreviousDay.toISOString()] },
+                                { $lt: ["$bookingTime", endOfPreviousDay.toISOString()] }
+                            ]
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        reservationRate: 1,
+                        propertyId: 1,
+                        otaId: 1,
+                        bookingTime: 1,
+                        inventory: 1
+                    }
+                }
+            ]).exec();
+
+            // Calculate revenue for the current day
+            const totalCurrentDayRevenue = getBookingDataCurrentDay.reduce((sum, booking) => {
+                const revenue = parseFloat(booking.reservationRate[0].roomCharges[0].grandTotal) || 0;
+                return sum + revenue;
+            }, 0).toFixed(2);
+            console.log('totalCurrentDayRevenue: ',  totalCurrentDayRevenue);
+            // Calculate revenue for the previous day
+            const totalPreviousDayRevenue = getBookingDataPreviousDay.reduce((sum, booking) => {
+                const revenue = parseFloat(booking.reservationRate[0].roomCharges[0].grandTotal) || 0;
+                return sum + revenue;
+            }, 0).toFixed(2);
+            console.log('totalPreviousDayRevenue: ',  totalPreviousDayRevenue);
+
+            // Calculate percentage increase or decrease
+            const revenueStatus = parseFloat(totalCurrentDayRevenue) > parseFloat(totalPreviousDayRevenue) ? "profit" : "loss";
+            const percentage = ((parseFloat(totalCurrentDayRevenue) - parseFloat(totalPreviousDayRevenue)) / Math.abs(parseFloat(totalPreviousDayRevenue))) * 100;
+            console.log('percentage: ', percentage);
+
+            // Prepare the response object
+            const responseData = {
+                totalRevenue: totalCurrentDayRevenue,
+                revenueStatus: revenueStatus,
+                percentage: percentage.toFixed(2),
+                dailyData: [
+                    {
+                        day: format(startOfPreviousDay, 'yyyy-MM-dd'),
+                        revenue: totalPreviousDayRevenue,
+                    },
+                    {
+                        day: format(startOfCurrentDay, 'yyyy-MM-dd'),
+                        revenue: totalCurrentDayRevenue,
+                    },
+                ],
+            };
+
+            return res.status(200).json({ data: responseData, statuscode: 200 });
+        }
+
 
         return res.status(400).json({ message: "Please enter a valid filter", statuscode: 400 })
     } catch (err) {

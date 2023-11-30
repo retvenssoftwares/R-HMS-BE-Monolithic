@@ -75,6 +75,17 @@ import bookingModel from "../../models/confirmBooking.js";
 import moment from 'moment';
 import verifiedUser from "../../models/verifiedUsers.js";
 import {findUserByUserIdAndToken,validateHotelCode } from "../../helpers/helper.js";
+
+const getMonthName = (monthNumber) => {
+    const months = [
+        'January', 'February', 'March', 'April',
+        'May', 'June', 'July', 'August',
+        'September', 'October', 'November', 'December'
+    ];
+
+    return months[monthNumber - 1] || '';
+};
+
 const RevenueData = async (req, res) => {
     const { propertyId, filter,userId } = req.query;
     const findUser = await verifiedUser.findOne({ userId });
@@ -154,7 +165,13 @@ const RevenueData = async (req, res) => {
                 return res.status(404).json({ message: "No revenue data found for the specified criteria." });
             }
 
-            return res.status(200).json(revenueData);
+             const formattedRevenueData = revenueData.map(item => ({
+                    totalRevenue: item.totalRevenue,
+                    month: getMonthName(item.month),
+                    year: item.year
+                }));
+
+            return res.status(200).json(formattedRevenueData);
         } else if (filter === 'monthly') {
             const currentDate = moment();
             const lastMonthDate =  currentDate.clone().subtract(30,'days')
@@ -220,24 +237,30 @@ const RevenueData = async (req, res) => {
                 return res.status(404).json({ message: "No revenue data found for the specified criteria." });
             }
 
-           // Generate an array of dates within the range
-    const datesInRange = [];
-    let tempDate = lastMonthDate.clone();
-    while (tempDate.isSameOrBefore(currentDate, 'day')) {
-        datesInRange.push(tempDate.format('YYYY-MM-DD'));
-        tempDate.add(1, 'day');
-    }
+  // Generate an array of dates within the range
+  const datesInRange = [];
+  let tempDate = lastMonthDate.clone();
+  while (tempDate.isSameOrBefore(currentDate, 'day')) {
+      datesInRange.push({
+          day: tempDate.date(),
+          month: tempDate.format('MMMM'), // Format month to its full name
+          year: tempDate.year()
+      });
+      tempDate.add(1, 'day');
+  }
 
-    // Create a map to store revenue data by date
-    const revenueMap = new Map(revenueData.map(item => [item.day, item.totalRevenue]));
+  // Create a map to store revenue data by date
+  const revenueMap = new Map(revenueData.map(item => [item.day, item.totalRevenue]));
 
-    // Fill missing dates with zero revenue
-    const revenueWithMissingDates = datesInRange.map(date => ({
-        day: date,
-        totalRevenue: revenueMap.get(date) || 0
-    }));
+  // Fill missing dates with zero revenue
+  const revenueWithMissingDates = datesInRange.map(date => ({
+      day: date.day,
+      month: date.month,
+      year: date.year,
+      totalRevenue: revenueMap.get(date.day.toString()) || 0
+  }));
 
-    return res.status(200).json(revenueWithMissingDates);
+  return res.status(200).json(revenueWithMissingDates);
         }else if (filter === 'today') {
             // Get start and end of today
             const todayStart = moment().startOf('day');

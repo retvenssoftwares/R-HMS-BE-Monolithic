@@ -55,6 +55,29 @@ shortCode:[{
 
 
 }],
+displayStatus:[{
+    displayStatus:{
+        type:String,
+        default:"",
+    },
+    logId:{
+        type:String,
+        default:"",
+
+    },
+    modifiedOn:{
+        type: String,
+        default: ""
+    },
+    userId:{
+        type: String,
+        default: ""
+    },
+    ipAddress: { type: String, default: "" },
+    deviceType: { type: String, default: "" },
+
+
+}],
  
     roomDescription:[{
       roomDescription:{
@@ -125,8 +148,10 @@ shortCode:[{
 
     bedType:[{
         bedType:[{
+            bedTypeId:{
             type:String,
             default:"",
+            },
         }],
         logId: {
             type: String,

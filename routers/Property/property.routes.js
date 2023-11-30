@@ -130,7 +130,9 @@ router.patch(
 
 //company
 // router.post("/api/addCompany", upload.fields([{ name: "companyLogo", maxCount: 1 }, { name: "contractPdf", maxCount: 3 }]), addCompany)
-
+// get property images
+import getPropertyImage from "../../controllers/Property/getPropertyImage.js"
+router.get("/api/getPropertyImages",getPropertyImage)
 
 //payment types
 router.post("/api/addPaymentType", addPaymentType);

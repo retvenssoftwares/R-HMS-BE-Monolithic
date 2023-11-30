@@ -115,17 +115,19 @@ const companySchema = new mongoose.Schema({
         }
     }],
 
-    openingBalance: [{
-        openingBalance: {
-            type: String,
-            default: "",
-        },
-
-        logId: {
-            type: String,
-            default: "",
+    openingBalance: [
+        {
+            openingBalance: {
+                type: String,
+                default: "",
+            },
+            logId: {
+                type: String,
+                default: "",
+            }
         }
-    }],
+    ],
+    
 
     billingCycle: [{
         month: {

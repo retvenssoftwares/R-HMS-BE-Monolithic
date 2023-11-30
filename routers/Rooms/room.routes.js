@@ -27,6 +27,9 @@ import getPackageDetails from '../../controllers/Rooms/getPackageByPackageId.js'
 //check room availabilty
 import getRoom from '../../controllers/Rooms/getRoomsList.js';
 
+//get room by room Id
+import roomImagesByRoomId from '../../controllers/Rooms/getRoomImagesByRoomId.js';
+
 const router = express.Router();
 
 //addroom
@@ -99,5 +102,9 @@ router.get("/api/getRoomType", getRoomsTypes)
 //get all rate plans
 
 router.get("/api/getAllRatePlans", allRatePlans);
+
+//get roomImagesbyRoomId 
+
+router.get("/api/getRoomImagesType", roomImagesByRoomId);
 
 export default router;

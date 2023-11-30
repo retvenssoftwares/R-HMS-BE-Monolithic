@@ -143,7 +143,6 @@ const createDiscountPlan = async (req, res) => {
               });
               const discountPlan = await discountRatePlan.save();
 
-              //save logs
                  //save data in logs
 
       const discountLogs=new discountPlanLogsModel({

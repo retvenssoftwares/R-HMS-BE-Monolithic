@@ -9,6 +9,7 @@ import {
   uploadMultipleImagesToS3,
 } from "../../helpers/helper.js";
 import companyLogs from "../../models/LogModels/companyLogs.js";
+import companyLedger from "../../models/companyLedger.js"
 
 const addCompany = async (req, res) => {
   try {
@@ -253,6 +254,39 @@ const addCompany = async (req, res) => {
       });
 
       const companyData = await addCompanyRecord.save();
+      
+
+      const addComapnyLedger = companyLedger({
+        companyId: companyData.companyId,
+
+        propertyId: companyData.propertyId || "",
+
+        date: await getCurrentUTCTimestamp(),
+
+        openingBalance: [
+          {
+            openingBalance: companyData.openingBalance[0].openingBalance || 0,
+            logId: randomString.generate(10),
+          },
+        ],
+
+        creditLimit: [
+          {
+            creditLimit: companyData.creditLimit[0].creditLimit || "",
+            logId: randomString.generate(10),
+          },
+        ],
+
+        totalBalance: [
+          {
+            totalBalance: companyData.openingBalance[0].openingBalance || 0,
+            logId: randomString.generate(10),
+          },
+        ],
+
+      });
+
+      await addComapnyLedger.save();
 
       //save data in logs
       const addCompanyLogs = new companyLogs({
@@ -534,7 +568,7 @@ const addCompany = async (req, res) => {
       });
 
       await addCompanyLogs.save();
-      console.log("sdcfcd", addCompanyLogs);
+      
 
       return res
         .status(200)

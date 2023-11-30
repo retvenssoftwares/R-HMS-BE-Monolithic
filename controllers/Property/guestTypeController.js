@@ -4,7 +4,7 @@ dotenv.config();
 import userModel from "../../models/verifiedUsers.js"
 import randomString from "randomstring"
 import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from "../../helpers/helper.js";
-
+import guestLogs from  "../../models/LogModels/guestTypeLogs.js"
 export const addGuestType = async (req, res) => {
     try{
         const { userId } = req.body
@@ -13,7 +13,9 @@ export const addGuestType = async (req, res) => {
             shortCode,
             guestId,
             guestTypeName,
-           
+            deviceType,
+            ipAddress,
+
         } = req.body;
         const authCodeValue = req.headers['authcode']
         const findUser = await userModel.findOne({ userId })
@@ -48,7 +50,46 @@ export const addGuestType = async (req, res) => {
                   ],
             });
 
-            await newGuestType.save()
+            const savedGuest = await newGuestType.save()
+            
+            const addGuestLogs = new guestLogs({
+              userId : savedGuest.userId,
+              guestId : savedGuest.guestId,
+              propertyId: savedGuest.propertyId,
+              createdBy: savedGuest.createdBy,
+              createdOn: savedGuest.createdOn,
+              shortCode: [
+                {
+                  shortCode: savedGuest.shortCode[0].shortCode,
+                  logId: savedGuest.shortCode[0].logId,
+                  userId: userId,
+                  deviceType: deviceType,
+                  ipAddress:ipAddress,
+                  modifiedOn: currentUTCTime,
+                },
+              ],
+              displayStatus: [
+                {
+                  displayStatus: savedGuest.displayStatus[0].displayStatus,
+                  logId: savedGuest.displayStatus[0].logId,
+                  userId: userId,
+                  deviceType: deviceType,
+                  ipAddress:ipAddress,
+                  modifiedOn: currentUTCTime,
+                },
+              ],
+              guestTypeName: [
+                {
+                  seasonName: savedGuest.guestTypeName[0].guestTypeName,
+                  logId: savedGuest.guestTypeName[0].logId,
+                  userId: userId,
+                  deviceType: deviceType,
+                  ipAddress:ipAddress,
+                  modifiedOn: currentUTCTime,
+                },
+              ],
+              });
+              await addGuestLogs.save();
             return res.status(200).json({ message: "guest Type added successfully", statuscode: 200 })
 
           } else {

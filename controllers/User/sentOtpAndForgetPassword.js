@@ -1,15 +1,15 @@
 import Randomstring from "randomstring";
 import { otpVerification, getCurrentUTCTimestamp, convertTimestampToCustomFormat, encrypt } from "../../helpers/helper.js";
-import otpModel from "../../models/forgetPassword.js";
 import verifiedUser from "../../models/verifiedUsers.js";
 import user from "../../models/user.js"
 
 
-let count = 0
+
+
 export const forgetPassword = async (req, res) => {
-    const { email} = req.body;
+    const {email} = req.body;
     if (email && count === 0) {
-        const data = await verifiedUser.findOne({ email: email })
+        const data = await verifiedUser.findOne({ email: email})
         count +=1
         if (!data) {
             return res.status(404).json({ message: "data not found", statuscode: 404 })
@@ -40,7 +40,13 @@ export const forgetPassword = async (req, res) => {
                     return res.status(400).json({ message: "Incorrect otp", statuscode: 400 })
                 }
 
+<<<<<<< HEAD
                 return res.status(200).json({ message: "otp verified successfully", statuscode: 200 });
+=======
+                count = 0
+
+                return res.status(200).json({ message: "otp verified successfully", statusCode: 200 });
+>>>>>>> e6ba780dfbf549f6391667ec823e9240d0c0a640
 
 
             }

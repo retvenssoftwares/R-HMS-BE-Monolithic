@@ -8,6 +8,7 @@ import randomString from "randomstring";
 import verifiedUser from "../../models/verifiedUsers.js";
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
 import comapnyLedger from "../../models/companyLedger.js";
+import folio from "../../models/folio.js"
 
 export const addConfirmBooking = async (req, res) => {
   try {
@@ -29,82 +30,88 @@ export const addConfirmBooking = async (req, res) => {
         .json({ message: "Invalid authentication token", statuscode: 400 });
     }
 
-    
+
     const data = await holdData.find({ reservationNumber: reservationNumber });
-    
-    if(!data){
-      return res.status(404).json({message : "data not found", statusCode : 404})
+
+    if (!data) {
+      return res.status(404).json({ message: "data not found", statusCode: 404 })
     }
 
     const companyId = await holdData.findOne({
       reservationNumber: reservationNumber,
     });
+  
 
-    const balanceDetails = await comapnyLedger.findOne({ companyId: companyId.companyId, propertyId: companyId.propertyId })
+    if (companyId.companyId) {
+      
+      const balanceDetails = await comapnyLedger.findOne({ companyId: companyId.companyId, propertyId: companyId.propertyId })
 
-    if(balanceDetails !== null){
-      console.log("hbjnkm,    ")
-      if (Array.isArray(balanceDetails.totalBalance) && balanceDetails.totalBalance.length > 0) {
-        // Check if totalBalance[0].totalBalance is greater than or equal to creditLimit
-        if (Math.abs(balanceDetails.totalBalance[0].totalBalance) >= parseInt(balanceDetails.creditLimit[0].creditLimit)) {
-          return res.status(200).json({ message: "You don't have sufficient balance" });
+      if (balanceDetails !== null) {
+        if (Array.isArray(balanceDetails.totalBalance) && balanceDetails.totalBalance.length > 0) {
+          // Check if totalBalance[0].totalBalance is greater than or equal to creditLimit
+          if (Math.abs(balanceDetails.totalBalance[0].totalBalance) >= parseInt(balanceDetails.creditLimit[0].creditLimit)) {
+            return res.status(200).json({ message: "You don't have sufficient balance" });
+          }
         }
-      }
 
 
-      const updatedTotalBalance = await comapnyLedger.findOneAndUpdate(
-        {
-          $and: [
-            { companyId: companyId.companyId },
-            { propertyId: companyId.propertyId },
-          ],
-        },
-        {
-          $inc: {
-            [`totalBalance.${0}.totalBalance`]: -companyId.reservationRate[0].roomCharges[0].grandTotal,
+        const updatedTotalBalance = await comapnyLedger.findOneAndUpdate(
+          {
+            $and: [
+              { companyId: companyId.companyId },
+              { propertyId: companyId.propertyId },
+            ],
           },
-          $push: {
-            ledger: {
-              $each: [
-                {
-                  particular: reservationNumber,
-                  dr: companyId.reservationRate[0].roomCharges[0].grandTotal,
-                  balance: '0', // Assuming balance should be a string
-                  date: new Date(),
-                },
-              ],
-              $position: 0,
+          {
+            $inc: {
+              [`totalBalance.${0}.totalBalance`]: -companyId.reservationRate[0].roomCharges[0].grandTotal,
+            },
+            $push: {
+              ledger: {
+                $each: [
+                  {
+                    particular: reservationNumber,
+                    dr: companyId.reservationRate[0].roomCharges[0].grandTotal,
+                    balance: '0', // Assuming balance should be a string
+                    date: new Date(),
+                  },
+                ],
+                $position: 0,
+              },
             },
           },
-        },
-        {
-          new: true,
-        }
-      );
-  
-      // Get the updated value of totalBalance.${0}.totalBalance
-      const updatedTotalBalanceValue = updatedTotalBalance.totalBalance[0].totalBalance;
-  
-      // Update the balance field in the ledger at position 0
-      await comapnyLedger.updateOne(
-        {
-          $and: [
-            { companyId: companyId.companyId },
-            { propertyId: companyId.propertyId },
-          ],
-        },
-        {
-          $set: {
-            'ledger.0.balance': String(updatedTotalBalanceValue),
+          {
+            new: true,
+          }
+        );
+
+        // Get the updated value of totalBalance.${0}.totalBalance
+        const updatedTotalBalanceValue = updatedTotalBalance.totalBalance[0].totalBalance;
+
+        // Update the balance field in the ledger at position 0
+        await comapnyLedger.updateOne(
+          {
+            $and: [
+              { companyId: companyId.companyId },
+              { propertyId: companyId.propertyId },
+            ],
           },
-        }
-      );
-  
+          {
+            $set: {
+              'ledger.0.balance': String(updatedTotalBalanceValue),
+            },
+          }
+        );
+
+
+      }
 
     }
 
-  
-   
+
+
+
+
 
     var reservationIds = [];
 
@@ -163,7 +170,7 @@ export const addConfirmBooking = async (req, res) => {
 
         salutation: [
           {
-            salutation: salutation[0].salutation || "",
+            salutation: salutation[0]?.salutation || "",
             logId: randomString.generate(10),
           },
         ],
@@ -175,70 +182,70 @@ export const addConfirmBooking = async (req, res) => {
 
         phoneNumber: [
           {
-            phoneNumber: phoneNumber[0].phoneNumber || "",
+            phoneNumber: phoneNumber[0]?.phoneNumber || "",
             logId: randomString.generate(10),
           },
         ],
 
         emailAddress: [
           {
-            emailAddress: emailAddress[0].emailAddress || "",
+            emailAddress: emailAddress[0]?.emailAddress || "",
             logId: randomString.generate(10),
           },
         ],
 
         addressLine1: [
           {
-            addressLine1: addressLine1[0].addressLine1 || "",
+            addressLine1: addressLine1[0]?.addressLine1 || "",
             logId: randomString.generate(10),
           },
         ],
 
         addressLine2: [
           {
-            addressLine2: addressLine2[0].addressLine2 || "",
+            addressLine2: addressLine2[0]?.addressLine2 || "",
             logId: randomString.generate(10),
           },
         ],
 
         country: [
           {
-            country: country[0].country || "",
+            country: country[0]?.country || "",
             logId: randomString.generate(10),
           },
         ],
 
         state: [
           {
-            state: state[0].state || "",
+            state: state[0]?.state || "",
             logId: randomString.generate(10),
           },
         ],
 
         city: [
           {
-            city: city[0].city || "",
+            city: city[0]?.city || "",
             logId: randomString.generate(10),
           },
         ],
 
         pinCode: [
           {
-            pinCode: pinCode[0].pinCode || "",
+            pinCode: pinCode[0]?.pinCode || "",
             logId: randomString.generate(10),
           },
         ],
 
         checkInDate: [
           {
-            checkInDate: checkInDate[0].checkInDate || "",
+            checkInDate: checkInDate[0]?.checkInDate || "",
             logId: randomString.generate(10),
           },
         ],
 
         checkOutDate: [
           {
-            checkOutDate: checkOutDate[0].checkOutDate || "",
+            checkOutDate: checkOutDate[0]?.checkOutDate || "",
             logId: randomString.generate(10),
           },
         ],
@@ -250,7 +257,7 @@ export const addConfirmBooking = async (req, res) => {
 
         roomTypeId: [
           {
-            roomTypeId: roomTypeId[0].roomTypeId || "",
+            roomTypeId: roomTypeId[0]?.roomTypeId || "",
             logId: randomString.generate(10),
           },
         ],
@@ -261,54 +268,54 @@ export const addConfirmBooking = async (req, res) => {
 
         ratePlanName: [
           {
-            ratePlanName: ratePlanName[0].ratePlanName || "",
+            ratePlanName: ratePlanName[0]?.ratePlanName || "",
             logId: randomString.generate(10),
           },
         ],
 
         reservationRate: [{
-          roomCharges: reservationRate[0].roomCharges[0] || "",
+          roomCharges: reservationRate[0]?.roomCharges[0] || "",
           logId: randomString.generate(10),
         }],
 
         nightCount: [
           {
-            nightCount: nightCount[0].nightCount || "",
+            nightCount: nightCount[0]?.nightCount || "",
             logId: randomString.generate(10),
           },
         ],
 
         extraAdultRate: [
           {
-            extraAdultRate: extraAdultRate[0].extraAdultRate || "",
+            extraAdultRate: extraAdultRate[0]?.extraAdultRate || "",
             logId: randomString.generate(10),
           },
         ],
 
         extraChildRate: [
           {
-            extraChildRate: extraChildRate[0].extraChildRate || "",
+            extraChildRate: extraChildRate[0]?.extraChildRate || "",
             logId: randomString.generate(10),
           },
         ],
 
         charge: [
           {
-            charge: charge[0].charge || "",
+            charge: charge[0]?.charge || "",
             logId: randomString.generate(10),
           },
         ],
 
         adults: [
           {
-            adults: adults[0].adults || "",
+            adults: adults[0]?.adults || "",
             logId: randomString.generate(10),
           },
         ],
 
         childs: [
           {
-            childs: childs[0].childs || "",
+            childs: childs[0]?.childs || "",
             logId: randomString.generate(10),
           },
         ],
@@ -317,7 +324,7 @@ export const addConfirmBooking = async (req, res) => {
 
         ratePlanId: [
           {
-            ratePlanId: ratePlanId[0].ratePlanId || "",
+            ratePlanId: ratePlanId[0]?.ratePlanId || "",
             logId: randomString.generate(10),
           },
         ],
@@ -344,21 +351,21 @@ export const addConfirmBooking = async (req, res) => {
 
         roomTypeName: [
           {
-            roomTypeName: roomTypeName[0].roomTypeName || "",
+            roomTypeName: roomTypeName[0]?.roomTypeName || "",
             logId: randomString.generate(10),
           },
         ],
 
         remark: [
           {
-            remark: remark[0].remark || "",
+            remark: remark[0]?.remark || "",
             logId: randomString.generate(10),
           },
         ],
 
         internalNote: [
           {
-            internalNote: internalNote[0].internalNote || "",
+            internalNote: internalNote[0]?.internalNote || "",
             logId: randomString.generate(10),
           },
         ],
@@ -366,19 +373,44 @@ export const addConfirmBooking = async (req, res) => {
 
         c_form: [
           {
-            c_form: c_form[0].c_form || "",
+            c_form: c_form[0] && typeof c_form[0] === 'object' && c_form[0].c_form ? c_form[0].c_form : {},
             logId: randomString.generate(10),
           },
         ],
-
+        
         companyId: companyId || "",
 
         reservationNumber,
       });
       // Save the newData to the new collection
-      await newData.save();
-    });
+      const confirmBookingDetails = await newData.save();
 
+      const folioDetails = new folio({
+
+        folioNo : randomString.generate({ charset: 'numeric', length: 6 }),
+
+        propertyId : confirmBookingDetails.propertyId,
+
+        reservationNumber : confirmBookingDetails.reservationNumber,
+
+        folioRecords : [{
+          folioRecords : [{
+
+            particular : "Room Charges",
+
+            refNo : randomString.generate({ charset: 'numeric', length: 10 }) ,
+
+            user : findUser.role[0].role || "",
+
+            balance : confirmBookingDetails.reservationRate[0].roomCharges[0].grandTotal || "",
+
+          }]
+        }]
+
+      })
+
+      await folioDetails.save()
+    });
 
      const deleteData = await holdData.deleteMany({ reservationNumber: reservationNumber })
 

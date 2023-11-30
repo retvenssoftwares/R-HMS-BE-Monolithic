@@ -34,7 +34,8 @@ const postRoom = async (req, res) => {
       extraChildRate,
       noOfBeds,
       deviceType,
-      displayStatus
+      displayStatus,
+      ipAddress
     } = req.body;
 
     const authCodeValue = req.headers['authcode']
@@ -206,6 +207,15 @@ const postRoom = async (req, res) => {
           shortCode: savedRoom.shortCode[0].shortCode,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
+          modifiedOn: currentUTCTime,
+        }],
+        displayStatus: [{
+          logId: savedRoom.displayStatus[0].logId,
+          displayStatus: savedRoom.displayStatus[0].displayStatus,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn: currentUTCTime,
         }],
         baseAdult: [{
@@ -213,6 +223,7 @@ const postRoom = async (req, res) => {
           baseAdult: savedRoom.baseAdult[0].baseAdult,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn: currentUTCTime,
         }],
         baseChild: [{
@@ -220,6 +231,7 @@ const postRoom = async (req, res) => {
           baseChild: savedRoom.baseChild[0].baseChild,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn: currentUTCTime,
         }],
         roomDescription: [{
@@ -227,6 +239,7 @@ const postRoom = async (req, res) => {
           roomDescription: savedRoom.roomDescription[0].roomDescription,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn: currentUTCTime,
         }],
         noOfBeds: [{
@@ -234,6 +247,7 @@ const postRoom = async (req, res) => {
           noOfBeds: savedRoom.noOfBeds[0].noOfBeds,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn: currentUTCTime,
         }],
         bedType: [{
@@ -241,6 +255,7 @@ const postRoom = async (req, res) => {
           bedType: savedRoom.bedType[0].bedType,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn: currentUTCTime,
         }],
         roomTypeName: [{
@@ -248,6 +263,7 @@ const postRoom = async (req, res) => {
           roomTypeName: savedRoom.roomTypeName[0].roomTypeName,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn: currentUTCTime,
         }],
         maxAdult: [{
@@ -255,6 +271,7 @@ const postRoom = async (req, res) => {
           maxAdult: savedRoom.maxAdult[0].maxAdult,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn: currentUTCTime,
         }],
         maxChild: [{
@@ -262,6 +279,7 @@ const postRoom = async (req, res) => {
           maxChild: savedRoom.maxChild[0].maxChild,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn: currentUTCTime,
         }],
         maxOccupancy: [{
@@ -269,6 +287,7 @@ const postRoom = async (req, res) => {
           maxOccupancy: savedRoom.maxOccupancy[0].maxOccupancy,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn: currentUTCTime,
         }],
         baseRate: [{
@@ -276,6 +295,7 @@ const postRoom = async (req, res) => {
           baseRate: savedRoom.baseRate[0].baseRate,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn: currentUTCTime,
         }],
         minimumRate: [{
@@ -283,6 +303,7 @@ const postRoom = async (req, res) => {
           minimumRate: savedRoom.minimumRate[0].minimumRate,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn: currentUTCTime,
         }],
         maximumRate: [{
@@ -290,6 +311,7 @@ const postRoom = async (req, res) => {
           maximumRate: savedRoom.maximumRate[0].maximumRate,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn: currentUTCTime,
         }],
         extraAdultRate: [{
@@ -297,6 +319,7 @@ const postRoom = async (req, res) => {
           extraAdultRate: savedRoom.extraAdultRate[0].extraAdultRate,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn: currentUTCTime,
         }],
         extraChildRate: [{
@@ -304,6 +327,7 @@ const postRoom = async (req, res) => {
           extraChildRate: savedRoom.extraChildRate[0].extraChildRate,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn: currentUTCTime,
         }],
 
@@ -312,6 +336,7 @@ const postRoom = async (req, res) => {
           amenities: savedRoom.amenities[0].amenities,
           userId: userId,
           deviceType: deviceType,
+          ipAddress:ipAddress,
           modifiedOn: currentUTCTime,
         }],
 

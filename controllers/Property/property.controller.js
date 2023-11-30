@@ -9,7 +9,9 @@ import {
   findUserByUserIdAndToken,
   uploadImageToS3
 } from "../../helpers/helper.js";
-import logsModel from "../../models/logsModel.js"
+import propertyLogs from "../../models/LogModels/propertyLogs.js"
+import property from "../../models/property.js";
+// import logsModel from "../../models/logsModel.js"
 //upload property controller
 const postProperty = async (req, res) => {
   try {
@@ -32,7 +34,9 @@ const postProperty = async (req, res) => {
       propertyEmail,
       latitude,
       longitude,
-      displayStatus
+      displayStatus,
+      devicetype,
+      ipAddress
     } = req.body;
 
     var hotelLogoId = randomstring.generate(8);
@@ -40,7 +44,7 @@ const postProperty = async (req, res) => {
     const findUser = await verifiedUser.findOne({ userId });
     const authCodeValue = req.headers['authcode']
 
-
+    let userRole=findUser.role[0].role
     if (!findUser || !userId) {
       return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 });
     }
@@ -49,18 +53,19 @@ const postProperty = async (req, res) => {
 
     if (result.success) {
       let imageUrl = '';
-      const amenityIds = req.body.amenityIds;
-
-      const amenityIdsArray = amenityIds.split(',');
 
       const currentUTCTime = await getCurrentUTCTimestamp();
 
-      const amenityObjects = amenityIdsArray.map((amenityId) => {
-        return {
-          amenityId,
-          addedDate: currentUTCTime,
-        };
-      });
+      let amenityIdsArray, amenityObjects;
+      if (req.body.amenityIds) {
+        amenityIdsArray = amenityIds.split(',');
+        amenityObjects = amenityIdsArray.map((amenityId) => {
+          return {
+            amenityId,
+            addedDate: currentUTCTime,
+          };
+        });
+      }
 
       // Check if a single hotelLogo file is uploaded
       if (req.files['hotelLogo']) {
@@ -72,6 +77,7 @@ const postProperty = async (req, res) => {
         userId,
         country,
         createdOn: currentUTCTime,
+        createdBy: userRole,
         propertyId: randomstring.generate({ charset: 'numeric', length: 6 }),
         propertyAddress1: [
           {
@@ -146,13 +152,14 @@ const postProperty = async (req, res) => {
         amenities: [
           {
             amenities: amenityObjects,
+            logId: Randomstring.generate(10),
           },
         ],
       });
 
       // Save the property record
       const savedProperty = await newProperty.save();
-
+      
       // Create a propertyImages record and associate it with the property
       const propertyImages = new propertyImageModel({
         propertyId: savedProperty.propertyId, // Use the propertyId from the saved property record
@@ -163,11 +170,111 @@ const postProperty = async (req, res) => {
       // Save the propertyImages record
       await propertyImages.save();
 
-      // create the log model
-      const add = new logsModel({
-        propertyId: savedProperty.propertyId
+      // save data in logs
+      const addPropertyLogs = new propertyLogs({
+        propertyId: savedProperty.propertyId,
+        userId:userId,
+        createdOn:currentUTCTime,
+        createdBy:userRole,
+        propertyAddress1:[{
+          propertyAddress1:propertyAddress1,
+          logId:savedProperty.propertyAddress1[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        propertyAddress2:[{
+          propertyAddress1:propertyAddress2,
+          logId:savedProperty.propertyAddress2[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        propertyName:[{
+          propertyName:propertyName,
+          logId:savedProperty.propertyName[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        postCode:[{
+          postCode:postCode,
+          logId:savedProperty.postCode[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        displayStatus:[{
+          displayStatus:displayStatus,
+          logId:savedProperty.displayStatus[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        state:[{
+          state:state,
+          logId:savedProperty.state[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        city:[{
+          city:city,
+          logId:savedProperty.city[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        location:[{
+          location:location,
+          logId:savedProperty.location[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        propertyDescription:[{
+          propertyDescription:propertyDescription,
+          logId:savedProperty.propertyDescription[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        location:[{
+          location:location,
+          logId:savedProperty.location[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        propertyEmail:[{
+          propertyEmail:propertyEmail,
+          logId:savedProperty.propertyEmail[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        amenities:[{
+          amenities:amenityObjects,
+          logId:savedProperty.amenities[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+
       })
-      await add.save()
+      await addPropertyLogs.save()
 
 
       // Push propertyId in the hotelCode array of findUser model

@@ -20,7 +20,7 @@ const fetchCompanyDetails = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
         if (result.success) {
     if (findProperty ) {
-                const userCompanys = await companyIdModel.find({companyId,"displayStatus.0.displayStatus":"1"}).select('propertyId effectiveFrom zipCode city state country addressLine2 addressLine1 contractPdf personDesignation phoneNumber billingCycle creditLimit openingBalance taxId registrationNumber shortCode companyWebsite companyEmail companyLogo companyId companyName contactPerson expiration ').sort({_id:-1}).lean();
+                const userCompanys = await companyIdModel.find({companyId,"displayStatus.0.displayStatus":"1"}).select('propertyId effectiveFrom zipCode contractTerms city state country addressLine2 addressLine1 contractPdf personDesignation phoneNumber billingCycle creditLimit openingBalance personEmail taxId registrationNumber shortCode companyWebsite companyEmail companyLogo companyId companyName contactPerson expiration accountType').sort({_id:-1}).lean();
         const convertedCompanyId = userCompanys.map(company => {
         
             return {
@@ -29,6 +29,9 @@ const fetchCompanyDetails = async (req, res) => {
                 propertyId : company.propertyId,
                 companyName: company.companyName[0]?.companyName || '',
                 companyId : company.companyId,
+                accountType:company.accountType[0]?.accountType || '',
+                personEmail:company.personEmail[0]?.personEmail || '',
+                contractTerms:company.contractTerms[0]?.contractTerms || '',
                 contactPerson : company.contactPerson[0]?.contactPerson || '',
                 expiration : company.expiration[0]?.expiration || '',
                 companyLogo : company.companyLogo[0]?.companyLogo || '',
@@ -39,7 +42,8 @@ const fetchCompanyDetails = async (req, res) => {
                 taxId : company.taxId[0]?.taxId || '',
                 openingBalance : company.openingBalance[0]?.openingBalance || '',
                 creditLimit : company.creditLimit[0]?.creditLimit || '',
-                billingCycle : company.billingCycle[0]?.billingCycle || '',
+                days : company.billingCycle[0]?.days || '',
+                month : company.billingCycle[0]?.month || '',
                 phoneNumber : company.phoneNumber[0]?.phoneNumber || '',
                 personDesignation : company.personDesignation[0]?.personDesignation || '',
                 contractPdf : company.contractPdf[0]?.contractPdf || '',

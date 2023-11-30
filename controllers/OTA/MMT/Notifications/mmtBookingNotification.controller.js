@@ -10,16 +10,16 @@ const pushBookingNotificationMMT = async (req, res) => {
         const xmlData = req.body; // Assuming the XML data is in the request body
         const xmlData2 = `<?xml version="1.0" encoding="UTF-8"?>
 <BookingDetail>
-    <Booking Id="0000058827">
+    <Booking Id="0000058830">
         <HotelName>Royal Tycoon Place Hotel </HotelName>
         <HotelCode>1000282881</HotelCode>
-        <GuestName>Donald Trump</GuestName>
-        <BookingDate>2023-12-05 15:13:30</BookingDate>
-        <CheckInDate>2023-12-15</CheckInDate>
-        <CheckoutDate>2023-12-17</CheckoutDate>
+        <GuestName>Tom Cruise</GuestName>
+        <BookingDate>2023-08-05 15:13:30</BookingDate>
+        <CheckInDate>2023-08-15</CheckInDate>
+        <CheckoutDate>2023-08-17</CheckoutDate>
         <NumberOfNights>1</NumberOfNights>
-        <RoomTypeName>Deluxe Room</RoomTypeName>
-        <RoomTypeCode>45000485844</RoomTypeCode>
+        <RoomTypeName>Super Deluxe Room</RoomTypeName>
+        <RoomTypeCode>45000485845</RoomTypeCode>
         <RatePlanName>free cancellation pay at hotel</RatePlanName>
         <RatePlanCode>990001678678</RatePlanCode>
         <NumberofRooms>1</NumberofRooms>
@@ -48,7 +48,7 @@ const pushBookingNotificationMMT = async (req, res) => {
             <TotalTcsAmount>0</TotalTcsAmount>
             <PayAtHotelAmount>2000.0</PayAtHotelAmount>
             <TaxPayAtHotelAmount>0</TaxPayAtHotelAmount>
-            <TotalPayAtHotelAmount>2040.0</TotalPayAtHotelAmount>
+            <TotalPayAtHotelAmount>1500.0</TotalPayAtHotelAmount>
             <GST>0</GST>
             <RoomBreakup>
                 <Rooms date="2017-12-27">
@@ -172,7 +172,7 @@ const pushBookingNotificationMMT = async (req, res) => {
         // console.log(bookingData.HotelCode)
         // console.log(result);
 
-        const getIds = await roomAndRateMap.findOne({ OTAHotelCode: bookingData.HotelCode }, 'otaId propertyId').lean()
+        const getIds = await roomAndRateMap.findOne({ OTAHotelCode: bookingData.HotelCode }, 'otaId propertyId mappedOTARoomData').lean()
         // console.log(getIds, "asda")
         // console.log(getIds.propertyId, getIds.otaId)
         // Create a new document using Mongoose model
@@ -196,7 +196,13 @@ const pushBookingNotificationMMT = async (req, res) => {
             }
         });
         const savedBooking = await newBookingNotification.save();
-
+        const mappedRoomTypeId = otaBookingData.Booking.RoomTypeCode || ""
+        const existingEntryIndex = getIds.mappedOTARoomData.findIndex(
+            (entry) => entry.otaRoomTypeCode === mappedRoomTypeId
+        );
+        console.log(existingEntryIndex, "sdwa");
+        const roomTypeId = getIds.mappedOTARoomData[existingEntryIndex].roomTypeId || "";
+        console.log(roomTypeId, "efas");
         const saveOTABooking = new confirmBookingModel({
             guestId: randomstring.generate(8),
             reservationNumber: randomstring.generate({
@@ -205,6 +211,10 @@ const pushBookingNotificationMMT = async (req, res) => {
             }),
             bookingId: otaBookingData.Booking.Id || "",
             propertyId: getIds.propertyId || "",
+            roomTypeId: [{
+                roomTypeId: roomTypeId || "",
+                logId: randomstring.generate(10)
+            }],
             guestName: [{ guestName: otaBookingData.Booking.GuestName || "", logId: randomstring.generate(10) }],
             adults: [{
                 adults: otaBookingData.Booking.RoomStay.Room.Adult || "",

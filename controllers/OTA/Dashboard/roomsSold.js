@@ -12,7 +12,10 @@ const getRoomsSoldData = async (req, res) => {
         const currentDate = new Date();
         if (filter === "Yearly") {
 
-            const startOfYear = new Date(currentDate.getFullYear(), 0, 1, 0, 0, 0);
+            // const startOfYear = new Date(currentDate.getFullYear(), 0, 1, 0, 0, 0);
+            const startOfYear = new Date(currentDate);
+            startOfYear.setDate(currentDate.getDate() - 365);
+
             const endOfDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
 
             const bookingData = await confirmBookingDetails.aggregate([
@@ -59,7 +62,10 @@ const getRoomsSoldData = async (req, res) => {
         }
 
         if (filter === 'Monthly') {
-            const startDateTime = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1, 0, 0, 0);
+            // const startDateTime = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1, 0, 0, 0);
+            const startDateTime = new Date(currentDate);
+            startDateTime.setDate(currentDate.getDate() - 30);
+            console.log(startDateTime)
             const endDateTime = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59);
             console.log(startDateTime, endDateTime)
 

@@ -31,13 +31,14 @@ const revenueOTAData = async (req, res) => {
 
         // Get the specific date and one year ago from that date
         const currentDate = new Date();
-        const specificDate = convertTimestampToCustomFormat(
-            currentDate.toISOString().split("T")[0],
-            timeZone
-        );
+        // const specificDate = convertTimestampToCustomFormat(
+        //     currentDate.toISOString().split("T")[0],
+        //     timeZone
+        // );
 
         const oneYearAgo = sub(currentDate, { years: 1 });
         const startOfYear = new Date(currentDate.getFullYear(), 0, 1, 0, 0, 0);
+    
         const endOfDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
 
         // console.log(startOfYear.toISOString(), endOfDay.toISOString(), "cgffxf");

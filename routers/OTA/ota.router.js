@@ -8,7 +8,7 @@ import getChannelLogs from '../../controllers/OTA/MMT/channelLogs.js';
 import getOTABookings from '../../controllers/OTA/getOTABookings.js';
 import overViewData from "../../controllers/OTA/Dashboard/overview.js"
 import revenueOTAData from "../../controllers/OTA/Dashboard/revenue.js";
-
+import roomsSoldData from "../../controllers/OTA/Dashboard/roomsSold.js";
 /////////////////////////////////////////////////////////
 router.patch("/api/mapRoomType", mapRoomData);
 router.patch("/api/mapRatePlan", mapRateData);
@@ -17,5 +17,6 @@ router.get("/api/getOTABookings", getOTABookings);
 router.get("/api/getChannelLogs", getChannelLogs);
 router.get("/api/getOverViewOfOTA", overViewData);
 router.get("/api/getRevenueData", revenueOTAData);
+router.get("/api/getRoomsSold", roomsSoldData);
 
 export default router;

@@ -254,6 +254,7 @@ const addCompany = async (req, res) => {
       });
 
       const companyData = await addCompanyRecord.save();
+      
 
       const addComapnyLedger = companyLedger({
         companyId: companyData.companyId,

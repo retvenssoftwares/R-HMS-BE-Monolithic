@@ -1,12 +1,26 @@
 import bookingModel from "../../models/confirmBooking.js";
 import moment from 'moment';
+import verifiedUser from "../../models/verifiedUsers.js";
+import {findUserByUserIdAndToken,validateHotelCode } from "../../helpers/helper.js";
 
 const RevenueData = async (req, res) => {
-    const { propertyId, filter } = req.query;
+    const { propertyId, filter,userId } = req.query;
+    const findUser = await verifiedUser.findOne({ userId });
+    if (!findUser || !userId) {
+      return res
+        .status(404)
+        .json({ message: "User not found or invalid userId", statuscode: 404 });
+    }
+    const authCodeValue = req.headers["authcode"];
+    const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
     const currentDate = moment().toISOString(); // Get the exact current date in ISO format
-
+  const results = await validateHotelCode(userId, propertyId)
+            if (!results.success) {
+                return res.status(results.statuscode).json({ message: "Invalid propertyId entered", statuscode: results.statuscode })
+            }
     try {
+        if (result.success) {
         if (filter === 'yearly') {
             const currentYearStart = moment().startOf('year'); // Start of current year
             console.log(currentYearStart)
@@ -22,22 +36,35 @@ const RevenueData = async (req, res) => {
             }
 
             const completeCurrentYearData = fillMissingMonths(currentYearData, currentYearStart);
-            const completeLastYearData = fillMissingMonths(lastYearData, lastYearStart);
+            const completeLastYearData = fillMissingMonths(lastYearData, lastYearStart, true);
 
             return res.status(200).json({ currentYearData: completeCurrentYearData, lastYearData: completeLastYearData });
         } else if (filter === 'monthly') {
-            // ... (existing code for monthly data)
+           const currentMonthStart = moment().startOf('month');
+            const lastMonthStart = moment().subtract(1, 'months').startOf('month');
+
+            const { currentMonthData, lastMonthData } = await getMonthlyRevenueData(propertyId, currentMonthStart, lastMonthStart);
+            
+
+            return res.status(200).json({ currentMonthData, lastMonthData });
         } else if (filter === 'today') {
             // ... (existing code for daily data)
         } else {
             return res.status(400).json({ message: "Invalid filter value provided." });
         }
+    } else {
+        return res
+          .status(result.statuscode)
+          .json({ message: result.message, statuscode: result.statuscode });
+      }
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
     }
 };
 
+
+//yearly data function
 const getYearlyRevenueData = async (propertyId, startDate, endDate) => {
     try {
         const revenueData = await bookingModel.aggregate([
@@ -100,24 +127,135 @@ const getYearlyRevenueData = async (propertyId, startDate, endDate) => {
     }
 };
 
-const fillMissingMonths = (revenueData, yearStart) => {
+
+//missing function for yearly
+const fillMissingMonths = (revenueData, yearStart, isLastYear = false) => {
     const months = [];
     const currentYear = moment().year();
+    const year = isLastYear ? currentYear - 1 : currentYear;
 
-    for (let i = 0; i < 12; i++) {
-        const month = yearStart.clone().add(i, 'months').month() + 1; // Adding 1 to get months in 1-12 format
-
-        const foundMonth = revenueData.find(data => data.month === month);
-        if (foundMonth) {
-            months.push(foundMonth);
+    for (let i = 1; i <= 12; i++) {
+        const foundMonthIndex = revenueData.findIndex(data => data.month === i);
+        if (foundMonthIndex !== -1) {
+            months.push(revenueData[foundMonthIndex]);
         } else {
-            months.push({ month, year: currentYear, totalRevenue: 0 });
+            months.push({ month: i, year, totalRevenue: 0 });
         }
     }
 
     return months;
 };
 
+
+//function for monthly
+
+    const getMonthlyRevenueData = async (propertyId, currentMonthStart, lastMonthStart) => {
+        try {
+            const [currentMonthData, lastMonthData] = await Promise.all([
+                getDailyRevenueData(propertyId, currentMonthStart, moment().toISOString()),
+                getDailyRevenueData(propertyId, lastMonthStart, currentMonthStart.toISOString()),
+            ]);
+    
+            const completeCurrentMonthData = fillMissingDays(currentMonthData, currentMonthStart);
+            const completeLastMonthData = fillMissingDays(lastMonthData, lastMonthStart, true);
+    
+            return { currentMonthData: completeCurrentMonthData, lastMonthData: completeLastMonthData };
+        } catch (error) {
+            throw error;
+        }
+    };
+
+const getDailyRevenueData = async (propertyId, startDate, endDate) => {
+    try {
+        const revenueData = await bookingModel.aggregate([
+            {
+                $match: {
+                    "propertyId": propertyId,
+                    "checkInDate.checkInDate": {
+                        $gte: startDate.toISOString(),
+                        $lte: endDate,
+                    },
+                    isOTABooking: "true"
+                },
+            },
+            {
+                $unwind: "$checkInDate" // Unwind the checkInDate array
+            },
+            {
+                $match: {
+                    "checkInDate.checkInDate": {
+                        $gte: startDate.toISOString(),
+                        $lte: endDate,
+                    }
+                }
+            },
+            {
+                $unwind: "$reservationRate"
+            },
+            {
+                $unwind: "$reservationRate.roomCharges"
+            },
+            {
+                $project: {
+                    day: { $dayOfMonth: { $dateFromString: { dateString: "$checkInDate.checkInDate" } } },
+                    month: { $month: { $dateFromString: { dateString: "$checkInDate.checkInDate" } } },
+                    year: { $year: { $dateFromString: { dateString: "$checkInDate.checkInDate" } } },
+                    grandTotal: { $toDouble: "$reservationRate.roomCharges.grandTotal" },
+                },
+            },
+            {
+                $group: {
+                    _id: { day: "$day", month: "$month", year: "$year" },
+                    totalRevenue: { $sum: "$grandTotal" },
+                },
+            },
+            {
+                $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1 },
+            },
+            {
+                $project: {
+                    day: "$_id.day",
+                    month: "$_id.month",
+                    year: "$_id.year",
+                    totalRevenue: 1,
+                    _id: 0, // Exclude _id
+                },
+            },
+        ]);
+
+        return revenueData;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+
+const fillMissingDays = (revenueData, monthStart, isLastMonth = false) => {
+    const daysInMonth = moment(monthStart).daysInMonth();
+    const currentYear = moment().year();
+    const currentMonth = moment().month() + 1;
+    let monthToDisplay = currentMonth;
+
+    if (isLastMonth) {
+        const lastMonthData = revenueData.find(data => data.totalRevenue > 0);
+        if (lastMonthData) {
+            monthToDisplay = currentMonth - 1;
+        }
+    }
+
+    const days = [];
+    for (let i = 1; i <= daysInMonth; i++) {
+        const foundDayIndex = revenueData.findIndex(data => data.day === i);
+        if (foundDayIndex !== -1) {
+            days.push(revenueData[foundDayIndex]);
+        } else {
+            days.push({ day: i, month: monthToDisplay, year: currentYear, totalRevenue: 0 });
+        }
+    }
+
+    return days;
+};
 
 
 

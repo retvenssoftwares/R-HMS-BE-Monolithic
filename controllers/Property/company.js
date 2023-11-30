@@ -63,7 +63,7 @@ const addCompany = async (req, res) => {
 
       const contractPdfFiles = req.files["contractPdf"];
       let contractPdfs = [];
-      
+
 
       if (contractPdfFiles) {
         contractPdfs = await uploadMultipleImagesToS3(contractPdfFiles);
@@ -254,7 +254,7 @@ const addCompany = async (req, res) => {
       });
 
       const companyData = await addCompanyRecord.save();
-      
+
 
       const addComapnyLedger = companyLedger({
         companyId: companyData.companyId,
@@ -307,7 +307,7 @@ const addCompany = async (req, res) => {
         ],
         displayStatus: [
           {
-            displayStatus:companyData.displayStatus[0].displayStatus,
+            displayStatus: companyData.displayStatus[0].displayStatus,
             logId: companyData.displayStatus[0].logId,
             userId: userId,
             modifiedOn: currentUTCTime,
@@ -563,16 +563,16 @@ const addCompany = async (req, res) => {
           modifiedOn: currentUTCTime,
           deviceType: deviceType,
           ipAddress: ipAddress,
-      })),
-      
+        })),
+
       });
 
       await addCompanyLogs.save();
-      
+
 
       return res
         .status(200)
-        .json({ message: "Company added successfully", statuscode: 200 });
+        .json({ message: "Company added successfully", statuscode: 200, companyId: companyData.companyId });
     } else {
       return res
         .status(result.statuscode)
@@ -580,7 +580,7 @@ const addCompany = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ message: "Internal Server Error", statuscode: 500 });
   }
 };
 

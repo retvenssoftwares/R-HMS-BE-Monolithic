@@ -506,8 +506,6 @@ const confirmBookingDetails = new mongoose.Schema({
             default: ""
         }
 
-
-
     }],
 
     extraInclusionId: [{

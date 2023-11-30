@@ -98,7 +98,7 @@ const revenueOTAData = async (req, res) => {
                     propertyId: 1,
                     otaId: 1,
                     bookingTime: 1,
-                    inventory: 1
+                    inventory: 1,
                 }
             }
         ]).exec();
@@ -185,6 +185,123 @@ const revenueOTAData = async (req, res) => {
             // console.log()
             return res.status(200).json({ data: responseData, statuscode: 200 });
 
+        }
+        else if (filter === "Monthly") {
+            // Calculate the start and end dates for the current month
+            const startOfCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1, 0, 0, 0);
+            const endOfCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59);
+
+            // Calculate the start and end dates for the previous month
+            const startOfPreviousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1, 0, 0, 0);
+            const endOfPreviousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0, 23, 59, 59);
+
+            // Aggregate for the current month (2023-11)
+            const getBookingDataCurrentMonth = await confirmBooking.aggregate([
+                {
+                    $match: {
+                        propertyId: propertyId,
+                        otaId: otaId,
+                        isOTABooking: "true",
+                        $expr: {
+                            $and: [
+                                { $gte: [{ $toString: "$bookingTime" }, startOfCurrentMonth.toISOString()] },
+                                { $lt: [{ $toString: "$bookingTime" }, endOfCurrentMonth.toISOString()] }
+                            ]
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        reservationRate: 1,
+                        propertyId: 1,
+                        otaId: 1,
+                        bookingTime: 1,
+                        inventory: 1
+                    }
+                }
+            ]).exec();
+
+            // Aggregate for the previous month (2023-10)
+            const getBookingDataPreviousMonth = await confirmBooking.aggregate([
+                {
+                    $match: {
+                        propertyId: propertyId,
+                        otaId: otaId,
+                        isOTABooking: "true",
+                        $expr: {
+                            $and: [
+                                { $gte: [{ $toString: "$bookingTime" }, startOfPreviousMonth.toISOString()] },
+                                { $lt: [{ $toString: "$bookingTime" }, endOfPreviousMonth.toISOString()] }
+                            ]
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        reservationRate: 1,
+                        propertyId: 1,
+                        otaId: 1,
+                        bookingTime: 1,
+                        inventory: 1
+                    }
+                }
+            ]).exec();
+
+            // Calculate daily revenue for the current month
+            let currentMonthRevenue = Array(endOfCurrentMonth.getDate()).fill(0);
+            getBookingDataCurrentMonth.forEach(booking => {
+                const revenue = parseFloat(booking.reservationRate[0].roomCharges[0].grandTotal) || 0;
+                const bookingDate = new Date(booking.bookingTime);
+                const dayOfMonth = bookingDate.getDate();
+                currentMonthRevenue[dayOfMonth - 1] += revenue;
+            });
+
+            // Calculate daily revenue for the previous month
+            let previousMonthRevenue = Array(endOfPreviousMonth.getDate()).fill(0);
+            getBookingDataPreviousMonth.forEach(booking => {
+                const revenue = parseFloat(booking.reservationRate[0].roomCharges[0].grandTotal) || 0;
+                const bookingDate = new Date(booking.bookingTime);
+                const dayOfMonth = bookingDate.getDate();
+                previousMonthRevenue[dayOfMonth - 1] += revenue;
+            });
+            // Calculate total revenue for the current month
+            const totalCurrentMonthRevenue = currentMonthRevenue.reduce((sum, revenue) => sum + parseFloat(revenue), 0).toFixed(2);
+
+            // Calculate total revenue for the previous month
+            const totalPreviousMonthRevenue = previousMonthRevenue.reduce((sum, revenue) => sum + parseFloat(revenue), 0).toFixed(2);
+
+            // Calculate percentage increase or decrease
+            const revenueStatus = parseFloat(totalCurrentMonthRevenue) > parseFloat(totalPreviousMonthRevenue) ? "profit" : "loss";
+            const percentage = ((totalCurrentMonthRevenue - totalPreviousMonthRevenue) / Math.abs(totalPreviousMonthRevenue)) * 100;
+
+            // Get the month names
+            const currentMonthName = format(startOfCurrentMonth, 'MMMM');
+            const previousMonthName = format(startOfPreviousMonth, 'MMMM');
+            console.log(totalCurrentMonthRevenue, totalPreviousMonthRevenue)
+            // Prepare the response object
+            const responseData = {
+                totalRevenue: totalCurrentMonthRevenue,
+                revenueStatus: revenueStatus,
+                percentage: percentage.toFixed(2),
+                monthlyData: [
+                    {
+                        month: previousMonthName,
+                        dailyRevenue: previousMonthRevenue.map((revenue, index) => ({
+                            day: index + 1,
+                            revenue: revenue.toFixed(2)
+                        })),
+                    },
+                    {
+                        month: currentMonthName,
+                        dailyRevenue: currentMonthRevenue.map((revenue, index) => ({
+                            day: index + 1,
+                            revenue: revenue.toFixed(2)
+                        })),
+                    },
+                ],
+            };
+
+            return res.status(200).json({ data: responseData, statuscode: 200 });
         }
 
         return res.status(400).json({ message: "Please enter a valid filter", statuscode: 400 })

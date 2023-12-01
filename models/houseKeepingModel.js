@@ -1,25 +1,25 @@
 import mongoose from 'mongoose';
 import db1 from "../db/conn.js"
 const employeeSchema = new mongoose.Schema({
-    
+
     propertyId: {
         type: String,
         default: ''
     },
 
-    staffId: {
+    employeeId: {
         type: String,
         default: ''
     },
 
     profilePhoto: [{
         profilePhoto: {
-        type: String,
-        default: ''
-        }, 
+            type: String,
+            default: ''
+        },
         logId: { type: String, default: "" }
     }],
-    
+
     fullName: [{
         fullName: {
             type: String,
@@ -75,7 +75,7 @@ const employeeSchema = new mongoose.Schema({
         },
         logId: { type: String, default: "" }
     }],
-    
+
     idNumber: [{
         idNumber: {
             type: String,
@@ -84,60 +84,60 @@ const employeeSchema = new mongoose.Schema({
         logId: { type: String, default: "" }
     }],
 
-    expirationDate : [{
-        expirationDate : {
+    expirationDate: [{
+        expirationDate: {
             type: String,
             default: ''
         },
-        logId: { type: String, default: ""}
+        logId: { type: String, default: "" }
     }],
 
-    docImage : [{
-        docImage : {
+    docImage: [{
+        docImage: {
             type: String,
             default: ''
         },
-        logId: { type: String, default: ""}
-    }],
-    
-    highestLevelOfEducation : [{
-        highestLevelOfEducation : {
-            type: String,
-            default: ''
-        },
-        logId: { type: String, default: ""}
+        logId: { type: String, default: "" }
     }],
 
-    gradeOrMarksAchieved : [{
-        gradeOrMarksAchieved: {
-            type: String,
-            default: ''
-        },
-        logId: { type: String, default: ""}
-    }],
+    // highestLevelOfEducation : [{
+    //     highestLevelOfEducation : {
+    //         type: String,
+    //         default: ''
+    //     },
+    //     logId: { type: String, default: ""}
+    // }],
 
-    passingYear : [{
-        passingYear: {
-            type: String,
-            default: ''
-        },
-        logId: { type: String, default: ""}
-    }],
+    // gradeOrMarksAchieved : [{
+    //     gradeOrMarksAchieved: {
+    //         type: String,
+    //         default: ''
+    //     },
+    //     logId: { type: String, default: ""}
+    // }],
 
-    instituteName : [{
-        instituteName: {
-            type: String,
-            default: ''
-        },
-        logId: { type: String, default: ""}
-    }],
+    // passingYear : [{
+    //     passingYear: {
+    //         type: String,
+    //         default: ''
+    //     },
+    //     logId: { type: String, default: ""}
+    // }],
 
-    bankName : [{
+    // instituteName : [{
+    //     instituteName: {
+    //         type: String,
+    //         default: ''
+    //     },
+    //     logId: { type: String, default: ""}
+    // }],
+
+    bankName: [{
         bankName: {
             type: String,
             default: ''
         },
-        logId: { type: String, default: ""}
+        logId: { type: String, default: "" }
     }],
 
     ifscCode: [{
@@ -145,7 +145,7 @@ const employeeSchema = new mongoose.Schema({
             type: String,
             default: ''
         },
-        logId: { type: String, default: ""}
+        logId: { type: String, default: "" }
     }],
 
     accountType: [{
@@ -153,7 +153,7 @@ const employeeSchema = new mongoose.Schema({
             type: String,
             default: ''
         },
-        logId: { type: String, default: ""}
+        logId: { type: String, default: "" }
     }],
 
     accountNumber: [{
@@ -161,94 +161,103 @@ const employeeSchema = new mongoose.Schema({
             type: String,
             default: ''
         },
-        logId: { type: String, default: ""}
+        logId: { type: String, default: "" }
     }],
 
-    nameOfEmergencyContact : [{
+    nameOfEmergencyContact: [{
         nameOfEmergencyContact: {
             type: String,
             default: ''
         },
-        logId: { type: String, default: ""}
+        logId: { type: String, default: "" }
     }],
 
-    relationWithEmergencyContact : [{
+    relationWithEmergencyContact: [{
         relationWithEmergencyContact: {
             type: String,
             default: ''
         },
-        logId: { type: String, default: ""}
+        logId: { type: String, default: "" }
     }],
 
-    emergencyContact : [{
+    emergencyContact: [{
         emergencyContact: {
             type: String,
             default: ''
         },
-        logId: { type: String, default: ""}
+        logId: { type: String, default: "" }
     }],
-    
-    jobTitle : [{
-        jobTitle: {
+    emergencyContactAlternate: [{
+        emergencyContactAlternate: {
             type: String,
             default: ''
         },
-        logId: { type: String, default: ""}
+        logId: { type: String, default: "" }
     }],
 
-    departmentOrDivision : [{
+    designation: [{
+        designation: {
+            type: String,
+            default: ''
+        },
+        logId: { type: String, default: "" }
+    }],
+
+    departmentOrDivision: [{
         departmentOrDivision: {
             type: String,
             default: ''
         },
-        logId: { type: String, default: ""}
+        logId: { type: String, default: "" }
     }],
 
-    employmentStartDate : [{
+    employmentStartDate: [{
         employmentStartDate: {
             type: String,
             default: ''
         },
-        logId: { type: String, default: ""}
+        logId: { type: String, default: "" }
     }],
 
-    employmentType : [{
+    employmentType: [{
         employmentType: {
             type: String,
             default: ''
         },
-        logId: { type: String, default: ""}
+        logId: { type: String, default: "" }
     }],
 
-    createdOn : {
+    createdOn: {
         type: String,
         default: ''
     },
 
-    createdBy : {
+    createdBy: {
         type: String,
         default: ''
     },
 
-    modifiedOn : [{
-        modifiedOn : {
+    modifiedOn: [{
+        modifiedOn: {
             type: String,
             default: ''
         },
-        logId: { type: String, default: ""}
+        logId: { type: String, default: "" }
     }],
 
-    modifiedBy : [{
-        modifiedBy : {
+    modifiedBy: [{
+        modifiedBy: {
             type: String,
             default: ''
         },
-        logId: { type: String, default: ""} 
+        logId: { type: String, default: "" }
     }],
 
+}, {
+    versionKey: false
 });
 
-const emplyeeModel = db1.model('employee', employeeSchema);
-export default emplyeeModel;
+const employeeModel = db1.model('employee', employeeSchema);
+export default employeeModel;
 
 

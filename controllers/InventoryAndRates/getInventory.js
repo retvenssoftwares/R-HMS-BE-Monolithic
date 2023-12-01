@@ -18,6 +18,8 @@ const getInventory = async (req, res) => {
     }
 
     const getReservationTypeName = await reservationModel.findOne({
+        "displayStatus.0.displayStatus": "1",
+        "propertyId": propertyId,
         $or: [
             { "reservationName.0.reservationName": "Confirmed" },
             { "reservationName.0.reservationName": "confirmed" },

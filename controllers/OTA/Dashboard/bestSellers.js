@@ -78,6 +78,8 @@ const getBestSellersData = async (req, res) => {
                 averageLOS: roomTypeNightCountMap[roomType.roomTypeId] ? (roomTypeNightCountMap[roomType.roomTypeId] / roomTypeIds.filter(id => id === roomType.roomTypeId).length).toFixed(1) : 0,
                 // month: new Intl.DateTimeFormat('en-US', { month: 'long' }).format(currentDate)
             }));
+            // Sort the responseData array in descending order based on count
+            responseData.sort((a, b) => b.count - a.count);
 
             return res.status(200).json({ data: responseData, statuscode: 200 });
         }
@@ -149,6 +151,8 @@ const getBestSellersData = async (req, res) => {
                 averageLOS: roomTypeNightCountMap[roomType.roomTypeId] ? (roomTypeNightCountMap[roomType.roomTypeId] / roomTypeIds.filter(id => id === roomType.roomTypeId).length).toFixed(1) : 0,
                 // month: new Intl.DateTimeFormat('en-US', { month: 'long' }).format(currentDate)
             }));
+            // Sort the responseData array in descending order based on count
+            responseData.sort((a, b) => b.count - a.count);
 
             return res.status(200).json({ data: responseData, statuscode: 200 });
         }
@@ -156,12 +160,12 @@ const getBestSellersData = async (req, res) => {
         if (filter === 'Daily') {
             const startDateTime = new Date();
             // const currentUTC = await getCurrentUTCTimestamp();
-            
+
             startDateTime.setHours(0, 0, 0, 0);
-            
+
             const endDateTime = new Date();
             endDateTime.setHours(23, 59, 59, 999);
-                        
+
             console.log(startDateTime, endDateTime);
 
             const bookingData = await confirmBookingDetails.aggregate([
@@ -223,6 +227,8 @@ const getBestSellersData = async (req, res) => {
                 averageLOS: roomTypeNightCountMap[roomType.roomTypeId] ? (roomTypeNightCountMap[roomType.roomTypeId] / roomTypeIds.filter(id => id === roomType.roomTypeId).length).toFixed(1) : 0,
                 // month: new Intl.DateTimeFormat('en-US', { month: 'long' }).format(currentDate)
             }));
+            // Sort the responseData array in descending order based on count
+            responseData.sort((a, b) => b.count - a.count);
 
             return res.status(200).json({ data: responseData, statuscode: 200 });
         }

@@ -77,9 +77,7 @@ const updateCompany = async (req, res) => {
       let imageUrl = "";
       if (req.files["companyLogo"]) {
         imageUrl = await uploadImageToS3(req.files["companyLogo"][0]);
-      }
-
-      if (companyLogo) {
+        // console.log(456)
         const companyLogoObject = {
           companyLogo: imageUrl,
           logId: randomString.generate(10),
@@ -96,6 +94,8 @@ const updateCompany = async (req, res) => {
         };
         companyLogData.companyLogo.unshift(companyLogoObject2);
       }
+      // console.log(imageUrl, "hvghgh")
+     
       if (companyName) {
         const companyNameObject = {
           companyName: companyName,

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import db1 from "../db/conn.js"
-const houseKeepingSchema = new mongoose.Schema({
+const employeeSchema = new mongoose.Schema({
     
     propertyId: {
         type: String,
@@ -248,7 +248,7 @@ const houseKeepingSchema = new mongoose.Schema({
 
 });
 
-const houseKeepingDetails = db1.model('houseKeeping', houseKeepingSchema);
-export default houseKeepingDetails;
+const emplyeeModel = db1.model('employee', employeeSchema);
+export default emplyeeModel;
 
 

@@ -74,6 +74,23 @@ router.post("/api/rateAndRestrictions",rate);
 
 // get rate name
 import rateName from "../../controllers/superAdmin/getRateAndRestrictions.js";
+
+//department
+import addDepartment from "../../controllers/superAdmin/postDepartment.js";
+import fetchDepartment from "../../controllers/superAdmin/getDepartment.js";
+import patchDepartmentType from "../../controllers/superAdmin/patchDepartment.js";
+
+//employment
+import addEmploymentType from "../../controllers/superAdmin/postEmploymentType.js";
+import fetchEmploymentType from "../../controllers/superAdmin/getEmploymentType.js";
+import updateEmploymentType from "../../controllers/superAdmin/patchEmploymentType.js";
+
+//idType
+import addIdType from "../../controllers/superAdmin/postIdType.js";
+import fetchIdType from "../../controllers/superAdmin/getIdType.js";
+import patchIdModel from "../../controllers/superAdmin/patchIdType.js";
+
+
 router.get("/api/rateName", rateName);
 
 ////////////////////////////////////////////////////
@@ -138,4 +155,18 @@ router.get("/api/getUpComingOta", getOta);
 router.patch("/api/patchOta",otaPatch);
 router.get("/api/getActiveOta",fetchActiveOta)
 
+//department
+router.post("/api/departmentType", addDepartment)
+router.get("/api/getDepartmentRule", fetchDepartment)
+router.patch("/api/patchDepartment", patchDepartmentType)
+
+//employment
+router.post("/api/employmentType", addEmploymentType)
+router.get("/api/getEmploymentType", fetchEmploymentType)
+router.patch("/api/employmentType", updateEmploymentType)
+
+//idType
+router.post("/api/idType", addIdType)
+router.get("/api/getIdType", fetchIdType)
+router.patch("/api/patchIdType", patchIdModel)
 export default router;

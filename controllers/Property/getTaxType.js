@@ -15,8 +15,8 @@ const getTaxType = async (req, res) => {
             if (!result.success) {
                 return res.status(result.statuscode).json({ message: "Invalid propertyId entered", statuscode: result.statuscode })
             }
-            const findTaxType = await taxTypeModel.find({ propertyId: propertyId }).lean();
-            console.log(findTaxType)
+            const findTaxType = await taxTypeModel.find({ propertyId: propertyId, "displayStatus.0.displayStatus": "1"}).sort({_id:-1}).lean();
+            
             if (findTaxType.length > 0) {
                 const taxTypeData = findTaxType.map((taxType) => {
                     const convertedDateUTC = convertTimestampToCustomFormat(taxType.createdOn, targetTimeZone);
@@ -35,8 +35,8 @@ const getTaxType = async (req, res) => {
                         taxId: taxType.taxId || '',
                         taxTypeName: taxType.taxTypeName[0].taxTypeName || "",
                         shortCode: taxType.shortCode[0].shortCode || "",
-                        taxType: taxType.shortCode[0].taxType || "",
-                        isSlabs: taxType.isSlabs[0].taxType || "",
+                        taxType: taxType.taxType[0].taxType || "",
+                        isSlabs: taxType.isSlabs[0].isSlabs || "",
                         slabs: taxType.slabs[0].slabs[0] || "",
                         applyAfter: taxType.applyAfter[0].applyAfter[0] || "",
                         taxRate: taxType.taxRate[0].taxRate[0] || "",

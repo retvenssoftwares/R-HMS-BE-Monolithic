@@ -1,8 +1,8 @@
 import employeeModel from '../../models/houseKeepingModel.js';
 import { findUserByUserIdAndToken } from '../../helpers/helper.js';
-const getAllEmployees = async (req, res) => {
+const getAllEmployeesByDept = async (req, res) => {
     try {
-        const { userId, propertyId } = req.query;
+        const { userId, propertyId, departmentOrDivision } = req.query;
         const authCodeValue = req.headers['authcode'];
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
         if (!result.success) {
@@ -13,6 +13,7 @@ const getAllEmployees = async (req, res) => {
             {
                 $match: {
                     propertyId: propertyId,
+                    "departmentOrDivision.0.departmentOrDivision": departmentOrDivision
                 }
             },
             {
@@ -28,7 +29,7 @@ const getAllEmployees = async (req, res) => {
             }
         ]).exec();
         if (employeesData.length <= 0) {
-            return res.status(200).json({ "message": "No employee data added yet", statuscode: 200 });
+            return res.status(200).json({ "message": "No employees found in this department", statuscode: 200 });
         }
         return res.status(200).json({ data: employeesData, statuscode: 200 })
     } catch (error) {
@@ -37,4 +38,4 @@ const getAllEmployees = async (req, res) => {
     }
 }
 
-export default getAllEmployees;
+export default getAllEmployeesByDept;

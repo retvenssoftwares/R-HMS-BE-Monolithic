@@ -133,8 +133,6 @@ router.patch(
 // get property images
 import getPropertyImage from "../../controllers/Property/getPropertyImage.js"
 
-//task
-import addTaskModel from "../../controllers/Housekeeping/postTask.js"
 
 //tax Type
 import addTaxType from "../../controllers/Property/postTaxType.js"
@@ -202,8 +200,7 @@ router.post("/api/addDiscountType", addDiscountType)
 router.patch("/api/patchDiscountType", patchDiscountTypes)
 router.get("/api/getDiscountTypes", fetchDiscountType)
 
-//task
-router.post("/api/postTask", addTaskModel)
+
 
 //tax Type
 router.post("/api/postTaxType", addTaxType)

@@ -134,11 +134,12 @@ router.patch(
 import getPropertyImage from "../../controllers/Property/getPropertyImage.js"
 
 //task
-import addTaskModel from "../../controllers/Property/postTask.js"
+import addTaskModel from "../../controllers/Housekeeping/postTask.js"
 
 //tax Type
 import addTaxType from "../../controllers/Property/postTaxType.js"
 import fetchTaxType from "../../controllers/Property/getTaxType.js"
+import updateTaxTypeData from "../../controllers/Property/updateTaxType.js"
 
 router.get("/api/getPropertyImages",getPropertyImage)
 
@@ -207,6 +208,7 @@ router.post("/api/postTask", addTaskModel)
 //tax Type
 router.post("/api/postTaxType", addTaxType)
 router.get("/api/getTaxType", fetchTaxType)
+router.patch("/api/patchTaxType", updateTaxTypeData)
 
 router.post("/api/addCompany", upload.fields([{ name: 'companyLogo', maxCount: 1 }, { name: 'contractPdf', maxCount: 5 }]), addCompany)
 router.patch(

@@ -95,7 +95,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-      
+
         logId: {
             type: String,
             default: "",
@@ -127,7 +127,7 @@ const companySchema = new mongoose.Schema({
             }
         }
     ],
-    
+
 
     billingCycle: [{
         month: {
@@ -184,7 +184,12 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        
+
+        uploadedBy: {
+            type: String,
+            default: "",
+        },
+
         logId: {
             type: String,
             default: "",
@@ -196,7 +201,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        
+
         logId: {
             type: String,
             default: "",
@@ -231,7 +236,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-    
+
         logId: {
             type: String,
             default: "",
@@ -243,7 +248,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-       
+
         logId: {
             type: String,
             default: "",
@@ -255,7 +260,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-       
+
         logId: {
             type: String,
             default: "",
@@ -268,7 +273,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-        
+
         logId: {
             type: String,
             default: "",
@@ -280,7 +285,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-      
+
         logId: {
             type: String,
             default: "",
@@ -292,7 +297,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-      
+
         logId: {
             type: String,
             default: "",
@@ -304,7 +309,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-     
+
         logId: {
             type: String,
             default: "",
@@ -316,7 +321,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-      
+
         logId: {
             type: String,
             default: "",
@@ -329,7 +334,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-      
+
         logId: {
             type: String,
             default: "",
@@ -340,7 +345,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-      
+
         logId: {
             type: String,
             default: "",
@@ -351,7 +356,7 @@ const companySchema = new mongoose.Schema({
             type: String,
             default: "",
         },
-      
+
         logId: {
             type: String,
             default: "",

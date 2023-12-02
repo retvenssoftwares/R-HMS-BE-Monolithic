@@ -59,6 +59,7 @@ const overViewData = async (req, res) => {
                     reservationRate: 1,
                     propertyId: 1,
                     otaId: 1,
+                    nightCount: 1,
                     bookingTime: 1,
                     inventory: 1
                 }
@@ -86,19 +87,20 @@ const overViewData = async (req, res) => {
 
         const revenue = totalRevenue.toFixed(2);
 
-        const totalRoomsSold = getBookingData.reduce((sum, inventory) => {
-            const totalRooms = inventory.inventory || 0;
-            return sum + totalRooms;
+        const totalNights = getBookingData.reduce((sum, nights) => {
+            const numberOfNights = parseInt(nights.nightCount[0].nightCount) || 0;
+            console.log(numberOfNights, typeof numberOfNights)
+            return sum + numberOfNights;
         }, 0)
 
-        console.log(totalRoomsSold, "adfsa")
-        const adr = (revenue / totalRoomsSold).toFixed(2);
+        console.log(totalNights, "adfsa")
+        const adr = (revenue / parseInt(totalNights)).toFixed(2);
         console.log(adr)
         // Prepare the response object
         const responseData = {
             totalRevenue: revenue, // Format the totalRevenue
             averageDailyRate: adr || 0.00,
-            statuscode: 200
+            totalNights: totalNights,
         };
 
         const totalRevenuePromise = await Promise.all(mappedTotalRevenue)

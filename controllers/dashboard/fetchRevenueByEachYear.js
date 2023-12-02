@@ -73,13 +73,36 @@
 
 import bookingModel from "../../models/confirmBooking.js";
 import moment from 'moment';
+import verifiedUser from "../../models/verifiedUsers.js";
+import {findUserByUserIdAndToken,validateHotelCode } from "../../helpers/helper.js";
+
+const getMonthName = (monthNumber) => {
+    const months = [
+        'January', 'February', 'March', 'April',
+        'May', 'June', 'July', 'August',
+        'September', 'October', 'November', 'December'
+    ];
+
+    return months[monthNumber - 1] || '';
+};
 
 const RevenueData = async (req, res) => {
-    const { propertyId, filter } = req.query;
-
+    const { propertyId, filter,userId } = req.query;
+    const findUser = await verifiedUser.findOne({ userId });
+    if (!findUser || !userId) {
+      return res
+        .status(404)
+        .json({ message: "User not found or invalid userId", statuscode: 404 });
+    }
+    const authCodeValue = req.headers["authcode"];
+    const result = await findUserByUserIdAndToken(userId, authCodeValue);
     const currentDate = moment().toISOString(); // Get the exact current date in ISO format
-
+    const results = await validateHotelCode(userId, propertyId)
+            if (!results.success) {
+                return res.status(results.statuscode).json({ message: "Invalid propertyId entered", statuscode: results.statuscode })
+            }
     try {
+        if (result.success) {
         if (filter === 'yearly') {
             // Set the start of the last year as January 1st of the previous year for yearly data
             const lastYearStart = moment().subtract(1, 'years').startOf(1,'year').toDate();
@@ -142,19 +165,24 @@ const RevenueData = async (req, res) => {
                 return res.status(404).json({ message: "No revenue data found for the specified criteria." });
             }
 
-            return res.status(200).json(revenueData);
-        } else if (filter === 'monthly') {
-            // Get the start and end of the last month
-            const lastMonthStart = moment().subtract(1, 'months').startOf('month');
-            const lastMonthEnd = moment().subtract(1, 'months').endOf('month');
+             const formattedRevenueData = revenueData.map(item => ({
+                    totalRevenue: item.totalRevenue,
+                    month: getMonthName(item.month),
+                    year: item.year
+                }));
 
+            return res.status(200).json(formattedRevenueData);
+        } else if (filter === 'monthly') {
+            const currentDate = moment();
+            const lastMonthDate =  currentDate.clone().subtract(30,'days')
+   
             const revenueData = await bookingModel.aggregate([
                 {
                     $match: {
                         "propertyId": propertyId,
                         "checkInDate.checkInDate": {
-                            $gte: lastMonthStart.toISOString(),
-                            $lte: lastMonthEnd.toISOString(),
+                            $gte: lastMonthDate.toISOString(),
+                            $lte: currentDate.toISOString(),
                         },
                         isOTABooking: "true"
                     },
@@ -165,8 +193,8 @@ const RevenueData = async (req, res) => {
                 {
                     $match: {
                         "checkInDate.checkInDate": {
-                            $gte: lastMonthStart.toISOString(),
-                            $lte: lastMonthEnd.toISOString(),
+                            $gte: lastMonthDate.toISOString(),
+                            $lte: currentDate.toISOString(),
                         }
                     }
                 },
@@ -178,25 +206,27 @@ const RevenueData = async (req, res) => {
                 },
                 {
                     $project: {
-                        week: { $week: { $dateFromString: { dateString: "$checkInDate.checkInDate" } } },
-                        month: { $month: { $dateFromString: { dateString: "$checkInDate.checkInDate" } } },
+                        day: {
+                            $dateToString: {
+                                format: "%Y-%m-%d",
+                                date: { $dateFromString: { dateString: "$checkInDate.checkInDate" } }
+                            }
+                        },
                         grandTotal: { $toDouble: "$reservationRate.roomCharges.grandTotal" },
                     },
                 },
                 {
                     $group: {
-                        _id: { month: "$month", week: "$week" },
+                        _id: { day: "$day" },
                         totalRevenue: { $sum: "$grandTotal" },
                     },
                 },
                 {
-                    $sort: { "_id": 1 },
+                    $sort: { "_id.day": 1 },
                 },
-
                 {
                     $project: {
-                        month: "$_id.month",
-                        week: "$_id.week",
+                        day: "$_id.day",
                         totalRevenue: 1,
                         _id: 0, // Exclude _id
                     },
@@ -207,7 +237,30 @@ const RevenueData = async (req, res) => {
                 return res.status(404).json({ message: "No revenue data found for the specified criteria." });
             }
 
-            return res.status(200).json(revenueData);
+  // Generate an array of dates within the range
+  const datesInRange = [];
+  let tempDate = lastMonthDate.clone();
+  while (tempDate.isSameOrBefore(currentDate, 'day')) {
+      datesInRange.push({
+          day: tempDate.date(),
+          month: tempDate.format('MMMM'), // Format month to its full name
+          year: tempDate.year()
+      });
+      tempDate.add(1, 'day');
+  }
+
+  // Create a map to store revenue data by date
+  const revenueMap = new Map(revenueData.map(item => [item.day, item.totalRevenue]));
+
+  // Fill missing dates with zero revenue
+  const revenueWithMissingDates = datesInRange.map(date => ({
+      day: date.day,
+      month: date.month,
+      year: date.year,
+      totalRevenue: revenueMap.get(date.day.toString()) || 0
+  }));
+
+  return res.status(200).json(revenueWithMissingDates);
         }else if (filter === 'today') {
             // Get start and end of today
             const todayStart = moment().startOf('day');
@@ -259,6 +312,11 @@ const RevenueData = async (req, res) => {
         else {
             return res.status(400).json({ message: "Invalid filter value provided." });
         }
+     } else {
+            return res
+              .status(result.statuscode)
+              .json({ message: result.message, statuscode: result.statuscode });
+          }
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal Server Error", statuscode: 500 });

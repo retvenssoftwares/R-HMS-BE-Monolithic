@@ -4,6 +4,7 @@ dotenv.config();
 import userModel from "../../models/verifiedUsers.js"
 import randomString from "randomstring"
 import { getCurrentUTCTimestamp, findUserByUserIdAndToken } from "../../helpers/helper.js";
+import discountTypeLog from "../../models/LogModels/discountTypeLogs.js"
 
 export const addDiscountType = async (req, res) => {
      try{
@@ -17,6 +18,8 @@ export const addDiscountType = async (req, res) => {
             discountType,
             discountPercent,
             discountPrice,
+            deviceType,
+            ipAddress,
 
           }= req.body;
 
@@ -73,7 +76,75 @@ export const addDiscountType = async (req, res) => {
                   ],
 
             });
-            await newDiscountType.save()
+            const savedDiscountLogs = await newDiscountType.save()
+
+            const addDiscountTypeLog = new discountTypeLog({
+
+              userId: savedDiscountLogs.userId,
+              propertyId: savedDiscountLogs.propertyId,
+              discountTypeId: savedDiscountLogs.discountTypeId,
+              createdBy: savedDiscountLogs.createdBy,
+              createdOn: savedDiscountLogs.createdOn,
+              shortCode: [{
+                shortCode: savedDiscountLogs.shortCode[0].shortCode,
+                logId: savedDiscountLogs.shortCode[0].logId,
+                userId: userId,
+                deviceType: deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime,
+            }],
+              displayStatus: [{
+              displayStatus: savedDiscountLogs.displayStatus[0].displayStatus,
+                logId: savedDiscountLogs.displayStatus[0].logId,
+                userId: userId,
+                deviceType: deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime,
+            }],
+            discountTypeName: [{
+              discountTypeName: savedDiscountLogs.discountTypeName[0].discountTypeName,
+                logId: savedDiscountLogs.discountTypeName[0].logId,
+                userId: userId,
+                deviceType: deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime,
+            }],
+            discountValue: [{
+              discountValue: savedDiscountLogs.discountValue[0].discountValue,
+                logId: savedDiscountLogs.discountValue[0].logId,
+                userId: userId,
+                deviceType: deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime,
+            }],
+            discountType: [{
+              discountType: savedDiscountLogs.discountType[0].discountType,
+                logId: savedDiscountLogs.discountType[0].logId,
+                userId: userId,
+                deviceType: deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime,
+            }],
+            discountPercent: [{
+              discountPercent: savedDiscountLogs.discountPercent[0].discountPercent,
+                logId: savedDiscountLogs.discountPercent[0].logId,
+                userId: userId,
+                deviceType: deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime,
+            }],
+            discountPrice: [{
+              discountPrice: savedDiscountLogs.discountPrice[0].discountPrice,
+                logId: savedDiscountLogs.discountPrice[0].logId,
+                userId: userId,
+                deviceType: deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime,
+            }],
+
+
+            })
+            await addDiscountTypeLog.save();
             return res.status(200).json({ message: "discountType added successfully", statuscode: 200 })
 
         } else {

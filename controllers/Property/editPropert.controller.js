@@ -35,7 +35,7 @@ const editProperty = async (req, res) => {
       longitude,
       postCode,
       deviceType,
-      ipAddress
+      ipAddress,
     } = req.body;
     const authCodeValue = req.headers["authcode"];
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
@@ -58,6 +58,7 @@ const editProperty = async (req, res) => {
     }
 
     const findProperty = await propertyModel.findOne({ propertyId }).lean();
+    const currentUTCTime = await getCurrentUTCTimestamp();
     if (!findProperty) {
       return res
         .status(404)
@@ -91,14 +92,15 @@ const editProperty = async (req, res) => {
       };
       const websiteUrlObject2 = {
         websiteUrl: websiteUrl,
-        logId:websiteUrlObject.logId,
-        deviceType:deviceType,
-        userId:userId,
-        ipAddress:ipAddress 
+        logId: websiteUrlObject.logId,
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
 
-      console.log(websiteUrlObject)
-    
+      console.log(websiteUrlObject);
+
       await propertyModel.findOneAndUpdate(
         { propertyId: propertyId },
         {
@@ -132,9 +134,10 @@ const editProperty = async (req, res) => {
       const baseCurrencyObject2 = {
         baseCurrency: baseCurrency,
         logId: baseCurrencyObject.logId,
-        deviceType:deviceType,
-        userId:userId,
-        ipAddress:ipAddress 
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
       await propertyModel.findOneAndUpdate(
         { propertyId: propertyId },
@@ -169,9 +172,10 @@ const editProperty = async (req, res) => {
       const phoneObject2 = {
         phone: phone,
         logId: phoneObject.phone,
-        deviceType:deviceType,
-        userId:userId,
-        ipAddress:ipAddress 
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
       await propertyModel.findOneAndUpdate(
         { propertyId: propertyId },
@@ -206,9 +210,10 @@ const editProperty = async (req, res) => {
       const reservationPhoneObject2 = {
         reservationPhone: reservationPhone,
         logId: reservationPhoneObject.logId,
-        deviceType:deviceType,
-        userId:userId,
-        ipAddress:ipAddress 
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
       await propertyModel.findOneAndUpdate(
         { propertyId: propertyId },
@@ -243,9 +248,10 @@ const editProperty = async (req, res) => {
       const propertyRatingObject2 = {
         propertyRating: propertyRating,
         logId: propertyRatingObject.logId,
-        deviceType:deviceType,
-        userId:userId,
-        ipAddress:ipAddress 
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
       await propertyModel.findOneAndUpdate(
         { propertyId: propertyId },
@@ -287,6 +293,10 @@ const editProperty = async (req, res) => {
         hotelLogoId: imageObject.hotelLogoId,
         hotelLogo: imageUrl,
         logId: imageObject.logId,
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
 
       // Find the propertyImage document by propertyId and push the new image object at position 0
@@ -325,9 +335,10 @@ const editProperty = async (req, res) => {
       const propertyAddress1Object2 = {
         propertyAddress1: propertyAddress1,
         logId: propertyAddress1Object.logId,
-        deviceType:deviceType,
-        userId:userId,
-        ipAddress:ipAddress 
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
 
       // Find the propertyImage document by propertyId and push the new image object at position 0
@@ -365,9 +376,10 @@ const editProperty = async (req, res) => {
       const propertDescriptionObject2 = {
         propertyDescription: propertyDescription,
         logId: propertDescriptionObject.logId,
-        deviceType:deviceType,
-        userId:userId,
-        ipAddress:ipAddress 
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
 
       await propertyModel.findOneAndUpdate(
@@ -404,9 +416,10 @@ const editProperty = async (req, res) => {
       const propertyTypeObject2 = {
         propertyType: propertyType,
         logId: propertyTypeObject.logId,
-        deviceType:deviceType,
-        userId:userId,
-        ipAddress:ipAddress 
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
       await propertyModel.updateOne(
         { propertyId: propertyId },
@@ -464,7 +477,16 @@ const editProperty = async (req, res) => {
         {
           $push: {
             amenities: {
-              $each: [{ amenities: amenityObjects, logId: logId,userId: userId,deviceType: deviceType,ipAddress: ipAddress}],
+              $each: [
+                {
+                  amenities: amenityObjects,
+                  logId: logId,
+                  userId: userId,
+                  deviceType: deviceType,
+                  ipAddress: ipAddress,
+                  modifiedOn: currentUTCTime,
+                },
+              ],
               $position: 0,
             },
           },
@@ -481,9 +503,10 @@ const editProperty = async (req, res) => {
       const propertyNameObject2 = {
         propertyName: propertyName,
         logId: propertyNameObject.logId,
-        deviceType:deviceType,
-        userId:userId,
-        ipAddress:ipAddress 
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
 
       // Find the propertyImage document by propertyId and push the new image object at position 0
@@ -520,10 +543,10 @@ const editProperty = async (req, res) => {
       const postCodeObject2 = {
         postCode: postCode,
         logId: postCodeObject.logId,
-        deviceType:deviceType,
-        userId:userId,
-        ipAddress:ipAddress 
-        
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
 
       // Find the propertyImage document by propertyId and push the new image object at position 0
@@ -561,9 +584,10 @@ const editProperty = async (req, res) => {
       const displayStatusObject2 = {
         displayStatus: displayStatus,
         logId: displayStatusObject.logId,
-        deviceType:deviceType,
-        userId:userId,
-        ipAddress:ipAddress 
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
 
       // Find the propertyImage document by propertyId and push the new image object at position 0
@@ -602,9 +626,10 @@ const editProperty = async (req, res) => {
       const propertyEmailObject2 = {
         propertyEmail: propertyEmail,
         logId: propertyEmailObject.logId,
-        deviceType:deviceType,
-        userId:userId,
-        ipAddress:ipAddress 
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
 
       // Find the propertyImage document by propertyId and push the new image object at position 0
@@ -643,9 +668,10 @@ const editProperty = async (req, res) => {
       const propertyAddress2Object2 = {
         propertyAddress2: propertyAddress2,
         logId: propertyAddress2Object.logId,
-        deviceType:deviceType,
-        userId:userId,
-        ipAddress:ipAddress 
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
 
       // Find the propertyImage document by propertyId and push the new image object at position 0
@@ -684,9 +710,10 @@ const editProperty = async (req, res) => {
       const cityObject2 = {
         city: city,
         logId: cityObject.logId,
-        deviceType:deviceType,
-        userId:userId,
-        ipAddress:ipAddress 
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
 
       await propertyModel.findOneAndUpdate(
@@ -724,16 +751,17 @@ const editProperty = async (req, res) => {
         latitude: latitude,
         longitude: longitude,
         logId: locationObject.logId,
-        deviceType:deviceType,
-        userId:userId,
-        ipAddress:ipAddress 
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
 
       await propertyModel.findOneAndUpdate(
         { propertyId: propertyId },
         {
           $push: {
-            loaction: {
+            location: {
               $each: [locationObject],
               $position: 0,
             },
@@ -763,9 +791,10 @@ const editProperty = async (req, res) => {
       const stateObject2 = {
         state: state,
         logId: stateObject.logId,
-        deviceType:deviceType,
-        userId:userId,
-        ipAddress:ipAddress 
+        deviceType: deviceType,
+        userId: userId,
+        ipAddress: ipAddress,
+        modifiedOn: currentUTCTime,
       };
 
       await propertyModel.findOneAndUpdate(

@@ -24,7 +24,7 @@ const postTask = async (req , res) => {
           taskStatus,
           assignedTo,
           taskType,
-
+          floorId
         }= req.body;
         const authCodeValue = req.headers["authcode"];
         const findUser = await verifiedUser.findOne({ userId });
@@ -48,6 +48,10 @@ const postTask = async (req , res) => {
              }],
              roomId: [{
                roomId: roomId,
+               logId: Randomstring.generate(8),
+             }],
+             floorId: [{
+              floorId: floorId,
                logId: Randomstring.generate(8),
              }],
              taskDescription: [{

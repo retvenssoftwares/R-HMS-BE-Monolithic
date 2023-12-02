@@ -25,6 +25,10 @@ const taskTypeSchema = new mongoose.Schema({
         roomId: { type: String, default: ''},
         logId: { type: String, default: ''},
     }],
+    floorId: [{
+        floorId: { type: String, default: ''},
+        logId: { type: String, default: ''},
+    }],
 
     taskDescription: [{
         taskDescription: { type: String, default: ''},

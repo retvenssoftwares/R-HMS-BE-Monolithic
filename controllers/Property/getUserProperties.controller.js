@@ -36,13 +36,13 @@ const userProperty = async (req, res) => {
                         createdOn: convertedDateUTC,
                         hotelRcode: property.hotelRCode,
                         propertyName: property.propertyName[0].propertyName || '',
-                        propertyRating: property.propertyRating || '',
+                        propertyRating: property.propertyRating[0].propertyRating || '',
                         hotelLogo: hotelLogo,
                         city: property.city[0].city || '',
                         country: property.country || '',
                         propertyId: property.propertyId,
                         totalRooms: propertyRoomsCount,
-                        propertyType:property.propertyType,                      
+                        propertyType:property.propertyType[0].propertyType,                      
                         amenities: amenitiesLength
                     };
                 });

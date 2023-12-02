@@ -23,6 +23,10 @@ const addEmployee = async (req, res) => {
         const addNewEmployee = new employeeModel({
             propertyId,
             employeeId: randomstring.generate(8),
+            employeeIdNo: randomstring.generate({
+                length: 5,
+                charset: 'numeric'
+            }),
             fullName: [{
                 fullName: fullName,
                 logId: randomstring.generate(10)

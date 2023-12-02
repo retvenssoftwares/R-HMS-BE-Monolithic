@@ -11,7 +11,7 @@ const employeeSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-
+    employeeIdNo: { type: String, default: '' },
     profilePhoto: [{
         profilePhoto: {
             type: String,

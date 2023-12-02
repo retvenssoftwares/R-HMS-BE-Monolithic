@@ -21,10 +21,10 @@ const getInventory = async (req, res) => {
         "displayStatus.0.displayStatus": "1",
         "propertyId": propertyId,
         $or: [
-            { "reservationName.0.reservationName": "Confirmed" },
-            { "reservationName.0.reservationName": "confirmed" },
-            { "reservationName.0.reservationName": "confirm" },
-            { "reservationName.0.reservationName": "Confirm" }
+            { "status.0.status": "Confirmed" },
+            { "status.0.status": "confirmed" },
+            { "status.0.status": "confirm" },
+            { "status.0.status": "Confirm" }
         ]
     }).select('reservationName reservationTypeId');
     // console.log(getReservationTypeName.reservationTypeId)

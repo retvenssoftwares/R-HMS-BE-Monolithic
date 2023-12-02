@@ -17,34 +17,32 @@ const fetchEmployeeById = async (req, res) => {
         if (result.success) {
             if (findEmployee) {
                 const employeeData = {
-                    ...findEmployee,
+                    ...findEmployee._doc,
                     employeeId: employeeId,
                     propertyId: findEmployee.propertyId || '',
                     profilePhoto: findEmployee.profilePhoto[0].profilePhoto || '',
                     fullName: findEmployee.fullName[0].fullName || '',
-                    websiteUrl: findEmployee.websiteUrl || '',
-                    latitude: findEmployee.location && findEmployee.location.length > 0 ? findEmployee.location[0].latitude : '',
-                    longitude: findEmployee.location && findEmployee.location.length > 0 ? findEmployee.location[0].longitude : '',
-                    propertyType: findEmployee.propertyType || "",
-                    starCategory: findEmployee.starCategory || "",
-                    propertyDescription: findEmployee.propertyDescription.length > 0 ? findEmployee.propertyDescription[0].propertyDescription : "",
-                    createdOn: findEmployee.createdOn || "",
-                    country: findEmployee.country || "",
-                    propertyAddress1: findEmployee.propertyAddress1.length > 0 ? findEmployee.propertyAddress1[0].propertyAddress1 : "",
-                    propertyAddress2: findEmployee.propertyAddress2.length > 0 ? findEmployee.propertyAddress2[0].propertyAddress2 : "",
-                    propertyEmail: findEmployee.propertyEmail.length > 0 ? findEmployee.propertyEmail[0].propertyEmail : "",
-                    city: findEmployee.city.length > 0 ? findEmployee.city[0].city : "",
-                    postCode: findEmployee.postCode.length > 0 ? findEmployee.postCode[0].postCode : "",
-                    propertyName: findEmployee.propertyName.length > 0 ? findEmployee.propertyName[0].propertyName : "",
-                    rating: findEmployee.rating.length > 0 ? findEmployee.rating[0].rating : "",
-                    amenities: amenityNames || [],
-                    // propertyImages:imagesData,
-                    hotelLogo: findEmployee.hotelLogo.length > 0 ? findEmployee.hotelLogo[0].hotelLogo : "",
-                    state: findEmployee.state.length > 0 ? findEmployee.state[0].state : ""
+                    gender: findEmployee.gender[0].gender || '',
+                    dateOfBirth: findEmployee.dateOfBirth[0].dateOfBirth || '',
+                    phone: findEmployee.phone[0].phone || '',
+                    email: findEmployee.email[0].email || "",
+                    address: findEmployee.address[0].address || "",
+                    idType: findEmployee.idType[0].idType || "",
+                    idNumber: findEmployee.idNumber[0].idNumber || "",
+                    expirationDate: findEmployee.expirationDate[0].expirationDate || "",
+                    docImage: findEmployee.docImage[0].docImage || "",
+                    relationWithEmergencyContact: findEmployee.relationWithEmergencyContact[0].relationWithEmergencyContact || "",
+                    nameOfEmergencyContact: findEmployee.nameOfEmergencyContact[0].nameOfEmergencyContact || "",
+                    emergencyContact: findEmployee.emergencyContact.length > 0 ? findEmployee.emergencyContact[0].emergencyContact : "",
+                    emergencyContactAlternate: findEmployee.emergencyContactAlternate.length > 0 ? findEmployee.emergencyContactAlternate[0].emergencyContactAlternate : "",
+                    designation: findEmployee.designation.length > 0 ? findEmployee.designation[0].designation : "",
+                    departmentOrDivision: findEmployee.departmentOrDivision.length > 0 ? findEmployee.departmentOrDivision[0].departmentOrDivision : "",
+                    employmentStartDate: findEmployee.employmentStartDate[0].employmentStartDate || '',
+                    employmentType: findEmployee.employmentType[0].employmentType || ''
                 };
                 return res.status(200).json({ data: employeeData, statuscode: 200 })
             } else {
-                return res.status(200).json({ message: "No company found", statuscode: 200 });
+                return res.status(200).json({ message: "No employee details found", statuscode: 200 });
             }
         } else {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });

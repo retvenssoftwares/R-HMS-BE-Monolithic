@@ -36,7 +36,8 @@ const postProperty = async (req, res) => {
       longitude,
       displayStatus,
       devicetype,
-      ipAddress
+      ipAddress,
+      amenityIds
     } = req.body;
 
     var hotelLogoId = randomstring.generate(8);
@@ -114,7 +115,7 @@ const postProperty = async (req, res) => {
         ],
         city: [
           {
-            city,
+            city:city,
             logId: randomstring.generate(10),
           },
         ],
@@ -138,13 +139,31 @@ const postProperty = async (req, res) => {
             },
           ]
           : [],
-        baseCurrency,
-        websiteUrl,
+        baseCurrency:[{
+          baseCurrency:baseCurrency,
+          logId: randomstring.generate(10)
+        }],
+        websiteUrl:[{
+          websiteUrl: websiteUrl,
+          logId: randomstring.generate(10)
+        }],
         dateUTC: currentUTCTime,
-        propertyType,
-        propertyRating,
-        reservationPhone,
-        phone,
+        propertyType:[{
+          propertyType: propertyType,
+          logId:randomstring.generate(10)
+        }],
+        propertyRating:[{
+          propertyRating:propertyRating,
+          logId:randomstring.generate(10)
+        }],
+        reservationPhone:[{
+          reservationPhone:reservationPhone,
+          logId: randomstring.generate(10)
+        }],
+        phone:[{
+          phone:phone,
+          logId: randomstring.generate(10)
+        }],
         propertyEmail: [{
           propertyEmail: propertyEmail,
           logId: randomstring.generate(10)
@@ -152,7 +171,7 @@ const postProperty = async (req, res) => {
         amenities: [
           {
             amenities: amenityObjects,
-            logId: Randomstring.generate(10),
+            logId: randomstring.generate(10),
           },
         ],
       });
@@ -175,6 +194,7 @@ const postProperty = async (req, res) => {
         propertyId: savedProperty.propertyId,
         userId:userId,
         createdOn:currentUTCTime,
+        country:country,
         createdBy:userRole,
         propertyAddress1:[{
           propertyAddress1:propertyAddress1,
@@ -209,7 +229,7 @@ const postProperty = async (req, res) => {
           modifiedOn:currentUTCTime
         }],
         displayStatus:[{
-          displayStatus:displayStatus,
+          displayStatus:savedProperty.displayStatus[0].displayStatus,
           logId:savedProperty.displayStatus[0].logId,
           userId:userId,
           devicetype:devicetype,
@@ -233,7 +253,8 @@ const postProperty = async (req, res) => {
           modifiedOn:currentUTCTime
         }],
         location:[{
-          location:location,
+          latitude: latitude,
+          longitude: longitude,
           logId:savedProperty.location[0].logId,
           userId:userId,
           devicetype:devicetype,
@@ -248,9 +269,50 @@ const postProperty = async (req, res) => {
           ipAddress:ipAddress,
           modifiedOn:currentUTCTime
         }],
-        location:[{
-          location:location,
-          logId:savedProperty.location[0].logId,
+        hotelLogo:[{
+          hotelLogoId:savedProperty.hotelLogo[0].hotelLogoId,
+          hotelLogo:imageUrl,
+          logId:savedProperty.hotelLogo[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        baseCurrency:[{
+          baseCurrency:baseCurrency,
+          logId:savedProperty.baseCurrency[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        propertyType:[{
+          propertyType:propertyType,
+          logId:savedProperty.propertyType[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        propertyRating:[{
+          propertyRating:propertyRating,
+          logId:savedProperty.propertyRating[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        reservationPhone:[{
+          reservationPhone:reservationPhone,
+          logId:savedProperty.reservationPhone[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        phone:[{
+          phone:phone,
+          logId:savedProperty.phone[0].logId,
           userId:userId,
           devicetype:devicetype,
           ipAddress:ipAddress,

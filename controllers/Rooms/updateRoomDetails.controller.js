@@ -55,7 +55,7 @@ const patchRoom = async (req,res)=>{
         
        // Amenities
        let amenityObjects = [];
-       if (req.body.amenityIds && typeof req.body.amenityIds === "string") {
+       if (req.body.amenityIds &&  typeof req.body.amenityIds === "string") {
          const amenityIdsArray = req.body.amenityIds.split(",");
          const currentUTCTime = await getCurrentUTCTimestamp();
          amenityObjects = amenityIdsArray.map((amenityId) => {

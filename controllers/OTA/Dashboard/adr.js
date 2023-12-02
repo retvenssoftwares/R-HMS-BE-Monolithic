@@ -3,7 +3,7 @@ import confirmBooking from "../../../models/confirmBooking.js";
 import { findUserByUserIdAndToken } from "../../../helpers/helper.js";
 import { utcToZonedTime } from "date-fns-tz";
 
-const revenueOTAData = async (req, res) => {
+const adrOtaData = async (req, res) => {
     try {
         const { userId, propertyId, otaId, filter, timeZone } = req.query;
         const authCodeValue = req.headers['authcode'];
@@ -31,26 +31,22 @@ const revenueOTAData = async (req, res) => {
 
         // Get the specific date and one year ago from that date
         const currentDate = new Date();
-        // const specificDate = convertTimestampToCustomFormat(
-        //     currentDate.toISOString().split("T")[0],
-        //     timeZone
-        // );
+        const specificDate = convertTimestampToCustomFormat(
+            currentDate.toISOString().split("T")[0],
+            timeZone
+        );
 
         const oneYearAgo = sub(currentDate, { years: 1 });
-        const startOfYear = new Date(currentDate.getFullYear(), 0, 1, 0, 0, 0);
-
+        const startOfYear = new Date(currentDate);
+        startOfYear.setDate(currentDate.getDate() - 365);
         const endOfDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
 
-        // console.log(startOfYear.toISOString(), endOfDay.toISOString(), "cgffxf");
 
         // const currentDate = new Date();
         const startOfPreviousYear = new Date(currentDate.getFullYear() - 1, 0, 1, 0, 0, 0);
         const endOfPreviousYear = new Date(currentDate.getFullYear(), 0, 0, 23, 59, 59);
 
-        // console.log(startOfPreviousYear.toISOString(), endOfPreviousYear.toISOString(), "vhjvghjvj");
-
-        // const endOfDay = `${specificDate} 23:59:59`;
-        // console.log(startOfYear, endOfDay, "sdfsd")
+       
 
         // Aggregate for the current year (2023)
         const getBookingData = await confirmBooking.aggregate([
@@ -73,7 +69,9 @@ const revenueOTAData = async (req, res) => {
                     propertyId: 1,
                     otaId: 1,
                     bookingTime: 1,
-                    inventory: 1
+                    inventory: 1,
+                    nightCount:1
+
                 }
             }
         ]).exec();
@@ -100,6 +98,7 @@ const revenueOTAData = async (req, res) => {
                     otaId: 1,
                     bookingTime: 1,
                     inventory: 1,
+                    nightCount:1
                 }
             }
         ]).exec();
@@ -115,8 +114,13 @@ const revenueOTAData = async (req, res) => {
                 const revenue = parseFloat(booking.reservationRate[0].roomCharges[0].grandTotal) || 0;
                 return sum + revenue;
             }, 0);
+            const totalNightCount = getBookingData.reduce((sum, booking) => {
+                const nightCount = parseFloat(booking.nightCount[0].nightCount) || 0;
+                return sum + nightCount;
+            }, 0);
 
             const revenue = totalRevenue.toFixed(2);
+            const ADR =parseFloat( revenue / totalNightCount).toString();
 
             // Calculate totalRevenue for the previous year
             const totalPreviousYearRevenue = getBookingDataPreviousYear.reduce((sum, booking) => {
@@ -126,11 +130,14 @@ const revenueOTAData = async (req, res) => {
 
             // Calculate monthly revenue for the current year
             let currentYearRevenue = Array(12).fill(0);
+            let currentYearNightCount=Array(12).fill(0)
             getBookingData.forEach(booking => {
                 const revenue = parseFloat(booking.reservationRate[0].roomCharges[0].grandTotal) || 0;
+                const nightCount=parseInt(booking.nightCount[0].nightCount) || 0
                 const bookingDate = new Date(booking.bookingTime);
                 const bookingMonth = getMonth(bookingDate);
                 currentYearRevenue[bookingMonth] += revenue;
+                currentYearNightCount[bookingMonth]+=nightCount;
             });
 
             // Calculate monthly revenue for the previous year
@@ -147,7 +154,7 @@ const revenueOTAData = async (req, res) => {
 
             // Get month names
             const monthNames = Array.from({ length: 12 }, (_, i) => {
-                const date = new Date(currentDate.getFullYear(), i, 1);
+                const date = new Date(currentDate.getFullYear(), +i, 1);
                 return format(date, 'MMMM');
             });
 
@@ -161,29 +168,22 @@ const revenueOTAData = async (req, res) => {
             // Prepare the response object
             const responseData = {
                 totalRevenue: revenue,
+                ADR:ADR,
                 revenueStatus: revenueStatus,
                 percentage: percentage.toFixed(2),
                 yearlyData: [
                     {
-                        year: getYear(oneYearAgo),
-                        monthlyRevenue: previousYearRevenue.map((revenue, index) => ({
-                            month: monthNames[index],
-                            revenue: revenue.toFixed(2)
-                        })),
-                        // totalRevenue: totalPreviousYearRevenue
-                    }, {
                         year: getYear(currentDate),
                         monthlyRevenue: currentYearRevenue.map((revenue, index) => ({
                             month: monthNames[index],
-                            revenue: revenue.toFixed(2)
-                        })),
+                            revenue: revenue.toFixed(2),
+                            ADR: currentYearNightCount[index] > 0 ? parseFloat(revenue / currentYearNightCount[index]).toString() : 0,
+                        })),  
                         // totalRevenue: totalCurrentYearRevenue
                     }
                 ],
             };
-            // console.log(getBookingData)
-            // console.log(getBookingDataPreviousYear, "zdsfasd")
-            // console.log()
+           
             return res.status(200).json({ data: responseData, statuscode: 200 });
 
         }
@@ -217,7 +217,8 @@ const revenueOTAData = async (req, res) => {
                         propertyId: 1,
                         otaId: 1,
                         bookingTime: 1,
-                        inventory: 1
+                        inventory: 1,
+                        nightCount:1
                     }
                 }
             ]).exec();
@@ -250,11 +251,14 @@ const revenueOTAData = async (req, res) => {
 
             // Calculate daily revenue for the current month
             let currentMonthRevenue = Array(endOfCurrentMonth.getDate()).fill(0);
+            let currentMonthNightCount = Array(endOfCurrentMonth.getDate()).fill(0);
             getBookingDataCurrentMonth.forEach(booking => {
                 const revenue = parseFloat(booking.reservationRate[0].roomCharges[0].grandTotal) || 0;
+                const nightCount=parseInt(booking.nightCount[0].nightCount) || 0;
                 const bookingDate = new Date(booking.bookingTime);
                 const dayOfMonth = bookingDate.getDate();
                 currentMonthRevenue[dayOfMonth - 1] += revenue;
+                currentMonthNightCount[dayOfMonth - 1] += nightCount;
             });
 
             // Calculate daily revenue for the previous month
@@ -264,7 +268,8 @@ const revenueOTAData = async (req, res) => {
                 const bookingDate = new Date(booking.bookingTime);
                 const dayOfMonth = bookingDate.getDate();
                 previousMonthRevenue[dayOfMonth - 1] += revenue;
-            });
+             });
+
             // Calculate total revenue for the current month
             const totalCurrentMonthRevenue = currentMonthRevenue.reduce((sum, revenue) => sum + parseFloat(revenue), 0).toFixed(2);
 
@@ -277,132 +282,73 @@ const revenueOTAData = async (req, res) => {
 
             // Get the month names
             const currentMonthName = format(startOfCurrentMonth, 'MMMM');
-            const previousMonthName = format(startOfPreviousMonth, 'MMMM');
-            console.log(totalCurrentMonthRevenue, totalPreviousMonthRevenue)
+            
             // Prepare the response object
             const responseData = {
                 totalRevenue: totalCurrentMonthRevenue,
                 revenueStatus: revenueStatus,
                 percentage: percentage.toFixed(2),
                 monthlyData: [
-                    {
-                        month: previousMonthName,
-                        dailyRevenue: previousMonthRevenue.map((revenue, index) => ({
-                            day: index + 1,
-                            revenue: revenue.toFixed(2)
-                        })),
-                    },
+                   
                     {
                         month: currentMonthName,
                         dailyRevenue: currentMonthRevenue.map((revenue, index) => ({
                             day: index + 1,
-                            revenue: revenue.toFixed(2)
+                            revenue: revenue.toFixed(2),
+                            ADR: currentMonthNightCount[index] > 0 ? parseFloat(revenue / currentMonthNightCount[index]).toString() : 0,
                         })),
                     },
                 ],
             };
 
             return res.status(200).json({ data: responseData, statuscode: 200 });
-        }
+         }
+        
         else if (filter === "Daily") {
-            // Calculate the start and end dates for the current day
             const startOfCurrentDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0);
             const endOfCurrentDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
-
-            // Calculate the start and end dates for the previous day
-            const startOfPreviousDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 1, 0, 0, 0);
-            const endOfPreviousDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 1, 23, 59, 59);
-
-            // Aggregate for the current day
-            const getBookingDataCurrentDay = await confirmBooking.aggregate([
+        
+            const getBookingDataCurrentDate = await confirmBooking.aggregate([
                 {
                     $match: {
                         propertyId: propertyId,
                         otaId: otaId,
                         isOTABooking: "true",
-                        $expr: {
-                            $and: [
-                                { $gte: ["$bookingTime", startOfCurrentDay.toISOString()] },
-                                { $lt: ["$bookingTime", endOfCurrentDay.toISOString()] }
-                            ]
+                        bookingTime: {
+                            $gte: startOfCurrentDay,
+                            $lt: endOfCurrentDay
                         }
                     }
                 },
                 {
                     $project: {
                         reservationRate: 1,
-                        propertyId: 1,
-                        otaId: 1,
-                        bookingTime: 1,
-                        inventory: 1
+                        nightCount: 1
                     }
                 }
             ]).exec();
-
-            // Aggregate for the previous day
-            const getBookingDataPreviousDay = await confirmBooking.aggregate([
-                {
-                    $match: {
-                        propertyId: propertyId,
-                        otaId: otaId,
-                        isOTABooking: "true",
-                        $expr: {
-                            $and: [
-                                { $gte: ["$bookingTime", startOfPreviousDay.toISOString()] },
-                                { $lt: ["$bookingTime", endOfPreviousDay.toISOString()] }
-                            ]
-                        }
-                    }
-                },
-                {
-                    $project: {
-                        reservationRate: 1,
-                        propertyId: 1,
-                        otaId: 1,
-                        bookingTime: 1,
-                        inventory: 1
-                    }
-                }
-            ]).exec();
-
-            // Calculate revenue for the current day
-            const totalCurrentDayRevenue = getBookingDataCurrentDay.reduce((sum, booking) => {
+        
+            let totalRevenue = 0;
+            let totalNightCount = 0;
+        
+            getBookingDataCurrentDate.forEach(booking => {
                 const revenue = parseFloat(booking.reservationRate[0].roomCharges[0].grandTotal) || 0;
-                return sum + revenue;
-            }, 0).toFixed(2);
-            console.log('totalCurrentDayRevenue: ',  totalCurrentDayRevenue);
-            // Calculate revenue for the previous day
-            const totalPreviousDayRevenue = getBookingDataPreviousDay.reduce((sum, booking) => {
-                const revenue = parseFloat(booking.reservationRate[0].roomCharges[0].grandTotal) || 0;
-                return sum + revenue;
-            }, 0).toFixed(2);
-            console.log('totalPreviousDayRevenue: ',  totalPreviousDayRevenue);
-
-            // Calculate percentage increase or decrease
-            const revenueStatus = parseFloat(totalCurrentDayRevenue) > parseFloat(totalPreviousDayRevenue) ? "profit" : "loss";
-            const percentage = ((parseFloat(totalCurrentDayRevenue) - parseFloat(totalPreviousDayRevenue)) / Math.abs(parseFloat(totalPreviousDayRevenue))) * 100;
-            console.log('percentage: ', percentage);
-
-            // Prepare the response object
+                const nightCount = parseInt(booking.nightCount[0].nightCount) || 0;
+        
+                totalRevenue += revenue;
+                totalNightCount += nightCount;
+            });
+        
+            const ADR = totalNightCount > 0 ? (totalRevenue / totalNightCount).toFixed(2) : 0;
+        
             const responseData = {
-                totalRevenue: totalCurrentDayRevenue,
-                revenueStatus: revenueStatus,
-                percentage: percentage.toFixed(2),
-                dailyData: [
-                    {
-                        day: format(startOfPreviousDay, 'yyyy-MM-dd'),
-                        revenue: totalPreviousDayRevenue,
-                    },
-                    {
-                        day: format(startOfCurrentDay, 'yyyy-MM-dd'),
-                        revenue: totalCurrentDayRevenue,
-                    },
-                ],
+                totalRevenue: totalRevenue.toFixed(2),
+                ADR: ADR
             };
-
+        
             return res.status(200).json({ data: responseData, statuscode: 200 });
         }
-
+        
 
         return res.status(400).json({ message: "Please enter a valid filter", statuscode: 400 })
     } catch (err) {
@@ -411,4 +357,4 @@ const revenueOTAData = async (req, res) => {
     }
 }
 
-export default revenueOTAData;
+export default adrOtaData;

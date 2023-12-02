@@ -17,7 +17,17 @@ const getInventory = async (req, res) => {
             .json({ message: "User not found or invalid userId", statuscode: 400 });
     }
 
-    const getReservationTypeName = await reservationModel.findOne({ "reservationName.0.reservationName": "Confirmed" }).select('reservationName reservationTypeId')
+    const getReservationTypeName = await reservationModel.findOne({
+        "displayStatus.0.displayStatus": "1",
+        "propertyId": propertyId,
+        $or: [
+            { "status.0.status": "Confirmed" },
+            { "status.0.status": "confirmed" },
+            { "status.0.status": "confirm" },
+            { "status.0.status": "Confirm" }
+        ]
+    }).select('reservationName reservationTypeId');
+    // console.log(getReservationTypeName.reservationTypeId)
     const reservationId = getReservationTypeName.reservationTypeId
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
     if (!result.success) {

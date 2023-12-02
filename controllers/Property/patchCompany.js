@@ -44,6 +44,7 @@ const updateCompany = async (req, res) => {
       month,
       deviceType,
       ipAddress,
+      uploadedBy
     } = req.body;
     const findUser = await verifiedUser.findOne({ userId });
     if (!findUser || !userId) {
@@ -76,9 +77,7 @@ const updateCompany = async (req, res) => {
       let imageUrl = "";
       if (req.files["companyLogo"]) {
         imageUrl = await uploadImageToS3(req.files["companyLogo"][0]);
-      }
-
-      if (companyLogo) {
+        // console.log(456)
         const companyLogoObject = {
           companyLogo: imageUrl,
           logId: randomString.generate(10),
@@ -88,13 +87,15 @@ const updateCompany = async (req, res) => {
         const companyLogoObject2 = {
           companyLogo: imageUrl,
           logId: companyLogoObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.companyLogo.unshift(companyLogoObject2);
       }
+      // console.log(imageUrl, "hvghgh")
+     
       if (companyName) {
         const companyNameObject = {
           companyName: companyName,
@@ -105,10 +106,10 @@ const updateCompany = async (req, res) => {
         const companyNameObject2 = {
           companyName: companyName,
           logId: companyNameObject.logId,
-          deviceType:deviceType,
-          userId:userId,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          deviceType: deviceType,
+          userId: userId,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.companyName.unshift(companyNameObject2);
       }
@@ -122,10 +123,10 @@ const updateCompany = async (req, res) => {
         const accountTypeObject2 = {
           accountType: accountType,
           logId: accountTypeObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.accountType.unshift(accountTypeObject2);
       }
@@ -139,10 +140,10 @@ const updateCompany = async (req, res) => {
         const companyEmailObject2 = {
           companyEmail: companyEmail,
           logId: companyEmailObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.companyEmail.unshift(companyEmailObject2);
       }
@@ -156,10 +157,10 @@ const updateCompany = async (req, res) => {
         const companyWebsiteObject2 = {
           companyWebsite: companyWebsite,
           logId: companyWebsiteObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.companyWebsite.unshift(companyWebsiteObject2);
       }
@@ -172,10 +173,10 @@ const updateCompany = async (req, res) => {
         const shortCodeObject2 = {
           shortCode: shortCode,
           logId: shortCodeObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.shortCode.unshift(shortCodeObject2);
       }
@@ -192,7 +193,7 @@ const updateCompany = async (req, res) => {
           userId: userId,
           deviceType: deviceType,
           ipAddress: ipAddress,
-          modifiedOn:currentUTCTime
+          modifiedOn: currentUTCTime
         };
         companyLogData.registrationNumber.unshift(registrationNumberObject2);
       }
@@ -205,10 +206,10 @@ const updateCompany = async (req, res) => {
         const taxIdObject2 = {
           taxId: taxId,
           logId: taxIdObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.taxId.unshift(taxIdObject2);
       }
@@ -220,11 +221,11 @@ const updateCompany = async (req, res) => {
         companys.openingBalance.unshift(openingBalanceObject);
         const openingBalanceObject2 = {
           openingBalance: openingBalance,
-          logId:openingBalanceObject.logId,
-          userId:userId,
+          logId: openingBalanceObject.logId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.openingBalance.unshift(openingBalanceObject2);
       }
@@ -237,10 +238,10 @@ const updateCompany = async (req, res) => {
         const creditLimitObject2 = {
           creditLimit: creditLimit,
           logId: creditLimitObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.creditLimit.unshift(creditLimitObject2);
       }
@@ -255,10 +256,10 @@ const updateCompany = async (req, res) => {
           month: month,
           days: days,
           logId: billingCycleObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.billingCycle.unshift(billingCycleObject2);
       }
@@ -271,10 +272,10 @@ const updateCompany = async (req, res) => {
         const contactPersonObject2 = {
           contactPerson: contactPerson,
           logId: contactPersonObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.contactPerson.unshift(contactPersonObject2);
       }
@@ -287,10 +288,10 @@ const updateCompany = async (req, res) => {
         const phoneNumberObject2 = {
           phoneNumber: phoneNumber,
           logId: phoneNumberObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.phoneNumber.unshift(phoneNumberObject2);
       }
@@ -303,10 +304,10 @@ const updateCompany = async (req, res) => {
         const personDesignationObject2 = {
           personDesignation: personDesignation,
           logId: personDesignationObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.personDesignation.unshift(personDesignationObject2);
       }
@@ -319,10 +320,10 @@ const updateCompany = async (req, res) => {
         const personEmailObject2 = {
           personEmail: personEmail,
           logId: personEmailObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.personEmail.unshift(personEmailObject2);
       }
@@ -335,10 +336,10 @@ const updateCompany = async (req, res) => {
         const addressLine1Object2 = {
           addressLine1: addressLine1,
           logId: addressLine1Object.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.addressLine1.unshift(addressLine1Object2);
       }
@@ -351,10 +352,10 @@ const updateCompany = async (req, res) => {
         const addressLine2Object2 = {
           addressLine2: addressLine2,
           logId: addressLine2Object.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.addressLine2.unshift(addressLine2Object2);
       }
@@ -367,10 +368,10 @@ const updateCompany = async (req, res) => {
         const countryObject2 = {
           country: country,
           logId: countryObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.country.unshift(countryObject2);
       }
@@ -382,11 +383,11 @@ const updateCompany = async (req, res) => {
         companys.state.unshift(stateObject);
         const stateObject2 = {
           state: state,
-          logId:stateObject.logId,
-          userId:userId,
+          logId: stateObject.logId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.state.unshift(stateObject2);
       }
@@ -399,10 +400,10 @@ const updateCompany = async (req, res) => {
         const cityObject2 = {
           city: city,
           logId: cityObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.city.unshift(cityObject2);
       }
@@ -415,10 +416,10 @@ const updateCompany = async (req, res) => {
         const zipCodeObject2 = {
           zipCode: zipCode,
           logId: zipCodeObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.zipCode.unshift(zipCodeObject2);
       }
@@ -431,10 +432,10 @@ const updateCompany = async (req, res) => {
         const effectiveFromObject2 = {
           effectiveFrom: effectiveFrom,
           logId: effectiveFromObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.effectiveFrom.unshift(effectiveFromObject2);
       }
@@ -447,10 +448,10 @@ const updateCompany = async (req, res) => {
         const expirationObject2 = {
           expiration: expiration,
           logId: expirationObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.expiration.unshift(expirationObject2);
       }
@@ -463,10 +464,10 @@ const updateCompany = async (req, res) => {
         const contractTypeObject2 = {
           contractType: contractType,
           logId: contractTypeObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.contractType.unshift(contractTypeObject2);
       }
@@ -479,10 +480,10 @@ const updateCompany = async (req, res) => {
         const creditLimitObject2 = {
           creditLimit: creditLimit,
           logId: creditLimitObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.creditLimit.unshift(creditLimitObject2);
       }
@@ -495,27 +496,28 @@ const updateCompany = async (req, res) => {
         const contractTermsObject2 = {
           contractTerms: contractTerms,
           logId: contractTermsObject.logId,
-          userId:userId,
+          userId: userId,
           deviceType: deviceType,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         };
         companyLogData.contractTerms.unshift(contractTermsObject2);
       }
       if (contractPdfs) {
-        const contractPdfObjects =  contractPdfs.map((contractPdfUrl) => ({
-            contractPdf: contractPdfUrl,
-            logId: randomString.generate(10),
-          }));
+        const contractPdfObjects = contractPdfs.map((contractPdfUrl) => ({
+          contractPdf: contractPdfUrl,
+          uploadedBy: uploadedBy,
+          logId: randomString.generate(10),
+        }));
         companys.contractPdf = contractPdfObjects.concat(companys.contractPdf);
-        const contractPdfObjects2 =  contractPdfs.map((contractPdfUrl,index) => ({
-            contractPdf: contractPdfUrl,
-            logId: contractPdfObjects[index].logId,
-            userId:userId,
-            deviceType: deviceType,
-            ipAddress:ipAddress,
-            modifiedOn:currentUTCTime
-          }));
+        const contractPdfObjects2 = contractPdfs.map((contractPdfUrl, index) => ({
+          contractPdf: contractPdfUrl,
+          logId: contractPdfObjects[index].logId,
+          userId: userId,
+          deviceType: deviceType,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
+        }));
         companyLogData.contractPdf = contractPdfObjects2.concat(companyLogData.contractPdf);
       }
       const updatedCompany = await companys.save();

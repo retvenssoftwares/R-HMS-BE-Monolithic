@@ -1,4 +1,5 @@
 import barRatePlan from "../../models/barRatePlan.js";
+import moment from "moment";
 import roomTypeModel from "../../models/roomType.js";
 import { findUserByUserIdAndToken } from "../../helpers/helper.js";
 import checkRate from "../InventoryAndRates/checkAvailableRates.js";
@@ -20,6 +21,8 @@ const getRatePlansList = async (req, res) => {
             return res.status(200).json({ message: "No rateplans found", status: 200 });
         }
 
+        const adjustedCheckOutDate = moment(checkOutDate).subtract(1, 'days').format('YYYY-MM-DD');
+
         const foundRateData = await Promise.all(findRatePlans.map(async (rateData) =>               {
             const roomTypeName = await roomTypeModel.findOne({ roomTypeId: roomTypeId }).select('roomTypeName').sort({_id:-1}).lean();
 
@@ -33,13 +36,17 @@ const getRatePlansList = async (req, res) => {
                     userId,
                     roomTypeId: roomTypeId,
                     startDate: checkInDate,
-                    endDate: checkOutDate,
+                    endDate: adjustedCheckOutDate,
                     status: true
                 },
                 headers: {
                     authcode: authCodeValue,
                 },
             }, res);
+
+            // checkRateResponse.map((item)=>{
+            //     console.log(item.barRatePlanId,item.roomTypeId,item.baseRates)
+            // })
 
             checkRateResponse.forEach((item) => {
                 item.baseRates.forEach((item2) => {
@@ -60,9 +67,9 @@ const getRatePlansList = async (req, res) => {
 
             });
 
-            // console.log(roomRate)
 
             const roomRateData = roomRate[rateData.barRatePlanId];
+
             if (roomRateData) {
                 const valuesAt0Position = roomRateData[0];
                 const valuesAt1Position = roomRateData[1];

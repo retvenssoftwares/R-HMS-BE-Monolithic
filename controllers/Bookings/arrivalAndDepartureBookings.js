@@ -23,7 +23,7 @@ export const gerArrivalBookings = async (req, res) => {
     }
    
 
-    const currentDate = new Date();
+   const currentDate = new Date();
    const currentDateString = currentDate.toISOString().split('T')[0]; // Get current date in "YYYY-MM-DD" format
     
     

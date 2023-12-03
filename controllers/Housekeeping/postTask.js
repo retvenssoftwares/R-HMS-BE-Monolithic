@@ -6,17 +6,17 @@ import taskTypeModel from "../../models/taskModel.js";
 import {
   getCurrentUTCTimestamp,
   findUserByUserIdAndToken,
+  validateHotelCode
 } from "../../helpers/helper.js";
 
 const postTask = async (req, res) => {
   try {
     const {
       userId,
-      employeeId,
       propertyId,
-      taskId,
       taskName,
       roomId,
+      floorId,
       taskDescription,
       time,
       dueOn,
@@ -24,7 +24,6 @@ const postTask = async (req, res) => {
       taskStatus,
       assignedTo,
       taskType,
-
     } = req.body;
     const authCodeValue = req.headers["authcode"];
     const findUser = await verifiedUser.findOne({ userId });
@@ -34,13 +33,23 @@ const postTask = async (req, res) => {
         .json({ message: "User not found or invalid userId", statuscode: 400 });
     }
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
+    const result2 = await validateHotelCode(userId, propertyId)
+    if (!result2.success) {
+      return res
+        .status(result2.statuscode)
+        .json({ message: result2.message, statuscode: result2.statuscode });
+    }
     const currentUTCTime = await getCurrentUTCTimestamp();
 
     if (result.success) {
       let userRole = findUser.role[0].role;
+      const assignedTo = req.body.assignedTo || [];
+      const assignedToArray = assignedTo.map(id => ({
+        assignedTo: id,
+        logId: Randomstring.generate(10),
+      }));
       const newTask = new taskTypeModel({
         propertyId,
-        employeeId,
         taskId: Randomstring.generate(8),
         taskName: [{
           taskName: taskName,
@@ -48,6 +57,10 @@ const postTask = async (req, res) => {
         }],
         roomId: [{
           roomId: roomId,
+          logId: Randomstring.generate(10),
+        }],
+        floorId: [{
+          floorId: floorId,
           logId: Randomstring.generate(10),
         }],
         taskDescription: [{
@@ -83,10 +96,9 @@ const postTask = async (req, res) => {
 
         modifiedBy: [],
         modifiedOn: [],
-        assignedTo: [{
-          assignedTo: assignedTo,
-          logId: Randomstring.generate(10),
-        }],
+        assignedTo: assignedToArray.length > 0 ? [{
+          assignedTo: assignedToArray,
+        }] : [],
 
       });
       await newTask.save();

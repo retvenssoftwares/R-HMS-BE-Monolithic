@@ -15,30 +15,31 @@ const geAllDiscountPlans = async (req, res) => {
             if (!result.success) {
                 return res.status(result.statuscode).json({ message: "Invalid propertyId entered", statuscode: result.statuscode })
             }
-            const findDiscountRatePlans = await discountRatePlanModel.find({ propertyId,"displayStatus.0.displayStatus":"1"  }, 'blackOutDates applicableOn discountType discountName shortCode discountPercent discountPrice validityPeriodFrom validityPeriodTo propertyId discountPlanId barRates.extraAdultRate barRates.extraChildRate barRates.discountTotal -_id').sort({_id:-1}).lean();
+            const findDiscountRatePlans = await discountRatePlanModel.find({ propertyId, "displayStatus.0.displayStatus": "1" }, 'blackOutDates applicableOn discountType discountName newRatePlanName shortCode discountPercent discountPrice validityPeriodFrom validityPeriodTo propertyId discountPlanId barRates.extraAdultRate barRates.extraChildRate barRates.discountTotal -_id').sort({ _id: -1 }).lean();
 
             if (findDiscountRatePlans.length > 0) {
                 const mappedDiscountRatePlans = findDiscountRatePlans.map((plan) => {
                     return {
-                        propertyId:plan.propertyId || '',
-                        discountPlanId:plan.discountPlanId || '',
-                        rateType:plan.rateType || '',
-                        createdBy:plan.createdBy || '',
-                        createdOn:plan.createdOn || '',
-                        roomTypeId:plan.roomTypeId || '',
-                        ratePlanId:plan.ratePlanId || '',
-                        discountName:plan.discountName[0].discountName || '',
-                        shortCode:plan.shortCode[0].shortCode || '',
-                        discountType:plan.discountType[0].discountType || '',
-                        discountPersent:plan.discountPercent[0].discountPersent || '',
-                        discountPrice:plan.discountPrice[0].discountPrice || '',
-                        validityPeriodFrom:plan.validityPeriodFrom[0].validityPeriodFrom || '',
-                        validityPeriodTo:plan.validityPeriodTo[0].validityPeriodTo || '',
+                        propertyId: plan.propertyId || '',
+                        discountPlanId: plan.discountPlanId || '',
+                        rateType: plan.rateType || '',
+                        createdBy: plan.createdBy || '',
+                        createdOn: plan.createdOn || '',
+                        roomTypeId: plan.roomTypeId || '',
+                        ratePlanId: plan.ratePlanId || '',
+                        discountName: plan.discountName[0].discountName || '',
+                        shortCode: plan.shortCode[0].shortCode || '',
+                        newRatePlanName: plan.newRatePlanName[0].newRatePlanName || '',
+                        discountType: plan.discountType[0].discountType || '',
+                        discountPersent: plan.discountPercent[0].discountPersent || '',
+                        discountPrice: plan.discountPrice[0].discountPrice || '',
+                        validityPeriodFrom: plan.validityPeriodFrom[0].validityPeriodFrom || '',
+                        validityPeriodTo: plan.validityPeriodTo[0].validityPeriodTo || '',
                         blackOutDates: plan.blackOutDates.length > 0 ? plan.blackOutDates[0].blackOutDates : "",
                         extraAdultRate: plan.barRates.extraAdultRate[0].extraAdultRate || '',
                         extraChildRate: plan.barRates.extraChildRate[0].extraChildRate || '',
                         discountTotal: plan.barRates.discountTotal[0].discountTotal || '',
-                }
+                    }
                 })
                 return res.status(200).json({ data: mappedDiscountRatePlans, statuscode: 200 });
             } else {

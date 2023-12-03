@@ -15,6 +15,10 @@ const propertySchema = new Schema({
         type: String,
         default: ""
     },
+    createdBy: {
+        type: String,
+        default: ""
+    },
 
     OTAs: [{
         otaId: { type: String, default: '' },
@@ -189,54 +193,126 @@ const propertySchema = new Schema({
         type: String,
         default: ''
     },
-    propertyChainName: {
-        type: String,
-        default: ""
-    },
-    propertyType: {
-        type: String,
-        default: ""
-    },
-    websiteUrl: {
-        type: String,
-        default: ""
-    },
-    baseCurrency: {
-        type: String,
-        default: ''
-    },
-    starCategory: {
-        type: String,
-        default: ''
-    },
-    phone: {
-        type: String,
-        default: ""
-    },
-    reservationPhone: {
-        type: String,
-        default: ''
-    },
-    registrationNumber: {
-        type: String,
-        default: ''
-    },
-    roomsInProperty: {
-        type: String,
-        default: ''
-    },
-    taxName: {
-        type: String,
-        default: ''
-    },
-    ratePercent: {
-        type: String,
-        default: ''
-    },
+    propertyChainName:[{
+        propertyChainName: {
+            type: String,
+            default: ""
+        },
+        logId:{ 
+            type: String,
+             default:""
+            }
+        }],
+        propertyType:[{
+            propertyType: {
+                type: String,
+                default: ""
+            },
+            logId:{ 
+                type: String,
+                 default:""
+                }
+        }],
+        websiteUrl:[{
+            websiteUrl: {
+                type: String,
+                default: ""
+            },
+            logId:{
+                type: String,
+                default:""
+            }
+        }],
+        baseCurrency:[{
+            baseCurrency: {
+                type: String,
+                default: ''
+            },
+            logId:{
+                type: String,
+                default:""
+            }
+        }],
+        starCategory:[{
+            starCategory: {
+                type: String,
+                default: ''
+            },
+            logId:{
+                type: String,
+                default:""
+            }
+        }],
+        phone:[{
+            phone: {
+                type: String,
+                default: ""
+            },
+            logId:{
+                type: String,
+                default:''
+            }
+        }],
+        reservationPhone:[{
+            reservationPhone: {
+                type: String,
+                default: ''
+            },
+            logId:{
+                type: String,
+                default:''
+            }
+        }],
+        registrationNumber:[{
+            registrationNumber: {
+                type: String,
+                default: ''
+            },
+            logId:{
+                type: String,
+                default:''
+            }
+        }],
+        roomsInProperty:[{
+            roomsInProperty: {
+                type: String,
+                default: ''
+            },
+            logId:{
+                type: String,
+                default:''
+            }
+        }],
+        taxName:[{
+            taxName: {
+                type: String,
+                default: ''
+            },
+            logId:{
+                type: String,
+                default:''
+            }
+        }],
+        ratePercent:[{
+            ratePercent: {
+                type: String,
+                default: ''
+            },
+            logId:{
+                type: String,
+                default:''
+            }
+        }],
+   propertyRating:[{
     propertyRating: {
         type: String,
         default: ''
     },
+    logId:{
+        type: String,
+        default:''
+    }
+   }],
     propertyDescription: [{
         propertyDescription: {
             type: String,

@@ -13,7 +13,7 @@ const getPropertyById = async (req, res) => {
         }
         //const propertyImages = await propertyImage.find({ propertyId: propertyId ,"displayStatus.0.displayStatus": "1"});
         //console.log(propertyImages)
-        const findProperty = await propertyModel.findOne({ propertyId }, 'propertyId propertyType phone reservationPhone propertyRating  starCategory propertyDescription createdOn country propertyAddress1 propertyEmail location.latitude location.longitude propertyAddress2 city postCode propertyName websiteUrl rating amenities hotelLogo state -_id').lean();
+        const findProperty = await propertyModel.findOne({ propertyId,"displayStatus.0.displayStatus":"1" }, 'propertyId propertyType phone reservationPhone propertyRating  starCategory propertyDescription createdOn country propertyAddress1 propertyEmail location.latitude location.longitude propertyAddress2 city postCode propertyName websiteUrl rating amenities hotelLogo state -_id').lean();
         if (!findProperty) {
             return res.status(404).json({ message: "Property not found", statuscode: 404 });
         }
@@ -47,13 +47,13 @@ const getPropertyById = async (req, res) => {
         const planData = {
             ...findProperty,
             propertyId: propertyId,
-            phone:findProperty.phone || '',
-            propertyRating:findProperty.propertyRating || '',
-            reservationPhone:findProperty.reservationPhone || '',
-            websiteUrl:findProperty.websiteUrl || '',
+            phone:findProperty.phone[0].phone || '',
+            propertyRating:findProperty.propertyRating[0].propertyRating || '',
+            reservationPhone:findProperty.reservationPhone[0].reservationPhone || '',
+            websiteUrl:findProperty.websiteUrl[0].websiteUrl || '',
             latitude: findProperty.location && findProperty.location.length > 0 ? findProperty.location[0].latitude : '',
             longitude: findProperty.location && findProperty.location.length > 0 ? findProperty.location[0].longitude : '',
-            propertyType: findProperty.propertyType || "",
+            propertyType: findProperty.propertyType[0].propertyType || "",
             starCategory: findProperty.starCategory || "",
             propertyDescription: findProperty.propertyDescription.length > 0 ? findProperty.propertyDescription[0].propertyDescription : "",
             createdOn: findProperty.createdOn || "",
@@ -61,7 +61,7 @@ const getPropertyById = async (req, res) => {
             propertyAddress1: findProperty.propertyAddress1.length > 0 ? findProperty.propertyAddress1[0].propertyAddress1 : "",
             propertyAddress2: findProperty.propertyAddress2.length > 0 ? findProperty.propertyAddress2[0].propertyAddress2 : "",
             propertyEmail: findProperty.propertyEmail.length > 0 ? findProperty.propertyEmail[0].propertyEmail : "",
-            city: findProperty.city.length > 0 ? findProperty.city[0].city : "",
+            city: findProperty.city[0].city || "",
             postCode: findProperty.postCode.length > 0 ? findProperty.postCode[0].postCode : "",
             propertyName: findProperty.propertyName.length > 0 ? findProperty.propertyName[0].propertyName : "",
             rating: findProperty.rating.length > 0 ? findProperty.rating[0].rating : "",

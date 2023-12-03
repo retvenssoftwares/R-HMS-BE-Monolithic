@@ -107,6 +107,7 @@ const allRatePlans = async (req, res) => {
                     shortCode: rate.shortCode[0].shortCode || '',
                     ratePlanName: rate.discountName[0].discountName || '',
                     roomTypeName: roomTypeName,
+                    newRatePlanName: rate.newRatePlanName[0].newRatePlanName || '',
                     inclusion: rate.ratePlanInclusion[0]?.ratePlanInclusion.length || 0,
                     ratePlanTotal: rate.barRates.discountTotal[0].discountTotal || '',
                     extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',

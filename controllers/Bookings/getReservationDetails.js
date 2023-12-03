@@ -22,7 +22,15 @@ export const getReservationDetails = async (req, res) => {
         return res.status(404).json({ message: "Invalid token", statuscode: 404 })
     }
 
-    const confirmBookingDetails = await bookingDetails.find({propertyId})
+    const currentDate = new Date();
+    const currentDateString = currentDate.toISOString().split('T')[0]; // Get current date in "YYYY-MM-DD" format
+    //console.log(currentDateString)
+     
+
+    const confirmBookingDetails = await bookingDetails.find({
+        propertyId,
+       bookingTime: { $regex: new RegExp(`^${currentDateString}`) }
+      });
 
     if (!confirmBookingDetails) {
         return res.status(404).json({ message: "data not found", statusCode: 404 })

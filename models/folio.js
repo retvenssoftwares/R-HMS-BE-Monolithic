@@ -24,272 +24,216 @@ const folioManagement = new mongoose.Schema({
     },
 
 
+    totalBalance: {
+        type: Number
+    },
 
-    // charge: [{
+    isTransfered: {
+        type: String,
+        default: "false"
+    },
 
-    //     charge: [{
+    isMasterFolio : {
+        type: String,
+        default: "false"
+    },
 
-    //         // referenceNumber : {
-    //         //     type:String,
-    //         //     default : ""
-    //         // },
+    isSettleFolio :{
+        type: String,
+        default: "false"
+    },
 
-    //         // particular:{
-    //         //     type:String,
-    //         //     default : ""
-    //         // },
+    isClosed:{
+        type: String,
+        default: "false"
+    },
+    
+    reservationIds:{
+        type: String,
+        default: ""
+    },
 
-    //         chagreType: {
-    //             type: String,
-    //             default: ""
-    //         },
+    billingPreferences :[{
+        billTo :{
+            type: String,
+            default: ""
+        },
 
-    //         chargeRule: {
-    //             type: String,
-    //             default: ""
-    //         },
+        nameOnFolio:{
+            type: String,
+            default: ""
+        },
 
-    //         rate: {
-    //             type: String,
-    //             default: ""
-    //         },
+        gstinNo:{
+            type: String,
+            default: ""
+        },
 
-    //         totalCharges: {
-    //             type: String,
-    //             default: ""
-    //         },
+        logId:{
+            type: String,
+            default: ""
+        }
+    }],
 
-    //         quantity: {
-    //             type: String,
-    //             default: ""
-    //         },
+    transferedFolio: {
+        type: String,
+        default: ""
+    },
 
-    //         user: {
-    //             type: String,
-    //             default: ""
-    //         },
+    document : [{
+        fileName : {
+            type: String,
+            default: ""
+        },
 
-    //         Narration: {
-    //             type: String,
-    //             default: ""
-    //         },
-
-    //     }],
-
-    //     logId: {
-    //         type: String,
-    //         default: ""
-    //     }
-
-    // }],
-
-    // payment: [{
-    //     payment: [{
-
-    //         // referenceNumber : {
-    //         //     type:String,
-    //         //     default : ""
-    //         // },
-
-    //         // particular:{
-    //         //     type:String,
-    //         //     default : ""
-    //         // },
-
-    //         paymentType: {
-    //             type: String,
-    //             default: ""
-    //         },
+        remark:{
+            type: String,
+            default: ""
+        },
 
 
-    //         paymentMethod: {
-    //             type: String,
-    //             default: ""
-    //         },
+        logId:{
+            type: String,
+            default: ""
+        }
+    }],
 
-    //         amount: {
-    //             type: String,
-    //             default: ""
-    //         },
-
-    //         narration: {
-    //             type: String,
-    //             default: ""
-    //         },
-
-    //     }],
-
-    //     logId: {
-    //         type: String,
-    //         default: ""
-    //     }
-    // }],
-
-    // // adjustment: [{
-    // //     adjustment: [{
-
-    // //         adjustmentFor: {
-    // //             type: String,
-    // //             default: ""
-    // //         },
-
-    // //         amount: {
-    // //             type: String,
-    // //             default: ""
-    // //         },
-
-    // //         narration: {
-    // //             type: String,
-    // //             default: ""
-    // //         },
-
-    // //     }],
-
-    // //     logId: {
-    // //         type: String,
-    // //         default: ""
-    // //     }
-    // // }],
-
-
-    // // discount: [{
-    // //     discount: [{
-
-    // //         discountType: {
-    // //             type: String,
-    // //             default: ""
-    // //         },
-
-    // //         dsicount: {
-    // //             type: String,
-    // //             default: ""
-    // //         },
-
-    // //         amount: {
-    // //             type: String,
-    // //             default: ""
-    // //         },
-
-    // //         narration: {
-    // //             type: String,
-    // //             default: ""
-    // //         }
-    // //     }],
-
-    // //     logId: {
-    // //         type: String,
-    // //         default: ""
-    // //     }
-    // // }],
+    // voidStatus:{
+    //     type: String,
+    //     default: "false"
+    // },
+   
 
     folioRecords: [{
 
-        folioRecords: [{
+        date: {
+            type: Date,
+            default: Date.now,
+        },
 
-            date: {
-                type: Date,
-                default: Date.now,
-            },
+        particular: {
+            type: String,
+            default: ""
+        },
 
-            particular: {
+        refNo: {
+            type: String,
+            default: ""
+        },
+
+        user: {
+            type: String,
+            default: ""
+        },
+
+        /// discount 
+        discountType: {
+            type: String,
+            default: ""
+        },
+
+        discountPercentage: {
+            type: String,
+            default: ""
+        },
+
+        discountAmount: {
+            type: String,
+            default: ""
+        },
+
+        //adjustment
+
+        adjustmentFor: {
+            type: String,
+            default: ""
+        },
+
+        adjustmentAmount: {
+            type: String,
+            default: ""
+        },
+
+
+        //payment
+        paymentType: {
+            type: String,
+            default: ""
+        },
+
+        paymentMethod: {
+            type: String,
+            default: ""
+        },
+
+        paymentAmount: {
+            type: String,
+            default: ""
+        },
+
+        //charge
+        chagreType: {
+            type: String,
+            default: ""
+        },
+
+        chargeRule: {
+            type: String,
+            default: ""
+        },
+
+        rate: {
+            type: String,
+            default: ""
+        },
+
+        totalCharges: {
+            type: String,
+            default: ""
+        },
+
+        taxArray:[{
+            taxId:{
                 type: String,
                 default: ""
             },
 
-            refNo: {
+            logId:{
                 type: String,
                 default: ""
-            },
+            }
+        }],
 
-            user: {
-                type: String,
-                default: ""
-            },
+        quantity: {
+            type: String,
+            default: ""
+        },
 
-            /// discount 
-            discountType: {
-                type: String,
-                default: ""
-            },
+        narration: {
+            type: String,
+            default: ""
+        },
 
-            dsicount: {
-                type: String,
-                default: ""
-            },
+        voidStatus:{
+            type: String,
+            default: "false"
+        },
 
-            discountAmount: {
-                type: String,
-                default: ""
-            },
+        reasons:{
+            type: String,
+            default: "false"
+        },
 
-            //adjustment
-
-            adjustmentFor: {
-                type: String,
-                default: ""
-            },
-
-            adjustmentAmount: {
-                type: String,
-                default: ""
-            },
+        logId: {
+            type: String,
+            default: ""
+        }
 
 
-            //payment
-            paymentType: {
-                type: String,
-                default: ""
-            },
+    }],
 
-            paymentMethod: {
-                type: String,
-                default: ""
-            },
 
-            paymentAmount: {
-                type: String,
-                default: ""
-            },
 
-            //charge
-            chagreType: {
-                type: String,
-                default: ""
-            },
-
-            chargeRule: {
-                type: String,
-                default: ""
-            },
-
-            rate: {
-                type: String,
-                default: ""
-            },
-
-            totalCharges: {
-                type: String,
-                default: ""
-            },
-
-            quantity: {
-                type: String,
-                default: ""
-            },
-
-            narration: {
-                type: String,
-                default: ""
-            },
-
-            balance: {
-                type: String,
-                default: ""
-            },
-
-        }]
-
-    }]
 
 })
 

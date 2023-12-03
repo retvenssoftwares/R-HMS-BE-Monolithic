@@ -40,10 +40,10 @@ export const addConfirmBooking = async (req, res) => {
     const companyId = await holdData.findOne({
       reservationNumber: reservationNumber,
     });
-  
+
 
     if (companyId.companyId) {
-      
+
       const balanceDetails = await comapnyLedger.findOne({ companyId: companyId.companyId, propertyId: companyId.propertyId })
 
       if (balanceDetails !== null) {
@@ -377,7 +377,7 @@ export const addConfirmBooking = async (req, res) => {
             logId: randomString.generate(10),
           },
         ],
-        
+
         companyId: companyId || "",
 
         reservationNumber,
@@ -387,32 +387,39 @@ export const addConfirmBooking = async (req, res) => {
 
       const folioDetails = new folio({
 
-        folioNo : randomString.generate({ charset: 'numeric', length: 6 }),
+        folioNo: randomString.generate({ charset: 'numeric', length: 6 }),
 
-        propertyId : confirmBookingDetails.propertyId,
+        propertyId: confirmBookingDetails.propertyId,
 
-        reservationNumber : confirmBookingDetails.reservationNumber,
+        reservationNumber: confirmBookingDetails.reservationNumber,
 
-        folioRecords : [{
-          folioRecords : [{
+        reservationIds : confirmBookingDetails.reservationId,
 
-            particular : "Room Charges",
+        totalBalance: confirmBookingDetails.reservationRate[0].roomCharges[0].grandTotal || "",
 
-            refNo : randomString.generate({ charset: 'numeric', length: 10 }) ,
 
-            user : findUser.role[0].role || "",
+        folioRecords: [{
 
-            balance : confirmBookingDetails.reservationRate[0].roomCharges[0].grandTotal || "",
+          particular: "Room Charges",
 
-          }]
+          isMasterFolio : "true",
+
+          refNo: randomString.generate({ charset: 'numeric', length: 10 }),
+
+          user: findUser.role[0].role || "",
+
+          totalCharges: confirmBookingDetails.reservationRate[0].roomCharges[0].grandTotal || "",
+
         }]
+
+
 
       })
 
       await folioDetails.save()
     });
 
-     const deleteData = await holdData.deleteMany({ reservationNumber: reservationNumber })
+    const deleteData = await holdData.deleteMany({ reservationNumber: reservationNumber })
 
     return res.status(200).json({
       message: "Booking created successfully",

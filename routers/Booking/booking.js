@@ -16,7 +16,7 @@ import fetchfloorDetails from "../../controllers/Bookings/getFloorDetails.js"
 import { getReservationDetails } from '../../controllers/Bookings/getReservationDetails.js';
 import {cancelBooking} from "../../controllers/Bookings/cancleBooking.js"
 import { gerArrivalBookings } from '../../controllers/Bookings/arrivalAndDepartureBookings.js';
-import {addCharges} from "../../controllers/Bookings/addCharges.js"
+import {getCancelReservation} from "../../controllers/Bookings/getCancelBooking.js"
 
 
 router.post("/api/createBooking", createResrvation);
@@ -49,6 +49,7 @@ router.patch("/api/canacleBooking",cancelBooking)
 
 router.get("/api/getArrivalBooking",gerArrivalBookings)
 
-router.post("/api/addCharges",addCharges)
+router.get("/api/cancelBooking",getCancelReservation)
+
 
 export default router;

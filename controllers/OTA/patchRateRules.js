@@ -9,7 +9,7 @@ const rateRuleUpdate = async (req, res) => {
     try {
         const { userId, propertyId } = req.query
         const authCodeValue = req.headers['authcode']
-        const { otaId, changeType, rateRuleType, adjustmentValue, otaRatePlanCode, otaRoomTypeCode, connectionId, ratePlanId, roomTypeId } = req.body;
+        const { otaId, changeType, rateRuleType, adjustmentValue, otaRatePlanCode, otaRoomTypeCode, connectionId } = req.body;
         const result = await findUserByUserIdAndToken(userId, authCodeValue)
         if (!result.success) {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
@@ -22,6 +22,17 @@ const rateRuleUpdate = async (req, res) => {
         if (!findRecord) {
             return res.status(404).json({ message: "Incorrect otaId", statuscode: 404 });
         }
+        const existingEntryIndexOfRoomAndRate = findRecord.mappedRatePlanData.findIndex(
+            (entry) => entry.otaRatePlanCode === otaRatePlanCode && entry.otaRoomTypeCode === otaRoomTypeCode
+        );
+
+        if (existingEntryIndexOfRoomAndRate === -1) {
+            return res.status(400).json({ message: "Invalid ratePlanCode or roomTypeCode", statuscode: "400" });
+        }
+
+        // Get the roomTypeId and ratePlanId from the existing entry
+        const roomTypeId = findRecord.mappedRatePlanData[existingEntryIndexOfRoomAndRate].roomTypeId || "";
+        const ratePlanId = findRecord.mappedRatePlanData[existingEntryIndexOfRoomAndRate].ratePlanId || "";
 
         const getBarRateName = await barRatePlanModel.findOne({ barRatePlanId: ratePlanId }).select('ratePlanName barRatePlanId');
         if (!getBarRateName) {

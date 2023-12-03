@@ -27,6 +27,8 @@ import bulkUpdateRoutes from './routers/InventoryAndRates/manageInventoryRates.r
 import mmtBookingNotificationRoutes from './routers/OTA/Notifications/notification.routes.js'
 import otaRoutes from './routers/OTA/ota.router.js'
 import folio from "./routers/Folio/folio.js"
+import Dashboard   from './routers/dashboard/dashboard.js';
+import housekeeping from './routers/Housekeeping/housekeeping.routes.js'
 // import { oldBooking } from "./helpers/deletOldBooking.js";
 
 app.use(cors({
@@ -50,9 +52,12 @@ app.use(companyRoutes)
 app.use(booking)
 app.use(bulkUpdateRoutes)
 app.use(otaRoutes)
+app.use(housekeeping)
 app.use(mmtRoutes)
 app.use(superAdminRoutes)
 app.use(folio)
+app.use(Dashboard)
+
 
 app.get("/", (req, res) => {
   return res.status(200).send("welcome to HMS backend services")

@@ -17,7 +17,7 @@ const companyNames = async (req, res) => {
       if (!result.success) {
         return res.status(result.statuscode).json({ message: "Invalid propertyId entered", statuscode: result.statuscode })
       }
-      const findCompanyName = await companyModel.find({ propertyId }).select('companyName companyId').lean();
+      const findCompanyName = await companyModel.find({ propertyId,"displayStatus.0.displayStatus":"1" }).select('companyName companyId').lean();
 
       if (findCompanyName.length > 0) {
         const foundData = findCompanyName.map((companyData) => {

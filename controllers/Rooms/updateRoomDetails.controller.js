@@ -32,15 +32,17 @@ const patchRoom = async (req,res)=>{
             noOfBeds,
             deviceType, 
             displayStatus,
+            ipAddress
           } = req.body;
 
           const roomTypeId = req.params.roomTypeId;
           const authCodeValue = req.headers['authcode'];
-          const findUser = await userModel.findOne({ userId });
+          const findUser = await userModel.findOne({ userId : userId });
           if (!findUser) {
             return res.status(404).json({ message: "User not found or invalid userid", statuscode: 404 })
         }
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
+        const currentUTCTime = await getCurrentUTCTimestamp();
         if(result.success){
         const findRoomType = await roomModel.findOne({ roomTypeId });
 
@@ -50,81 +52,266 @@ const patchRoom = async (req,res)=>{
             return res.status(404).json({ message: "roomType not found", statuscode: 404 });
         }
 
-        //amennites
-        const amenityIds = req.body.amenityIds;
-        const amenityIdsArray = amenityIds.split(',');
-        const currentUTCTime = await getCurrentUTCTimestamp();
-        const amenityObjects = amenityIdsArray.map((amenityId) => {
-          return {
-            amenityId,
-            addedDate: currentUTCTime,
-          };
-        });
+        
+       // Amenities
+       let amenityObjects = [];
+       if (req.body.amenityIds &&  typeof req.body.amenityIds === "string") {
+         const amenityIdsArray = req.body.amenityIds.split(",");
+         const currentUTCTime = await getCurrentUTCTimestamp();
+         amenityObjects = amenityIdsArray.map((amenityId) => {
+           return {
+             amenityId,
+             addedDate: currentUTCTime,
+           };
+         });
+       }
 
-         //bedType
-      const bedTypeIds= req.body.bedTypeIds;
-      const bedTypeIdsArray = bedTypeIds.split(',');
-      const bedTypeObjects = bedTypeIdsArray.map((bedTypeId) => {
-        return {
-          bedTypeId,
-        };
-      });
+      // BedType
+let bedTypeObjects = [];
+if (req.body.bedTypeIds && typeof req.body.bedTypeIds === "string") {
+  const bedTypeIdsArray = req.body.bedTypeIds.split(",");
+  bedTypeObjects = bedTypeIdsArray.map((bedTypeId) => {
+    return {
+      bedTypeId,
+    };
+  });
+}
         
 
           // Update the roomType fields
           if (shortCode) {
-            findRoomType.shortCode.unshift({ shortCode, logId:Randomstring.generate(10) });
-        }
+            const logId = Randomstring.generate(10);            
+            findRoomType.shortCode.unshift({ shortCode, logId });
+            
+            const shortCodeObject = {
+              shortCode: shortCode,
+              logId: logId,
+              userId: userId,
+              deviceType: deviceType,
+              ipAddress: ipAddress,
+              modifiedOn:currentUTCTime
+            };
+            
+            logRoomType.shortCode.unshift(shortCodeObject);            
+          }
+          
         if (roomDescription) {
-            findRoomType.roomDescription.unshift({ roomDescription, logId:Randomstring.generate(10)});
+            const logId = Randomstring.generate(10);            
+            findRoomType.roomDescription.unshift({ roomDescription, logId });
+            const roomDescriptionObject={
+                roomDescription: roomDescription,
+                logId:logId,
+                userId:userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime
+            }
+            logRoomType.roomDescription.unshift(roomDescriptionObject);
         }
-        if (bedTypeIds) {
-            findRoomType.bedType.unshift({bedType:bedTypeObjects,logId:Randomstring.generate(10)});
-        }
+        if (bedTypeObjects.length > 0) {
+            const logId = Randomstring.generate(10);
+            findRoomType.bedType.unshift({
+              bedType: bedTypeObjects,
+              logId: logId,
+            });
+            const bedTypeObject={
+                bedType: bedTypeObjects,
+                logId:logId,
+                userId:userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime
+            }
+            logRoomType.bedType.unshift(bedTypeObject);
+          }
         if (roomTypeName) {
-            findRoomType.roomTypeName.unshift({ roomTypeName, logId:Randomstring.generate(10) });
+            const logId = Randomstring.generate(10);
+            findRoomType.roomTypeName.unshift({ roomTypeName, logId});
+            const roomTypeNameObject={
+                roomTypeName: roomTypeName,
+                logId:logId,
+                userId:userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime
+            }
+            logRoomType.roomTypeName.unshift(roomTypeNameObject);
         }
         if (baseAdult) {
-            findRoomType.baseAdult.unshift({ baseAdult, logId:Randomstring.generate(10) });
+            const logId = Randomstring.generate(10);
+            findRoomType.baseAdult.unshift({ baseAdult, logId});
+            const baseAdultObject={
+                baseAdult: baseAdult,
+                logId:logId,
+                userId:userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime
+            }
+            logRoomType.baseAdult.unshift(baseAdultObject);
         }
         if (baseChild) {
-            findRoomType.baseChild.unshift({ baseChild, logId:Randomstring.generate(10)});
+            const logId = Randomstring.generate(10);
+            findRoomType.baseChild.unshift({ baseChild, logId});
+            const baseChildObject={
+                baseChild: baseChild,
+                logId:logId,
+                userId:userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime
+            }
+            logRoomType.baseChild.unshift(baseChildObject);
         }
         if (maxAdult) {
-            findRoomType.maxAdult.unshift({ maxAdult, logId:Randomstring.generate(10) });
+            const logId = Randomstring.generate(10);
+            findRoomType.maxAdult.unshift({ maxAdult, logId});
+            const maxAdultObject={
+                maxAdult: maxAdult,
+                logId:logId,
+                userId:userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime
+            }
+            logRoomType.maxAdult.unshift(maxAdultObject);
         }
         if (maxChild) {
-            findRoomType.maxChild.unshift({ maxChild,logId:Randomstring.generate(10) });
+            const logId = Randomstring.generate(10);
+            findRoomType.maxChild.unshift({ maxChild,logId });
+            const maxChildObject={
+                maxChild: maxChild,
+                logId:logId,
+                userId:userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime
+            }
+            logRoomType.maxChild.unshift(maxChildObject);
         }
         if (maxOccupancy) {
-            findRoomType.maxOccupancy.unshift({ maxOccupancy, logId:Randomstring.generate(10) });
+            const logId = Randomstring.generate(10);
+            findRoomType.maxOccupancy.unshift({ maxOccupancy, logId});
+            const maxOccupancyObject={
+                maxOccupancy: maxOccupancy,
+                logId:logId,
+                userId:userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime
+            }
+            logRoomType.maxOccupancy.unshift(maxOccupancyObject);
         }
         if (baseRate) {
-            findRoomType.baseRate.unshift({ baseRate,  logId:Randomstring.generate(10) });
+            const logId = Randomstring.generate(10);
+            findRoomType.baseRate.unshift({ baseRate,  logId });
+            const baseRateObject={
+                baseRate: baseRate,
+                logId:logId,
+                userId:userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime
+            }
+            logRoomType.baseRate.unshift(baseRateObject);
         }
         if (minimumRate) {
-            findRoomType.minimumRate.unshift({ minimumRate, logId:Randomstring.generate(10) });
+            const logId = Randomstring.generate(10);
+            findRoomType.minimumRate.unshift({ minimumRate, logId});
+            const minimumRateObject={
+                minimumRate: minimumRate,
+                logId:logId,
+                userId:userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime
+            }
+            logRoomType.minimumRate.unshift(minimumRateObject);
         }
         if (maximumRate) {
-            findRoomType.maximumRate.unshift({ maximumRate, logId:Randomstring.generate(10) });
+            const logId = Randomstring.generate(10);
+            findRoomType.maximumRate.unshift({ maximumRate, logId});
+            const maximumRateObject={
+                maximumRate: maximumRate,
+                logId:logId,
+                userId:userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime
+            }
+            logRoomType.maximumRate.unshift(maximumRateObject);
         }
         if (extraAdultRate) {
-            findRoomType.extraAdultRate.unshift({ extraAdultRate, logId:Randomstring.generate(10) });
+            const logId = Randomstring.generate(10);
+            findRoomType.extraAdultRate.unshift({ extraAdultRate, logId });
+            const extraAdultRateObject={
+                extraAdultRate: extraAdultRate,
+                logId:logId,
+                userId:userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime
+            }
+            logRoomType.extraAdultRate.unshift(extraAdultRateObject);
         }
         if (extraChildRate) {
-            findRoomType.extraChildRate.unshift({ extraChildRate, logId:Randomstring.generate(10) });
+            const logId = Randomstring.generate(10);
+            findRoomType.extraChildRate.unshift({ extraChildRate, logId });
+            const extraChildRateObject={
+                extraChildRate: extraChildRate,
+                logId:logId,
+                userId:userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime
+            }
+            logRoomType.extraChildRate.unshift(extraChildRateObject);
         }
         if (displayStatus) {
-            findRoomType.displayStatus.unshift({ displayStatus, logId:Randomstring.generate(10) });
+            const logId = Randomstring.generate(10);
+            findRoomType.displayStatus.unshift({ displayStatus, logId});
+            const displayStatusObject={
+                displayStatus: displayStatus,
+                logId:logId,
+                userId:userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime
+            }
+            logRoomType.displayStatus.unshift(displayStatusObject);
         }
         if (noOfBeds) {
-            findRoomType.noOfBeds.unshift({ noOfBeds, logId:Randomstring.generate(10) });
+            const logId = Randomstring.generate(10);
+            findRoomType.noOfBeds.unshift({ noOfBeds, logId });
+            const noOfBedsObject={
+                noOfBeds: noOfBeds,
+                logId:logId,
+                userId:userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime
+            }
+            logRoomType.noOfBeds.unshift(noOfBedsObject);
         }
-        if (amenityIds) {
-            findRoomType.amenities.unshift({amenities:amenityObjects, logId:Randomstring.generate(10) });
-        }
+        if (amenityObjects.length > 0) {
+            const logId = Randomstring.generate(10);
+            findRoomType.amenities.unshift({
+              amenities: amenityObjects,
+              logId: logId
+            });
+            const amenitiesObject={
+                amenities: amenityObjects,
+                logId:logId,
+                userId:userId,
+                deviceType:deviceType,
+                ipAddress:ipAddress,
+                modifiedOn:currentUTCTime
+            }
+            logRoomType.amenities.unshift(amenitiesObject);
+          }
         // Save the updated document
         const updatedRoom = await findRoomType.save();
+        logRoomType.save();
 
         res.status(200).json({ message: "Room updated successfully", statuscode: 200 });
 

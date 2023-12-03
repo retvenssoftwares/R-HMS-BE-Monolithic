@@ -20,36 +20,40 @@ const fetchCompanyDetails = async (req, res) => {
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
         if (result.success) {
     if (findProperty ) {
-                const userCompanys = await companyIdModel.find({companyId,"displayStatus.0.displayStatus":"1"}).select('propertyId effectiveFrom zipCode city state country addressLine2 addressLine1 contractPdf personDesignation phoneNumber billingCycle creditLimit openingBalance taxId registrationNumber shortCode companyWebsite companyEmail companyLogo companyId companyName contactPerson expiration ').sort({_id:-1}).lean();
+                const userCompanys = await companyIdModel.find({companyId,"displayStatus.0.displayStatus":"1"}).select('propertyId effectiveFrom zipCode contractTerms city state country addressLine2 addressLine1 contractPdf personDesignation phoneNumber billingCycle creditLimit openingBalance personEmail taxId registrationNumber shortCode companyWebsite companyEmail companyLogo companyId companyName contactPerson expiration accountType').sort({_id:-1}).lean();
         const convertedCompanyId = userCompanys.map(company => {
         
             return {
                 ...company._doc,
                 
                 propertyId : company.propertyId,
-                companyName: company.companyName[0].companyName || '',
+                companyName: company.companyName[0]?.companyName || '',
                 companyId : company.companyId,
-                contactPerson : company.contactPerson[0].contactPerson || '',
-                expiration : company.expiration[0].expiration || '',
-                companyLogo : company.companyLogo[0].companyLogo || '',
-                companyEmail : company.companyEmail[0].companyEmail || '',
-                companyWebsite : company.companyWebsite[0].companyWebsite || '',
-                shortCode : company.shortCode[0].shortCode || '',
-                registrationNumber : company.registrationNumber[0].registrationNumber || '',
-                taxId : company.taxId[0].taxId || '',
-                openingBalance : company.openingBalance[0].openingBalance || '',
-                creditLimit : company.creditLimit[0].creditLimit || '',
-                billingCycle : company.billingCycle[0].billingCycle || '',
-                phoneNumber : company.phoneNumber[0].phoneNumber || '',
-                personDesignation : company.personDesignation[0].personDesignation || '',
-                contractPdf : company.contractPdf[0].contractPdf || '',
-                addressLine1 : company.addressLine1[0].addressLine1 || '',
-                addressLine2 : company.addressLine2[0].addressLine2 || '',
-                country : company.country[0].country || '',
-                state : company.state[0].state || '',
-                city : company.city[0].city || '',
-                zipCode : company.zipCode[0].zipCode || '',
-                effectiveFrom : company.effectiveFrom[0].effectiveFrom || ''   
+                accountType:company.accountType[0]?.accountType || '',
+                personEmail:company.personEmail[0]?.personEmail || '',
+                contractTerms:company.contractTerms[0]?.contractTerms || '',
+                contactPerson : company.contactPerson[0]?.contactPerson || '',
+                expiration : company.expiration[0]?.expiration || '',
+                companyLogo : company.companyLogo[0]?.companyLogo || '',
+                companyEmail : company.companyEmail[0]?.companyEmail || '',
+                companyWebsite : company.companyWebsite[0]?.companyWebsite || '',
+                shortCode : company.shortCode[0]?.shortCode || '',
+                registrationNumber : company.registrationNumber[0]?.registrationNumber || '',
+                taxId : company.taxId[0]?.taxId || '',
+                openingBalance : company.openingBalance[0]?.openingBalance || '',
+                creditLimit : company.creditLimit[0]?.creditLimit || '',
+                days : company.billingCycle[0]?.days || '',
+                month : company.billingCycle[0]?.month || '',
+                phoneNumber : company.phoneNumber[0]?.phoneNumber || '',
+                personDesignation : company.personDesignation[0]?.personDesignation || '',
+                contractPdf : company.contractPdf || '',
+                addressLine1 : company.addressLine1[0]?.addressLine1 || '',
+                addressLine2 : company.addressLine2[0]?.addressLine2 || '',
+                country : company.country[0]?.country || '',
+                state : company.state[0]?.state || '',
+                city : company.city[0]?.city || '',
+                zipCode : company.zipCode[0]?.zipCode || '',
+                effectiveFrom : company.effectiveFrom[0]?.effectiveFrom || ''   
                 
             };
         });

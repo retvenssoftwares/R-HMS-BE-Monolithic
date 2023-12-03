@@ -1,26 +1,27 @@
 import { parseStringPromise } from 'xml2js';
+import randomstring from "randomstring";
 import BookingNotificationMMT from '../../../../models/Notifications/mmtBookingNotification.js';
 import roomAndRateMap from '../../../../models/OTAs/mappedRoomsAndRates.js';
-import bookingDetails from '../../../../models/confirmBooking.js';
+import confirmBookingModel from '../../../../models/confirmBooking.js';
 import { getCurrentUTCTimestamp } from '../../../../helpers/helper.js';
 const pushBookingNotificationMMT = async (req, res) => {
     try {
-        // const { otaId, propertyId } = req.query;
-        // const xmlData = req.body; // Assuming the XML data is in the request body
+
+        const xmlData = req.body; // Assuming the XML data is in the request body
         const xmlData2 = `<?xml version="1.0" encoding="UTF-8"?>
 <BookingDetail>
-    <Booking Id="0000058809">
+    <Booking Id="0000058830">
         <HotelName>Royal Tycoon Place Hotel </HotelName>
-        <HotelCode>1000084920</HotelCode>
-        <GuestName>Amit Jain</GuestName>
-        <BookingDate>2017-11-21 15:13:30</BookingDate>
-        <CheckInDate>2017-12-27</CheckInDate>
-        <CheckoutDate>2017-12-28</CheckoutDate>
+        <HotelCode>1000282881</HotelCode>
+        <GuestName>Tom Cruise</GuestName>
+        <BookingDate>2023-08-05 15:13:30</BookingDate>
+        <CheckInDate>2023-08-15</CheckInDate>
+        <CheckoutDate>2023-08-17</CheckoutDate>
         <NumberOfNights>1</NumberOfNights>
-        <RoomTypeName>Executive</RoomTypeName>
-        <RoomTypeCode>45000070621</RoomTypeCode>
+        <RoomTypeName>Super Deluxe Room</RoomTypeName>
+        <RoomTypeCode>45000485845</RoomTypeCode>
         <RatePlanName>free cancellation pay at hotel</RatePlanName>
-        <RatePlanCode>990000419959</RatePlanCode>
+        <RatePlanCode>990001678678</RatePlanCode>
         <NumberofRooms>1</NumberofRooms>
         <Price>1500.0</Price>
         <BookingStatus>refunded</BookingStatus>
@@ -47,7 +48,7 @@ const pushBookingNotificationMMT = async (req, res) => {
             <TotalTcsAmount>0</TotalTcsAmount>
             <PayAtHotelAmount>2000.0</PayAtHotelAmount>
             <TaxPayAtHotelAmount>0</TaxPayAtHotelAmount>
-            <TotalPayAtHotelAmount>2000.0</TotalPayAtHotelAmount>
+            <TotalPayAtHotelAmount>1500.0</TotalPayAtHotelAmount>
             <GST>0</GST>
             <RoomBreakup>
                 <Rooms date="2017-12-27">
@@ -162,46 +163,95 @@ const pushBookingNotificationMMT = async (req, res) => {
 `;
         // console.log(xmlData,"hgcgh")
         // Convert XML to JSON using promises
-        // const result = await parseStringPromise(xmlData, { explicitArray: false, mergeAttrs: true });
+        const result = await parseStringPromise(xmlData, { explicitArray: false, mergeAttrs: true });
         const result2 = await parseStringPromise(xmlData2, { explicitArray: false, mergeAttrs: true });
 
-        // const bookingData = result.Booking;
+        const bookingData = result.Booking;
         const otaBookingData = result2.BookingDetail
         // console.log(typeof bookingData.HotelCode)
         // console.log(bookingData.HotelCode)
         // console.log(result);
 
-        // const getIds = await roomAndRateMap.findOne({ OTAHotelCode: bookingData.HotelCode }, 'otaId propertyId').lean()
+        const getIds = await roomAndRateMap.findOne({ OTAHotelCode: bookingData.HotelCode }, 'otaId propertyId mappedOTARoomData').lean()
         // console.log(getIds, "asda")
         // console.log(getIds.propertyId, getIds.otaId)
         // Create a new document using Mongoose model
-        // const newBookingNotification = new BookingNotificationMMT({
-        //     propertyId: getIds.propertyId || "",
-        //     otaId: getIds.otaId || "",
-        //     createdOn: await getCurrentUTCTimestamp(),
-        //     Booking: {
-        //         bookingId: bookingData.BookingId,
-        //         customerName: bookingData.CustomerName,
-        //         noOfRooms: parseInt(bookingData.NoOfRooms),
-        //         noOfNights: parseInt(bookingData.NoOfNights),
-        //         roomTypeName: bookingData.RoomTypeName,
-        //         checkInDate: bookingData.CheckInDate,
-        //         status: bookingData.Status,
-        //         hotelCode: bookingData.HotelCode,
-        //         payAtHotelFlag: bookingData.PayAtHotelFlag === 'True',
-        //         bookingTime: new Date(bookingData.BookingTime),
-        //         bookingVendorName: bookingData.BookingVendorName
-        //     }
-        // });
+        const newBookingNotification = new BookingNotificationMMT({
+            propertyId: getIds.propertyId || "",
 
-        const saveOTABooking = new bookingDetails({
-            bookingId: otaBookingData.Booking.Id || ""
+            otaId: getIds.otaId || "",
+            createdOn: await getCurrentUTCTimestamp(),
+            Booking: {
+                bookingId: bookingData.BookingId,
+                customerName: bookingData.CustomerName,
+                noOfRooms: parseInt(bookingData.NoOfRooms),
+                noOfNights: parseInt(bookingData.NoOfNights),
+                roomTypeName: bookingData.RoomTypeName,
+                checkInDate: bookingData.CheckInDate,
+                status: bookingData.Status,
+                hotelCode: bookingData.HotelCode,
+                payAtHotelFlag: bookingData.PayAtHotelFlag === 'True',
+                bookingTime: new Date(bookingData.BookingTime),
+                bookingVendorName: bookingData.BookingVendorName
+            }
+        });
+        const savedBooking = await newBookingNotification.save();
+        const mappedRoomTypeId = otaBookingData.Booking.RoomTypeCode || ""
+        const existingEntryIndex = getIds.mappedOTARoomData.findIndex(
+            (entry) => entry.otaRoomTypeCode === mappedRoomTypeId
+        );
+        console.log(existingEntryIndex, "sdwa");
+        const roomTypeId = getIds.mappedOTARoomData[existingEntryIndex].roomTypeId || "";
+        console.log(roomTypeId, "efas");
+        const saveOTABooking = new confirmBookingModel({
+            guestId: randomstring.generate(8),
+            reservationNumber: randomstring.generate({
+                charset: 'numeric',
+                length: 4
+            }),
+            bookingId: otaBookingData.Booking.Id || "",
+            propertyId: getIds.propertyId || "",
+            roomTypeId: [{
+                roomTypeId: roomTypeId || "",
+                logId: randomstring.generate(10)
+            }],
+            guestName: [{ guestName: otaBookingData.Booking.GuestName || "", logId: randomstring.generate(10) }],
+            adults: [{
+                adults: otaBookingData.Booking.RoomStay.Room.Adult || "",
+                logId: randomstring.generate(10)
+            }],
+            childs: [{
+                childs: otaBookingData.Booking.RoomStay.Room.Child || "",
+                logId: randomstring.generate(10)
+            }],
+            nightCount: [{
+                nightCount: otaBookingData.Booking.NumberOfNights || "",
+                logId: randomstring.generate(10)
+            }],
+            bookingTime: otaBookingData.Booking.BookingDate || "",
+            checkInDate: [{
+                checkInDate: otaBookingData.Booking.CheckInDate || "",
+                logId: randomstring.generate(10)
+            }],
+            checkOutDate: [{
+                checkOutDate: otaBookingData.Booking.CheckoutDate || "",
+                logId: randomstring.generate(10)
+            }],
+            reservationRate: [{
+                roomCharges: [{
+                    grandTotal: otaBookingData.Booking.PriceDetails.TotalPayAtHotelAmount || ''
+                }],
+                logId: randomstring.generate(10),
+            }],
+            inventory: otaBookingData.Booking.NumberofRooms || 0,
+            isOTABooking: "true",
+            otaId: getIds.otaId || ""
         })
 
         await saveOTABooking.save();
 
         // Save the document to the database
-        // const savedBooking = await newBookingNotification.save();
+
         // console.log('Booking notification saved:', savedBooking);
 
         return res.status(200).json({ result2, statuscode: 200 });

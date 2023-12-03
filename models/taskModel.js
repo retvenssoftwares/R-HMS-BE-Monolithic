@@ -47,7 +47,7 @@ const taskTypeSchema = new mongoose.Schema({
     }],
 
     taskStatus: [{
-        taskStatus: { type: String, default: ''},
+        taskStatus: { type: String, default: 'pending'},
         logId: { type: String, default: ''},
     }],
 
@@ -71,7 +71,7 @@ const taskTypeSchema = new mongoose.Schema({
     },
 
     assignedTo: [{
-        assignedTo: { type: String, default: ''},
+        assignedTo: { type: String, default: 'unassigned'},
         logId: { type: String, default: ''},
     }],
 

@@ -45,7 +45,7 @@ const postProperty = async (req, res) => {
     const findUser = await verifiedUser.findOne({ userId });
     const authCodeValue = req.headers['authcode']
 
-    let userRole=findUser.role[0].role
+    let userRole = findUser.role[0].role
     if (!findUser || !userId) {
       return res.status(404).json({ message: "User not found or invalid userId", statuscode: 404 });
     }
@@ -104,9 +104,9 @@ const postProperty = async (req, res) => {
             logId: randomstring.generate(10),
           },
         ],
-        
+
         displayStatus: [{ displayStatus: "1", logId: randomstring.generate(10) }],
-       
+
         state: [
           {
             state: state,
@@ -115,7 +115,7 @@ const postProperty = async (req, res) => {
         ],
         city: [
           {
-            city:city,
+            city: city,
             logId: randomstring.generate(10),
           },
         ],
@@ -139,29 +139,29 @@ const postProperty = async (req, res) => {
             },
           ]
           : [],
-        baseCurrency:[{
-          baseCurrency:baseCurrency,
+        baseCurrency: [{
+          baseCurrency: baseCurrency,
           logId: randomstring.generate(10)
         }],
-        websiteUrl:[{
+        websiteUrl: [{
           websiteUrl: websiteUrl,
           logId: randomstring.generate(10)
         }],
         dateUTC: currentUTCTime,
-        propertyType:[{
+        propertyType: [{
           propertyType: propertyType,
-          logId:randomstring.generate(10)
-        }],
-        propertyRating:[{
-          propertyRating:propertyRating,
-          logId:randomstring.generate(10)
-        }],
-        reservationPhone:[{
-          reservationPhone:reservationPhone,
           logId: randomstring.generate(10)
         }],
-        phone:[{
-          phone:phone,
+        propertyRating: [{
+          propertyRating: propertyRating,
+          logId: randomstring.generate(10)
+        }],
+        reservationPhone: [{
+          reservationPhone: reservationPhone,
+          logId: randomstring.generate(10)
+        }],
+        phone: [{
+          phone: phone,
           logId: randomstring.generate(10)
         }],
         propertyEmail: [{
@@ -178,7 +178,7 @@ const postProperty = async (req, res) => {
 
       // Save the property record
       const savedProperty = await newProperty.save();
-      
+
       // Create a propertyImages record and associate it with the property
       const propertyImages = new propertyImageModel({
         propertyId: savedProperty.propertyId, // Use the propertyId from the saved property record
@@ -192,147 +192,147 @@ const postProperty = async (req, res) => {
       // save data in logs
       const addPropertyLogs = new propertyLogs({
         propertyId: savedProperty.propertyId,
-        userId:userId,
-        createdOn:currentUTCTime,
-        country:country,
-        createdBy:userRole,
-        propertyAddress1:[{
-          propertyAddress1:propertyAddress1,
-          logId:savedProperty.propertyAddress1[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+        userId: userId,
+        createdOn: currentUTCTime,
+        country: country,
+        createdBy: userRole,
+        propertyAddress1: [{
+          propertyAddress1: propertyAddress1,
+          logId: savedProperty.propertyAddress1[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
-        propertyAddress2:[{
-          propertyAddress1:propertyAddress2,
-          logId:savedProperty.propertyAddress2[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+        propertyAddress2: [{
+          propertyAddress1: propertyAddress2,
+          logId: savedProperty.propertyAddress2[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
-        propertyName:[{
-          propertyName:propertyName,
-          logId:savedProperty.propertyName[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+        propertyName: [{
+          propertyName: propertyName,
+          logId: savedProperty.propertyName[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
-        postCode:[{
-          postCode:postCode,
-          logId:savedProperty.postCode[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+        postCode: [{
+          postCode: postCode,
+          logId: savedProperty.postCode[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
-        displayStatus:[{
-          displayStatus:savedProperty.displayStatus[0].displayStatus,
-          logId:savedProperty.displayStatus[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+        displayStatus: [{
+          displayStatus: savedProperty.displayStatus[0].displayStatus,
+          logId: savedProperty.displayStatus[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
-        state:[{
-          state:state,
-          logId:savedProperty.state[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+        state: [{
+          state: state,
+          logId: savedProperty.state[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
-        city:[{
-          city:city,
-          logId:savedProperty.city[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+        city: [{
+          city: city,
+          logId: savedProperty.city[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
-        location:[{
+        location: [{
           latitude: latitude,
           longitude: longitude,
-          logId:savedProperty.location[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+          logId: savedProperty.location[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
-        propertyDescription:[{
-          propertyDescription:propertyDescription,
-          logId:savedProperty.propertyDescription[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+        propertyDescription: [{
+          propertyDescription: propertyDescription,
+          logId: savedProperty.propertyDescription[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
-        hotelLogo:[{
-          hotelLogoId:savedProperty.hotelLogo[0].hotelLogoId,
-          hotelLogo:imageUrl,
-          logId:savedProperty.hotelLogo[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+        hotelLogo: [{
+          hotelLogoId: savedProperty.hotelLogo[0].hotelLogoId,
+          hotelLogo: imageUrl,
+          logId: savedProperty.hotelLogo[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
-        baseCurrency:[{
-          baseCurrency:baseCurrency,
-          logId:savedProperty.baseCurrency[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+        baseCurrency: [{
+          baseCurrency: baseCurrency,
+          logId: savedProperty.baseCurrency[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
-        propertyType:[{
-          propertyType:propertyType,
-          logId:savedProperty.propertyType[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+        propertyType: [{
+          propertyType: propertyType,
+          logId: savedProperty.propertyType[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
-        propertyRating:[{
-          propertyRating:propertyRating,
-          logId:savedProperty.propertyRating[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+        propertyRating: [{
+          propertyRating: propertyRating,
+          logId: savedProperty.propertyRating[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
-        reservationPhone:[{
-          reservationPhone:reservationPhone,
-          logId:savedProperty.reservationPhone[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+        reservationPhone: [{
+          reservationPhone: reservationPhone,
+          logId: savedProperty.reservationPhone[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
-        phone:[{
-          phone:phone,
-          logId:savedProperty.phone[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+        phone: [{
+          phone: phone,
+          logId: savedProperty.phone[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
-        propertyEmail:[{
-          propertyEmail:propertyEmail,
-          logId:savedProperty.propertyEmail[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+        propertyEmail: [{
+          propertyEmail: propertyEmail,
+          logId: savedProperty.propertyEmail[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
-        amenities:[{
-          amenities:amenityObjects,
-          logId:savedProperty.amenities[0].logId,
-          userId:userId,
-          devicetype:devicetype,
-          ipAddress:ipAddress,
-          modifiedOn:currentUTCTime
+        amenities: [{
+          amenities: amenityObjects,
+          logId: savedProperty.amenities[0].logId,
+          userId: userId,
+          devicetype: devicetype,
+          ipAddress: ipAddress,
+          modifiedOn: currentUTCTime
         }],
 
       })

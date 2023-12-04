@@ -5,20 +5,20 @@ import propertyChain from "../../models/propertychain.js"
 import propertyImageModel from "../../models/propertyImages.js"
 import { getCurrentUTCTimestamp } from "../../helpers/helper.js"
 import logsModel from "../../models/logsModel.js"
-import {sendEmail} from "../../helpers/helper.js"
+import { sendEmail } from "../../helpers/helper.js"
 
 const verifyUserProperty = async (req, res) => {
     try {
         const userId = req.body.userId
 
-        const userDetails = userModel.findOne({userId : userId})
+        const userDetails = userModel.findOne({ userId: userId })
 
-        if(!userDetails){
-            return res.status(404).json({message : "Incorrect Details" , statuscode:404})
+        if (!userDetails) {
+            return res.status(404).json({ message: "Incorrect Details", statuscode: 404 })
         }
 
-        if(userDetails.length === 0){
-            return res.status(200).json({message : "data not found" , statuscode:200})
+        if (userDetails.length === 0) {
+            return res.status(200).json({ message: "data not found", statuscode: 200 })
         }
 
         // verify the user
@@ -31,6 +31,7 @@ const verifyUserProperty = async (req, res) => {
 
         if (propertyTypeSOC === "Single") {
             const singleProperty = user.singlePropertyDetails[0]
+            console.log('singleProperty: ', singleProperty);
             //console.log(singleProperty)
             const verifyUserDetails = new verifyUserModel({
                 userId: user.userId,
@@ -57,8 +58,6 @@ const verifyUserProperty = async (req, res) => {
             const property = new propertyModel({
                 userId: singleProperty.userId,
                 propertyId: singleProperty.propertyId,
-                dateUTC: singleProperty.dateUTC,
-                dateLocal: singleProperty.dateLocal,
                 country: singleProperty.country,
                 //propertyAddress: singleProperty.propertyAddress,
                 propertyAddress1: singleProperty.propertyAddress1,
@@ -116,7 +115,7 @@ const verifyUserProperty = async (req, res) => {
 
 
             const userName = savedVerifiedUserData.username[0].username
-       
+
 
             await sendEmail(userName, property.propertyId, savedVerifiedUserData.hotelRcode, savedVerifiedUserData.email)
 
@@ -146,7 +145,7 @@ const verifyUserProperty = async (req, res) => {
             const multiple = await verifyUserDetails.save()
             const userName = multiple.username[0].username
             const email = multiple.email
-           // console.log(userName , multiple.email)
+            // console.log(userName , multiple.email)
 
             const propertChain = new propertyChain({
                 userId: multipleProperty.userId,
@@ -164,11 +163,11 @@ const verifyUserProperty = async (req, res) => {
 
             })
 
-            const hotelcode =  ""
+            const hotelcode = ""
             const chainProperty = await propertChain.save();
             //console.log(chainProperty.hotelRCode)
             await sendEmail(userName, hotelcode, chainProperty.hotelRCode, email)
-             
+
         }
         await userModel.deleteOne({ userId: userId })
         return res.status(200).json({ message: "User successfully verified", statuscode: 200 })

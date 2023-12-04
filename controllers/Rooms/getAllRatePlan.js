@@ -100,7 +100,7 @@ const allRatePlans = async (req, res) => {
                 const matchingRoomTypes = discountRoomTypeDatas.find((room) => room.roomTypeId === rate.roomTypeId
                 );
                 const roomTypeName = matchingRoomTypes?.roomTypeName[0]?.roomTypeName || '';
-                // console.log(roomTypeName)
+                 console.log(roomTypeName)
                 return {
                     rateType: rate.rateType || '',
                     ratePlanId: rate.discountPlanId || '',

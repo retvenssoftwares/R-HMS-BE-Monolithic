@@ -26,6 +26,7 @@ import mmtRoutes from './routers/OTA/addMMT.router.js'
 import bulkUpdateRoutes from './routers/InventoryAndRates/manageInventoryRates.routes.js'
 import mmtBookingNotificationRoutes from './routers/OTA/Notifications/notification.routes.js'
 import otaRoutes from './routers/OTA/ota.router.js'
+import folio from "./routers/Folio/folio.js"
 import Dashboard   from './routers/dashboard/dashboard.js';
 import housekeeping from './routers/Housekeeping/housekeeping.routes.js'
 import floor from './routers/floorView/floor.js'
@@ -55,6 +56,7 @@ app.use(otaRoutes)
 app.use(housekeeping)
 app.use(mmtRoutes)
 app.use(superAdminRoutes)
+app.use(folio)
 app.use(Dashboard)
 app.use(floor)
 

@@ -6,7 +6,7 @@ import { uploadImageToS3, getCurrentUTCTimestamp, findUserByUserIdAndToken } fro
 const uploadPropertyImages = async (req, res) => {
 
     const { userId, propertyId } = req.query
-    const {imageTags}=req.body
+    const { imageTags } = req.body
 
     try {
 
@@ -35,6 +35,13 @@ const uploadPropertyImages = async (req, res) => {
                 createdOn: await getCurrentUTCTimestamp()
             };
 
+            // Create the resp image object
+            const responseImageObject = {
+                imageId: imageId,
+                image: imageUrl,
+                imageTag: imageTags[0].imageTags || []
+            };
+
             // Find the propertyImage document by propertyId and push the new image object
             const updateRecord = await propertyImageModel.findOneAndUpdate(
                 { propertyId: propertyId },
@@ -49,7 +56,10 @@ const uploadPropertyImages = async (req, res) => {
             // console.log(req.body)
             // console.log(req.files)
             if (updateRecord) {
-                return res.status(200).json({ message: "Image successfully uploaded", statuscode: 200 });
+                return res.status(200).json({
+                    message: "Image successfully uploaded",
+                    data: responseImageObject, statuscode: 200
+                });
             } else {
                 return res.status(404).json({ message: "Property not found", statuscode: 404 });
             }

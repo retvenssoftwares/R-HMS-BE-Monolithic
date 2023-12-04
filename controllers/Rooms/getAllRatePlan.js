@@ -100,13 +100,14 @@ const allRatePlans = async (req, res) => {
                 const matchingRoomTypes = discountRoomTypeDatas.find((room) => room.roomTypeId === rate.roomTypeId
                 );
                 const roomTypeName = matchingRoomTypes?.roomTypeName[0]?.roomTypeName || '';
-                // console.log(roomTypeName)
+                 console.log(roomTypeName)
                 return {
                     rateType: rate.rateType || '',
                     ratePlanId: rate.discountPlanId || '',
                     shortCode: rate.shortCode[0].shortCode || '',
                     ratePlanName: rate.discountName[0].discountName || '',
                     roomTypeName: roomTypeName,
+                    newRatePlanName: rate.newRatePlanName[0].newRatePlanName || '',
                     inclusion: rate.ratePlanInclusion[0]?.ratePlanInclusion.length || 0,
                     ratePlanTotal: rate.barRates.discountTotal[0].discountTotal || '',
                     extraAdultRate: rate.barRates.extraAdultRate[0].extraAdultRate || '',

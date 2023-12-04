@@ -432,6 +432,19 @@ const holdDetails = new mongoose.Schema({
 
     }],
 
+    totalCharges:[{
+        totalCharges : {
+            type: String,
+            default: ""
+        },
+
+        logId: {
+            type: String,
+            default: ""
+        }
+
+    }],
+
     baseRates: [{
 
         baseRates: [{

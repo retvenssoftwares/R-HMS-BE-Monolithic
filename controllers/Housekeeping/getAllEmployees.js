@@ -1,5 +1,5 @@
-import employeeModel from '../../models/houseKeepingModel.js'
-import { findUserByUserIdAndToken } from '../../helpers/helper.js'
+import employeeModel from '../../models/houseKeepingModel.js';
+import { findUserByUserIdAndToken } from '../../helpers/helper.js';
 const getAllEmployees = async (req, res) => {
     try {
         const { userId, propertyId } = req.query;
@@ -22,12 +22,12 @@ const getAllEmployees = async (req, res) => {
                     departmentOrDivision: { $arrayElemAt: ["$departmentOrDivision.departmentOrDivision", 0] },
                     phone: { $arrayElemAt: ["$phone.phone", 0] },
                     employeeId: 1,
-                    employeeIdNo: 1,
+                    employeeIdNo: { $arrayElemAt: ["$employeeIdNo.employeeId", 0] },
                     fullName: { $arrayElemAt: ["$fullName.fullName", 0] },
                 }
             }
         ]).exec();
-        if (employeesData.length < 0) {
+        if (employeesData.length <= 0) {
             return res.status(200).json({ "message": "No employee data added yet", statuscode: 200 });
         }
         return res.status(200).json({ data: employeesData, statuscode: 200 })
@@ -37,4 +37,4 @@ const getAllEmployees = async (req, res) => {
     }
 }
 
-export default getAllEmployees
+export default getAllEmployees;

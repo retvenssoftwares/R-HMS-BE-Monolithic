@@ -6,7 +6,7 @@ const addEmployee = async (req, res) => {
         const { userId } = req.query;
         const { fullName, gender, dateOfBirth, propertyId, phone, email, address, idType, idNumber, expirationDate,
             nameOfEmergencyContact, relationWithEmergencyContact, emergencyContact, emergencyContactAlternate,
-            designation, departmentOrDivision, employmentStartDate, employmentType } = req.body;
+            designation, departmentOrDivision, employmentStartDate, employmentType, employeeIdNo } = req.body;
         const authCodeValue = req.headers['authcode'];
         const result = await findUserByUserIdAndToken(userId, authCodeValue);
         if (!result.success) {
@@ -23,10 +23,10 @@ const addEmployee = async (req, res) => {
         const addNewEmployee = new employeeModel({
             propertyId,
             employeeId: randomstring.generate(8),
-            employeeIdNo: randomstring.generate({
-                length: 5,
-                charset: 'numeric'
-            }),
+            employeeIdNo: [{
+                employeeIdNo: employeeIdNo,
+                logId: randomstring.generate(10)
+            }],
             fullName: [{
                 fullName: fullName,
                 logId: randomstring.generate(10)

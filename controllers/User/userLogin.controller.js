@@ -22,6 +22,8 @@ const userLogin = async (req, res) => {
        const findDesignation =findProfile.designation[0].designation
        const findFirstName =findProfile.firstName
        const findLastName = findProfile.lastName
+      // const propertyId=findProfile.hotelCode
+      // console.log(propertyId)
        const propertyTypeSOC = findProfile.propertyTypeSOC
     
         const decryptedPass = decrypt(findPassword)
@@ -39,7 +41,7 @@ const userLogin = async (req, res) => {
             }
             findProfile.token.unshift(authObj)
             await findProfile.save()
-            return res.status(200).json({ message: "Login successful", statuscode: 200, data: { userId: findProfile.userId,isLogin:isLogin,designation:findDesignation,firstName:findFirstName,lastName:findLastName, token: authObj.token }})
+            return res.status(200).json({ message: "Login successful", statuscode: 200, data: {userId: findProfile.userId,isLogin:isLogin,designation:findDesignation,firstName:findFirstName,lastName:findLastName, token: authObj.token }})
         }
     } catch (err) {
         console.log(err)

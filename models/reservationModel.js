@@ -287,6 +287,16 @@ const booking = new mongoose.Schema({
                 default: "" 
             }],
 
+            totalCharges:{
+                type: String,
+                default: ""
+            },
+
+            inclusionTotal:{
+                type: String,
+                default: ""
+            },
+
 
             remark: [{
                 specialRemark: {
@@ -336,31 +346,17 @@ const booking = new mongoose.Schema({
     }],
 
 
+    // totalCharges:[{
+    //     totalCharges:{
+    //         type: String,
+    //         default: ""
+    //     },
 
-    // remark: [{
-    //     remark: [{
-    //         specialRemark: {
-    //             type: String,
-    //             default: ""
-    //         },
-
-
-    //         internalNote: {
-    //             type: String,
-    //             default: ""
-    //         },
-
-    //     }],
-
-    //     logId: {
+    //     logId:{
     //         type: String,
     //         default: ""
     //     }
-
-
     // }],
-
-
 
 
     //quickRemark

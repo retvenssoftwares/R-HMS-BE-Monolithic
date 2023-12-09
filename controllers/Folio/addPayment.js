@@ -3,9 +3,9 @@ import folio from "../../models/folio.js"
 import verifiedUser from "../../models/verifiedUsers.js";
 import Randomstring from "randomstring";
 
-export const addCharges = async (req, res) => {
+export const addPayment = async (req, res) => {
 
-    const { folioNo, propertryId,userId, chagreType, chargeRule, rate, totalCharges, quantity, narration } = req.body
+    const { folioNo, propertyId,userId, paymentType, paymentMethod, paymentAmount, narration } = req.body
     const findUser = await verifiedUser.findOne({ userId: userId });
 
     if (!findUser) {
@@ -21,23 +21,31 @@ export const addCharges = async (req, res) => {
         return res.status(404).json({message: " Invalid Token", statusCode : 404})
     }
 
+    let adjustedTotalBalance = 0;
+
+    adjustedTotalBalance = parseFloat(paymentAmount);
+
     const updatedPassword = await folio.updateOne(
-        { folioNo: folioNo, propertyId: propertryId },
+        { folioNo: folioNo, propertyId: propertyId },
         {
+
+            $inc: { 
+                totalBalance: -adjustedTotalBalance,
+            },
+
             $push: {
-                'folioRecords.0.folioRecords': {
+                folioRecords: {
                     $each: [
                         {
                             date: new Date(),
                             refNo : Randomstring.generate({ charset: 'numeric', length: 10 }) ,
                             user : findUser.role[0].role || "",
-                            chagreType: chagreType,
-                            chargeRule :chargeRule,
-                            rate : rate,
-                            totalCharges :  totalCharges,
-                            quantity :  quantity,
-                            narration : narration
-                            // ... other fields from req.body
+                            paymentType: paymentType,
+                            paymentMethod : paymentMethod,
+                            paymentAmount : -paymentAmount,
+                            narration : narration,
+                            logId : Randomstring.generate(10)
+                           
                         }
                     ],
                     $position: 0,
@@ -47,7 +55,7 @@ export const addCharges = async (req, res) => {
     );
 
     if(updatedPassword){
-        return res.status(200).json({message : "charges added successfully", statusCode:200})
+        return res.status(200).json({message : "payment added successfully", statusCode:200})
     }else{
         return res.status(404).json({message : "something wrong", statusCode:404})
     }

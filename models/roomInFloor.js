@@ -27,6 +27,10 @@ const roomInFloorData = new mongoose.Schema({
                         type: String,
                         default: ""
                     },
+                    date:{
+                        type:String,
+                        default:""
+                    }
                    
                 }],
             

@@ -28,7 +28,7 @@ const getInventory = async (req, res) => {
         ]
     }).select('reservationName reservationTypeId');
     // console.log(getReservationTypeName.reservationTypeId)
-    const reservationId = getReservationTypeName.reservationTypeId
+    const reservationId = getReservationTypeName?.reservationTypeId || ''
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
     if (!result.success) {
         return res

@@ -19,7 +19,7 @@ const RoomImage = async (req, res) => {
     const authCodeValue = req.headers["authcode"]
     const currentUTCTime = await getCurrentUTCTimestamp();
 
-    const findUser = await userModel.findOne({ userId:userId });
+    const findUser = await userModel.findOne({ userId: userId });
     if (!findUser) {
       return res.status(404).json({ message: "User not found or invalid userid", statuscode: 404 })
   }
@@ -33,6 +33,7 @@ const RoomImage = async (req, res) => {
     if (!existingRecord) {
       return res.status(404).json({ message: "Room type not found", statuscode: 404 });
     }
+    const result = await findUserByUserIdAndToken(userId, authCodeValue);
 
     // Upload Room images
     if (req.files["roomImage"]) {
@@ -69,16 +70,20 @@ const RoomImage = async (req, res) => {
       existingRecord.roomImages = existingRecord.roomImages.concat(roomImageUrls);
       existingRecordLog.roomImages = existingRecordLog.roomImages.concat(roomImageUrls2);
     }
-
+    const respObj = {
+      imageId: existingRecord.roomImages[0].imageId || "",
+      image: imageUrl,
+      imageTag: imageTags[0].imageTags || []
+    }
     // Save the updated roomImages record
     const updatedRoomImages = await existingRecord.save();
     await existingRecordLog.save();
 
-    return res.status(200).json({ message: "Images uploaded successfully", statuscode: 200 });
+    return res.status(200).json({ message: "Images uploaded successfully", data: respObj, statuscode: 200 });
   }
   else{
     return res.status(result.statuscode).json({ message: result.message });
-  }
+  }     
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Internal Server Error", statuscode: 500 });

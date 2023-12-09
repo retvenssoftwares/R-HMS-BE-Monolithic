@@ -29,6 +29,7 @@ import otaRoutes from './routers/OTA/ota.router.js'
 import folio from "./routers/Folio/folio.js"
 import Dashboard   from './routers/dashboard/dashboard.js';
 import housekeeping from './routers/Housekeeping/housekeeping.routes.js'
+import floor from './routers/floorView/floor.js'
 // import { oldBooking } from "./helpers/deletOldBooking.js";
 
 app.use(cors({
@@ -57,6 +58,7 @@ app.use(mmtRoutes)
 app.use(superAdminRoutes)
 app.use(folio)
 app.use(Dashboard)
+app.use(floor)
 
 
 app.get("/", (req, res) => {

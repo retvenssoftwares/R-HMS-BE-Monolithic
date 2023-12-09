@@ -1,7 +1,9 @@
 import axios from 'axios'
+import randomstring from 'randomstring'
+import otaInventoryLogsModel from "../../models/LogModels/otaInventoryLogs.js"
 import manageInventoryModel from "../../models/manageInventory.js";
 import roomType from "../../models/roomType.js";
-import { findUserByUserIdAndToken } from "../../helpers/helper.js";
+import { findUserByUserIdAndToken, getCurrentLocalTimestamp } from "../../helpers/helper.js";
 import getInventory from "../InventoryAndRates/getInventory.js";
 import mmtModel from "../../models/OTAs/mmtModel.js"
 import mapData from "../../models/OTAs/mappedRoomsAndRates.js";
@@ -23,8 +25,6 @@ const manageInventory = async (req, res, io) => {
     const authCodeValue = req.headers['authcode']
 
     const result = await findUserByUserIdAndToken(userId, authCodeValue);
-
-    //
 
     // console.log(findRecord.mappedRatePlanData[existingEntryIndex].otaRatePlanCode)
 
@@ -145,18 +145,54 @@ const manageInventory = async (req, res, io) => {
             'bearer-token': accessToken,
           };
 
-          console.log(xmlData)
+          // console.log(xmlData)
 
-          // Make the Axios POST request
-          axios.post(apiUrl, xmlData, { headers })
-            .then(response => {
+          async function makeApiRequest() {
+            console.log(xmlData);
+
+            try {
+              // Make the Axios POST request and wait for the response
+              const response = await axios.post(apiUrl, xmlData, { headers });
               console.log('API Response:', response.data);
-              // return res.status(200).json({ message: "Connection successfully established", statuscode: 200 })
-            })
-            .catch(error => {
-              console.error('Error making API request:', error.message);
-              // return res.status(500).json({ message: "Some error occurred during connection, please try again later", statuscode: 500 })
-            });
+
+              // Find the record based on propertyId
+              const existingRecord = await otaInventoryLogsModel.findOne({ propertyId });
+              const dateTime = await getCurrentLocalTimestamp()
+              // Create a new log object
+              const newLog = {
+                logId: randomstring.generate(10),
+                request: xmlData,
+                response: response.data,
+                modifiedOn: dateTime,
+                userId: userId,
+                ipAddress: "",
+                deviceType: ""
+              };
+
+              if (existingRecord) {
+                // If the record exists, push the new log to the logs array
+                existingRecord.logs.push(newLog);
+                await existingRecord.save();
+              } else {
+                // If the record doesn't exist, create a new record with the logs array
+                await otaInventoryLogsModel.create({
+                  propertyId,
+                  logs: [newLog],
+                });
+              }
+
+              console.log('Logs saved successfully');
+
+              // return res.status(200).json({ message: "Connection successfully established", statuscode: 200 });
+
+            } catch (error) {
+              console.error('Error making API request:', error);
+              // return res.status(500).json({ message: "Some error occurred during connection, please try again later", statuscode: 500 });
+            }
+          }
+
+          // Call your asynchronous function
+          makeApiRequest();
         }
 
         if (isBlockedInventory) {

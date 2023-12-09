@@ -90,9 +90,10 @@ const uploadPropertyImages = async (req, res) => {
                     { new: true }
                 );
                 
-                
-
-                return res.status(200).json({ message: "Image successfully uploaded", statuscode: 200 });
+                return res.status(200).json({
+                    message: "Image successfully uploaded",
+                    data: responseImageObject, statuscode: 200
+                });
             } else {
                 return res.status(404).json({ message: "Property not found", statuscode: 404 });
             }

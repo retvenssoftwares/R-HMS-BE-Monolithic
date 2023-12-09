@@ -8,6 +8,15 @@ const confirmBookingDetails = new mongoose.Schema({
         default: ""
     },
 
+    isCheckIn:{
+        type:String,
+        default:""
+    },
+    isAssignRoom:{
+        type:String,
+        default:""
+    },
+
     guestName: [{
 
         guestName: {

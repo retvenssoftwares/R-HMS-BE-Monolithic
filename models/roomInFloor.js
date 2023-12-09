@@ -22,10 +22,17 @@ const roomInFloorData = new mongoose.Schema({
             },
 
            
-                houseKeepingStatus: {
-                    type: String,
-                    default: ""
-                },
+                roomStatus: [{
+                    roomStatus:{
+                        type: String,
+                        default: ""
+                    },
+                    date:{
+                        type:String,
+                        default:""
+                    }
+                   
+                }],
             
                 roomNumber: {
                     type: String,

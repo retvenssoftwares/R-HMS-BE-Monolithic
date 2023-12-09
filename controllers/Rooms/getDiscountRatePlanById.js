@@ -9,20 +9,21 @@ const discountPlanGet = async (req, res) => {
             return res.status(result.statuscode).json({ message: result.message, statuscode: result.statuscode });
         }
 
-        const findPlan = await discountPlanModel.findOne({ discountPlanId ,"displayStatus.0.displayStatus":"1"}, 'blackOutDates  discountType discountName shortCode discountPercent discountPrice validityPeriodFrom validityPeriodTo propertyId barRates.extraAdultRate barRates.extraChildRate barRates.discountTotal discountPlanId -_id').sort({_id:-1}).lean();
+        const findPlan = await discountPlanModel.findOne({ discountPlanId, "displayStatus.0.displayStatus": "1" }, 'blackOutDates newRatePlanName discountType discountName shortCode discountPercent discountPrice validityPeriodFrom validityPeriodTo propertyId barRates.extraAdultRate barRates.extraChildRate barRates.discountTotal discountPlanId -_id').sort({ _id: -1 }).lean();
         if (!findPlan) {
             return res.status(404).json({ message: "Rate Plan not found", statuscode: 404 })
         }
         // Fetch the 0th object for array fields
         const planData = {
             ...findPlan,
-            propertyId:findPlan.propertyId || '',
-            discountPlanId:findPlan.discountPlanId || '',
-            rateType:findPlan.rateType || '',
-            createdBy:findPlan.createdBy || '',
-            createdOn:findPlan.createdOn || '',
-            roomTypeId:findPlan.roomTypeId || '',
-            ratePlanId:findPlan.ratePlanId || '',
+            propertyId: findPlan.propertyId || '',
+            discountPlanId: findPlan.discountPlanId || '',
+            rateType: findPlan.rateType || '',
+            createdBy: findPlan.createdBy || '',
+            createdOn: findPlan.createdOn || '',
+            roomTypeId: findPlan.roomTypeId || '',
+            newRatePlanName: findPlan.newRatePlanName[0].newRatePlanName || '',
+            ratePlanId: findPlan.ratePlanId || '',
             blackOutDates: findPlan.blackOutDates.length > 0 ? findPlan.blackOutDates[0].blackOutDates : "",
             shortCode: findPlan.shortCode.length > 0 ? findPlan.shortCode[0].shortCode : "",
             validityPeriodFrom: findPlan.validityPeriodFrom.length > 0 ? findPlan.validityPeriodFrom[0].validityPeriodFrom : "",

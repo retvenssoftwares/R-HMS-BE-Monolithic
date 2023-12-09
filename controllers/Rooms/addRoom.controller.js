@@ -10,6 +10,7 @@ import {
   getCurrentUTCTimestamp,
   findUserByUserIdAndToken
 } from "../../helpers/helper.js";
+import roomImagesLog from "../../models/LogModels/roomTypeImagesLog.js";
 
 //upload Room controller
 const postRoom = async (req, res) => {
@@ -191,8 +192,15 @@ const postRoom = async (req, res) => {
         roomTypeId: savedRoom.roomTypeId,
         propertyId: savedRoom.propertyId,
       });
+
+      const roomImageLog = new roomImagesLog({
+        roomTypeId: savedRoom.roomTypeId,
+        propertyId: savedRoom.propertyId,
+      });
+      
       // Save the propertyImages record
       await roomImages.save();
+      await roomImageLog.save();
 
 
       //save data in logs model

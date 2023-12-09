@@ -1,5 +1,6 @@
 import ratePlan from "../../models/barRatePlan.js";
 import { findUserByUserIdAndToken } from "../../helpers/helper.js"
+import mealPlan from "../../models/mealPlan.js";
 const getBarRatePlanById = async (req, res) => {
     try {
         const { userId, barRatePlanId } = req.query
@@ -17,10 +18,19 @@ const getBarRatePlanById = async (req, res) => {
      
         // Fetch the 0th object for array fields
         if(findPlan) {
+            let mealPlanName;
+                const mealPlanId = findPlan.mealPlan[0].mealPlanId;
+                  if (mealPlanId) {
+                    const mealPlanData = await mealPlan.find({mealPlanId});
+                    if(mealPlanData.length>0){
+                    mealPlanName = mealPlanData.map(item => item.mealPlanName[0].mealPlanName);    
+                }
+            }
         const planData = {
-            ...findPlan,
+            ...findPlan._doc,
             roomTypeId: findPlan.roomType.length > 0 ? findPlan.roomType[0].roomTypeId : "",
             mealPlanId: findPlan.mealPlan.length > 0 ? findPlan.mealPlan[0].mealPlanId : "",
+            mealPlanName:  mealPlanName[0] || "",
             ratePlanName: findPlan.ratePlanName.length > 0 ? findPlan.ratePlanName[0].ratePlanName : "",
             shortCode: findPlan.shortCode.length > 0 ? findPlan.shortCode[0].shortCode : "",
             inclusion: findPlan.inclusion.length > 0 ? findPlan.inclusion[0].inclusionPlan : "",

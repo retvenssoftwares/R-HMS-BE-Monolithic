@@ -23,9 +23,8 @@ const getPropertyById = async (req, res) => {
         if (findProperty.amenities && findProperty.amenities.length > 0) {
             amenities = findProperty.amenities[0].amenities;
             const allAmenities = amenities.map((item) => item.amenityId)
-           console.log(allAmenities)
-          const foundAmenity = await amenitiesModel.find({ amenityId: { $in: allAmenities } });
-         console.log(foundAmenity);
+
+            const foundAmenity = await amenitiesModel.find({ amenityId: { $in: allAmenities } });
           
           amenityNames = foundAmenity.map((amenity) => ({
               amenityName: amenity.amenityName[0]?.amenityName,
@@ -54,7 +53,7 @@ const getPropertyById = async (req, res) => {
             latitude: findProperty.location && findProperty.location.length > 0 ? findProperty.location[0].latitude : '',
             longitude: findProperty.location && findProperty.location.length > 0 ? findProperty.location[0].longitude : '',
             propertyType: findProperty.propertyType[0].propertyType || "",
-            starCategory: findProperty.starCategory || "",
+            starCategory: findProperty.starCategory[0].starCategory || "",
             propertyDescription: findProperty.propertyDescription.length > 0 ? findProperty.propertyDescription[0].propertyDescription : "",
             createdOn: findProperty.createdOn || "",
             country: findProperty.country || "",

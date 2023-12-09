@@ -1,7 +1,7 @@
 import companyRatePlanModel from "../../models/companyRatePlane.js"
 import verifiedUser from '../../models/verifiedUsers.js'
 import { findUserByUserIdAndToken } from '../../helpers/helper.js';
-
+import mealPlan from "../../models/mealPlan.js"
 const companyRatePlans = async (req, res) => {
     try{
     const {companyRatePlanId,userId} = req.query
@@ -16,13 +16,22 @@ const companyRatePlans = async (req, res) => {
     if (!findRatePlan) {
         return res.status(404).json({ message: "Please enter valid companyRatePlanId", statuscode: 404 })
     }
-    if (findRatePlan) {
+    let mealPlanName;
+        if (findRatePlan) {
+            const mealPlanId = findRatePlan.mealPlanId;
+              if (mealPlanId) {
+                const mealPlanData = await mealPlan.find({mealPlanId});
+                if(mealPlanData.length>0){
+                mealPlanName = mealPlanData.map(item => item.mealPlanName[0].mealPlanName);                }
+              }
+            
 
         const companyRatePlan={
                 
                 rateType : findRatePlan.rateType || "",
                 roomTypeId: findRatePlan.roomTypeId || '',
                 mealPlanId : findRatePlan.mealPlanId || '',
+                mealPlanName : mealPlanName[0] || '',
                 companyName : findRatePlan.companyName || '',
                 ratePlanInclusion : findRatePlan.ratePlanInclusion[0].ratePlanInclusion || '',
                 ratePlanName : findRatePlan.ratePlanName[0].ratePlanName || '',
@@ -44,6 +53,7 @@ const companyRatePlans = async (req, res) => {
     }
     }
     }catch (error) {
+        console.log(error);
     return res.status(500).json({ message: "Internal server error", statusCode: 500 });
 }
 

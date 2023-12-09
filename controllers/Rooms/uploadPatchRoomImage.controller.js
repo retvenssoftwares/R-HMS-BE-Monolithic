@@ -1,3 +1,4 @@
+import roomImagesLog from "../../models/LogModels/roomTypeImagesLog.js";
 import roomImageModel from "../../models/roomTypeImages.js";
 import * as dotenv from "dotenv";
 
@@ -10,6 +11,7 @@ const changeRoomImageIndex = async (req, res) => {
 
     // Find the document by ID
     const roomImageDoc = await roomImageModel.findOne({ roomTypeId });
+    // const roomImageLog = await roomImagesLog.findOne({ roomTypeId });
 
     if (!roomImageDoc) {
       return res.status(404).json({ message: "Room image not found" });
@@ -34,8 +36,12 @@ const changeRoomImageIndex = async (req, res) => {
     const [movedObject] = roomImageDoc.Room.splice(oldIndex, 1);
     roomImageDoc.Room.splice(newIndex, 0, movedObject);
 
+    // const [movedObject2] = roomImageLog.Room.splice(oldIndex, 1);
+    // roomImageLog.Room.splice(newIndex, 0, movedObject2);
+
     // Save the updated document
     await roomImageDoc.save();
+    // await roomImageLog.save();
 
     return res.status(200).json({ message: "Index changed successfully" });
   } catch (error) {

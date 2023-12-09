@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
-import db1 from "../db/conn.js"
-const propertyImageSchema = Schema({
+import db2 from "../../db/conn2.js";
+const propertyImagesLog = Schema({
 
     propertyId: { type: String, default: '', unique: false },
 
@@ -18,7 +18,11 @@ const propertyImageSchema = Schema({
                 }],
             displayStatus: {type:String, default: '1' },
             createdOn: {type: String, default: ''},
-            logId: {type: String, default:""}
+            logId:{type: String, default:""},
+            userId:{type: String, default:""},
+            deviceType:{type: String, default:""},
+            ipAddress:{type: String, default:""},
+            modifiedOn: {type: String, default:""}
         }
     ],
 
@@ -35,11 +39,16 @@ const propertyImageSchema = Schema({
                 }]
                 }],
             displayStatus: {type:String, default: '1' },
-            modifiedDate: {type: String, default: ''}
+            modifiedDate: {type: String, default: ''},
+            // logId:{type: String, default:""},
+            // userId:{type: String, default:""},
+            // deviceType:{type: String, default:""},
+            // ipAddress:{type: String, default:""},
+            // modifiedOn: {type: String, default:""}
         }
     ]
 
 });
 
-const propertyImageModel = db1.model("propertyImages", propertyImageSchema)
-export default propertyImageModel
+const propertyImageLogModel = db2.model("propertyImagesLog", propertyImagesLog)
+export default propertyImageLogModel

@@ -104,9 +104,15 @@ const verifyUserProperty = async (req, res) => {
                 propertyImages: [],
                 deletedPropertyImages: []
             });
+            const propertyImagesLog = new propertyImageModel({
+                propertyId: singleProperty.propertyId, // Use the propertyId from the saved property record
+                propertyImages: [],
+                deletedPropertyImages: []
+            });
 
             // Save the propertyImages record
             await propertyImages.save();
+            await propertyImagesLog.save();
 
             // create the log model
             const add = new logsModel({

@@ -39,7 +39,6 @@ const getPackage = async (req, res) => {
                                
                     }
                 })
-                console.log("packageDate", packagesProperties);
                 return res.status(200).json({ data: packagesProperties , statuscode: 200 })
             } else {
                 return res.status(200).json({ message: "No package found", statuscode: 200 })

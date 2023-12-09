@@ -99,8 +99,6 @@ const editProperty = async (req, res) => {
         modifiedOn: currentUTCTime,
       };
 
-      console.log(websiteUrlObject);
-
       await propertyModel.findOneAndUpdate(
         { propertyId: propertyId },
         {

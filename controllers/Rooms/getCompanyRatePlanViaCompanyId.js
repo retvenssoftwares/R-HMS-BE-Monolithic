@@ -17,10 +17,6 @@ const fetchRoom = async (req, res) => {
 
         if (result.success) {
 
-           // const roomImages = await roomImage.find({ roomTypeId: roomTypeId });
-            // const barrate = await barRatePlan.find({ 'roomType.roomTypeId': roomTypeId });
-            //console.log(barrate)
-
             const companyRatePlan = await compnayModel.find({ companyId: companyId }).sort({_id:-1});
             if (!companyRatePlan) {
                 return res.status(400).json({ message: "Please enter companyId", statuscode: 400 })
@@ -50,14 +46,14 @@ const fetchRoom = async (req, res) => {
 
                        // Fetch mealPlanName based on mealPlanId
                        const mealPlan = await mealModel.findOne({ mealPlanId: mealPlanId });
-                       const mealPlanName = mealPlan ? mealPlan.mealPlanName : '';
+                       const mealPlanName = mealPlan ? mealPlan.mealPlanName[0].mealPlanName : '';
 
 
                     return {
                         shortCode: shortCode,
                         ratePlanName:ratePlanName,
                         roomTypeName:roomTypeName[0].roomTypeName || '',
-                        mealPlanName:mealPlanName[0].mealPlanName || '',
+                        mealPlanName:mealPlanName || '',
                         inclusion:inclusion,
                         ratePlanTotal:ratePlanTotal
                         

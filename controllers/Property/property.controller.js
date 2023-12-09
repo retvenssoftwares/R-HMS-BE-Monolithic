@@ -11,6 +11,7 @@ import {
 } from "../../helpers/helper.js";
 import propertyLogs from "../../models/LogModels/propertyLogs.js"
 import property from "../../models/property.js";
+import propertyImageLogModel from "../../models/LogModels/propertyImagesLog.js";
 // import logsModel from "../../models/logsModel.js"
 //upload property controller
 const postProperty = async (req, res) => {
@@ -147,6 +148,10 @@ const postProperty = async (req, res) => {
           websiteUrl: websiteUrl,
           logId: randomstring.generate(10)
         }],
+        starCategory:[{
+          starCategory: starCategory,
+          logId: randomstring.generate(10)
+        }],
         dateUTC: currentUTCTime,
         propertyType:[{
           propertyType: propertyType,
@@ -185,9 +190,15 @@ const postProperty = async (req, res) => {
         propertyImages: [],
         deletedPropertyImages: []
       });
+      const propertyImagesLog = new propertyImageLogModel({
+        propertyId: savedProperty.propertyId, // Use the propertyId from the saved property record
+        propertyImages: [],
+        deletedPropertyImages: []
+      });
 
       // Save the propertyImages record
       await propertyImages.save();
+      await propertyImagesLog.save();
 
       // save data in logs
       const addPropertyLogs = new propertyLogs({
@@ -239,6 +250,14 @@ const postProperty = async (req, res) => {
         state:[{
           state:state,
           logId:savedProperty.state[0].logId,
+          userId:userId,
+          devicetype:devicetype,
+          ipAddress:ipAddress,
+          modifiedOn:currentUTCTime
+        }],
+        starCategory:[{
+          starCategory:starCategory,
+          logId:savedProperty.starCategory[0].logId,
           userId:userId,
           devicetype:devicetype,
           ipAddress:ipAddress,

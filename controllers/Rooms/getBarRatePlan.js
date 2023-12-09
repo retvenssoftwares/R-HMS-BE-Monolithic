@@ -1,5 +1,6 @@
 import barRatePlanModel from '../../models/barRatePlan.js'
 import { findUserByUserIdAndToken, validateHotelCode } from '../../helpers/helper.js';
+import mealPlan from '../../models/mealPlan.js';
 const getBarRatePlans = async (req, res) => {
     try {
         const { userId, propertyId } = req.query
@@ -18,9 +19,21 @@ const getBarRatePlans = async (req, res) => {
             const findBarRatePlans = await barRatePlanModel.find({ propertyId,"displayStatus.0.displayStatus":"1" }, 'propertyId barRatePlanId rateType roomType mealPlan ratePlanName inclusion barRates mealCharge inclusionCharge roundUp extraAdultRate extraChildRate ratePlanTotal shortCode createdBy').sort({_id:-1}).lean();
 
             if (findBarRatePlans.length > 0) {
-                const mappedBarRatePlans = findBarRatePlans.map((plan) => {
-                    const inclusionCount = plan.inclusion[0].inclusionPlan.length || '';
-                    return {
+
+                const mappedBarRatePlans = await Promise.all(
+                    findBarRatePlans.map(async (plan) => {
+                      let mealPlanName = '';
+                  
+                      const mealPlanId = plan.mealPlan[0].mealPlanId;
+                      if (mealPlanId) {
+                        const mealPlanNames = await mealPlan.find({ mealPlanId });
+                  
+                        if (mealPlanNames.length > 0) {
+                          mealPlanName = mealPlanNames[0].mealPlanName[0].mealPlanName;
+                        }
+                      }
+                      const inclusionCount = plan.inclusion[0].inclusionPlan.length || '';
+                      return {
                         ...plan._doc,
                         propertyId: plan.propertyId || '',
                         barRatePlanId: plan.barRatePlanId || '',
@@ -28,6 +41,7 @@ const getBarRatePlans = async (req, res) => {
                         rateType: plan.rateType || '',
                         roomTypeId: plan.roomType[0].roomTypeId || '',
                         mealPlanId: plan.mealPlan[0].mealPlanId || '',
+                        mealPlanName:mealPlanName || '',
                         ratePlanName: plan.ratePlanName[0].ratePlanName || '',
                         shortCode: plan.shortCode[0].shortCode || '',
                         inclusion: plan.inclusion[0].inclusionPlan || '',
@@ -39,8 +53,10 @@ const getBarRatePlans = async (req, res) => {
                         extraChildRate: plan.barRates.extraChildRate[0].extraChildRate || '',
                         ratePlanTotal: plan.barRates.ratePlanTotal[0].ratePlanTotal || '',
                         inclusionCount : inclusionCount
-                    }
-                })
+                      };
+                    })
+                  );
+
                 return res.status(200).json({ data: mappedBarRatePlans, statuscode: 200 })
             } else {
                 return res.status(404).json({ message: "No bar rate plans found", statuscode: 404 })
